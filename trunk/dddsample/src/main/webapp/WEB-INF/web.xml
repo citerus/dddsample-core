@@ -5,6 +5,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-    <display-name></display-name>
+    <display-name>DDDSample</display-name>
 
 </web-app>
