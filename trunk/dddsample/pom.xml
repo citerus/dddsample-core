@@ -44,6 +44,14 @@
             <email>patrikfr@users.sourceforge.net</email>
             <timezone>CET</timezone>
         </developer>
+        <developer>
+            <id>jeham</id>
+            <name>Jesper Hammarback</name>
+            <organization>Citerus</organization>
+            <organizationUrl>http://www.citerus.se</organizationUrl>
+            <email>jeham@users.sourceforge.net</email>
+            <timezone>CET</timezone>
+        </developer>
     </developers>
 
     <dependencies>
