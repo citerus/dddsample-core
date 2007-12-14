@@ -23,7 +23,7 @@ public class TrackingScenarioTest extends TestCase {
   }
 
   private Cargo populateCargo() {
-    final Cargo cargo = new Cargo("XYZ", new Location("SESTO"), new Location("AUMEL"));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
 
     final CarrierMovement stockholmToHamburg =
        new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
