@@ -52,6 +52,14 @@
             <email>jeham@users.sourceforge.net</email>
             <timezone>CET</timezone>
         </developer>
+        <developer>
+            <id>jorgen_falk</id>
+            <name>Jorgen Falk</name>
+            <organization>Citerus</organization>
+            <organizationUrl>http://www.citerus.se</organizationUrl>
+            <email>jorgen.falk@citerus.se</email>
+            <timezone>GMT+1</timezone>
+        </developer>
     </developers>
 
     <dependencies>
