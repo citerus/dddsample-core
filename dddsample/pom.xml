@@ -1,87 +1,85 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>se.citerus</groupId>
-    <artifactId>dddsample</artifactId>
-    <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>DDDSample</name>
-    <description>
-        This application shows a few key concepts of
-        Domain Driven Design implemented in Enterprise Java.
-    </description>
-    <url>http://sourceforge.net/projects/dddsample/</url>
-
-    <ciManagement/>
-
-    <scm>
-        <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
-        <url>http://dddsample.svn.sourceforge.net/viewvc/dddsample/</url>
-    </scm>
-
-    <licenses>
-        <license>
-            <name>MIT</name>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <id>peba</id>
-            <name>Peter Backlund</name>
-            <organization>Citerus</organization>
-            <organizationUrl>http://www.citerus.se</organizationUrl>
-            <email>peter.backlund@citerus.se</email>
-            <timezone>CET</timezone>
-        </developer>
-        <developer>
-            <id>patrikfr</id>
-            <name>Patrik Fredriksson</name>
-            <organization>Citerus</organization>
-            <organizationUrl>http://www.citerus.se</organizationUrl>
-            <email>patrikfr@users.sourceforge.net</email>
-            <timezone>CET</timezone>
-        </developer>
-        <developer>
-            <id>jeham</id>
-            <name>Jesper Hammarback</name>
-            <organization>Citerus</organization>
-            <organizationUrl>http://www.citerus.se</organizationUrl>
-            <email>jeham@users.sourceforge.net</email>
-            <timezone>CET</timezone>
-        </developer>
-        <developer>
-            <id>jorgen_falk</id>
-            <name>Jorgen Falk</name>
-            <organization>Citerus</organization>
-            <organizationUrl>http://www.citerus.se</organizationUrl>
-            <email>jorgen.falk@citerus.se</email>
-            <timezone>GMT+1</timezone>
-        </developer>
-    </developers>
-
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>se.citerus</groupId>
+  <artifactId>dddsample</artifactId>
+  <packaging>war</packaging>
+  <name>DDDSample</name>
+  <version>1.0-SNAPSHOT</version>
+  <description>This application shows a few key concepts of
+        Domain Driven Design implemented in Enterprise Java.</description>
+  <url>http://sourceforge.net/projects/dddsample/</url>
+  <ciManagement />
+  <developers>
+    <developer>
+      <id>peba</id>
+      <name>Peter Backlund</name>
+      <email>peter.backlund@citerus.se</email>
+      <organization>Citerus</organization>
+      <organizationUrl>http://www.citerus.se</organizationUrl>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>patrikfr</id>
+      <name>Patrik Fredriksson</name>
+      <email>patrikfr@users.sourceforge.net</email>
+      <organization>Citerus</organization>
+      <organizationUrl>http://www.citerus.se</organizationUrl>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>jeham</id>
+      <name>Jesper Hammarback</name>
+      <email>jeham@users.sourceforge.net</email>
+      <organization>Citerus</organization>
+      <organizationUrl>http://www.citerus.se</organizationUrl>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>jorgen_falk</id>
+      <name>Jorgen Falk</name>
+      <email>jorgen.falk@citerus.se</email>
+      <organization>Citerus</organization>
+      <organizationUrl>http://www.citerus.se</organizationUrl>
+      <timezone>GMT+1</timezone>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>MIT</name>
+    </license>
+  </licenses>
+  <scm>
+    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
+    <url>http://dddsample.svn.sourceforge.net/viewvc/dddsample/</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>2.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>20030203.000129</version>
+    </dependency>
+  </dependencies>
 </project>
