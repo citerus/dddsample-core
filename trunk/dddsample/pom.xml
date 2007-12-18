@@ -71,15 +71,25 @@
       <version>4.4</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring</artifactId>
-      <version>2.0.6</version>
-    </dependency>
+	<dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring</artifactId>
+    	<version>2.5</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.hibernate</groupId>
+    	<artifactId>hibernate</artifactId>
+    	<version>3.2.5.ga</version>
+	</dependency> 
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>20030203.000129</version>
+    </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
     </dependency>
   </dependencies>
 </project>
