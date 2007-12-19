@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.citerus</groupId>
   <artifactId>dddsample</artifactId>
@@ -6,7 +7,8 @@
   <name>DDDSample</name>
   <version>1.0-SNAPSHOT</version>
   <description>This application shows a few key concepts of
-        Domain Driven Design implemented in Enterprise Java.</description>
+    Domain Driven Design implemented in Enterprise Java.
+  </description>
   <url>http://sourceforge.net/projects/dddsample/</url>
   <ciManagement />
   <developers>
@@ -100,6 +102,17 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.1.2</version>
     </dependency>
   </dependencies>
 </project>
