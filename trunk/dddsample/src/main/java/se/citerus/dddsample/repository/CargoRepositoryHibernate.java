@@ -8,13 +8,13 @@ import se.citerus.dddsample.domain.CargoRepository;
 import se.citerus.dddsample.domain.TrackingId;
 
 public class CargoRepositoryHibernate implements CargoRepository {
-	private HibernateTemplate hibernateTemplate;
+  private HibernateTemplate hibernateTemplate;
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.hibernateTemplate = new HibernateTemplate(sessionFactory);
-	} 
-	
-	public Cargo find(TrackingId trackingId) {
-		return (Cargo) hibernateTemplate.load(Cargo.class, trackingId);
-	}
+  public void setSessionFactory(SessionFactory sessionFactory) {
+    this.hibernateTemplate = new HibernateTemplate(sessionFactory);
+  }
+
+  public Cargo find(TrackingId trackingId) {
+    return (Cargo) hibernateTemplate.load(Cargo.class, trackingId);
+  }
 }
