@@ -6,16 +6,16 @@
     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
   <display-name>DDDSample</display-name>
+
   <servlet>
     <servlet-name>dispatch</servlet-name>
-    <servlet-class>
-      org.springframework.web.servlet.DispatcherServlet
-    </servlet-class>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+
   <servlet-mapping>
     <servlet-name>dispatch</servlet-name>
-    <url-pattern>*.form</url-pattern>
+    <url-pattern>*.html</url-pattern>
   </servlet-mapping>
 
 </web-app>
