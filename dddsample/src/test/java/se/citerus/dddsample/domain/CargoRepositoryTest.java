@@ -7,28 +7,26 @@ import junit.framework.TestCase;
 
 public class CargoRepositoryTest extends TestCase {
 
-	private static final String CTX = "applicationContext.xml";
+  private static final String CTX = "applicationContext.xml";
 
-	public void testFindByCargoId() {
+  public void testFindByCargoId() {
 
-		CargoRepository repository = getCargoRepository();
-		final TrackingId trackingId = new TrackingId("XYZ");
-		Cargo cargo = repository.find(trackingId);
+    CargoRepository repository = getCargoRepository();
+    final TrackingId trackingId = new TrackingId("XYZ");
+    Cargo cargo = repository.find(trackingId);
 
-		assertEquals(trackingId, cargo.trackingId());
+    assertEquals(trackingId, cargo.trackingId());
 
-	}
+  }
 
-	private CargoRepository getCargoRepository() {
-		return (CargoRepository)getBean("cargoRepository");
-	}
+  private CargoRepository getCargoRepository() {
+    return (CargoRepository) getBean("cargoRepository");
+  }
 
-	private Object getBean(String bean) {
-		ApplicationContext context = new ClassPathXmlApplicationContext( 
-				new String[] {CTX});
-		
-		return context.getBean(bean);
-	}
-	
-	
+  private Object getBean(String bean) {
+    ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { CTX });
+
+    return context.getBean(bean);
+  }
+
 }

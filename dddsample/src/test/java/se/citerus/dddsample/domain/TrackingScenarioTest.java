@@ -29,15 +29,12 @@ public class TrackingScenarioTest extends TestCase {
   private Cargo populateCargo() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
 
-    final CarrierMovement stockholmToHamburg =
-       new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
-
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
 
     cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.ON, stockholmToHamburg));
     cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.OFF, stockholmToHamburg));
 
-    final CarrierMovement hamburgToHongKong =
-       new CarrierMovement(new Location("DEHAM"), new Location("CNHKG"));
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(new Location("DEHAM"), new Location("CNHKG"));
 
     cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.ON, hamburgToHongKong));
     cargo.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.OFF, hamburgToHongKong));
