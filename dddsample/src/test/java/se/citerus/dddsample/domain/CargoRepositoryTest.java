@@ -19,7 +19,7 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
     final TrackingId trackingId = new TrackingId("XYZ");
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertSame(trackingId, cargo.trackingId());
+    assertEquals(trackingId, cargo.trackingId());
   }
 
 }
