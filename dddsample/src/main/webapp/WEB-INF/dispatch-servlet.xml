@@ -9,7 +9,10 @@
     <property name="formView" value="start"/>
     <property name="successView" value="cargo"/>
     <property name="cargoService" ref="cargoService"/>
+    <property name="validator" ref="trackCommandValidator"/>
   </bean>
+
+  <bean id="trackCommandValidator" class="se.citerus.dddsample.web.command.TrackCommandValidator"/>
 
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>

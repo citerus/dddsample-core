@@ -1,4 +1,4 @@
-package se.citerus.dddsample.web;
+package se.citerus.dddsample.web.command;
 
 public class TrackCommand {
 
