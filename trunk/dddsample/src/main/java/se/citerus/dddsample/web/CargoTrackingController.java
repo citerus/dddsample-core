@@ -20,6 +20,10 @@ public class CargoTrackingController extends SimpleFormController {
    */
   private CargoService cargoService;
 
+  public CargoTrackingController() {
+    setCommandClass(TrackCommand.class);
+  }
+
   @Override
   public ModelAndView onSubmit(final Object command) throws ServletException {
     final Map<String, Object> model = new HashMap<String, Object>();
