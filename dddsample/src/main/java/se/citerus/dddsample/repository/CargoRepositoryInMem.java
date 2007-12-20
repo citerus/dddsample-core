@@ -35,13 +35,13 @@ public class CargoRepositoryInMem implements CargoRepository {
 
     final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
 
-    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.ON, stockholmToHamburg));
-    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.OFF, stockholmToHamburg));
+    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
+    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(new Location("DEHAM"), new Location("CNHKG"));
 
-    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.ON, hamburgToHongKong));
-    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.OFF, hamburgToHongKong));
+    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
+    cargoXYZ.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
 
     cargoDb.put(trackIdXYZ, cargoXYZ);
     
@@ -51,12 +51,12 @@ public class CargoRepositoryInMem implements CargoRepository {
 
     final CarrierMovement melbourneToTokyo = new CarrierMovement(new Location("AUMEL"), new Location("JPTOK"));
 
-    cargoZYX.handle(new HandlingEvent(getDate("2007-12-10"), HandlingEvent.Type.ON, melbourneToTokyo));
-    cargoZYX.handle(new HandlingEvent(getDate("2007-12-12"), HandlingEvent.Type.OFF, melbourneToTokyo));
+    cargoZYX.handle(new HandlingEvent(getDate("2007-12-10"), HandlingEvent.Type.LOAD, melbourneToTokyo));
+    cargoZYX.handle(new HandlingEvent(getDate("2007-12-12"), HandlingEvent.Type.UNLOAD, melbourneToTokyo));
 
     final CarrierMovement tokyoToLosAngeles = new CarrierMovement(new Location("JPTOK"), new Location("USLA"));
 
-    cargoZYX.handle(new HandlingEvent(getDate("2007-12-13"), HandlingEvent.Type.ON, tokyoToLosAngeles));
+    cargoZYX.handle(new HandlingEvent(getDate("2007-12-13"), HandlingEvent.Type.LOAD, tokyoToLosAngeles));
 
     cargoDb.put(trackIdZYX, cargoZYX);
   }
