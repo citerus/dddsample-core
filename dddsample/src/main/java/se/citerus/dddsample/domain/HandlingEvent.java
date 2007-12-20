@@ -1,9 +1,9 @@
 package se.citerus.dddsample.domain;
 
-import java.util.Date;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import java.util.Date;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -20,7 +20,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   private final Date time;
 
   public enum Type {
-    ON, OFF;
+    LOAD, UNLOAD
   }
 
   public HandlingEvent(Date time, Type type, CarrierMovement carrierMovement) {
