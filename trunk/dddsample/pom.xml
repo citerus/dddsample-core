@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
+<?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.citerus</groupId>
   <artifactId>dddsample</artifactId>
@@ -10,7 +9,14 @@
     Domain Driven Design implemented in Enterprise Java.
   </description>
   <url>http://sourceforge.net/projects/dddsample/</url>
-  <ciManagement />
+  <ciManagement/>
+  <repositories>
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+    </repository>
+  </repositories>
   <developers>
     <developer>
       <id>peba</id>
@@ -18,7 +24,7 @@
       <email>peter.backlund@citerus.se</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>CET</timezone>
+      <timezone>GMT+1</timezone>
     </developer>
     <developer>
       <id>patrikfr</id>
@@ -26,7 +32,7 @@
       <email>patrikfr@users.sourceforge.net</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>CET</timezone>
+      <timezone>GMT+1</timezone>
     </developer>
     <developer>
       <id>jeham</id>
@@ -34,7 +40,7 @@
       <email>jeham@users.sourceforge.net</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>CET</timezone>
+      <timezone>GMT+1</timezone>
     </developer>
     <developer>
       <id>jorgen_falk</id>
@@ -48,6 +54,8 @@
   <licenses>
     <license>
       <name>MIT</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
   <scm>
@@ -56,6 +64,7 @@
   </scm>
   <build>
     <plugins>
+      <!-- Compiler -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -63,6 +72,12 @@
           <target>1.5</target>
           <encoding>UTF-8</encoding>
         </configuration>
+      </plugin>
+
+      <!-- Jetty servlet container: http://jetty.mortbay.com/maven-plugin -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
@@ -91,7 +106,7 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>20030203.000129</version>
+      <version>2.3</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>

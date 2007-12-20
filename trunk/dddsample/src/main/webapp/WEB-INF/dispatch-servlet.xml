@@ -3,8 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <import resource="classpath:applicationContext.xml"/>
-
   <bean name="/start.html" class="se.citerus.dddsample.web.CargoTrackingController">
     <property name="sessionForm" value="true"/>
     <property name="commandName" value="trackCommand"/>
