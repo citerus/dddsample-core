@@ -4,22 +4,18 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class DeliveryHistory {
+	
+	private final SortedSet<HandlingEvent> events = new TreeSet<HandlingEvent>();
 
-  private TreeSet<HandlingEvent> events;
+	public SortedSet<HandlingEvent> events() {
+		return events; 
+	}
 
-  public DeliveryHistory() {
-    this.events = new TreeSet<HandlingEvent>();
-  }
+	public void addEvent(HandlingEvent event) {
+		events.add(event);
+	}
 
-  public SortedSet<HandlingEvent> events() {
-    return events;
-  }
-
-  public void add(HandlingEvent event) {
-    events.add(event);
-  }
-
-  public HandlingEvent last() {
-    return events.last();
-  }
+	public HandlingEvent last() {
+		return events.isEmpty() ? null : events.last();
+	}
 }

@@ -1,17 +1,25 @@
 package se.citerus.dddsample.domain;
 
-import junit.framework.TestCase;
-import se.citerus.dddsample.repository.CargoRepositoryInMem;
+import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
+import se.citerus.dddsample.repository.CargoRepository;
 
-public class CargoRepositoryTest extends TestCase {
+public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
 
-  public void testFindByCargoId() throws Exception {
-    CargoRepository repository = new CargoRepositoryInMem();
+  CargoRepository cargoRepository;
+
+  public void setCargoRepository(CargoRepository cargoRepository) {
+    this.cargoRepository = cargoRepository;
+  }
+
+  protected String[] getConfigLocations() {
+    return new String[] {"context-persistence.xml"};
+  }
+
+  public void testFindByCargoId() {
     final TrackingId trackingId = new TrackingId("XYZ");
-    Cargo cargo = repository.find(trackingId);
+    Cargo cargo = cargoRepository.find(trackingId);
 
-    assertEquals(trackingId, cargo.trackingId());
-
+    assertSame(trackingId, cargo.trackingId());
   }
 
 }
