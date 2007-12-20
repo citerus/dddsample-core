@@ -49,6 +49,21 @@ public class CargoRepositoryInMem implements CargoRepository {
     cargoXYZ.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.OFF, hamburgToHongKong));
 
     cargoDb.put(trackIdXYZ, cargoXYZ);
+    
+    
+    String trackIdZYX = "ZYX";
+    final Cargo cargoZYX = new Cargo(new TrackingId(trackIdZYX), new Location("AUMEL"), new Location("SESTO"));
+
+    final CarrierMovement melbourneToTokyo = new CarrierMovement(new Location("AUMEL"), new Location("JPTOK"));
+
+    cargoZYX.handle(new HandlingEvent(getDate("2007-12-10"), HandlingEvent.Type.ON, melbourneToTokyo));
+    cargoZYX.handle(new HandlingEvent(getDate("2007-12-12"), HandlingEvent.Type.OFF, melbourneToTokyo));
+
+    final CarrierMovement tokyoToLosAngeles = new CarrierMovement(new Location("JPTOK"), new Location("USLA"));
+
+    cargoZYX.handle(new HandlingEvent(getDate("2007-12-13"), HandlingEvent.Type.ON, tokyoToLosAngeles));
+
+    cargoDb.put(trackIdZYX, cargoZYX);
   }
 
   /**
