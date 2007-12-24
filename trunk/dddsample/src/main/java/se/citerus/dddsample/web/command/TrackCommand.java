@@ -1,5 +1,8 @@
 package se.citerus.dddsample.web.command;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import static org.apache.commons.lang.builder.ToStringStyle.MULTI_LINE_STYLE;
+
 public class TrackCommand {
 
   /**
@@ -17,8 +20,6 @@ public class TrackCommand {
 
   @Override
   public String toString() {
-    return "TrackCommand{" +
-        "trackingId='" + trackingId + '\'' +
-        '}';
+    return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
   }
 }
