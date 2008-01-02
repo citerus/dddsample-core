@@ -10,6 +10,7 @@
     <property name="successView" value="cargo"/>
     <property name="cargoService" ref="cargoService"/>
     <property name="validator" ref="trackCommandValidator"/>
+    <property name="unknownCargoView" value="unknownCargo"/>
   </bean>
 
   <bean id="trackCommandValidator" class="se.citerus.dddsample.web.command.TrackCommandValidator"/>
@@ -18,6 +19,20 @@
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     <property name="prefix" value="/WEB-INF/jsp/"/>
     <property name="suffix" value=".jsp"/>
+  </bean>
+  
+  <!--
+    - This bean resolves specific types of exceptions to corresponding logical 
+    - view names for error views. The default behaviour of DispatcherServlet 
+    - is to propagate all exceptions to the servlet container: this will happen 
+    - here with all other types of exceptions.
+  -->
+  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+      <props>
+        <prop key="org.springframework.dao.DataAccessException">dataAccessFailure</prop>
+      </props>
+    </property>
   </bean>
 
 </beans>
