@@ -9,12 +9,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
+
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
  * class not intended for usage in real application.
  * 
  * It setup a simple local hash with a number of Cargo's with TrackingId as key
  * defined at compile time.
+ * 
+ * To be able to test exceptions, a DataRetrievalFailureException is thrown when finding a Cargo with trackingId "DAE".
  * 
  */
 public class CargoRepositoryInMem implements CargoRepository {
@@ -26,6 +31,10 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public Cargo find(TrackingId trackingId) {
+    if (trackingId.getId().equalsIgnoreCase("DAE")){
+      throw new DataRetrievalFailureException("Network failure. Please try again");
+    }
+    
     return cargoDb.get(trackingId.getId());
   }
 
