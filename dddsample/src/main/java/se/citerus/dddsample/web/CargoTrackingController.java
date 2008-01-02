@@ -5,6 +5,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.service.CargoService;
+import se.citerus.dddsample.web.command.TrackCommand;
 
 import javax.servlet.ServletException;
 import java.util.HashMap;
