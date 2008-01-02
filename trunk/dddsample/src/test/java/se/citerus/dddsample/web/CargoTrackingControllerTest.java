@@ -10,6 +10,7 @@ import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.service.CargoService;
+import se.citerus.dddsample.web.command.TrackCommand;
 
 public class CargoTrackingControllerTest extends TestCase {
 
