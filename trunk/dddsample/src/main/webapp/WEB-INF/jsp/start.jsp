@@ -9,7 +9,9 @@
   </style>
 </head>
 <body>
-<div id="form">
+<div id="container">
+  <h1>Search for Cargo</h1>
+  <div id="search">
   <form:form method="post" commandName="trackCommand">
     <table cellspacing="0" cellpadding="4">
       <tr>
@@ -28,12 +30,10 @@
       </tr>
     </table>
   </form:form>
-</div>
-<c:if test="${cargo ne null}">
+  </div>
   <div id="result">
-
-    <p>Your cargo is currently at: <span id="currentLocation">${cargo.currentLocation}</span></p>
-
+<c:if test="${cargo ne null}">
+Your cargo is currently at: ${cargo.currentLocation}
     <table cellspacing="4">
       <thead>
         <tr>
@@ -52,8 +52,8 @@
         </c:forEach>
       </tbody>
     </table>
-
-  </div>
 </c:if>
+  </div>
+</div>
 </body>
 </html>
