@@ -9,12 +9,15 @@
 	</style>
 </head>
 <body>
-<div>
+<div id="container">
+<h1>
 An DataAccessExcepton occured.
-<br/>
+</h1>
+<div id="error">
 ${exception.message}
 </div>
 <br/>
 <a href="start.html">Start page</a>
+</dv>
 </body>
 </html>
