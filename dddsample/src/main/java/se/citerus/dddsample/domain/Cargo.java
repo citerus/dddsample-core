@@ -1,5 +1,8 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 
 /**
  * A Cargo an entity identifed by TrackingId and is capable of getting its DeliveryHistory plus a number
@@ -19,7 +22,7 @@ public class Cargo {
     this.history = new DeliveryHistory();
   }
 
-  public DeliveryHistory deliveryHistory() {
+  public DeliveryHistory getDeliveryHistory() {
     return history;
   }
 
@@ -28,20 +31,24 @@ public class Cargo {
   }
 
   public boolean atFinalDestiation() {
-    return currentLocation().equals(finalDestination);
+    return getCurrentLocation().equals(finalDestination);
   }
 
-  public Location currentLocation() {
+  public Location getCurrentLocation() {
     HandlingEvent lastEvent = history.last();
     if (lastEvent == null) {
       return origin;
     }
-    CarrierMovement cm = lastEvent.getCarrierMovement();
-
-    return (lastEvent.type() == HandlingEvent.Type.LOAD) ? cm.from() : cm.to();
+    
+    return lastEvent.getLocation();
   }
 
   public TrackingId trackingId() {
     return trackingId;
+  }
+
+  @Override
+  public String toString() {
+    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
   }
 }

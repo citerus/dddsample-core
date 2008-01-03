@@ -1,21 +1,19 @@
 package se.citerus.dddsample.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.view.RedirectView;
 
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.web.command.TrackCommand;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Controller for tracking cargo.
@@ -43,9 +41,7 @@ public class CargoTrackingController extends SimpleFormController {
     final Cargo cargo = cargoService.find(trackCommand.getTrackingId());
 
     if (cargo != null) {
-      final Location location = cargo.currentLocation();
-      logger.debug("Location of [" + trackCommand.getTrackingId() + "] is [" + location + "]");
-      model.put("location", location);
+      model.put("cargo", cargo);
       
       // Can't just return a new MaV instance when successView and FormView is the same. Binding will fail.
       // showForm will append our command and model to the request so that the form will bind successfully.

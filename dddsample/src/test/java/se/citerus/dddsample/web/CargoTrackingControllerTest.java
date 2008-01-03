@@ -73,8 +73,8 @@ public class CargoTrackingControllerTest extends TestCase {
 
     assertEquals("test-success", mav.getViewName());
     assertEquals(3, mav.getModel().size());
-    Location location = (Location) mav.getModel().get("location");
-    assertEquals("AAA", location.unlocode());
+    Cargo cargo = (Cargo) mav.getModel().get("cargo");
+    assertEquals("AAA", cargo.getCurrentLocation().unlocode());
   }
 
   public void testUnknownCargo() throws Exception {
