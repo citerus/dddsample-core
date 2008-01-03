@@ -56,6 +56,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
+  @Override
   public int compareTo(HandlingEvent o) {
     return time.compareTo(o.getTime());
   }
