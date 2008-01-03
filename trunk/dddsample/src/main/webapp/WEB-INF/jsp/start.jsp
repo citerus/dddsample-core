@@ -20,12 +20,13 @@
     </table>
     <br>
     <input type="submit" value="Track!">
+    <c:choose>
+      <c:when test="${location ne null}">
+        <p>Your cargo is currently at: <b>${location}</b></p>
+      </c:when>
+    </c:choose>
   </form:form>
 </div>
-<c:choose>
-  <c:when test="${location ne null}">
-    <p>Your cargo is currently at: <b>${location}</b></p>
-  </c:when>
-</c:choose>
+
 </body>
 </html>
