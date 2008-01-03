@@ -1,218 +1,201 @@
-/* css Zen Garden default style v1.02 */
-/* css released under Creative Commons License - http://creativecommons.org/licenses/by-nc-sa/1.0/  */
 
-/* This file based on 'Tranquille' by Dave Shea */
-/* You may use this file as a foundation for any new work, but you may find it easier to start from scratch. */
-/* Not all elements are defined in this file, so you'll most likely want to refer to the xhtml as well. */
+/*********************************************************
+   HTML Elements
+ *********************************************************/
 
-/* Your images should be linked as if the CSS file sits in the same folder as the images. ie. no paths. */
-
-
-/* basic elements */
-html {
-	margin: 0;
-	padding: 0;
-	}
-body { 
-	font: 75% georgia, sans-serif;
-	line-height: 1.88889;
-	color: #555753; 
-	background: #fff url(blossoms.jpg) no-repeat bottom right; 
-	margin: 0; 
-	padding: 0;
-	}
-p { 
-	margin-top: 0; 
-	text-align: justify;
-	}
-h3 { 
-	font: italic normal 1.4em georgia, sans-serif;
-	letter-spacing: 1px; 
-	margin-bottom: 0; 
-	color: #7D775C;
-	}
-a:link { 
-	font-weight: bold; 
-	text-decoration: none; 
-	color: #B7A5DF;
-	}
-a:visited { 
-	font-weight: bold; 
-	text-decoration: none; 
-	color: #D4CDDC;
-	}
-a:hover, a:active { 
-	text-decoration: underline; 
-	color: #9685BA;
-	}
-acronym {
-	border-bottom: none;
-	}
-
-
-/* specific divs */
-#container { 
-	background: url(zen-bg.jpg) no-repeat top left; 
-	padding: 0 175px 0 110px;  
-	margin: 0; 
-	position: relative;
-	}
-	
-#form {
-	padding: 0 175px 0 110px; 
-	font: 10pt/22pt georgia;
-	}	
-
-#intro { 
-	min-width: 470px;
-	}
-	
-#result {
-	padding: 0 175px 0 110px; 
-	font: italic 10pt/22pt georgia; 
-	text-align:right;
-	}
-#currentLocation{
-	font: bold 10pt/22pt georgia;
-	position: relative;
-	}
-#result table{
-	text-align:left;
-	font: 10pt/22pt georgia;
-	}
-
-/* using an image to replace text in an h1. This trick courtesy Douglas Bowman, http://www.stopdesign.com/articles/css/replace-text/ */
-#pageHeader h1 { 
-	background: transparent url(h1.gif) no-repeat top left; 
-	margin-top: 10px; 
-	width: 219px; 
-	height: 87px; 
-	float: left;
-	}
-#pageHeader h1 span {
-	display:none
-	}
-#pageHeader h2 { 
-	background: transparent url(h2.gif) no-repeat top left; 
-	margin-top: 58px; 
-	margin-bottom: 40px; 
-	width: 200px; 
-	height: 18px; 
-	float: right;
-	}
-#pageHeader h2 span {
-	display:none
-	}
-#pageHeader {
-	padding-top: 20px;
+html,
+body {
+  height: 100%;
 }
 
-#quickSummary {
-	clear:both; 
-	margin: 20px 20px 20px 10px; 
-	width: 160px; 
-	float: left;
-	}
-#quickSummary p {
-	font: italic 10pt/22pt georgia; 
-	text-align:center;
-	}
-
-#preamble {
-	clear: right; 
-	padding: 0px 10px 0 10px;
-	}
-#supportingText {	
-	padding-left: 10px; 
-	margin-bottom: 40px;
-	}
-
-#footer { 
-	text-align: center; 
-	}
-#footer a:link, #footer a:visited { 
-	margin-right: 20px; 
-	}
-
-#linkList {
-	margin-left: 600px; 
-	position: absolute; 
-	top: 0; 
-	right: 0;
-	}
-#linkList2 { 
-	font: 10px verdana, sans-serif; 
-	background: transparent url(paper-bg.jpg) top left repeat-y; 
-	padding: 10px; 
-	margin-top: 150px; 
-	width: 130px; 
-	}
-#linkList h3.select { 
-	background: transparent url(h3.gif) no-repeat top left; 
-	margin: 10px 0 5px 0; 
-	width: 97px; 
-	height: 16px; 
-	}
-#linkList h3.select span {
-	display:none
-	}
-#linkList h3.favorites { 
-	background: transparent url(h4.gif) no-repeat top left; 
-	margin: 25px 0 5px 0; 
-	width: 60px; 
-	height: 18px; 
-	}
-#linkList h3.favorites span {
-	display:none
-	}
-#linkList h3.archives { 
-	background: transparent url(h5.gif) no-repeat top left; 
-	margin: 25px 0 5px 0; 
-	width:57px; 
-	height: 14px; 
-	}
-#linkList h3.archives span {
-	display:none
-	}
-#linkList h3.resources { 
-	background: transparent url(h6.gif) no-repeat top left; 
-	margin: 25px 0 5px 0; 
-	width:63px; 
-	height: 10px; 
-	}
-#linkList h3.resources span {
-	display:none
-	}
+body {
+  margin: 0;
+  padding: 0;
+  font: 400 0.7em verdana, arial, sans-serif;
+  line-height: 170%;
+  
+  color: #555;
+}
 
 
-#linkList ul {
-	margin: 0;
-	padding: 0;
-	}
-#linkList li {
-	line-height: 2.5ex; 
-	background: transparent url(cr1.gif) no-repeat top center; 
-	display: block; 
-	padding-top: 5px; 
-	margin-bottom: 5px;
-	list-style-type: none;
-	}
-#linkList li a:link {
-	color: #988F5E;
-	}
-#linkList li a:visited {
-	color: #B3AE94;
-	}
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
 
 
-#extraDiv1 {
-	background: transparent url(cr2.gif) top left no-repeat; 
-	position: absolute; 
-	top: 40px; 
-	right: 0; 
-	width: 148px; 
-	height: 110px;
-	}
-.accesskey {
-	text-decoration: underline;
-	}
+h1 {
+  padding-bottom: 0.2em;
+
+  font: 400 1.6em arial, sans-serif;
+  color: #536C71;
+  border-bottom: 6px solid #ddd;
+}
+
+h2 {
+  font-size: 1.2em;
+  color: #586B7A;
+}
+
+h3 {
+  text-transform: uppercase;
+  font-size: 0.9em;
+  color: #5D6F73;
+}
+
+h4 {
+  font-size: 0.85em;
+}
+
+h5 {
+  font-size: 0.8em;
+}
+
+
+/* Links */
+a {
+  text-decoration: none;
+  color: #3B5D77;
+}
+
+a:hover {
+  color: #668FA3;
+}
+
+a img {
+  border: 0;
+}
+
+a img.border {  
+  border: 1px solid #000;
+}
+
+a:hover img.border {  
+  /* Fixes IE bug - IE doesn't correctly apply the style on a:hover so need to mask it */
+  border: 1px solid #668FA3 !important;
+  border: 1px solid #FC3307;
+}
+
+
+
+/* Images */
+img.floatRight {
+  margin: 5px 0 10px 10px;
+}
+
+img.floatLeft {
+  margin: 5px 10px 10px 0;
+}
+
+
+
+/* Lists */
+ul li {
+}
+
+ol li {
+  font-weight: bold;
+  color: #668FA3;
+}
+
+ol li span {
+  font-weight: normal;
+  color: #444;
+}
+
+
+
+/* Blockquote */
+blockquote {
+  margin: 0;
+  padding: 0 20px;
+  background: #eee;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+
+
+/**************************************************************
+   Form Elements
+ **************************************************************/
+
+form {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+/* If you're finding the input elements get pushed down, increase the width */
+label {
+  float: left;
+  width: 25%;
+  vertical-align: top;
+}
+
+input,
+textarea,
+select {
+  padding: 1px;
+  font: 400 1em verdana, sans-serif;
+  color: #999;
+  background: #EEE;
+  border: 1px solid #CCC;
+}
+
+input:focus,
+input:hover,
+textarea:focus,
+textarea:hover,
+select:focus,
+select:hover {
+  color: #000;
+  background: #E7F1F3;
+  border: 1px solid #888;
+}
+
+input.noBorder,
+input:focus.noBorder,
+input:hover.noBorder {
+  padding: 0;
+  border: 0;
+}
+
+input.button {
+  padding: 2px 5px;
+
+  font: 400 0.9em verdana, serif;
+  cursor: pointer;
+
+  color: #fff;
+  background: #ccc;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #888 #888 #8880 #888;
+}
+
+input.radio {
+  background: none;
+  border: 0px;
+}
+
+
+
+
+/**************************************************************
+   Custom div
+ **************************************************************/
+#container {
+  text-align: left;
+  margin-left: 200px;
+  margin-right: 500px;
+}
+
+#search {
+  border-bottom: 6px solid #ddd;
+}
+
+#result {
+  font-size: 1.2em;
+}
