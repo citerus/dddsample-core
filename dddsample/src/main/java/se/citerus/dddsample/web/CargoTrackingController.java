@@ -1,5 +1,6 @@
 package se.citerus.dddsample.web;
 
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -10,6 +11,9 @@ import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.web.command.TrackCommand;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,15 +30,15 @@ public class CargoTrackingController extends SimpleFormController {
 
   public CargoTrackingController() {
     setCommandClass(TrackCommand.class);
-    setBindOnNewForm(true);
   }
 
+  
   @Override
-  public ModelAndView onSubmit(final Object command) throws ServletException {
+  protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
     ModelAndView mav = null;
     final Map<String, Object> model = new HashMap<String, Object>();
 
-    final TrackCommand trackCommand = (TrackCommand) command;
+    final TrackCommand trackCommand = (TrackCommand) command;   
     logger.debug("Finding cargo by trackingId: " + trackCommand.getTrackingId());
     final Cargo cargo = cargoService.find(trackCommand.getTrackingId());
 
@@ -42,7 +46,10 @@ public class CargoTrackingController extends SimpleFormController {
       final Location location = cargo.currentLocation();
       logger.debug("Location of [" + trackCommand.getTrackingId() + "] is [" + location + "]");
       model.put("location", location);
-      mav = new ModelAndView(getSuccessView(), model);
+      
+      // Can't just return a new MaV instance when successView and FormView is the same. Binding will fail.
+      // showForm will append our command and model to the request so that the form will bind successfully.
+      mav = showForm(request, errors, getSuccessView(), model);
     } else {
       model.put("trackingId", trackCommand.getTrackingId());
       mav = new ModelAndView(getUnknownCargoView(), model);
@@ -50,6 +57,7 @@ public class CargoTrackingController extends SimpleFormController {
     
     return mav;
   }
+   
 
   /**
    * Sets the cargo service instance.
@@ -77,6 +85,7 @@ public class CargoTrackingController extends SimpleFormController {
   public String getUnknownCargoView() {
     return unknownCargoView;
   }
-  
+
+
   
 }
