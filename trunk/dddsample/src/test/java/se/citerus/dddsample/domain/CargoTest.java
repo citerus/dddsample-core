@@ -15,20 +15,20 @@ public class CargoTest extends TestCase{
     Location origin = new Location("SESTO");
     Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, destination);
 
-		assertEquals(origin, cargo.currentLocation());
+		assertEquals(origin, cargo.getCurrentLocation());
 	}
 
 
   public void testCurrentLocationUnloaded() throws Exception {
 		Cargo cargo = populateCargoOffHongKong();
 		
-		assertEquals(new Location("CNHGK"), cargo.currentLocation());
+		assertEquals(new Location("CNHGK"), cargo.getCurrentLocation());
 	}
 	
 	public void testCurrentLocationloaded() throws Exception {
 		Cargo cargo = populateCargoOnHamburg();
 		
-		assertEquals(new Location("DEHAM"), cargo.currentLocation());
+		assertEquals(new Location("DEHAM"), cargo.getCurrentLocation());
 	}
 	
 	public void testAtFinalLocation() throws Exception {

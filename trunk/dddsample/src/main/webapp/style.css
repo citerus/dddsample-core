@@ -1,0 +1,218 @@
+/* css Zen Garden default style v1.02 */
+/* css released under Creative Commons License - http://creativecommons.org/licenses/by-nc-sa/1.0/  */
+
+/* This file based on 'Tranquille' by Dave Shea */
+/* You may use this file as a foundation for any new work, but you may find it easier to start from scratch. */
+/* Not all elements are defined in this file, so you'll most likely want to refer to the xhtml as well. */
+
+/* Your images should be linked as if the CSS file sits in the same folder as the images. ie. no paths. */
+
+
+/* basic elements */
+html {
+	margin: 0;
+	padding: 0;
+	}
+body { 
+	font: 75% georgia, sans-serif;
+	line-height: 1.88889;
+	color: #555753; 
+	background: #fff url(blossoms.jpg) no-repeat bottom right; 
+	margin: 0; 
+	padding: 0;
+	}
+p { 
+	margin-top: 0; 
+	text-align: justify;
+	}
+h3 { 
+	font: italic normal 1.4em georgia, sans-serif;
+	letter-spacing: 1px; 
+	margin-bottom: 0; 
+	color: #7D775C;
+	}
+a:link { 
+	font-weight: bold; 
+	text-decoration: none; 
+	color: #B7A5DF;
+	}
+a:visited { 
+	font-weight: bold; 
+	text-decoration: none; 
+	color: #D4CDDC;
+	}
+a:hover, a:active { 
+	text-decoration: underline; 
+	color: #9685BA;
+	}
+acronym {
+	border-bottom: none;
+	}
+
+
+/* specific divs */
+#container { 
+	background: url(zen-bg.jpg) no-repeat top left; 
+	padding: 0 175px 0 110px;  
+	margin: 0; 
+	position: relative;
+	}
+	
+#form {
+	padding: 0 175px 0 110px; 
+	font: 10pt/22pt georgia;
+	}	
+
+#intro { 
+	min-width: 470px;
+	}
+	
+#result {
+	padding: 0 175px 0 110px; 
+	font: italic 10pt/22pt georgia; 
+	text-align:right;
+	}
+#currentLocation{
+	font: bold 10pt/22pt georgia;
+	position: relative;
+	}
+#result table{
+	text-align:left;
+	font: 10pt/22pt georgia;
+	}
+
+/* using an image to replace text in an h1. This trick courtesy Douglas Bowman, http://www.stopdesign.com/articles/css/replace-text/ */
+#pageHeader h1 { 
+	background: transparent url(h1.gif) no-repeat top left; 
+	margin-top: 10px; 
+	width: 219px; 
+	height: 87px; 
+	float: left;
+	}
+#pageHeader h1 span {
+	display:none
+	}
+#pageHeader h2 { 
+	background: transparent url(h2.gif) no-repeat top left; 
+	margin-top: 58px; 
+	margin-bottom: 40px; 
+	width: 200px; 
+	height: 18px; 
+	float: right;
+	}
+#pageHeader h2 span {
+	display:none
+	}
+#pageHeader {
+	padding-top: 20px;
+}
+
+#quickSummary {
+	clear:both; 
+	margin: 20px 20px 20px 10px; 
+	width: 160px; 
+	float: left;
+	}
+#quickSummary p {
+	font: italic 10pt/22pt georgia; 
+	text-align:center;
+	}
+
+#preamble {
+	clear: right; 
+	padding: 0px 10px 0 10px;
+	}
+#supportingText {	
+	padding-left: 10px; 
+	margin-bottom: 40px;
+	}
+
+#footer { 
+	text-align: center; 
+	}
+#footer a:link, #footer a:visited { 
+	margin-right: 20px; 
+	}
+
+#linkList {
+	margin-left: 600px; 
+	position: absolute; 
+	top: 0; 
+	right: 0;
+	}
+#linkList2 { 
+	font: 10px verdana, sans-serif; 
+	background: transparent url(paper-bg.jpg) top left repeat-y; 
+	padding: 10px; 
+	margin-top: 150px; 
+	width: 130px; 
+	}
+#linkList h3.select { 
+	background: transparent url(h3.gif) no-repeat top left; 
+	margin: 10px 0 5px 0; 
+	width: 97px; 
+	height: 16px; 
+	}
+#linkList h3.select span {
+	display:none
+	}
+#linkList h3.favorites { 
+	background: transparent url(h4.gif) no-repeat top left; 
+	margin: 25px 0 5px 0; 
+	width: 60px; 
+	height: 18px; 
+	}
+#linkList h3.favorites span {
+	display:none
+	}
+#linkList h3.archives { 
+	background: transparent url(h5.gif) no-repeat top left; 
+	margin: 25px 0 5px 0; 
+	width:57px; 
+	height: 14px; 
+	}
+#linkList h3.archives span {
+	display:none
+	}
+#linkList h3.resources { 
+	background: transparent url(h6.gif) no-repeat top left; 
+	margin: 25px 0 5px 0; 
+	width:63px; 
+	height: 10px; 
+	}
+#linkList h3.resources span {
+	display:none
+	}
+
+
+#linkList ul {
+	margin: 0;
+	padding: 0;
+	}
+#linkList li {
+	line-height: 2.5ex; 
+	background: transparent url(cr1.gif) no-repeat top center; 
+	display: block; 
+	padding-top: 5px; 
+	margin-bottom: 5px;
+	list-style-type: none;
+	}
+#linkList li a:link {
+	color: #988F5E;
+	}
+#linkList li a:visited {
+	color: #B3AE94;
+	}
+
+
+#extraDiv1 {
+	background: transparent url(cr2.gif) top left no-repeat; 
+	position: absolute; 
+	top: 40px; 
+	right: 0; 
+	width: 148px; 
+	height: 110px;
+	}
+.accesskey {
+	text-decoration: underline;
+	}
