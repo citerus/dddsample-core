@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
+    <property name="requestContextAttribute" value="rc"/>
+  </bean>
+
+  <!--
+    - This bean resolves specific types of exceptions to corresponding logical
+    - view names for error views. The default behaviour of DispatcherServlet
+    - is to propagate all exceptions to the servlet container: this will happen
+    - here with all other types of exceptions.
+  -->
+  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+      <props>
+        <prop key="org.springframework.dao.DataAccessException">dataAccessFailure</prop>
+      </props>
+    </property>
+  </bean>
+
+</beans>

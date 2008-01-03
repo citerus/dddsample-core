@@ -2,11 +2,11 @@
 
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<script type="text/javascript"></script>
-	<style type="text/css" title="style" media="screen">
-		@import "/dddsample/style.css";
-	</style>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+  <script type="text/javascript"></script>
+  <style type="text/css" title="style" media="screen">
+    @import "${rc.contextPath}/style.css";
+  </style>
 </head>
 <body>
 <div id="form">
@@ -29,20 +29,31 @@
     </table>
   </form:form>
 </div>
-<div id="result">
-<c:choose>
-  <c:when test="${cargo ne null}">
-  	
+<c:if test="${cargo ne null}">
+  <div id="result">
+
     <p>Your cargo is currently at: <span id="currentLocation">${cargo.currentLocation}</span></p>
-    
-    <table>
-      <c:forEach var="event" items="${cargo.deliveryHistory.events}">
-        <tr><td><c:out value="${event.type}"/> &nbsp; on &nbsp;</td><td><c:out value="${event.location}"/>&nbsp; at &nbsp;</td><td><c:out value="${event.time}"/></td></tr>
-      </c:forEach>
+
+    <table cellspacing="4">
+      <thead>
+        <tr>
+          <td>Event</td>
+          <td>Location</td>
+          <td>Time</td>
+        </tr>
+      </thead>
+      <tbody>
+        <c:forEach var="event" items="${cargo.deliveryHistory.events}">
+          <tr>
+            <td>${event.type}</td>
+            <td>${event.location}</td>
+            <td>${event.time}</td>
+          </tr>
+        </c:forEach>
+      </tbody>
     </table>
-    
-  </c:when>
-</c:choose>
-</div>
+
+  </div>
+</c:if>
 </body>
 </html>

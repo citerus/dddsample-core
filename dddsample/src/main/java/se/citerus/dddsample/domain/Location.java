@@ -28,7 +28,5 @@ public class Location {
   public String toString() {
     return unlocode;
   }
-  
-  
 
 }
