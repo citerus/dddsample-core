@@ -222,3 +222,11 @@ input.radio {
 .event-type-UNLOAD {
   background: #FFCCFF;
 }
+
+.event-type-RECEIVE {
+  background: #FFFF99;
+}
+
+.event-type-CLAIM {
+  background: #66FF99;
+}
