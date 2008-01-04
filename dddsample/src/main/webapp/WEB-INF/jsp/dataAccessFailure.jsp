@@ -11,12 +11,9 @@
 <body>
 <div id="container">
 <h1>
-An DataAccessExcepton occured.
+A DataAccessExcepton occured.
 </h1>
-<div id="error">
-${exception.message}
-</div>
-<br/>
+<h2><span id="error" class="error">${exception.message}</span></h2>
 <a href="start.html">Start page</a>
 </dv>
 </body>
