@@ -9,8 +9,8 @@ body {
 }
 
 body {
-  margin-left: 200px;
-  margin-right: 200px;
+  margin-left: 150px;
+  margin-right: 150px;
   padding: 0;
   font: 400 0.7em verdana, arial, sans-serif;
   line-height: 170%;
@@ -198,10 +198,27 @@ input.radio {
 }
 
 #result {
-  font-size: 1.2em;
+  font-size: 1.0em;
   border-bottom: 6px solid #ddd;
+}
+
+#result thead{
+  font-size: 1.2em;
+  font-weight: bold;	
+}
+
+#result tr{
+  line-height: 120%;
 }
 
 .error {
   color: #CC0033;
+}
+
+.event-type-LOAD {
+  background: #CCFFFF;
+}
+
+.event-type-UNLOAD {
+  background: #FFCCFF;
 }

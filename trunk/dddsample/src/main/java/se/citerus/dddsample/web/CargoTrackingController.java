@@ -35,7 +35,7 @@ public class CargoTrackingController extends SimpleFormController {
     if (cargo != null) {
       model.put("cargo", cargo);
     } else {
-      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[] {trackCommand.getTrackingId()}, "Unknown cargo id");
+      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[] {trackCommand.getTrackingId()}, "Unknown tracking id");
     }
     return showForm(request, response, errors, model);
   }
