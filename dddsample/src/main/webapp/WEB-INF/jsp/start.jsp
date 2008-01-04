@@ -11,7 +11,7 @@
 <body>
 <div id="container">
   <div id="search">
-  <h1>Search for Cargo</h1>
+  <h1>Search for Your Cargo</h1>
   <form:form method="post" commandName="trackCommand">
     <table cellspacing="0" cellpadding="4">
       <tr>
@@ -46,7 +46,7 @@
       </thead>
       <tbody>
         <c:forEach var="event" items="${cargo.deliveryHistory.events}">
-          <tr>
+          <tr class="event-type-${event.type}">
             <td>${event.type}</td>
             <td>${event.location}</td>
             <td>${event.time}</td>
