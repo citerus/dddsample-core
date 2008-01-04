@@ -9,7 +9,8 @@ body {
 }
 
 body {
-  margin: 0;
+  margin-left: 200px;
+  margin-right: 200px;
   padding: 0;
   font: 400 0.7em verdana, arial, sans-serif;
   line-height: 170%;
@@ -184,18 +185,23 @@ input.radio {
 
 
 /**************************************************************
-   Custom div
+   Custom div and span
  **************************************************************/
 #container {
   text-align: left;
-  margin-left: 200px;
-  margin-right: 500px;
+  width: 500px;
 }
 
 #search {
+  font-size: 1.0em;
   border-bottom: 6px solid #ddd;
 }
 
 #result {
   font-size: 1.2em;
+  border-bottom: 6px solid #ddd;
+}
+
+.error {
+  color: #CC0033;
 }
