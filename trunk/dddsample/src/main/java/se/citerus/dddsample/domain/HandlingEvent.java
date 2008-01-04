@@ -20,7 +20,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   private final Date time;
 
   public enum Type {
-    LOAD, UNLOAD
+    LOAD, UNLOAD, RECEIVE, CLAIM
   }
 
   public HandlingEvent(Date time, Type type, CarrierMovement carrierMovement) {
@@ -41,8 +41,37 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
     return time;
   }
   
+  /**
+   * Returns the Location of the Cargo. The location is calculated based on the following rules:
+   * <br>For
+   * <ul>
+   * <li> RECEIVE events: Location.NULL is returned. This basically means that the cargo is at its origin but not yet loaded on a CarrierMovment
+   * <li> CLAIM events: Location.NULL is returned. This means that the cargo is at its final destination and has been unloaded and claimed by the customer.
+   * <li> LOAD events: The from Location is returned.
+   * <li> UNLOAD events: The to Location is returned.
+   * </ul> 
+   * 
+   * @return The Location
+   */
   public Location getLocation() {
-    return (type == HandlingEvent.Type.LOAD) ? carrierMovement.from() : carrierMovement.to();
+    Location location = Location.NULL;
+    
+    //My gosh! A switch statement....
+    switch (type) {
+      case LOAD:
+        location = carrierMovement.from();
+      break;
+
+      case UNLOAD:
+        location = carrierMovement.to();
+      break;
+      
+      default: 
+        // for others (RECEIVE, CLAIM) Location.NULL is fine...
+      break;
+    }
+    
+    return location;
   }
   
   

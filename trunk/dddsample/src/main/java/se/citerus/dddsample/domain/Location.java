@@ -4,6 +4,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class Location {
+  /**
+   * The NULL Location object
+   */
+  public static final Location NULL = new Location("");
+  
   private final String unlocode;
 
   public Location(String unlocode) {

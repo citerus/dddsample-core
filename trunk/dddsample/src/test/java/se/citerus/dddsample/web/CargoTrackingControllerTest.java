@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
 import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.HandlingEvent;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.service.CargoService;
@@ -42,6 +43,7 @@ public class CargoTrackingControllerTest extends TestCase {
           new TrackingId(trackingId),
           new Location("AAA"),
           new Location("BBB"));
+        cargo.handle(new HandlingEvent(null, HandlingEvent.Type.RECEIVE, null)); //Cargo must be received to be at known location
         return cargo;
       }
     };

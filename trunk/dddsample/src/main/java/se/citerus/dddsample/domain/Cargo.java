@@ -36,11 +36,22 @@ public class Cargo {
 
   public Location getCurrentLocation() {
     HandlingEvent lastEvent = history.last();
-    if (lastEvent == null) {
-      return origin;
-    }
     
-    return lastEvent.getLocation();
+    // If we have no last event, we have not even received the package. Return unknown location
+    if (lastEvent == null) {
+      return Location.NULL;
+    }
+   
+    Location location = lastEvent.getLocation();
+    
+    // If the last handling event has no idea of where the cargo is due to lack of CarrierMovement (like for CLAIM or RECEIVE events)
+    // location must be calculated based on event type and origin or final destination
+    // TODO: Maybe we need to refactor HandlingEvent.
+    if (location == Location.NULL){
+      location = (lastEvent.getType() == HandlingEvent.Type.CLAIM) ? finalDestination : origin;
+    }
+      
+    return location;
   }
 
   public TrackingId trackingId() {

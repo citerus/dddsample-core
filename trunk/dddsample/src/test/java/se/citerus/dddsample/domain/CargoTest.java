@@ -7,121 +7,143 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+public class CargoTest extends TestCase {
 
-public class CargoTest extends TestCase{
-
-  public void testCurrentLocationAtOrigin() throws Exception {
+  public void testCurrentLocationUnknownWhenNoEvents() throws Exception {
     Location destination = new Location("AUMEL");
     Location origin = new Location("SESTO");
     Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, destination);
 
-		assertEquals(origin, cargo.getCurrentLocation());
-	}
+    assertEquals(Location.NULL, cargo.getCurrentLocation());
+  }
+  
+  public void testCurrentLocationReceived() throws Exception {
+    Cargo cargo = populateCargoReceivedStockholm();
 
+    assertEquals(new Location("SESTO"), cargo.getCurrentLocation());
+  }
 
+  public void testCurrentLocationClaimed() throws Exception {
+    Cargo cargo = populateCargoClaimedMelbourne();
+
+    assertEquals(new Location("AUMEL"), cargo.getCurrentLocation());
+  }
+  
   public void testCurrentLocationUnloaded() throws Exception {
-		Cargo cargo = populateCargoOffHongKong();
-		
-		assertEquals(new Location("CNHGK"), cargo.getCurrentLocation());
-	}
-	
-	public void testCurrentLocationloaded() throws Exception {
-		Cargo cargo = populateCargoOnHamburg();
-		
-		assertEquals(new Location("DEHAM"), cargo.getCurrentLocation());
-	}
-	
-	public void testAtFinalLocation() throws Exception {
-		Cargo cargo = populateCargoOffMelbourne();
-		
-		assertTrue(cargo.atFinalDestiation());
-	}
-	
-	public void testNotAtFinalLocationWhenNotUnloaded() throws Exception {
-		Cargo cargo = populateCargoOnHongKong();
-		
-		assertFalse(cargo.atFinalDestiation());
-	}
-	
-	// TODO: Generate test data some better way
-	private Cargo populateCargoOffHongKong() throws Exception {
-		final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+    Cargo cargo = populateCargoOffHongKong();
 
-		final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
+    assertEquals(new Location("CNHGK"), cargo.getCurrentLocation());
+  }
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+  public void testCurrentLocationloaded() throws Exception {
+    Cargo cargo = populateCargoOnHamburg();
 
-	    final CarrierMovement hamburgToHongKong =
-	       new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+    assertEquals(new Location("DEHAM"), cargo.getCurrentLocation());
+  }
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-04"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
-	    
-		return cargo;
-	}
-	
-	private Cargo populateCargoOnHamburg() throws Exception {
-		final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+  public void testAtFinalLocation() throws Exception {
+    Cargo cargo = populateCargoOffMelbourne();
 
-		final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
+    assertTrue(cargo.atFinalDestiation());
+  }
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+  public void testNotAtFinalLocationWhenNotUnloaded() throws Exception {
+    Cargo cargo = populateCargoOnHongKong();
 
-	    final CarrierMovement hamburgToHongKong =
-	       new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+    assertFalse(cargo.atFinalDestiation());
+  }
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
+  // TODO: Generate test data some better way
+  private Cargo populateCargoReceivedStockholm() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
 
-		return cargo;
-	}
-	private Cargo populateCargoOffMelbourne() throws Exception {
-		final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.RECEIVE, null));
 
-		final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
+    return cargo;
+  }
+  
+  private Cargo populateCargoClaimedMelbourne() throws Exception {
+    final Cargo cargo = populateCargoOffMelbourne();
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-09"), HandlingEvent.Type.CLAIM, null));
+    
+    return cargo;
+  }
+  
+  // TODO: Generate test data some better way
+  private Cargo populateCargoOffHongKong() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
 
-	    final CarrierMovement hamburgToHongKong =
-	       new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-04"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
 
-	    final CarrierMovement hongKongToMelbourne =
-		       new CarrierMovement(new Location("CNHGK"), new Location("AUMEL"));
-	    
-	    cargo.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.LOAD, hongKongToMelbourne));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-07"), HandlingEvent.Type.UNLOAD, hongKongToMelbourne));
-	    
-		return cargo;
-	}
-	
-	private Cargo populateCargoOnHongKong() throws Exception {
-		final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
 
-		final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
+    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-04"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+    return cargo;
+  }
 
-	    final CarrierMovement hamburgToHongKong =
-	       new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+  private Cargo populateCargoOnHamburg() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
 
-	    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
-	    cargo.handle(new HandlingEvent(getDate("2007-12-04"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
 
-	    final CarrierMovement hongKongToMelbourne =
-		       new CarrierMovement(new Location("CNHGK"), new Location("AUMEL"));
-	    
-	    cargo.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.LOAD, hongKongToMelbourne));
-	    
-		return cargo;
-	}
-	
-	/**
+    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
+
+    return cargo;
+  }
+
+  private Cargo populateCargoOffMelbourne() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-04"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
+
+    final CarrierMovement hongKongToMelbourne = new CarrierMovement(new Location("CNHGK"), new Location("AUMEL"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.LOAD, hongKongToMelbourne));
+    cargo.handle(new HandlingEvent(getDate("2007-12-07"), HandlingEvent.Type.UNLOAD, hongKongToMelbourne));
+
+    return cargo;
+  }
+
+  private Cargo populateCargoOnHongKong() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(new Location("SESTO"), new Location("DEHAM"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(new Location("DEHAM"), new Location("CNHGK"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-04"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
+
+    final CarrierMovement hongKongToMelbourne = new CarrierMovement(new Location("CNHGK"), new Location("AUMEL"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.LOAD, hongKongToMelbourne));
+
+    return cargo;
+  }
+
+  /**
    * Parse an ISO 8601 (YYYY-MM-DD) String to Date
    *
    * @param isoFormat String to parse.
