@@ -79,7 +79,7 @@
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
         <configuration>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <!--scanIntervalSeconds>10</scanIntervalSeconds-->
         </configuration>
       </plugin>
     </plugins>
