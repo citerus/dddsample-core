@@ -3,6 +3,7 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -13,15 +14,33 @@ import java.util.Date;
  * in correct order.
  * 
  */
+@Entity
+@Table(name = "handling_events")
 public class HandlingEvent implements Comparable<HandlingEvent> {
 
-  private final Type type;
-  private final CarrierMovement carrierMovement;
-  private final Date time;
+  @Id
+  private Long id;
+
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "type")
+  private Type type;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "carrier_movement_fk")
+  private CarrierMovement carrierMovement;
+  
+  @Column(name = "time")
+  private Date time;
 
   public enum Type {
     LOAD, UNLOAD, RECEIVE, CLAIM
   }
+
+  // Exclude the id field from equals() and hashcode()
+  private static final String[] excludedFields = {"id"};
+
+  // Needed by Hibernate
+  HandlingEvent() {}
 
   public HandlingEvent(Date time, Type type, CarrierMovement carrierMovement) {
     this.time = time;
@@ -77,12 +96,12 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   
   @Override
   public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+    return EqualsBuilder.reflectionEquals(this, obj, excludedFields);
   }
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+    return HashCodeBuilder.reflectionHashCode(this, excludedFields);
   }
 
   public int compareTo(HandlingEvent o) {

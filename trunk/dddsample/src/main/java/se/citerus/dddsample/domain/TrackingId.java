@@ -1,19 +1,26 @@
 package se.citerus.dddsample.domain;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.io.Serializable;
+
 /**
  * TrackingId is a simple ID wrapper which implements Serializable for easier
- * integration with persistens frameworks.
+ * integration with persistence frameworks.
  * 
  */
+@Embeddable
 public class TrackingId implements Serializable {
 
   private static final long serialVersionUID = 6273117599327914522L;
-  private final String id;
+
+  @Column(name = "tracking_id")
+  private String id;
+
+  TrackingId() {}
 
   public TrackingId(String id) {
     this.id = id;
