@@ -1,7 +1,5 @@
 package se.citerus.dddsample.repository;
 
-import se.citerus.dddsample.domain.*;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,8 +7,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
+
+import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.CarrierMovement;
+import se.citerus.dddsample.domain.HandlingEvent;
+import se.citerus.dddsample.domain.Location;
+import se.citerus.dddsample.domain.TrackingId;
 
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
