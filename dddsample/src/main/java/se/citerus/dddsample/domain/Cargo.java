@@ -3,16 +3,34 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import javax.persistence.*;
+
 
 /**
  * A Cargo an entity identifed by TrackingId and is capable of getting its DeliveryHistory plus a number
  * of convenience operation for finding current destination etc.
  */
+@Entity
+@Table(name = "cargo")
 public class Cargo {
-  private final TrackingId trackingId;
-  private final Location origin;
-  private final Location finalDestination;
+
+  @EmbeddedId
+  private TrackingId trackingId;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "origin_location_fk")
+  private Location origin;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "final_destination_location_fk")
+  private Location finalDestination;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "delivery_history_fk")
   private DeliveryHistory history;
+
+  // Needed by Hibernate
+  Cargo() {}
 
   public Cargo(TrackingId trackingId, Location origin, Location finalDestination) {
     this.trackingId = trackingId;
@@ -56,6 +74,14 @@ public class Cargo {
 
   public TrackingId trackingId() {
     return trackingId;
+  }
+
+  public Location origin() {
+    return origin;
+  }
+
+  public Location finalDestination() {
+    return finalDestination;
   }
 
   @Override

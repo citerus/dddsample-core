@@ -1,17 +1,28 @@
 package se.citerus.dddsample.domain;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
+
+import javax.persistence.*;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A wrapper class that holds a sorted set of HandlingEvents. The set can not contain events with the same timestamp.
  * 
  */
+@Entity
+@Table(name = "delivery_history")
 public class DeliveryHistory {
 
+  @Id
+  private Long id;
+
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "delivery_history_fk")
+  @Sort(type = SortType.NATURAL)
   private final SortedSet<HandlingEvent> events = new TreeSet<HandlingEvent>();
 
   public SortedSet<HandlingEvent> getEvents() {

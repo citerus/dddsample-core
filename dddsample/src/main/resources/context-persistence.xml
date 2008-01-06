@@ -15,8 +15,17 @@
     <property name="password" value="${jdbc.password}"/>
   </bean>
 
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
+    <property name="annotatedClasses">
+      <list>
+        <value>se.citerus.dddsample.domain.Cargo</value>
+        <value>se.citerus.dddsample.domain.Location</value>
+        <value>se.citerus.dddsample.domain.DeliveryHistory</value>
+        <value>se.citerus.dddsample.domain.HandlingEvent</value>
+        <value>se.citerus.dddsample.domain.CarrierMovement</value>
+      </list>
+    </property>
     <property name="hibernateProperties">
       <props>
         <!-- These are properties that are common for test and production -->
@@ -30,7 +39,8 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryInMem">
+  <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
 </beans>
