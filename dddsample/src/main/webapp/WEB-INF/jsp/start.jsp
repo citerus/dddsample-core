@@ -1,12 +1,6 @@
-<%@ include file="/WEB-INF/jspf/include.jspf" %>
-
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
-  <script type="text/javascript"></script>
-  <style type="text/css" title="style" media="screen">
-    @import "${rc.contextPath}/style.css";
-  </style>
+  <title>Cargo search</title>
 </head>
 <body>
 <div id="container">
@@ -19,7 +13,7 @@
           Enter tracking id:
         </td>
         <td>
-          <form:input path="trackingId"/>
+          <form:input path="trackingId" id="idInput"/>
         </td>
         <td>
           <form:errors path="trackingId" cssClass="error"/>
@@ -57,5 +51,10 @@
   </div>
   </c:if>
 </div>
+<script type="text/javascript" charset="UTF-8">
+  try {
+    document.getElementById('idInput').focus()
+  } catch (e) {}
+</script>
 </body>
 </html>
