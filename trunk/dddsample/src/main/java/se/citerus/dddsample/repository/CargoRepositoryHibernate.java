@@ -18,4 +18,8 @@ public class CargoRepositoryHibernate implements CargoRepository {
     return (Cargo) sessionFactory.getCurrentSession().
             get(Cargo.class, trackingId);
   }
+
+  public void save(Cargo cargo) {
+    sessionFactory.getCurrentSession().saveOrUpdate(cargo);
+  }
 }

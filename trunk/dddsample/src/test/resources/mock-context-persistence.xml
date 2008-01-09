@@ -11,5 +11,10 @@
   <bean id="cargoRepository" class="org.easymock.EasyMock" factory-method="createMock">
     <constructor-arg value="se.citerus.dddsample.repository.CargoRepository"/>
   </bean>
-
+  
+  <bean id="handlingEventRepository" class="se.citerus.dddsample.repository.HandlingEventRepositoryInMem" init-method="init">
+    <property name="carrierRepository" ref="carrierRepository"/>
+  </bean>
+  
+  <bean id="carrierRepository" class="se.citerus.dddsample.repository.CarrierRepositoryInMem" />
 </beans>

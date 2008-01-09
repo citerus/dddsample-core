@@ -14,7 +14,7 @@ public class Location {
   /**
    * The NULL Location object
    */
-  public static final Location NULL = new Location(Location.class.getName() + ".NULL");
+  public static final Location NULL = new Location("Unknown");
 
   @Id
   private Long id;

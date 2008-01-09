@@ -12,7 +12,7 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
   }
 
   protected String[] getConfigLocations() {
-    return new String[]{"context-persistence.xml"};
+    return new String[]{"test-context-persistence.xml"};
   }
 
   protected void onSetUpInTransaction() throws Exception {

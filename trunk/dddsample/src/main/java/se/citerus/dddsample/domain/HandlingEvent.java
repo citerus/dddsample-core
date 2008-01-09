@@ -5,6 +5,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -32,6 +34,9 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   @Column(name = "time")
   private Date time;
 
+  @Transient /*TODO: Change to many-to-many if we decide on that approach*/
+  private Set<Cargo> cargos;
+  
   public enum Type {
     LOAD, UNLOAD, RECEIVE, CLAIM
   }
@@ -46,6 +51,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
     this.time = time;
     this.type = type;
     this.carrierMovement = carrierMovement;
+    this.cargos = new HashSet<Cargo>();
   }
 
   public Type getType() {
@@ -92,6 +98,20 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
     
     return location;
   }
+
+
+  /**
+   * Register a set of Cargos
+   * 
+   * @param cargos
+   */
+  public void register(Set<Cargo> cargosToRegister) {
+    this.cargos.addAll(cargosToRegister);
+  }
+  
+  public Set<Cargo> getRegisterdCargos(){
+    return cargos;
+  }
   
   
   @Override
@@ -101,10 +121,15 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, excludedFields);
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public int compareTo(HandlingEvent o) {
     return time.compareTo(o.getTime());
   }
+
+  public static Type parseType(String type) {
+    return Type.valueOf(type);
+  }
+
 }

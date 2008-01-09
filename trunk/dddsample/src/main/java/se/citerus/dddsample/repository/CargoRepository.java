@@ -5,4 +5,5 @@ import se.citerus.dddsample.domain.TrackingId;
 
 public interface CargoRepository {
   Cargo find(TrackingId trackingId);
+  void save(Cargo cargo);
 }
