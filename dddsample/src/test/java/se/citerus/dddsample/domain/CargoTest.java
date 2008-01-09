@@ -52,6 +52,17 @@ public class CargoTest extends TestCase {
 
     assertFalse(cargo.atFinalDestiation());
   }
+  
+  public void testEquality() throws Exception {
+    Cargo c1 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("C"));
+    Cargo c2 = new Cargo(new TrackingId("CBA"), new Location("A"), new Location("C"));
+    Cargo c3 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("X"));
+    Cargo c4 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("C"));
+
+    assertTrue("TrackingID, origin and finalDestnation should be equal if Cargos are considered equal", c1.equals(c4));
+    assertFalse("Cargos are not equal when TrackingID differ", c1.equals(c2));
+    assertFalse("Cargos are not equal when Locations differ", c2.equals(c3));
+  }
 
   // TODO: Generate test data some better way
   private Cargo populateCargoReceivedStockholm() throws Exception {

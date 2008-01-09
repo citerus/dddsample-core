@@ -187,6 +187,14 @@ input.radio {
 /**************************************************************
    Custom div and span
  **************************************************************/
+#apptitle h1{
+  font-size: 1.6em;
+  margin-left: 200px;
+  margin-bottom: 10px;
+  border-bottom: 0px
+  
+}
+
 #container {
   text-align: left;
   width: 500px;

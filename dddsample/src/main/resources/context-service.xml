@@ -13,4 +13,9 @@
     <property name="cargoRepository" ref="cargoRepository"/>
   </bean>
 
+  <bean id="handlingEventService" class="se.citerus.dddsample.service.HandlingEventServiceImpl">
+    <property name="cargoRepository" ref="cargoRepository"/>
+    <property name="handlingEventRepository" ref="handlingEventRepository"/>
+    <property name="carrierRepository" ref="carrierRepository"/>
+  </bean>
 </beans>

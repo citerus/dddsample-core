@@ -1,5 +1,7 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -88,4 +90,31 @@ public class Cargo {
   public String toString() {
     return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Cargo == false) {
+      return false;
+    }
+    if (this == obj) {
+      return true;
+    }
+    Cargo rhs = (Cargo) obj;
+    return new EqualsBuilder()
+      .append(trackingId, rhs.trackingId)
+      .append(origin, rhs.origin)
+      .append(finalDestination, rhs.finalDestination)
+      .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(7, 39)
+    .append(trackingId)
+    .append(origin)
+    .append(finalDestination)
+    .toHashCode();
+  }
+  
+  
 }
