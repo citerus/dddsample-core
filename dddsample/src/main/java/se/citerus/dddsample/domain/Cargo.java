@@ -5,7 +5,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 
 /**
@@ -13,26 +15,18 @@ import javax.persistence.*;
  * of convenience operation for finding current destination etc.
  */
 @Entity
-@Table(name = "cargo")
 public class Cargo {
 
   @EmbeddedId
   private TrackingId trackingId;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "origin_location_fk")
+  @ManyToOne
   private Location origin;
-
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "final_destination_location_fk")
+  
+  @ManyToOne
   private Location finalDestination;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "delivery_history_fk")
   private DeliveryHistory history;
-
-  // Needed by Hibernate
-  Cargo() {}
 
   public Cargo(TrackingId trackingId, Location origin, Location finalDestination) {
     this.trackingId = trackingId;
@@ -55,11 +49,11 @@ public class Cargo {
   }
 
   public Location getCurrentLocation() {
-    HandlingEvent lastEvent = history.last();
+    HandlingEvent lastEvent = history.lastEvent();
     
     // If we have no last event, we have not even received the package. Return unknown location
     if (lastEvent == null) {
-      return Location.NULL;
+      return Location.UNKNOWN;
     }
    
     Location location = lastEvent.getLocation();
@@ -67,7 +61,7 @@ public class Cargo {
     // If the last handling event has no idea of where the cargo is due to lack of CarrierMovement (like for CLAIM or RECEIVE events)
     // location must be calculated based on event type and origin or final destination
     // TODO: Maybe we need to refactor HandlingEvent.
-    if (location == Location.NULL){
+    if (location == Location.UNKNOWN){
       location = (lastEvent.getType() == HandlingEvent.Type.CLAIM) ? finalDestination : origin;
     }
       
@@ -116,5 +110,7 @@ public class Cargo {
     .toHashCode();
   }
   
+  // Needed by Hibernate
+  Cargo() {}
   
 }

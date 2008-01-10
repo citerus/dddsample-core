@@ -1,5 +1,10 @@
 package se.citerus.dddsample.repository;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.domain.HandlingEvent.Type;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,16 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.CarrierMovement;
-import se.citerus.dddsample.domain.HandlingEvent;
-import se.citerus.dddsample.domain.Location;
-import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.domain.HandlingEvent.Type;
 
 public class HandlingEventRepositoryInMem implements HandlingEventRepository{
   private HashMap<String, HandlingEvent> eventDB;
@@ -64,7 +59,9 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
     final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("SESTO"), new Location("FIHEL"));
     registerEvent(cargoABC, "2008-01-01", HandlingEvent.Type.RECEIVE, null);
     
-    final CarrierMovement stockholmToHelsinki = new CarrierMovement(new Location("SESTO"), new Location("FIHEL"));
+    final CarrierMovement stockholmToHelsinki = new CarrierMovement(
+            new CarrierId("CAR_001"), new Location("SESTO"), new Location("FIHEL"));
+
     registerEvent(cargoABC, "2008-01-02", HandlingEvent.Type.LOAD, stockholmToHelsinki);
     registerEvent(cargoABC, "2008-01-03", HandlingEvent.Type.UNLOAD, stockholmToHelsinki);
     registerEvent(cargoABC, "2008-01-05", HandlingEvent.Type.CLAIM, null);

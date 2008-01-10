@@ -19,13 +19,13 @@ public class LocationTest extends TestCase {
     assertFalse(location.equals(null));
 
     // Special NULL location is equal to itself
-    assertTrue(Location.NULL.equals(Location.NULL));
+    assertTrue(Location.UNKNOWN.equals(Location.UNKNOWN));
 
     // No other location should be equal to the NULL location
-    assertFalse(new Location(null).equals(Location.NULL));
-    assertFalse(new Location("").equals(Location.NULL));
-    assertFalse(new Location("   ").equals(Location.NULL));
-    assertFalse(new Location("   FOO  BAR ").equals(Location.NULL));
+    assertFalse(new Location(null).equals(Location.UNKNOWN));
+    assertFalse(new Location("").equals(Location.UNKNOWN));
+    assertFalse(new Location("   ").equals(Location.UNKNOWN));
+    assertFalse(new Location("   FOO  BAR ").equals(Location.UNKNOWN));
   }
 
 }

@@ -17,21 +17,17 @@ import java.util.Set;
  * 
  */
 @Entity
-@Table(name = "handling_events")
-public class HandlingEvent implements Comparable<HandlingEvent> {
+public class HandlingEvent {
 
   @Id
   private Long id;
 
-  @Enumerated(value = EnumType.STRING)
-  @Column(name = "type")
+  @Enumerated
   private Type type;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "carrier_movement_fk")
+  @ManyToOne
   private CarrierMovement carrierMovement;
   
-  @Column(name = "time")
   private Date time;
 
   @Transient /*TODO: Change to many-to-many if we decide on that approach*/
@@ -44,8 +40,9 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   // Exclude the id field from equals() and hashcode()
   private static final String[] excludedFields = {"id"};
 
-  // Needed by Hibernate
-  HandlingEvent() {}
+  public HandlingEvent(Date time, Type type) {
+    this(time, type, null);
+  }
 
   public HandlingEvent(Date time, Type type, CarrierMovement carrierMovement) {
     this.time = time;
@@ -70,8 +67,8 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
    * Returns the Location of the Cargo. The location is calculated based on the following rules:
    * <br>For
    * <ul>
-   * <li> RECEIVE events: Location.NULL is returned. This basically means that the cargo is at its origin but not yet loaded on a CarrierMovment
-   * <li> CLAIM events: Location.NULL is returned. This means that the cargo is at its final destination and has been unloaded and claimed by the customer.
+   * <li> RECEIVE events: Location.UNKNOWN is returned. This basically means that the cargo is at its origin but not yet loaded on a CarrierMovment
+   * <li> CLAIM events: Location.UNKNOWN is returned. This means that the cargo is at its final destination and has been unloaded and claimed by the customer.
    * <li> LOAD events: The from Location is returned.
    * <li> UNLOAD events: The to Location is returned.
    * </ul> 
@@ -79,7 +76,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
    * @return The Location
    */
   public Location getLocation() {
-    Location location = Location.NULL;
+    Location location = Location.UNKNOWN;
     
     //My gosh! A switch statement....
     switch (type) {
@@ -103,7 +100,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   /**
    * Register a set of Cargos
    * 
-   * @param cargos
+   * @param cargosToRegister
    */
   public void register(Set<Cargo> cargosToRegister) {
     this.cargos.addAll(cargosToRegister);
@@ -112,8 +109,7 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
   public Set<Cargo> getRegisterdCargos(){
     return cargos;
   }
-  
-  
+
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, excludedFields);
@@ -121,15 +117,14 @@ public class HandlingEvent implements Comparable<HandlingEvent> {
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
-  }
-
-  public int compareTo(HandlingEvent o) {
-    return time.compareTo(o.getTime());
+    return HashCodeBuilder.reflectionHashCode(this, excludedFields);
   }
 
   public static Type parseType(String type) {
     return Type.valueOf(type);
   }
+
+  // Needed by Hibernate
+  HandlingEvent() {}
 
 }
