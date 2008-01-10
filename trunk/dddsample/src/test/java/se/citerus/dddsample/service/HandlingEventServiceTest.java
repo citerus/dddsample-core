@@ -1,20 +1,16 @@
 package se.citerus.dddsample.service;
 
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.*;
+import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.repository.CargoRepository;
+import se.citerus.dddsample.repository.CarrierRepository;
+import se.citerus.dddsample.repository.HandlingEventRepository;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.TestCase;
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.CarrierMovement;
-import se.citerus.dddsample.domain.HandlingEvent;
-import se.citerus.dddsample.domain.Location;
-import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.CarrierRepository;
-import se.citerus.dddsample.repository.HandlingEventRepository;
-import static org.easymock.EasyMock.*;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
@@ -24,7 +20,8 @@ public class HandlingEventServiceTest extends TestCase {
   
   private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("ABCFROM"), new Location("ABCTO"));
   private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("XYZFROM"), new Location("XYZTO"));
-  private final CarrierMovement cmAAA_BBB = new CarrierMovement(new Location("AAA"), new Location("BBB"));
+  private final CarrierMovement cmAAA_BBB = new CarrierMovement(
+          new CarrierId("CAR_001"), new Location("AAA"), new Location("BBB"));
 
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();

@@ -1,18 +1,19 @@
 package se.citerus.dddsample.domain;
 
+import junit.framework.TestCase;
+import se.citerus.dddsample.domain.HandlingEvent.Type;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import se.citerus.dddsample.domain.HandlingEvent.Type;
-import junit.framework.TestCase;
-
 public class HandlingEventTest extends TestCase {
   public void testCurrentLocationLoadEvent() throws Exception {
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
-    CarrierMovement cm = new CarrierMovement(locationAAA, locationBBB);
+    CarrierId carrierId = new CarrierId("CAR_001");
+    CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
     
     HandlingEvent ev = new HandlingEvent(null, HandlingEvent.Type.LOAD, cm);
     
@@ -22,7 +23,8 @@ public class HandlingEventTest extends TestCase {
   public void testCurrentLocationUnloadEvent() throws Exception {
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
-    CarrierMovement cm = new CarrierMovement(locationAAA, locationBBB);
+    CarrierId carrierId = new CarrierId("CAR_001");
+    CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
     
     HandlingEvent ev = new HandlingEvent(null, HandlingEvent.Type.UNLOAD, cm);
     
@@ -32,12 +34,12 @@ public class HandlingEventTest extends TestCase {
   public void testCurrentLocationReceivedEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(null, HandlingEvent.Type.RECEIVE, null);
 
-    assertEquals(Location.NULL, ev.getLocation());
+    assertEquals(Location.UNKNOWN, ev.getLocation());
   }
   public void testCurrentLocationClaimedEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(null, HandlingEvent.Type.CLAIM, null);
 
-    assertEquals(Location.NULL, ev.getLocation());
+    assertEquals(Location.UNKNOWN, ev.getLocation());
   }
   
   public void testParseType() throws Exception {
@@ -60,7 +62,8 @@ public class HandlingEventTest extends TestCase {
     Date date = Calendar.getInstance().getTime();
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
-    CarrierMovement cm = new CarrierMovement(locationAAA, locationBBB);
+    CarrierId carrierId = new CarrierId("CAR_001");
+    CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
     
     Cargo cargo1 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("C"));
     Cargo cargo2 = new Cargo(new TrackingId("CBA"), new Location("C"), new Location("A"));

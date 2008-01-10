@@ -1,25 +1,30 @@
 package se.citerus.dddsample.domain;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
 
 @Entity
-@Table(name = "carrier_movement")
 public class CarrierMovement {
 
-  @Id
-  private Long id;
+  @EmbeddedId
+  private CarrierId carrierId;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "from_location_fk")
-  private final Location from;
+  @ManyToOne
+  private Location from;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "to_location_fk")
-  private final Location to;
+  @ManyToOne
+  private Location to;
 
-  public CarrierMovement(Location from, Location to) {
+  public CarrierMovement(CarrierId carrierId, Location from, Location to) {
+    this.carrierId = carrierId;
     this.from = from;
     this.to = to;
+  }
+
+  public CarrierId carrierId() {
+    return carrierId;
   }
 
   public Location from() {
@@ -29,5 +34,8 @@ public class CarrierMovement {
   public Location to() {
     return to;
   }
+
+  // Needed by Hibernate
+  CarrierMovement() {}
 
 }

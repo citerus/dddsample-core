@@ -17,10 +17,10 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
 
   protected void onSetUpInTransaction() throws Exception {
     String[] testData = {
-            "INSERT INTO locations (id, unlocode) VALUES (1, 'SESTO')",
-            "INSERT INTO locations (id, unlocode) VALUES (2, 'CNHKG')",
+            "INSERT INTO Location (id, unlocode) VALUES (1, 'SESTO')",
+            "INSERT INTO Location (id, unlocode) VALUES (2, 'CNHKG')",
 
-            "INSERT INTO cargo (tracking_id, origin_location_fk, final_destination_location_fk) " +
+            "INSERT INTO Cargo (id, origin_id, finalDestination_id) " +
                     "VALUES ('XYZ', 1, 2)"
     };
     jdbcTemplate.batchUpdate(testData);
