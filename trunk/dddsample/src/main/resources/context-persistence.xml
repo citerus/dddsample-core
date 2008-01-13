@@ -34,10 +34,6 @@
     </property>
   </bean>
 
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
   <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryInMem" init-method="init">
     <property name="handlingEventRepository" ref="handlingEventRepository"/>
   </bean>

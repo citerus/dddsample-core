@@ -8,8 +8,8 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 /**
- * A wrapper class that holds a sorted set of HandlingEvents. The set can not contain events with the same timestamp.
- * 
+ * The delivery history of a cargo. One cargo has exactly one delivery history.
+ *
  */
 @Embeddable
 public class DeliveryHistory {

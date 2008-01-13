@@ -39,7 +39,7 @@
         </tr>
       </thead>
       <tbody>
-        <c:forEach var="event" items="${cargo.deliveryHistory.events}">
+        <c:forEach var="event" items="${cargo.events}">
           <tr class="event-type-${event.type}">
             <td>${event.type}</td>
             <td>${event.location}</td>

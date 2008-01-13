@@ -14,7 +14,9 @@ import java.util.Set;
  * Since HandlingEvents can be added in any order to a Cargo (or
  * DeliveryHistory), they need to implement Comparable to be able to be sorted
  * in correct order.
- * 
+ *
+ * TODO: build hierarchy
+ * TODO: sameAs and UUID-based equals()
  */
 @Entity
 public class HandlingEvent {

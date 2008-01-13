@@ -4,8 +4,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="transactionManager" class="org.easymock.EasyMock" factory-method="createMock">
-    <constructor-arg value="org.springframework.transaction.PlatformTransactionManager"/>
+  <bean id="sessionFactory" class="org.easymock.EasyMock" factory-method="createMock">
+    <constructor-arg value="org.hibernate.SessionFactory"/>
   </bean>
 
   <bean id="cargoRepository" class="org.easymock.EasyMock" factory-method="createMock">

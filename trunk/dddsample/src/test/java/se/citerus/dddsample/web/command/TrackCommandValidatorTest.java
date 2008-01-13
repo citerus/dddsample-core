@@ -1,8 +1,8 @@
 package se.citerus.dddsample.web.command;
 
 import junit.framework.TestCase;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 public class TrackCommandValidatorTest extends TestCase {
@@ -24,7 +24,7 @@ public class TrackCommandValidatorTest extends TestCase {
     FieldError error = errors.getFieldError("trackingId");
     assertNotNull(error);
     assertNull(error.getRejectedValue());
-    assertEquals("track.illegal-id", error.getCode());
+    assertEquals("error.required", error.getCode());
   }
     
   public void testValidateSuccess() throws Exception {
