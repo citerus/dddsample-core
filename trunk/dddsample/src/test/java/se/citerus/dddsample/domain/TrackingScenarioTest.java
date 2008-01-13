@@ -33,14 +33,14 @@ public class TrackingScenarioTest extends TestCase {
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
             new CarrierId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
 
-    cargo.handle(new HandlingEvent(getDate("2007-12-01"), HandlingEvent.Type.LOAD, stockholmToHamburg));
-    cargo.handle(new HandlingEvent(getDate("2007-12-02"), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, stockholmToHamburg));
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
             new CarrierId("CAR_002"), new Location("DEHAM"), new Location("CNHKG"));
 
-    cargo.handle(new HandlingEvent(getDate("2007-12-03"), HandlingEvent.Type.LOAD, hamburgToHongKong));
-    cargo.handle(new HandlingEvent(getDate("2007-12-05"), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, hamburgToHongKong));
 
     return cargo;
   }

@@ -87,11 +87,8 @@ public class Cargo {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof Cargo == false) {
+    if (!(obj instanceof Cargo)) {
       return false;
-    }
-    if (this == obj) {
-      return true;
     }
     Cargo rhs = (Cargo) obj;
     return new EqualsBuilder()

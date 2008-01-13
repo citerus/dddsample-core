@@ -37,7 +37,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     this.sessionFactory = sessionFactory;
   }
 
-  protected void onSetUp() throws Exception {
+  protected void onSetUp() {
     Session session = createMock(Session.class);
     Connection connection = createMock(Connection.class);
     Transaction transaction = createMock(Transaction.class);
@@ -69,7 +69,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
         Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
         CarrierMovement cm = new CarrierMovement(new CarrierId("CAR_001"), new Location("FROM"), new Location("TO"));
         cargo.getDeliveryHistory().addEvent(
-                new HandlingEvent(new Date(10), HandlingEvent.Type.CLAIM, cm)
+                new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.CLAIM, cm)
         );
         return cargo;
       }
@@ -109,6 +109,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
   protected void onTearDown() throws Exception {
     verify(cargoRepository, sessionFactory);
+    reset(cargoRepository, sessionFactory);
   }
 
   /**

@@ -33,7 +33,7 @@ public class CargoServiceImpl implements CargoService {
               event.getLocation().unlocode(),
               event.getType().toString(),
               carrierIdString,
-              event.getTime()
+              event.getTimeOccurred()
       ));
     }
     return dto;
