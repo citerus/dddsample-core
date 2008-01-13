@@ -73,7 +73,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
 
   
   private void registerEvent(Cargo cargo, String date, Type type, CarrierMovement carrierMovement) throws ParseException{
-    HandlingEvent ev= new HandlingEvent(getDate(date), type, carrierMovement);
+    HandlingEvent ev= new HandlingEvent(getDate(date), new Date(), type, carrierMovement);
     ev.register(toSet(cargo));
     String id = cargo.trackingId() + "_" + type + "_" + date;
     

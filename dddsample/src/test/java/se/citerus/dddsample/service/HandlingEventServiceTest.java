@@ -9,8 +9,6 @@ import se.citerus.dddsample.repository.HandlingEventRepository;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
@@ -43,14 +41,9 @@ public class HandlingEventServiceTest extends TestCase {
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargoXYZ);
     expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
-    
-    HandlingEvent event = new HandlingEvent(date, HandlingEvent.parseType(type), cmAAA_BBB);
-    Set<Cargo> cargos = new HashSet<Cargo>();
-    cargos.add(cargoABC);
-    cargos.add(cargoXYZ);
-    event.register(cargos);
-    
-    handlingEventRepository.save(event);
+
+    // TODO: does not inspect the handling event instance in a sufficient way
+    handlingEventRepository.save(isA(HandlingEvent.class));
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     

@@ -1,12 +1,12 @@
 package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -15,14 +15,13 @@ import java.util.Set;
  * DeliveryHistory), they need to implement Comparable to be able to be sorted
  * in correct order.
  *
- * TODO: build hierarchy
- * TODO: sameAs and UUID-based equals()
+ * TODO: build hierarchy of event types
  */
 @Entity
 public class HandlingEvent {
 
   @Id
-  private Long id;
+  private UUID id;
 
   @Enumerated
   private Type type;
@@ -30,27 +29,45 @@ public class HandlingEvent {
   @ManyToOne
   private CarrierMovement carrierMovement;
   
-  private Date time;
+  private Date timeOccurred;
 
-  @Transient /*TODO: Change to many-to-many if we decide on that approach*/
+  private Date timeRegistered;
+
+  @Transient // TODO: cargo-event relation should not be bidirectional
   private Set<Cargo> cargos;
   
   public enum Type {
     LOAD, UNLOAD, RECEIVE, CLAIM
   }
 
-  // Exclude the id field from equals() and hashcode()
-  private static final String[] excludedFields = {"id"};
-
-  public HandlingEvent(Date time, Type type) {
-    this(time, type, null);
+  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type) {
+    this(timeOccurred, timeRegistered, type, null);
   }
 
-  public HandlingEvent(Date time, Type type, CarrierMovement carrierMovement) {
-    this.time = time;
+  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type, CarrierMovement carrierMovement) {
+    this.id = UUID.randomUUID();
+    this.timeRegistered = timeRegistered;
+    this.timeOccurred = timeOccurred;
     this.type = type;
     this.carrierMovement = carrierMovement;
     this.cargos = new HashSet<Cargo>();
+  }
+
+  /**
+   * This determines if two events recieved by the system in fact represent
+   * the same real-world event, which may have been reported more than once due to
+   * human error, for example.
+   *
+   * @param other handling event to compare with
+   * @return True if these handling events represent the same real-world event.
+   */
+  public boolean sameAs(HandlingEvent other) {
+    return new EqualsBuilder().
+            append(this.getTimeOccurred(), other.getTimeOccurred()).
+            append(this.getLocation(), other.getLocation()).
+            append(this.getType(), other.getType()).
+            append(this.getCarrierMovement(), other.getCarrierMovement())
+            .isEquals();
   }
 
   public Type getType() {
@@ -61,10 +78,14 @@ public class HandlingEvent {
     return carrierMovement;
   }
 
-  public Date getTime() {
-    return time;
+  public Date getTimeOccurred() {
+    return timeOccurred;
   }
-  
+
+  public Date getTimeRegistered() {
+    return timeRegistered;
+  }
+
   /**
    * Returns the Location of the Cargo. The location is calculated based on the following rules:
    * <br>For
@@ -114,12 +135,16 @@ public class HandlingEvent {
 
   @Override
   public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, excludedFields);
+    if (!(obj instanceof HandlingEvent)) {
+      return false;
+    }
+    HandlingEvent other = (HandlingEvent) obj;
+    return new EqualsBuilder().append(this.id, other.id).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, excludedFields);
+    return id.hashCode();
   }
 
   public static Type parseType(String type) {

@@ -20,7 +20,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   @Transactional(readOnly = false)
   public void register(Date date, String type, String carrierId, String[] trackingIds) {
     CarrierMovement cm = findCarrier(new CarrierId(carrierId));
-    HandlingEvent event = new HandlingEvent(date, HandlingEvent.parseType(type), cm);
+    HandlingEvent event = new HandlingEvent(date, new Date(), HandlingEvent.parseType(type), cm);
     Set<Cargo> cargos = findCargos(trackingIds);
     event.register(cargos);
     
