@@ -5,12 +5,13 @@ import se.citerus.dddsample.domain.CarrierMovement;
 import se.citerus.dddsample.domain.Location;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class CarrierRepositoryInMem implements CarrierRepository {
-  private HashMap<String, CarrierMovement> carriers;
+public class CarrierMovementRepositoryInMem implements CarrierMovementRepository {
+  private Map<CarrierId, CarrierMovement> carriers;
 
-  public CarrierRepositoryInMem() {
-    carriers = new HashMap<String, CarrierMovement>();
+  public CarrierMovementRepositoryInMem() {
+    carriers = new HashMap<CarrierId, CarrierMovement>();
     setup();
   }
 
@@ -26,17 +27,15 @@ public class CarrierRepositoryInMem implements CarrierRepository {
     final CarrierMovement stockholmToHelsinki = new CarrierMovement(
             new CarrierId("CAR_005"), new Location("SESTO"), new Location("FIHEL"));
     
-    carriers.put("SESTO_DEHAM", stockholmToHamburg);
-    carriers.put("DEHAM_CNHKG", hamburgToHongKong);
-    carriers.put("AUMEL_JPTOK", melbourneToTokyo);
-    carriers.put("JPTOK_USLA", tokyoToLosAngeles);
-    carriers.put("SESTO_FIHEL", stockholmToHelsinki);
+    carriers.put(new CarrierId("SESTO_DEHAM"), stockholmToHamburg);
+    carriers.put(new CarrierId("DEHAM_CNHKG"), hamburgToHongKong);
+    carriers.put(new CarrierId("AUMEL_JPTOK"), melbourneToTokyo);
+    carriers.put(new CarrierId("JPTOK_USLA"), tokyoToLosAngeles);
+    carriers.put(new CarrierId("SESTO_FIHEL"), stockholmToHelsinki);
   }
 
-  public CarrierMovement find(String carrierId) {
+  public CarrierMovement find(CarrierId carrierId) {
     return carriers.get(carrierId);
   }
-  
-  
 
 }

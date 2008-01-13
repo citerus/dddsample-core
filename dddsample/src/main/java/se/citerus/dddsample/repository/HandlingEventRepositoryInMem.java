@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class HandlingEventRepositoryInMem implements HandlingEventRepository{
   private HashMap<String, HandlingEvent> eventDB;
-  private CarrierRepository carrierRepository;
+  private CarrierMovementRepository carrierMovementRepository;
   
   private final Log logger = LogFactory.getLog(getClass());
 
@@ -36,11 +36,11 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
     final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
     registerEvent(cargoXYZ, "2007-11-30", HandlingEvent.Type.RECEIVE, null);
 
-    final CarrierMovement stockholmToHamburg = carrierRepository.find("SESTO_DEHAM");
+    final CarrierMovement stockholmToHamburg = carrierMovementRepository.find(new CarrierId("SESTO_DEHAM"));
     registerEvent(cargoXYZ, "2007-12-01", HandlingEvent.Type.LOAD, stockholmToHamburg);
     registerEvent(cargoXYZ, "2007-12-02", HandlingEvent.Type.UNLOAD, stockholmToHamburg);
     
-    final CarrierMovement hamburgToHongKong = carrierRepository.find("DEHAM_CNHKG");
+    final CarrierMovement hamburgToHongKong = carrierMovementRepository.find(new CarrierId("DEHAM_CNHKG"));
     registerEvent(cargoXYZ, "2007-12-03", HandlingEvent.Type.LOAD, hamburgToHongKong);
     registerEvent(cargoXYZ, "2007-12-05", HandlingEvent.Type.UNLOAD, hamburgToHongKong);
     
@@ -48,11 +48,11 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
     final Cargo cargoZYX = new Cargo(new TrackingId("ZYX"), new Location("AUMEL"), new Location("SESTO"));
     registerEvent(cargoZYX, "2007-12-09", HandlingEvent.Type.RECEIVE, null);
     
-    final CarrierMovement melbourneToTokyo = carrierRepository.find("AUMEL_JPTOK");
+    final CarrierMovement melbourneToTokyo = carrierMovementRepository.find(new CarrierId("AUMEL_JPTOK"));
     registerEvent(cargoZYX, "2007-12-10", HandlingEvent.Type.LOAD, melbourneToTokyo);
     registerEvent(cargoZYX, "2007-12-12", HandlingEvent.Type.UNLOAD, melbourneToTokyo);
     
-    final CarrierMovement tokyoToLosAngeles = carrierRepository.find("JPTOK_USLA");
+    final CarrierMovement tokyoToLosAngeles = carrierMovementRepository.find(new CarrierId("JPTOK_USLA"));
     registerEvent(cargoZYX, "2007-12-13", HandlingEvent.Type.LOAD, tokyoToLosAngeles);
  
     //CargoABC
@@ -133,7 +133,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
     return events;
   }
 
-  public void setCarrierRepository(CarrierRepository carrierRepository) {
-    this.carrierRepository = carrierRepository;
+  public void setCarrierRepository(CarrierMovementRepository carrierMovementRepository) {
+    this.carrierMovementRepository = carrierMovementRepository;
   }
 }
