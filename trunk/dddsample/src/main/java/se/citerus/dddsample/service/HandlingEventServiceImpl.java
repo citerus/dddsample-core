@@ -1,27 +1,24 @@
 package se.citerus.dddsample.service;
 
+import org.apache.commons.lang.Validate;
+import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.repository.CargoRepository;
+import se.citerus.dddsample.repository.CarrierMovementRepository;
+import se.citerus.dddsample.repository.HandlingEventRepository;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
-
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.CarrierMovement;
-import se.citerus.dddsample.domain.HandlingEvent;
-import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.CarrierRepository;
-import se.citerus.dddsample.repository.HandlingEventRepository;
-
 public class HandlingEventServiceImpl implements HandlingEventService {
   private CargoRepository cargoRepository;
-  private CarrierRepository carrierRepository;
+  private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
 
 
   public void register(Date date, String type, String carrierId, String[] trackingIds) {
-    HandlingEvent event = new HandlingEvent(date, HandlingEvent.parseType(type), findCarrier(carrierId));
+    CarrierMovement cm = findCarrier(new CarrierId(carrierId));
+    HandlingEvent event = new HandlingEvent(date, HandlingEvent.parseType(type), cm);
     Set<Cargo> cargos = findCargos(trackingIds);
     event.register(cargos);
     
@@ -47,11 +44,11 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     return cargo;
   }
 
-  private CarrierMovement findCarrier(String carrierId) {
+  private CarrierMovement findCarrier(CarrierId carrierId) {
     if (carrierId == null){
       return null;
     }
-    CarrierMovement carrier = carrierRepository.find(carrierId);
+    CarrierMovement carrier = carrierMovementRepository.find(carrierId);
     Validate.notNull(carrier, "Carrier is not found: Carrier ID=" + carrierId);
     
     return carrier;
@@ -61,14 +58,12 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     this.cargoRepository = cargoRepository;
   }
 
-  public void setCarrierRepository(CarrierRepository carrierRepository) {
-    this.carrierRepository = carrierRepository;
+  public void setCarrierRepository(CarrierMovementRepository carrierMovementRepository) {
+    this.carrierMovementRepository = carrierMovementRepository;
   }
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
   }
-
-
 
 }

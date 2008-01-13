@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.CarrierRepository;
+import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.HandlingEventRepository;
 
 import java.util.Calendar;
@@ -15,7 +15,7 @@ import java.util.Set;
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
   private CargoRepository cargoRepository;
-  private CarrierRepository carrierRepository;
+  private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
   
   private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("ABCFROM"), new Location("ABCTO"));
@@ -26,11 +26,11 @@ public class HandlingEventServiceTest extends TestCase {
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();
     cargoRepository = createMock(CargoRepository.class);
-    carrierRepository = createMock(CarrierRepository.class);
+    carrierMovementRepository = createMock(CarrierMovementRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     
     service.setCargoRepository(cargoRepository);
-    service.setCarrierRepository(carrierRepository);
+    service.setCarrierRepository(carrierMovementRepository);
     service.setHandlingEventRepository(handlingEventRepository);
   }
 
@@ -42,7 +42,7 @@ public class HandlingEventServiceTest extends TestCase {
     
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargoXYZ);
-    expect(carrierRepository.find("AAA_BBB")).andReturn(cmAAA_BBB);
+    expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
     
     HandlingEvent event = new HandlingEvent(date, HandlingEvent.parseType(type), cmAAA_BBB);
     Set<Cargo> cargos = new HashSet<Cargo>();
@@ -52,11 +52,11 @@ public class HandlingEventServiceTest extends TestCase {
     
     handlingEventRepository.save(event);
     
-    replay(cargoRepository, carrierRepository, handlingEventRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     service.register(date, type, carrierId, trackIds);
     
-    verify(cargoRepository, carrierRepository, handlingEventRepository);
+    verify(cargoRepository, carrierMovementRepository, handlingEventRepository);
   }
   
   public void testRegisterEventInvalidCarrier() throws Exception {
@@ -66,9 +66,9 @@ public class HandlingEventServiceTest extends TestCase {
     
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargoXYZ);
-    expect(carrierRepository.find("AAA_BBB")).andReturn(null);
+    expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(null);
     
-    replay(cargoRepository, carrierRepository, handlingEventRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     try {
       service.register(date, type, "AAA_BBB", trackIds);
@@ -85,9 +85,9 @@ public class HandlingEventServiceTest extends TestCase {
     
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(null);
-    expect(carrierRepository.find("AAA_BBB")).andReturn(cmAAA_BBB);
+    expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
     
-    replay(cargoRepository, carrierRepository, handlingEventRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     try {
       service.register(date, type, "AAA_BBB", trackIds);
