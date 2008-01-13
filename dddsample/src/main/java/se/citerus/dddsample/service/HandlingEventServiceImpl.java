@@ -1,6 +1,7 @@
 package se.citerus.dddsample.service;
 
 import org.apache.commons.lang.Validate;
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
@@ -16,6 +17,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   private HandlingEventRepository handlingEventRepository;
 
 
+  @Transactional(readOnly = false)
   public void register(Date date, String type, String carrierId, String[] trackingIds) {
     CarrierMovement cm = findCarrier(new CarrierId(carrierId));
     HandlingEvent event = new HandlingEvent(date, HandlingEvent.parseType(type), cm);

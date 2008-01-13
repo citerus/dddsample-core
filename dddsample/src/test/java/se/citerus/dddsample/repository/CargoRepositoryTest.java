@@ -1,7 +1,9 @@
-package se.citerus.dddsample.domain;
+package se.citerus.dddsample.repository;
 
 import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
-import se.citerus.dddsample.repository.CargoRepository;
+import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.Location;
+import se.citerus.dddsample.domain.TrackingId;
 
 public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
 
@@ -12,6 +14,7 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
   }
 
   protected String[] getConfigLocations() {
+    // TODO: when we move to persistent repositories, use main context-persistence.xml
     return new String[]{"test-context-persistence.xml"};
   }
 
@@ -21,7 +24,7 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
             "INSERT INTO Location (id, unlocode) VALUES (2, 'CNHKG')",
 
             "INSERT INTO Cargo (id, origin_id, finalDestination_id) " +
-                    "VALUES ('XYZ', 1, 2)"
+            "VALUES ('XYZ', 1, 2)"
     };
     jdbcTemplate.batchUpdate(testData);
   }
@@ -30,11 +33,13 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
     final TrackingId trackingId = new TrackingId("XYZ");
     final Location origin = new Location("SESTO");
     final Location finalDestination = new Location("CNHKG");
+
     Cargo cargo = cargoRepository.find(trackingId);
 
     assertEquals(trackingId, cargo.trackingId());
     assertEquals(origin, cargo.origin());
     assertEquals(finalDestination, cargo.finalDestination());
+    assertEquals(Location.UNKNOWN, cargo.getCurrentLocation());
   }
 
 }
