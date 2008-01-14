@@ -19,21 +19,21 @@ public class CargoServiceImpl implements CargoService {
       return null;
     }
     final CargoWithHistoryDTO dto = new CargoWithHistoryDTO(
-            cargo.trackingId().getId(),
+            cargo.trackingId().id(),
             cargo.origin().unlocode(),
             cargo.finalDestination().unlocode(),
-            cargo.getCurrentLocation().unlocode()
+            cargo.currentLocation().unlocode()
     );
-    final List<HandlingEvent> events = cargo.getDeliveryHistory().eventsOrderedByTime();
+    final List<HandlingEvent> events = cargo.deliveryHistory().eventsOrderedByTime();
     for (HandlingEvent event : events) {
-      CarrierMovement cm = event.getCarrierMovement();
+      CarrierMovement cm = event.carrierMovement();
       String carrierIdString =
-              (cm == null) ? Location.UNKNOWN.unlocode() : cm.carrierId().getId();
+              (cm == null) ? Location.UNKNOWN.unlocode() : cm.carrierId().id();
       dto.addEvent(new HandlingEventDTO(
-              event.getLocation().unlocode(),
-              event.getType().toString(),
+              event.location().unlocode(),
+              event.type().toString(),
               carrierIdString,
-              event.getTimeOccurred()
+              event.timeOccurred()
       ));
     }
     return dto;

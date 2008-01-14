@@ -111,7 +111,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
 
   public void save(HandlingEvent event) {
     // Mimmick saving to database
-    for (Cargo cargo : event.getRegisterdCargos()) {
+    for (Cargo cargo : event.registerdCargos()) {
       cargo.handle(event);
     }
   }
@@ -120,7 +120,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
   public Set<HandlingEvent> findByTrackingId(final TrackingId trackingId) {
     Set<HandlingEvent> events = new HashSet<HandlingEvent>();
     for (HandlingEvent event : eventDB.values()) {
-      for (Cargo cargo : event.getRegisterdCargos()) {
+      for (Cargo cargo : event.registerdCargos()) {
         if (cargo.trackingId().equals(trackingId)) {
           events.add(event);
           break;

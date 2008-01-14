@@ -68,7 +68,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
       public Cargo answerWithinTransaction() throws Throwable {
         Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
         CarrierMovement cm = new CarrierMovement(new CarrierId("CAR_001"), new Location("FROM"), new Location("TO"));
-        cargo.getDeliveryHistory().addEvent(
+        cargo.deliveryHistory().addEvent(
                 new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.CLAIM, cm)
         );
         return cargo;
