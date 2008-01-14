@@ -73,6 +73,8 @@ public class HandlingEventTest extends TestCase {
     // Two handling events are not equal() even if all non-uuid fields are identical
     assertFalse(ev1.equals(ev2));
     assertFalse(ev2.equals(ev1));
+
+    assertTrue(ev1.equals(ev1));
   }
 
 }
