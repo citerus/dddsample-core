@@ -49,6 +49,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     expect(session.isConnected()).andReturn(true);
     expect(session.connection()).andReturn(connection);
     transaction.commit();
+    expect(session.close()).andReturn(connection);
 
     replay(session, sessionFactory, transaction, connection);
   }
