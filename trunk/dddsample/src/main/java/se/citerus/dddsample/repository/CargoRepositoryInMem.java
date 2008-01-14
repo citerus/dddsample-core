@@ -29,11 +29,11 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public Cargo find(TrackingId trackingId) {
-    if (trackingId.getId().equalsIgnoreCase("DAE")){
+    if (trackingId.id().equalsIgnoreCase("DAE")){
       throw new DataRetrievalFailureException("Network failure. Please try again");
     }
     
-    return cargoDb.get(trackingId.getId());
+    return cargoDb.get(trackingId.id());
   }
   
   public void save(Cargo cargo) {

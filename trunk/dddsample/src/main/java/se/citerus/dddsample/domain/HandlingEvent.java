@@ -63,26 +63,26 @@ public class HandlingEvent {
    */
   public boolean sameAs(HandlingEvent other) {
     return new EqualsBuilder().
-            append(this.getTimeOccurred(), other.getTimeOccurred()).
-            append(this.getLocation(), other.getLocation()).
-            append(this.getType(), other.getType()).
-            append(this.getCarrierMovement(), other.getCarrierMovement())
+            append(this.timeOccurred(), other.timeOccurred()).
+            append(this.location(), other.location()).
+            append(this.type(), other.type()).
+            append(this.carrierMovement(), other.carrierMovement())
             .isEquals();
   }
 
-  public Type getType() {
+  public Type type() {
     return type;
   }
 
-  public CarrierMovement getCarrierMovement() {
+  public CarrierMovement carrierMovement() {
     return carrierMovement;
   }
 
-  public Date getTimeOccurred() {
+  public Date timeOccurred() {
     return timeOccurred;
   }
 
-  public Date getTimeRegistered() {
+  public Date timeRegistered() {
     return timeRegistered;
   }
 
@@ -98,7 +98,7 @@ public class HandlingEvent {
    * 
    * @return The Location
    */
-  public Location getLocation() {
+  public Location location() {
     Location location = Location.UNKNOWN;
     
     //My gosh! A switch statement....
@@ -129,7 +129,7 @@ public class HandlingEvent {
     this.cargos.addAll(cargosToRegister);
   }
   
-  public Set<Cargo> getRegisterdCargos(){
+  public Set<Cargo> registerdCargos(){
     return cargos;
   }
 

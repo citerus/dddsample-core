@@ -39,7 +39,7 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
     assertEquals(trackingId, cargo.trackingId());
     assertEquals(origin, cargo.origin());
     assertEquals(finalDestination, cargo.finalDestination());
-    assertEquals(Location.UNKNOWN, cargo.getCurrentLocation());
+    assertEquals(Location.UNKNOWN, cargo.currentLocation());
   }
 
 }

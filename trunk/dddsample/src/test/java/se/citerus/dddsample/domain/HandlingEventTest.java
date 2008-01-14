@@ -14,7 +14,7 @@ public class HandlingEventTest extends TestCase {
     
     HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.LOAD, cm);
     
-    assertEquals(locationAAA, ev.getLocation());
+    assertEquals(locationAAA, ev.location());
   }
   
   public void testCurrentLocationUnloadEvent() throws Exception {
@@ -25,18 +25,18 @@ public class HandlingEventTest extends TestCase {
     
     HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.UNLOAD, cm);
     
-    assertEquals(locationBBB, ev.getLocation());
+    assertEquals(locationBBB, ev.location());
   }
   
   public void testCurrentLocationReceivedEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.RECEIVE, null);
 
-    assertEquals(Location.UNKNOWN, ev.getLocation());
+    assertEquals(Location.UNKNOWN, ev.location());
   }
   public void testCurrentLocationClaimedEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.CLAIM, null);
 
-    assertEquals(Location.UNKNOWN, ev.getLocation());
+    assertEquals(Location.UNKNOWN, ev.location());
   }
   
   public void testParseType() throws Exception {

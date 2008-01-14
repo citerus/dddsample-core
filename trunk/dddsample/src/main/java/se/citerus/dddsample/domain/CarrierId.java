@@ -18,7 +18,7 @@ public class CarrierId implements Serializable {
     this.id = id;
   }
 
-  public String getId() {
+  public String id() {
     return id;
   }
 

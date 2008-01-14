@@ -54,7 +54,7 @@ public class DeliveryHistory {
 
   private static class HandlingEventByTimeComparator implements Comparator<HandlingEvent> {
     public int compare(HandlingEvent o1, HandlingEvent o2) {
-      return o1.getTimeOccurred().compareTo(o2.getTimeOccurred());
+      return o1.timeOccurred().compareTo(o2.timeOccurred());
     }
   }
 }
