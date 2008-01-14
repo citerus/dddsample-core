@@ -19,7 +19,7 @@ public class CargoServiceImpl implements CargoService {
       return null;
     }
     final CargoWithHistoryDTO dto = new CargoWithHistoryDTO(
-            cargo.trackingId().id(),
+            cargo.trackingId().toString(),
             cargo.origin().unlocode(),
             cargo.finalDestination().unlocode(),
             cargo.currentLocation().unlocode()
@@ -28,7 +28,7 @@ public class CargoServiceImpl implements CargoService {
     for (HandlingEvent event : events) {
       CarrierMovement cm = event.carrierMovement();
       String carrierIdString =
-              (cm == null) ? Location.UNKNOWN.unlocode() : cm.carrierId().id();
+              (cm == null) ? Location.UNKNOWN.unlocode() : cm.carrierId().toString();
       dto.addEvent(new HandlingEventDTO(
               event.location().unlocode(),
               event.type().toString(),
