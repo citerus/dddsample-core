@@ -49,7 +49,7 @@ public class CargoTrackingControllerTest extends TestCase {
 
         // TODO: use DTO assemblers
         CargoWithHistoryDTO cargoDTO = new CargoWithHistoryDTO(
-                cargo.trackingId().id(),
+                cargo.trackingId().toString(),
                 cargo.origin().unlocode(),
                 cargo.finalDestination().unlocode(),
                 cargo.currentLocation().unlocode()

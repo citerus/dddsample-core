@@ -1,14 +1,13 @@
 package se.citerus.dddsample.repository;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.dao.DataRetrievalFailureException;
-
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.HandlingEvent;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
@@ -29,11 +28,11 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public Cargo find(TrackingId trackingId) {
-    if (trackingId.id().equalsIgnoreCase("DAE")){
+    if (trackingId.toString().equalsIgnoreCase("DAE")){
       throw new DataRetrievalFailureException("Network failure. Please try again");
     }
     
-    return cargoDb.get(trackingId.id());
+    return cargoDb.get(trackingId.toString());
   }
   
   public void save(Cargo cargo) {

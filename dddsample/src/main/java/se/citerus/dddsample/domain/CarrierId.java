@@ -18,7 +18,8 @@ public class CarrierId implements Serializable {
     this.id = id;
   }
 
-  public String id() {
+  @Override
+  public String toString() {
     return id;
   }
 
