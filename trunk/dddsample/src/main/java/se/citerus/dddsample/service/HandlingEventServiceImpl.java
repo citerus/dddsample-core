@@ -1,15 +1,19 @@
 package se.citerus.dddsample.service;
 
+import java.util.Date;
+
 import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Transactional;
-import se.citerus.dddsample.domain.*;
+
+import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.CarrierId;
+import se.citerus.dddsample.domain.CarrierMovement;
+import se.citerus.dddsample.domain.HandlingEvent;
+import se.citerus.dddsample.domain.Location;
+import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.HandlingEventRepository;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class HandlingEventServiceImpl implements HandlingEventService {
   private CargoRepository cargoRepository;
@@ -18,26 +22,14 @@ public class HandlingEventServiceImpl implements HandlingEventService {
 
 
   @Transactional(readOnly = false)
-  public void register(Date date, String type, String carrierId, String[] trackingIds) {
+  public void register(Date date, String type, Location location, String carrierId, String trackingId) {
     CarrierMovement cm = findCarrier(new CarrierId(carrierId));
-    HandlingEvent event = new HandlingEvent(date, new Date(), HandlingEvent.parseType(type), cm);
-    Set<Cargo> cargos = findCargos(trackingIds);
-    event.register(cargos);
+    HandlingEvent event = new HandlingEvent(date, new Date(), HandlingEvent.parseType(type), location, cm);
+    Cargo cargo = findCargo(trackingId);
+    event.add(cargo);
     
     handlingEventRepository.save(event);
   }
-
-
-  private Set<Cargo> findCargos(String[] trackingIds) {
-    Set<Cargo> cargos = new HashSet<Cargo>();
-    
-    for (String trackingId : trackingIds) {
-      cargos.add(findCargo(trackingId));
-    }
-    
-    return cargos;
-  }
-
 
   private Cargo findCargo(String trackingId) {
     Cargo cargo = cargoRepository.find(new TrackingId(trackingId));

@@ -48,6 +48,13 @@ public class Cargo {
     return currentLocation().equals(finalDestination);
   }
 
+  /**
+   * Returns the last known Location or Location.UNKOWN if no HandlingEvent history can be found for this Cargo
+   * 
+   * TODO: Rename this to lastKnownLocation. 
+   * 
+   * @return The last known location
+   */
   public Location currentLocation() {
     HandlingEvent lastEvent = history.lastEvent();
     
@@ -57,13 +64,6 @@ public class Cargo {
     }
    
     Location location = lastEvent.location();
-    
-    // If the last handling event has no idea of where the cargo is due to lack of CarrierMovement (like for CLAIM or RECEIVE events)
-    // location must be calculated based on event type and origin or final destination
-    // TODO: Maybe we need to refactor HandlingEvent.
-    if (location == Location.UNKNOWN){
-      location = (lastEvent.type() == HandlingEvent.Type.CLAIM) ? finalDestination : origin;
-    }
       
     return location;
   }

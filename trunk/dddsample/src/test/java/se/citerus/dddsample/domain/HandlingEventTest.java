@@ -6,38 +6,31 @@ import se.citerus.dddsample.domain.HandlingEvent.Type;
 import java.util.Date;
 
 public class HandlingEventTest extends TestCase {
-  public void testCurrentLocationLoadEvent() throws Exception {
+  public void testCurrentLocation() throws Exception {
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
     CarrierId carrierId = new CarrierId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
     
-    HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.LOAD, cm);
+    Date timeOccured = new Date();
+    Date timeRegistrated = new Date();
+    HandlingEvent ev = new HandlingEvent(timeOccured, timeRegistrated, HandlingEvent.Type.LOAD, locationAAA, cm);
     
     assertEquals(locationAAA, ev.location());
   }
   
-  public void testCurrentLocationUnloadEvent() throws Exception {
+  public void testCurrentLocationMisdirectedCargo() throws Exception {
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
+    Location locationCCC = new Location("CCC");
     CarrierId carrierId = new CarrierId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
     
-    HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.UNLOAD, cm);
+    HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.UNLOAD, locationCCC, cm);
     
-    assertEquals(locationBBB, ev.location());
+    assertEquals(locationCCC, ev.location());
   }
   
-  public void testCurrentLocationReceivedEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.RECEIVE, null);
-
-    assertEquals(Location.UNKNOWN, ev.location());
-  }
-  public void testCurrentLocationClaimedEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.CLAIM, null);
-
-    assertEquals(Location.UNKNOWN, ev.location());
-  }
   
   public void testParseType() throws Exception {
     assertEquals(Type.CLAIM, HandlingEvent.parseType("CLAIM"));
@@ -63,8 +56,8 @@ public class HandlingEventTest extends TestCase {
     CarrierId carrierId = new CarrierId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
 
-    HandlingEvent ev1 = new HandlingEvent(timeOccured, timeRegistered, HandlingEvent.Type.LOAD, cm);
-    HandlingEvent ev2 = new HandlingEvent(timeOccured, timeRegistered, HandlingEvent.Type.LOAD, cm);
+    HandlingEvent ev1 = new HandlingEvent(timeOccured, timeRegistered, HandlingEvent.Type.LOAD, locationAAA, cm);
+    HandlingEvent ev2 = new HandlingEvent(timeOccured, timeRegistered, HandlingEvent.Type.LOAD, locationAAA, cm);
 
     // They are the same real-world event
     assertTrue(ev1.sameAs(ev2));

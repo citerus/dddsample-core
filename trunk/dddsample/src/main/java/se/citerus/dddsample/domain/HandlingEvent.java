@@ -3,6 +3,7 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
 import javax.persistence.*;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +33,9 @@ public class HandlingEvent {
   private Date timeOccurred;
 
   private Date timeRegistered;
+  
+  @ManyToOne
+  private Location location;
 
   @Transient // TODO: cargo-event relation should not be bidirectional
   private Set<Cargo> cargos;
@@ -40,17 +44,18 @@ public class HandlingEvent {
     LOAD, UNLOAD, RECEIVE, CLAIM
   }
 
-  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type) {
-    this(timeOccurred, timeRegistered, type, null);
+  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type, Location location) {
+    this(timeOccurred, timeRegistered, type, location, null);
   }
 
-  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type, CarrierMovement carrierMovement) {
+  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type, Location location, CarrierMovement carrierMovement) {
     this.id = UUID.randomUUID();
     this.timeRegistered = timeRegistered;
     this.timeOccurred = timeOccurred;
     this.type = type;
     this.carrierMovement = carrierMovement;
     this.cargos = new HashSet<Cargo>();
+    this.location = location;
   }
 
   /**
@@ -87,51 +92,33 @@ public class HandlingEvent {
   }
 
   /**
-   * Returns the Location of the Cargo. The location is calculated based on the following rules:
-   * <br>For
-   * <ul>
-   * <li> RECEIVE events: Location.UNKNOWN is returned. This basically means that the cargo is at its origin but not yet loaded on a CarrierMovment
-   * <li> CLAIM events: Location.UNKNOWN is returned. This means that the cargo is at its final destination and has been unloaded and claimed by the customer.
-   * <li> LOAD events: The from Location is returned.
-   * <li> UNLOAD events: The to Location is returned.
-   * </ul> 
+   * Returns the Location of the HandlingEvent
    * 
    * @return The Location
    */
-  public Location location() {
-    Location location = Location.UNKNOWN;
-    
-    //My gosh! A switch statement....
-    switch (type) {
-      case LOAD:
-        location = carrierMovement.from();
-      break;
-
-      case UNLOAD:
-        location = carrierMovement.to();
-      break;
-      
-      default: 
-        // for others (RECEIVE, CLAIM) Location.NULL is fine...
-      break;
-    }
-    
+  public Location location() {    
     return location;
   }
 
 
   /**
-   * Register a set of Cargos
+   * Add a Cargo to this HandlingEvent
    * 
-   * @param cargosToRegister
+   * @param cargo
    */
-  public void register(Set<Cargo> cargosToRegister) {
-    this.cargos.addAll(cargosToRegister);
+  public void add(Cargo cargo) {
+    this.cargos.add(cargo);
   }
   
-  public Set<Cargo> registerdCargos(){
+  /**
+   * Returns a Set of Cargos associated with this HandlingEvent
+   * 
+   * @return The associated Cargos
+   */
+  public Set<Cargo> cargos(){
     return cargos;
   }
+
 
   @Override
   public boolean equals(Object obj) {
