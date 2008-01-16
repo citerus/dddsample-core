@@ -14,13 +14,16 @@ public class TrackingScenarioTest extends TestCase {
 
     Cargo cargo = populateCargo();
 
-    DeliveryHistory deliveryHistory = cargo.deliveryHistory();
+    final List<HandlingEvent> handlingEvents = cargo.eventsOrderedByTime();
+    final HandlingEvent event = cargo.lastEvent();
 
-    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByTime();
-
+//
+//    DeliveryHistory deliveryHistory = cargo.deliveryHistory();
+//
+//    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByTime();
+//
     assertEquals(4, handlingEvents.size());
-    final HandlingEvent event = deliveryHistory.lastEvent();
-
+    
     assertSame(HandlingEvent.Type.UNLOAD, event.type());
     assertFalse(cargo.atFinalDestiation());
     assertEquals("CNHKG", cargo.currentLocation().unlocode());

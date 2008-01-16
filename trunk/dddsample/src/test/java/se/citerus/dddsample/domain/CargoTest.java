@@ -1,11 +1,13 @@
 package se.citerus.dddsample.domain;
 
-import junit.framework.TestCase;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import junit.framework.TestCase;
 
 public class CargoTest extends TestCase {
 
@@ -53,6 +55,36 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.atFinalDestiation());
   }
   
+  public void testLastEvent() throws Exception {
+    Cargo cargo = populateCargoOutOfOrder();
+    
+    HandlingEvent lastEvent = cargo.lastEvent();
+    
+    assertEquals("SESTO", lastEvent.location().unlocode());
+    assertEquals(HandlingEvent.Type.LOAD, lastEvent.type());
+    assertEquals(getDate("2007-12-11"), lastEvent.timeOccurred());
+  }
+  
+  public void testLastEventWithNoEvents() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+    
+    HandlingEvent lastEvent = cargo.lastEvent();
+    assertNull(lastEvent);
+  }
+
+  public void testEventsOrderedByTime() throws Exception {
+    Cargo cargo = populateCargoOutOfOrder();
+    
+    List<HandlingEvent> events = cargo.eventsOrderedByTime();
+    
+    Date lastTime = new Date(0);
+    for (HandlingEvent event : events) {
+      Date time = event.timeOccurred();
+      assertTrue(time.compareTo(lastTime) > 0);
+      lastTime = time;
+    }
+  }
+  
   public void testEquality() throws Exception {
     Cargo c1 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("C"));
     Cargo c2 = new Cargo(new TrackingId("CBA"), new Location("A"), new Location("C"));
@@ -64,6 +96,9 @@ public class CargoTest extends TestCase {
     assertFalse("Cargos are not equal when Locations differ", c2.equals(c3));
   }
 
+  
+  
+  
   // TODO: Generate test data some better way
   private Cargo populateCargoReceivedStockholm() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
@@ -164,6 +199,28 @@ public class CargoTest extends TestCase {
     return cargo;
   }
 
+  private Cargo populateCargoOutOfOrder() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(
+            new CarrierId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-11"), new Date(), HandlingEvent.Type.LOAD, new Location("SESTO"), stockholmToHamburg));
+    cargo.handle(new HandlingEvent(getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("DEHAM"), stockholmToHamburg));
+
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(
+            new CarrierId("CAR_001"), new Location("DEHAM"), new Location("CNHGK"));
+
+    cargo.handle(new HandlingEvent(getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, new Location("DEHAM"), hamburgToHongKong));
+    cargo.handle(new HandlingEvent(getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, new Location("CNHGK"), hamburgToHongKong));
+
+    final CarrierMovement hongKongToMelbourne = new CarrierMovement(
+            new CarrierId("CAR_001"), new Location("CNHGK"), new Location("AUMEL"));
+
+    cargo.handle(new HandlingEvent(getDate("2001-12-05"), new Date(), HandlingEvent.Type.LOAD, new Location("CNHGK"), hongKongToMelbourne));
+
+    return cargo;
+  }
   /**
    * Parse an ISO 8601 (YYYY-MM-DD) String to Date
    *
