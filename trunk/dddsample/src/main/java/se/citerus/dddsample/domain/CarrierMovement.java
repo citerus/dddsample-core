@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 public class CarrierMovement {
 
   @EmbeddedId
-  private CarrierId carrierId;
+  private CarrierMovementId carrierMovementId;
 
   @ManyToOne
   private Location from;
@@ -17,14 +17,14 @@ public class CarrierMovement {
   @ManyToOne
   private Location to;
 
-  public CarrierMovement(CarrierId carrierId, Location from, Location to) {
-    this.carrierId = carrierId;
+  public CarrierMovement(CarrierMovementId carrierMovementId, Location from, Location to) {
+    this.carrierMovementId = carrierMovementId;
     this.from = from;
     this.to = to;
   }
 
-  public CarrierId carrierId() {
-    return carrierId;
+  public CarrierMovementId carrierId() {
+    return carrierMovementId;
   }
 
   public Location from() {

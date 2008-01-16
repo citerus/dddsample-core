@@ -22,8 +22,7 @@ public class TrackingId implements Serializable {
     this.id = id;
   }
 
-  @Override
-  public String toString() {
+  public String idString() {
     return id;
   }
 
@@ -36,5 +35,8 @@ public class TrackingId implements Serializable {
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
   }
+
+  // Needed by Hibernate
+  TrackingId() {}
 
 }

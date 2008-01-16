@@ -2,6 +2,10 @@ package se.citerus.dddsample.service;
 
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 
+/**
+ * Cargo service.
+ *
+ */
 public interface CargoService {
 
   /**

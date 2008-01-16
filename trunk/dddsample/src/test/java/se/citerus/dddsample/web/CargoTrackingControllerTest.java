@@ -44,21 +44,21 @@ public class CargoTrackingControllerTest extends TestCase {
     return new CargoService() {
       public CargoWithHistoryDTO find(String trackingId) {
         Cargo cargo = new Cargo(new TrackingId(trackingId), new Location("AAA"), new Location("BBB"));
-        HandlingEvent event = new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, new Location("AAA"));
-        cargo.handle(event);
+        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, new Location("BBB"));
+//        cargo.handle(event);
 
         // TODO: use DTO assemblers
         CargoWithHistoryDTO cargoDTO = new CargoWithHistoryDTO(
-                cargo.trackingId().toString(),
+                cargo.trackingId().idString(),
                 cargo.origin().unlocode(),
                 cargo.finalDestination().unlocode(),
-                cargo.currentLocation().unlocode()
+                "AAA"
         );
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unlocode(),
           event.type().toString(),
           null, // TODO: event hierarchy will remove this kind of code
-          event.timeOccurred()));
+          event.completionTime()));
         return cargoDTO;
       }
     };

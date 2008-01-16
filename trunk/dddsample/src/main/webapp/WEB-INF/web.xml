@@ -10,6 +10,10 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>se.citerus.dddsample.util.SampleDataGenerator</listener-class>
+  </listener>
+
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>classpath:context-*.xml</param-value>

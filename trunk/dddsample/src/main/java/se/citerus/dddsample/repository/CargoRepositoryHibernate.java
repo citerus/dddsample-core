@@ -1,25 +1,22 @@
 package se.citerus.dddsample.repository;
 
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.TrackingId;
 
+/**
+ * Hibernate implementation of CargoRepository.
+ */
 @Repository
-public class CargoRepositoryHibernate implements CargoRepository {
+public class CargoRepositoryHibernate extends HibernateRepository implements CargoRepository {
 
-  private SessionFactory sessionFactory;
-
-  public void setSessionFactory(SessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
-  }
 
   public Cargo find(TrackingId trackingId) {
-    return (Cargo) sessionFactory.getCurrentSession().
-            get(Cargo.class, trackingId);
+    return (Cargo) getSession().get(Cargo.class, trackingId);
   }
 
   public void save(Cargo cargo) {
-    sessionFactory.getCurrentSession().saveOrUpdate(cargo);
+    getSession().saveOrUpdate(cargo);
   }
+
 }

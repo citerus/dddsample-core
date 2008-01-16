@@ -4,6 +4,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
@@ -14,6 +15,7 @@ public class Location {
   public static final Location UNKNOWN = new Location("Unknown");
 
   @Id
+  @GeneratedValue
   private Long id;
 
   private String unlocode;

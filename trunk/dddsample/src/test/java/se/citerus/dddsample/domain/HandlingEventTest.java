@@ -2,46 +2,88 @@ package se.citerus.dddsample.domain;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.HandlingEvent.Type;
+import static se.citerus.dddsample.domain.HandlingEvent.Type.*;
 
+import static java.util.Arrays.asList;
 import java.util.Date;
 
 public class HandlingEventTest extends TestCase {
-  public void testCurrentLocation() throws Exception {
+
+  public void testNewWithCarrierMovement() throws Exception {
+    Location origin = new Location("FROM");
+    Location finalDestination = new Location("TO");
+    Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("C01"), origin, finalDestination);
+
+    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, carrierMovement);
+    assertEquals(origin, e1.location());
+
+    HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, carrierMovement);
+    assertEquals(finalDestination, e2.location());
+    
+    for (Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
+      try {
+        new HandlingEvent(cargo, new Date(), new Date(), type, carrierMovement);
+        fail("Handling event with carrier movement and type " + type + " is not legal");
+      } catch (IllegalArgumentException expected) {}
+    }
+  }
+
+  public void testNewWithLocation() throws Exception {
+    Location origin = new Location("FROM");
+    Location finalDestination = new Location("TO");
+    Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
+
+    Location location = new Location("FOO");
+    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), Type.CLAIM, location);
+    assertEquals(location, e1.location());
+
+    
+  }
+
+  public void testCurrentLocationLoadEvent() throws Exception {
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
-    CarrierId carrierId = new CarrierId("CAR_001");
-    CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
+    CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
+    CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
     
-    Date timeOccured = new Date();
-    Date timeRegistrated = new Date();
-    HandlingEvent ev = new HandlingEvent(timeOccured, timeRegistrated, HandlingEvent.Type.LOAD, locationAAA, cm);
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), LOAD, cm);
     
     assertEquals(locationAAA, ev.location());
   }
   
-  public void testCurrentLocationMisdirectedCargo() throws Exception {
+  public void testCurrentLocationUnloadEvent() throws Exception {
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
-    Location locationCCC = new Location("CCC");
-    CarrierId carrierId = new CarrierId("CAR_001");
-    CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
+    CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
+    CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
     
-    HandlingEvent ev = new HandlingEvent(new Date(), new Date(), HandlingEvent.Type.UNLOAD, locationCCC, cm);
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), UNLOAD, cm);
     
-    assertEquals(locationCCC, ev.location());
+    assertEquals(locationBBB, ev.location());
   }
   
+  public void testCurrentLocationReceivedEvent() throws Exception {
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), RECEIVE, new Location("TEST"));
+
+    assertEquals(new Location("TEST"), ev.location());
+  }
+  public void testCurrentLocationClaimedEvent() throws Exception {
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), CLAIM, new Location("TEST"));
+
+    assertEquals(new Location("TEST"), ev.location());
+  }
   
   public void testParseType() throws Exception {
-    assertEquals(Type.CLAIM, HandlingEvent.parseType("CLAIM"));
-    assertEquals(Type.LOAD, HandlingEvent.parseType("LOAD"));
-    assertEquals(Type.UNLOAD, HandlingEvent.parseType("UNLOAD"));
-    assertEquals(Type.RECEIVE, HandlingEvent.parseType("RECEIVE"));
+    assertEquals(CLAIM, valueOf("CLAIM"));
+    assertEquals(LOAD, valueOf("LOAD"));
+    assertEquals(UNLOAD, valueOf("UNLOAD"));
+    assertEquals(RECEIVE, valueOf("RECEIVE"));
   }
   
   public void testParseTypeIllegal() throws Exception {
     try {
-      HandlingEvent.parseType("NOT_A_HANDLING_EVENT_TYPE");
+      valueOf("NOT_A_HANDLING_EVENT_TYPE");
       assertTrue("Expected IllegaArgumentException to be thrown", false);
     } catch (IllegalArgumentException e) {
       // All's well
@@ -53,15 +95,11 @@ public class HandlingEventTest extends TestCase {
     Date timeRegistered = new Date();
     Location locationAAA = new Location("AAA");
     Location locationBBB = new Location("BBB");
-    CarrierId carrierId = new CarrierId("CAR_001");
-    CarrierMovement cm = new CarrierMovement(carrierId, locationAAA, locationBBB);
+    CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
+    CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
 
-    HandlingEvent ev1 = new HandlingEvent(timeOccured, timeRegistered, HandlingEvent.Type.LOAD, locationAAA, cm);
-    HandlingEvent ev2 = new HandlingEvent(timeOccured, timeRegistered, HandlingEvent.Type.LOAD, locationAAA, cm);
-
-    // They are the same real-world event
-    assertTrue(ev1.sameAs(ev2));
-    assertTrue(ev2.sameAs(ev1));
+    HandlingEvent ev1 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, cm);
+    HandlingEvent ev2 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, cm);
 
     // Two handling events are not equal() even if all non-uuid fields are identical
     assertFalse(ev1.equals(ev2));

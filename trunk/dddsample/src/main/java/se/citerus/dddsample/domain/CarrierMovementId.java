@@ -10,16 +10,15 @@ import java.io.Serializable;
  * Identifies a particular carrier (vehicle).
  */
 @Embeddable
-public class CarrierId implements Serializable {
+public class CarrierMovementId implements Serializable {
 
   private String id;
 
-  public CarrierId(String id) {
+  public CarrierMovementId(String id) {
     this.id = id;
   }
 
-  @Override
-  public String toString() {
+  public String idString() {
     return id;
   }
 

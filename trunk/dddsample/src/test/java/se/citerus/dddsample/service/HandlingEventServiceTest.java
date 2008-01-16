@@ -7,7 +7,6 @@ import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.HandlingEventRepository;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class HandlingEventServiceTest extends TestCase {
@@ -17,8 +16,9 @@ public class HandlingEventServiceTest extends TestCase {
   private HandlingEventRepository handlingEventRepository;
   
   private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("ABCFROM"), new Location("ABCTO"));
+  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("XYZFROM"), new Location("XYZTO"));
   private final CarrierMovement cmAAA_BBB = new CarrierMovement(
-          new CarrierId("CAR_001"), new Location("AAA"), new Location("BBB"));
+          new CarrierMovementId("CAR_001"), new Location("AAA"), new Location("BBB"));
 
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();
@@ -31,58 +31,56 @@ public class HandlingEventServiceTest extends TestCase {
     service.setHandlingEventRepository(handlingEventRepository);
   }
 
+  protected void tearDown() throws Exception {
+    verify(cargoRepository, carrierMovementRepository, handlingEventRepository);
+  }
+
   public void testRegisterEvent() throws Exception {
-    String carrierId = "AAA_BBB";
-    final String trackId = "ABC";
-    Date date = Calendar.getInstance().getTime();
-    String type = "UNLOAD";
-    
+    final String carrierMovementId = "AAA_BBB";
+    final String[] trackingIds = { "ABC", "XYZ" };
+    final Date date = new Date();
+
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
-    expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
+    expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargoXYZ);
+    expect(carrierMovementRepository.find(new CarrierMovementId("AAA_BBB"))).andReturn(cmAAA_BBB);
 
     // TODO: does not inspect the handling event instance in a sufficient way
     handlingEventRepository.save(isA(HandlingEvent.class));
-    
+    expectLastCall().times(2);  // Two tracking ids
+
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
-    service.register(date, type, new Location("ABCTO"), carrierId, trackId);
-    
-    verify(cargoRepository, carrierMovementRepository, handlingEventRepository);
+    service.registerUnload(date, carrierMovementId, trackingIds);
   }
   
   public void testRegisterEventInvalidCarrier() throws Exception {
-    final String trackId = "ABC";
-    Date date = Calendar.getInstance().getTime();
-    String type = "UNLOAD";
-    
-    expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
-    expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(null);
+    final String[] trackingIds = { "ABC", "XYZ" };
+    final Date date = new Date();
+
+    expect(carrierMovementRepository.find(new CarrierMovementId("AAA_BBB"))).andReturn(null);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     try {
-      service.register(date, type, new Location("BBB"), "AAA_BBB", trackId);
-      assertFalse(true);
-    } catch (IllegalArgumentException e) {
-      // Expected IllegalArgumentExecption
-    }
+      service.registerUnload(date, "AAA_BBB", trackingIds);
+      fail("Should not be able to register an event with non-existing carrier movement");
+    } catch (IllegalArgumentException expected) {}
   }
   
   public void testRegisterEventInvalidCargo() throws Exception {
-    final String trackId =  "XYZ";
-    Date date = Calendar.getInstance().getTime();
-    String type = "UNLOAD";
-    
+    final String[] trackIds = { "ABC", "XYZ" };
+    final Date date = new Date();
+
+    expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(null);
-    expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
-    
+    expect(carrierMovementRepository.find(new CarrierMovementId("AAA_BBB"))).andReturn(cmAAA_BBB);
+    handlingEventRepository.save(isA(HandlingEvent.class));
+
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     try {
-      service.register(date, type,  new Location("BBB"), "AAA_BBB", trackId);
-      assertFalse(true);
-    } catch (IllegalArgumentException e) {
-      // Expected IllegalArgumentExecption
-    }
+      service.registerUnload(date, "AAA_BBB", trackIds);
+      fail("Should not be able to register an event with non-existing cargo");
+    } catch (IllegalArgumentException expected) {}
   }
 }
