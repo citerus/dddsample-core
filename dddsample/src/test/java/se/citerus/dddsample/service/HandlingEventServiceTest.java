@@ -17,7 +17,6 @@ public class HandlingEventServiceTest extends TestCase {
   private HandlingEventRepository handlingEventRepository;
   
   private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("ABCFROM"), new Location("ABCTO"));
-  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("XYZFROM"), new Location("XYZTO"));
   private final CarrierMovement cmAAA_BBB = new CarrierMovement(
           new CarrierId("CAR_001"), new Location("AAA"), new Location("BBB"));
 
@@ -34,12 +33,11 @@ public class HandlingEventServiceTest extends TestCase {
 
   public void testRegisterEvent() throws Exception {
     String carrierId = "AAA_BBB";
-    final String[] trackIds = { "ABC", "XYZ" };
+    final String trackId = "ABC";
     Date date = Calendar.getInstance().getTime();
     String type = "UNLOAD";
     
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
-    expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargoXYZ);
     expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
 
     // TODO: does not inspect the handling event instance in a sufficient way
@@ -47,24 +45,23 @@ public class HandlingEventServiceTest extends TestCase {
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
-    service.register(date, type, carrierId, trackIds);
+    service.register(date, type, new Location("ABCTO"), carrierId, trackId);
     
     verify(cargoRepository, carrierMovementRepository, handlingEventRepository);
   }
   
   public void testRegisterEventInvalidCarrier() throws Exception {
-    final String[] trackIds = { "ABC", "XYZ" };
+    final String trackId = "ABC";
     Date date = Calendar.getInstance().getTime();
     String type = "UNLOAD";
     
     expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
-    expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargoXYZ);
     expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(null);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     try {
-      service.register(date, type, "AAA_BBB", trackIds);
+      service.register(date, type, new Location("BBB"), "AAA_BBB", trackId);
       assertFalse(true);
     } catch (IllegalArgumentException e) {
       // Expected IllegalArgumentExecption
@@ -72,18 +69,17 @@ public class HandlingEventServiceTest extends TestCase {
   }
   
   public void testRegisterEventInvalidCargo() throws Exception {
-    final String[] trackIds = { "ABC", "XYZ" };
+    final String trackId =  "XYZ";
     Date date = Calendar.getInstance().getTime();
     String type = "UNLOAD";
     
-    expect(cargoRepository.find(new TrackingId("ABC"))).andReturn(cargoABC);
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(null);
     expect(carrierMovementRepository.find(new CarrierId("AAA_BBB"))).andReturn(cmAAA_BBB);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
     try {
-      service.register(date, type, "AAA_BBB", trackIds);
+      service.register(date, type,  new Location("BBB"), "AAA_BBB", trackId);
       assertFalse(true);
     } catch (IllegalArgumentException e) {
       // Expected IllegalArgumentExecption

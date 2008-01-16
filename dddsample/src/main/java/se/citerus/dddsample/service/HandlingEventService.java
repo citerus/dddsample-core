@@ -2,6 +2,8 @@ package se.citerus.dddsample.service;
 
 import java.util.Date;
 
+import se.citerus.dddsample.domain.Location;
+
 
 public interface HandlingEventService {
 
@@ -12,9 +14,10 @@ public interface HandlingEventService {
    * 
    * @param date
    * @param type
+   * @param location TODO
    * @param carrierId
-   * @param trackIds
+   * @param trackId
    */
-  public abstract void register(Date date, String type, String carrierId, String[] trackIds);
+  public abstract void register(Date date, String type, Location location, String carrierId, String trackId);
 
 }

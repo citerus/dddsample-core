@@ -44,7 +44,7 @@ public class CargoTrackingControllerTest extends TestCase {
     return new CargoService() {
       public CargoWithHistoryDTO find(String trackingId) {
         Cargo cargo = new Cargo(new TrackingId(trackingId), new Location("AAA"), new Location("BBB"));
-        HandlingEvent event = new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE);
+        HandlingEvent event = new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, new Location("AAA"));
         cargo.deliveryHistory().addEvent(event);
 
         // TODO: use DTO assemblers

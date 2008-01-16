@@ -70,7 +70,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
         Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
         CarrierMovement cm = new CarrierMovement(new CarrierId("CAR_001"), new Location("FROM"), new Location("TO"));
         cargo.deliveryHistory().addEvent(
-                new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.CLAIM, cm)
+                new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.CLAIM, new Location("TO"), cm)
         );
         return cargo;
       }
@@ -87,12 +87,12 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     assertEquals("XYZ", cargoDTO.getTrackingId());
     assertEquals("ORIG", cargoDTO.getOrigin());
     assertEquals("DEST", cargoDTO.getFinalDestination());
-    assertEquals("DEST", cargoDTO.getCurrentLocation());
+    assertEquals("TO", cargoDTO.getCurrentLocation());
 
     List<HandlingEventDTO> events = cargoDTO.getEvents();
     assertEquals(1, events.size());
     HandlingEventDTO eventDTO = events.get(0);
-    assertEquals(Location.UNKNOWN.unlocode(), eventDTO.getLocation());
+    assertEquals("TO", eventDTO.getLocation());
     assertEquals("CLAIM", eventDTO.getType());
     assertEquals("CAR_001", eventDTO.getCarrier());    
     assertEquals(new Date(10), eventDTO.getTime());
