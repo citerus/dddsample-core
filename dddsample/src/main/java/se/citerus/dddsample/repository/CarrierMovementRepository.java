@@ -1,10 +1,10 @@
 package se.citerus.dddsample.repository;
 
-import se.citerus.dddsample.domain.CarrierId;
 import se.citerus.dddsample.domain.CarrierMovement;
+import se.citerus.dddsample.domain.CarrierMovementId;
 
 public interface CarrierMovementRepository {
 
-  CarrierMovement find(CarrierId carrierId);
+  CarrierMovement find(CarrierMovementId carrierMovementId);
 
 }

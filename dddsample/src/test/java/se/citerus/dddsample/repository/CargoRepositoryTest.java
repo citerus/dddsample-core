@@ -1,11 +1,12 @@
 package se.citerus.dddsample.repository;
 
-import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
 
-public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
+import java.util.Map;
+
+public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   CargoRepository cargoRepository;
 
@@ -13,33 +14,35 @@ public class CargoRepositoryTest extends AbstractTransactionalDataSourceSpringCo
     this.cargoRepository = cargoRepository;
   }
 
-  protected String[] getConfigLocations() {
-    // TODO: when we move to persistent repositories, use main context-persistence.xml
-    return new String[]{"test-context-persistence.xml"};
-  }
-
-  protected void onSetUpInTransaction() throws Exception {
-    String[] testData = {
-            "INSERT INTO Location (id, unlocode) VALUES (1, 'SESTO')",
-            "INSERT INTO Location (id, unlocode) VALUES (2, 'CNHKG')",
-
-            "INSERT INTO Cargo (id, origin_id, finalDestination_id) " +
-            "VALUES ('XYZ', 1, 2)"
-    };
-    jdbcTemplate.batchUpdate(testData);
-  }
-
   public void testFindByCargoId() {
     final TrackingId trackingId = new TrackingId("XYZ");
     final Location origin = new Location("SESTO");
-    final Location finalDestination = new Location("CNHKG");
+    final Location finalDestination = new Location("AUMEL");
 
     Cargo cargo = cargoRepository.find(trackingId);
 
     assertEquals(trackingId, cargo.trackingId());
     assertEquals(origin, cargo.origin());
     assertEquals(finalDestination, cargo.finalDestination());
-    assertEquals(Location.UNKNOWN, cargo.currentLocation());
+  }
+
+  public void testSave() {
+    // TODO: introduce Location repository
+    Location finalDestination = new Location("TO");
+    Location origin = new Location("FROM");
+    sessionFactory.getCurrentSession().saveOrUpdate(origin);
+    sessionFactory.getCurrentSession().saveOrUpdate(finalDestination);
+
+
+    Cargo cargo = new Cargo(new TrackingId("AAA"), origin, finalDestination);
+    cargoRepository.save(cargo);
+
+    flush();
+
+    Map<String, Object> map = jdbcTemplate.queryForMap("select * from Cargo where id = 'AAA'");
+
+    assertEquals("AAA", map.get("ID"));
+    // TODO: check origin/finalDestination ids
   }
 
 }

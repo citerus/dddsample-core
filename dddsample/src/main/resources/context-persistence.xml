@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans  xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="location" value="classpath:jdbc.properties"/>
@@ -34,18 +34,15 @@
     </property>
   </bean>
 
-  <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryInMem" init-method="init">
-    <property name="handlingEventRepository" ref="handlingEventRepository"/>
-  </bean>
-  
-  <bean id="handlingEventRepository" class="se.citerus.dddsample.repository.HandlingEventRepositoryInMem" init-method="init">
-    <property name="carrierRepository" ref="carrierMovementRepository"/>
-  </bean>
-  
-  <bean id="carrierMovementRepository" class="se.citerus.dddsample.repository.CarrierMovementRepositoryInMem" />
-  
-  <!--bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryHibernate">
+  <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
-  </bean-->
+  </bean>
+
+  <bean id="handlingEventRepository" class="se.citerus.dddsample.repository.HandlingEventRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="carrierMovementRepository" class="se.citerus.dddsample.repository.CarrierMovementRepositoryInMem">
+  </bean>
 
 </beans>

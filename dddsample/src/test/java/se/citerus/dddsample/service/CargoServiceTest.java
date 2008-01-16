@@ -11,6 +11,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
+import se.citerus.dddsample.repository.HandlingEventRepository;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
@@ -23,6 +24,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
   CargoService cargoService;
   CargoRepository cargoRepository;
+  HandlingEventRepository handlingEventRepository;
   SessionFactory sessionFactory;
 
   public void setCargoService(CargoService cargoService) {
@@ -31,6 +33,10 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
+  }
+
+  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
+    this.handlingEventRepository = handlingEventRepository;
   }
 
   public void setSessionFactory(SessionFactory sessionFactory) {
@@ -64,20 +70,30 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
    * Cargo returned.
    */
   public void testCargoServiceFindByTrackingIdScenario() {
-    IAnswer<Cargo> answerOnFind = new TransactionVerifyingAnswer<Cargo>() {
-
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
+    final IAnswer<Cargo> cargoAnswer = new TransactionVerifyingAnswer<Cargo>() {
       public Cargo answerWithinTransaction() throws Throwable {
-        Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
-        CarrierMovement cm = new CarrierMovement(new CarrierId("CAR_001"), new Location("FROM"), new Location("TO"));
-        cargo.handle(
-                new HandlingEvent(new Date(10L), new Date(20L), HandlingEvent.Type.CLAIM, new Location("TO"), cm)
-        );
         return cargo;
       }
-
     };
-    expect(cargoRepository.find(new TrackingId("XYZ"))).andAnswer(answerOnFind);
-    replay(cargoRepository);
+    expect(cargoRepository.find(new TrackingId("XYZ"))).andAnswer(cargoAnswer);
+
+    final IAnswer<DeliveryHistory> deliveryHistoryAnswer = new TransactionVerifyingAnswer<DeliveryHistory>() {
+      protected DeliveryHistory answerWithinTransaction() throws Throwable {
+        DeliveryHistory dh = new DeliveryHistory();
+        HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, new Location("SESTO"));
+        CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("MUGER"));
+        HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, carrierMovement);
+        HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, carrierMovement);
+
+        // Add out of order to verify ordering in DTO
+        dh.addEvent(loaded, unloaded, claimed);
+        return dh;
+      }
+    };
+    expect(handlingEventRepository.findDeliveryHistory(new TrackingId("XYZ"))).andAnswer(deliveryHistoryAnswer);
+
+    replay(cargoRepository, handlingEventRepository);
 
 
     // Tested call
@@ -87,15 +103,31 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     assertEquals("XYZ", cargoDTO.getTrackingId());
     assertEquals("ORIG", cargoDTO.getOrigin());
     assertEquals("DEST", cargoDTO.getFinalDestination());
-    assertEquals("TO", cargoDTO.getCurrentLocation());
+    assertEquals("MUGER", cargoDTO.getCurrentLocation());
 
     List<HandlingEventDTO> events = cargoDTO.getEvents();
-    assertEquals(1, events.size());
+    assertEquals(3, events.size());
+
+    // Claim happened first
     HandlingEventDTO eventDTO = events.get(0);
-    assertEquals("TO", eventDTO.getLocation());
+    assertEquals("SESTO", eventDTO.getLocation());
     assertEquals("CLAIM", eventDTO.getType());
-    assertEquals("CAR_001", eventDTO.getCarrier());    
+    assertEquals("", eventDTO.getCarrier());
     assertEquals(new Date(10), eventDTO.getTime());
+
+    // Then load
+    eventDTO = events.get(1);
+    assertEquals("SESTO", eventDTO.getLocation());
+    assertEquals("LOAD", eventDTO.getType());
+    assertEquals("CAR_001", eventDTO.getCarrier());
+    assertEquals(new Date(12), eventDTO.getTime());
+
+    // Finally unload
+    eventDTO = events.get(2);
+    assertEquals("MUGER", eventDTO.getLocation());
+    assertEquals("UNLOAD", eventDTO.getType());
+    assertEquals("CAR_001", eventDTO.getCarrier());
+    assertEquals(new Date(100), eventDTO.getTime());
   }
 
   public void testCargoServiceFindByTrackingIdNullResult() {

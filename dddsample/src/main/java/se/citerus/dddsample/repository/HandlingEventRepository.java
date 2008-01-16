@@ -1,12 +1,26 @@
 package se.citerus.dddsample.repository;
 
-import java.util.Set;
-
+import se.citerus.dddsample.domain.DeliveryHistory;
 import se.citerus.dddsample.domain.HandlingEvent;
 import se.citerus.dddsample.domain.TrackingId;
 
+/**
+ * Handling event repository.
+ *
+ */
 public interface HandlingEventRepository {
-  HandlingEvent find(String handlingEventId);
+
+  /**
+   * Saves a (new) handling event.
+   *
+   * @param event handling event to save
+   */
   void save(HandlingEvent event);
-  Set<HandlingEvent> findByTrackingId(final TrackingId trackingId);
+
+  /**
+   * @param trackingId cargo tracking id
+   * @return The delivery history of the cargo with the given tracking id.
+   */
+  DeliveryHistory findDeliveryHistory(TrackingId trackingId);
+
 }

@@ -14,36 +14,37 @@ public class TrackingScenarioTest extends TestCase {
 
     Cargo cargo = populateCargo();
 
-    final List<HandlingEvent> handlingEvents = cargo.eventsOrderedByTime();
-    final HandlingEvent event = cargo.lastEvent();
+    DeliveryHistory deliveryHistory = populateDeliveryHistory(cargo);
 
-//
-//    DeliveryHistory deliveryHistory = cargo.deliveryHistory();
-//
-//    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByTime();
-//
+    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByTime();
+
     assertEquals(4, handlingEvents.size());
-    
-    assertSame(HandlingEvent.Type.UNLOAD, event.type());
-    assertFalse(cargo.atFinalDestiation());
-    assertEquals("CNHKG", cargo.currentLocation().unlocode());
+    final HandlingEvent event = deliveryHistory.lastEvent();
 
+    assertSame(HandlingEvent.Type.UNLOAD, event.type());
+//    assertFalse(cargo.atFinalDestiation());
+//    assertEquals("CNHKG", cargo.currentLocation().unlocode());
+
+  }
+
+  private DeliveryHistory populateDeliveryHistory(Cargo cargo) throws Exception {
+    final CarrierMovement stockholmToHamburg = new CarrierMovement(
+            new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
+
+    final CarrierMovement hamburgToHongKong = new CarrierMovement(
+            new CarrierMovementId("CAR_002"), new Location("DEHAM"), new Location("CNHKG"));
+    DeliveryHistory dh = new DeliveryHistory();
+    dh.addEvent(
+            new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, stockholmToHamburg),
+            new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, stockholmToHamburg),
+            new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, hamburgToHongKong),
+            new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, hamburgToHongKong)
+    );
+    return dh;
   }
 
   private Cargo populateCargo() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
-
-    final CarrierMovement stockholmToHamburg = new CarrierMovement(
-            new CarrierId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
-
-    cargo.handle(new HandlingEvent(getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, new Location("SESTO"), stockholmToHamburg));
-    cargo.handle(new HandlingEvent(getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("DEHAM"), stockholmToHamburg));
-
-    final CarrierMovement hamburgToHongKong = new CarrierMovement(
-            new CarrierId("CAR_002"), new Location("DEHAM"), new Location("CNHKG"));
-
-    cargo.handle(new HandlingEvent(getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, new Location("DEHAM"), hamburgToHongKong));
-    cargo.handle(new HandlingEvent(getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, new Location("CNHKG"), hamburgToHongKong));
 
     return cargo;
   }

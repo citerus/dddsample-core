@@ -1,18 +1,8 @@
 package se.citerus.dddsample.domain;
 
-import java.util.Comparator;
+import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -20,131 +10,122 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  * Since HandlingEvents can be added in any order to a Cargo (or
  * DeliveryHistory), they need to implement Comparable to be able to be sorted
  * in correct order.
+ *
  */
 @Entity
 public class HandlingEvent {
-  
- public static final Comparator<HandlingEvent> BY_TIMESTAMP_COMPARATOR = new Comparator<HandlingEvent>(){
-  public int compare(HandlingEvent o1, HandlingEvent o2) {
-    return o1.timeOccurred().compareTo(o2.timeOccurred());
-  }
- };
 
   @Id
-  private UUID id;
+  private String id;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   private Type type;
 
   @ManyToOne
   private CarrierMovement carrierMovement;
-  
-  private Date timeOccurred;
 
-  private Date timeRegistered;
-  
   @ManyToOne
   private Location location;
 
-  @Transient // TODO: cargo-event relation should not be bidirectional
-  private Set<Cargo> cargos;
-  
+  private Date completionTime;
+
+  private Date registrationTime;
+
+  @ManyToOne
+  @JoinColumn
+  private Cargo cargo;
+
   public enum Type {
-    LOAD, UNLOAD, RECEIVE, CLAIM
+    LOAD, UNLOAD, RECEIVE, CLAIM, CUSTOMS
   }
 
-  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type, Location location) {
-    this(timeOccurred, timeRegistered, type, location, null);
-  }
-
-  public HandlingEvent(Date timeOccurred, Date timeRegistered, Type type, Location location, CarrierMovement carrierMovement) {
-    this.id = UUID.randomUUID();
-    this.timeRegistered = timeRegistered;
-    this.timeOccurred = timeOccurred;
+  private HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type) {
+    this.id = UUID.randomUUID().toString();
+    this.registrationTime = registrationTime;
+    this.completionTime = completionTime;
     this.type = type;
-    this.carrierMovement = carrierMovement;
-    this.cargos = new HashSet<Cargo>();
+    this.cargo = cargo;
+  }
+
+  /**
+   * Constructor for events that do not have a carrier movement associated.
+   *
+   * @param cargo cargo
+   * @param completionTime completion time
+   * @param registrationTime registration time
+   * @param type type of event. Legal values are CLAIM, RECIEVE and CUSTOMS
+   * @param location where the event took place
+   */
+  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
+    this(cargo, completionTime, registrationTime, type);
     this.location = location;
   }
 
   /**
-   * This determines if two events recieved by the system in fact represent
-   * the same real-world event, which may have been reported more than once due to
-   * human error, for example.
+   * Constructor for events that have a carrier movement associated. The location where
+   * the event took place is derived from the carrier movement: if the type of event is LOAD,
+   * the location is the starting point of the movement, if the type is UNLOAD the location
+   * is the end point.
    *
-   * @param other handling event to compare with
-   * @return True if these handling events represent the same real-world event.
+   * @param cargo cargo
+   * @param completionTime completion time
+   * @param registrationTime registration time
+   * @param type type of event. Legal values are LOAD and UNLOAD
+   * @param carrierMovement carrier movement.
    */
-  public boolean sameAs(HandlingEvent other) {
-    return new EqualsBuilder().
-            append(this.timeOccurred(), other.timeOccurred()).
-            append(this.location(), other.location()).
-            append(this.type(), other.type()).
-            append(this.carrierMovement(), other.carrierMovement())
-            .isEquals();
+  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, CarrierMovement carrierMovement) {
+    this(cargo, completionTime, registrationTime, type);
+    this.carrierMovement = carrierMovement;
+    if (Type.LOAD.equals(type)) {
+      this.location = carrierMovement.from();
+    } else if (Type.UNLOAD.equals(type)) {
+      this.location = carrierMovement.to();
+    } else {
+      throw new IllegalArgumentException("Can't derive location from carrier movement for event type " + type);
+    }
+  }
+
+  public String id() {
+    return this.id;
   }
 
   public Type type() {
-    return type;
+    return this.type;
   }
 
   public CarrierMovement carrierMovement() {
-    return carrierMovement;
+    return this.carrierMovement;
   }
 
-  public Date timeOccurred() {
-    return timeOccurred;
+  public Date completionTime() {
+    return this.completionTime;
   }
 
-  public Date timeRegistered() {
-    return timeRegistered;
+  public Date registrationTime() {
+    return this.registrationTime;
   }
 
-  /**
-   * Returns the Location of the HandlingEvent
-   * 
-   * @return The Location
-   */
-  public Location location() {    
-    return location;
+  public Location location() {
+    return this.location;
   }
 
-
-  /**
-   * Add a Cargo to this HandlingEvent
-   * 
-   * @param cargo
-   */
-  public void add(Cargo cargo) {
-    this.cargos.add(cargo);
+  public Cargo cargo() {
+    return this.cargo;
   }
-  
-  /**
-   * Returns a Set of Cargos associated with this HandlingEvent
-   * 
-   * @return The associated Cargos
-   */
-  public Set<Cargo> cargos(){
-    return cargos;
-  }
-
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof HandlingEvent)) {
-      return false;
-    }
-    HandlingEvent other = (HandlingEvent) obj;
-    return new EqualsBuilder().append(this.id, other.id).isEquals();
+    return (obj instanceof HandlingEvent) &&
+            sameIdentityAs((HandlingEvent) obj);
+  }
+
+  public boolean sameIdentityAs(HandlingEvent other) {
+    return other != null && id.equals(other.id);
   }
 
   @Override
   public int hashCode() {
     return id.hashCode();
-  }
-
-  public static Type parseType(String type) {
-    return Type.valueOf(type);
   }
 
   // Needed by Hibernate
