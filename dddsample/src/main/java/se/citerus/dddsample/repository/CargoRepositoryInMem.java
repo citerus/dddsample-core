@@ -28,12 +28,12 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public Cargo find(TrackingId trackingId) {
-    if (trackingId.toString().equalsIgnoreCase("DAE")){
-      throw new DataRetrievalFailureException("Network failure. Please try again");
-    }
+    simulateNetworkError(trackingId);
     
     return cargoDb.get(trackingId.toString());
   }
+
+
   
   public void save(Cargo cargo) {
     //No need to save anything with InMem
@@ -69,5 +69,19 @@ public class CargoRepositoryInMem implements CargoRepository {
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
+  }
+  
+  /**
+   * Private helper method that simulates network error by thrwoing a DataDataRetrievalFailureException if tracking id equals "DAE".
+   * 
+   * Note that this method is only used for testing purposes.
+   * 
+   * @param trackingId
+   * @throws DataRetrievalFailureException
+   */
+  private void simulateNetworkError(TrackingId trackingId) {
+    if (trackingId.toString().equalsIgnoreCase("DAE")){
+      throw new DataRetrievalFailureException("Network failure. Please try again");
+    }
   }
 }

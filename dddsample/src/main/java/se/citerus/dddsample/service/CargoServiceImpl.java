@@ -24,7 +24,7 @@ public class CargoServiceImpl implements CargoService {
             cargo.finalDestination().unlocode(),
             cargo.currentLocation().unlocode()
     );
-    final List<HandlingEvent> events = cargo.deliveryHistory().eventsOrderedByTime();
+    final List<HandlingEvent> events = cargo.eventsOrderedByTime();
     for (HandlingEvent event : events) {
       CarrierMovement cm = event.carrierMovement();
       String carrierIdString =

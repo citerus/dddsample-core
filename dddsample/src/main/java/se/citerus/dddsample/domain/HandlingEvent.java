@@ -1,13 +1,18 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-
-import javax.persistence.*;
-
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -15,11 +20,15 @@ import java.util.UUID;
  * Since HandlingEvents can be added in any order to a Cargo (or
  * DeliveryHistory), they need to implement Comparable to be able to be sorted
  * in correct order.
- *
- * TODO: build hierarchy of event types
  */
 @Entity
 public class HandlingEvent {
+  
+ public static final Comparator<HandlingEvent> BY_TIMESTAMP_COMPARATOR = new Comparator<HandlingEvent>(){
+  public int compare(HandlingEvent o1, HandlingEvent o2) {
+    return o1.timeOccurred().compareTo(o2.timeOccurred());
+  }
+ };
 
   @Id
   private UUID id;

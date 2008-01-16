@@ -21,7 +21,6 @@
       <list>
         <value>se.citerus.dddsample.domain.Cargo</value>
         <value>se.citerus.dddsample.domain.Location</value>
-        <value>se.citerus.dddsample.domain.DeliveryHistory</value>
         <value>se.citerus.dddsample.domain.HandlingEvent</value>
         <value>se.citerus.dddsample.domain.CarrierMovement</value>
       </list>
