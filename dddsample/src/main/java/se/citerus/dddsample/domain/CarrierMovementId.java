@@ -32,4 +32,6 @@ public class CarrierMovementId implements Serializable {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
+  // needed by hibernate
+  public CarrierMovementId() {}
 }
