@@ -16,7 +16,7 @@ public class TrackingScenarioTest extends TestCase {
 
     DeliveryHistory deliveryHistory = populateDeliveryHistory(cargo);
 
-    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByTime();
+    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByCompletionTime();
 
     assertEquals(4, handlingEvents.size());
     final HandlingEvent event = deliveryHistory.lastEvent();

@@ -12,7 +12,10 @@ import se.citerus.dddsample.domain.CarrierMovementId;
 public class CarrierMovementRepositoryHibernate extends HibernateRepository implements CarrierMovementRepository {
 
   public CarrierMovement find(CarrierMovementId carrierMovementId) {
-    return (CarrierMovement) getSession().get(CarrierMovement.class, carrierMovementId);
+    return (CarrierMovement) getSession().
+            createQuery("from CarrierMovement where carrierMovementId = ?").
+            setParameter(1, carrierMovementId).
+            uniqueResult();
   }
 
 }

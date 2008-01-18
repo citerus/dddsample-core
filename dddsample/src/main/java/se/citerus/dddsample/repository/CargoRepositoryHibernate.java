@@ -12,7 +12,10 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
 
 
   public Cargo find(TrackingId trackingId) {
-    return (Cargo) getSession().get(Cargo.class, trackingId);
+    return (Cargo) getSession().
+            createQuery("from Cargo where trackingId = ?").
+            setParameter(0, trackingId).
+            uniqueResult();
   }
 
   public void save(Cargo cargo) {

@@ -8,11 +8,13 @@
     <property name="location" value="classpath:jdbc.properties"/>
   </bean>
 
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="url" value="${jdbc.url}"/>
     <property name="driverClassName" value="${jdbc.driverClassName}"/>
     <property name="username" value="${jdbc.username}"/>
     <property name="password" value="${jdbc.password}"/>
+    <property name="initialSize" value="4"/>
+    <property name="defaultAutoCommit" value="false"/>
   </bean>
 
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">

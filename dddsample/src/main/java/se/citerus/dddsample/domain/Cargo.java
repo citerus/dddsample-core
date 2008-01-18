@@ -1,23 +1,23 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 
 /**
- * A Cargo an entity identifed by TrackingId and is capable of getting its DeliveryHistory plus a number
- * of convenience operation for finding current destination etc.
+ * A Cargo.
+ *
  */
 @Entity
 public class Cargo {
 
-  @EmbeddedId
+  @Id
+  @GeneratedValue
+  private Long id;
+
+  @Embedded
   private TrackingId trackingId;
 
   @ManyToOne
@@ -26,22 +26,61 @@ public class Cargo {
   @ManyToOne
   private Location finalDestination;
 
+  @Embedded
+  private DeliveryHistory deliveryHistory;
+
   public Cargo(TrackingId trackingId, Location origin, Location finalDestination) {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
+    this.deliveryHistory =  new DeliveryHistory();
   }
 
+  /**
+   * @return Tracking id.
+   */
   public TrackingId trackingId() {
-    return trackingId;
+    return this.trackingId;
   }
 
+  /**
+   * @return Origin location.
+   */
   public Location origin() {
-    return origin;
+    return this.origin;
   }
 
+  /**
+   * @return Final destination.
+   */
   public Location finalDestination() {
-    return finalDestination;
+    return this.finalDestination;
+  }
+
+  /**
+   * @return Delivery history.
+   */
+  public DeliveryHistory deliveryHistory() {
+    return this.deliveryHistory;
+  }
+
+  /**
+   * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
+   */
+  public Location lastKnownLocation() {
+    HandlingEvent lastEvent = deliveryHistory.lastEvent();
+    if (lastEvent != null) {
+      return lastEvent.location();
+    } else {
+      return Location.UNKNOWN;
+    }
+  }
+
+  /**
+   * @return True if the cargo has arrived at its final destination.
+   */
+  public boolean hasArrived() {
+    return finalDestination.equals(lastKnownLocation());
   }
 
   @Override
@@ -49,29 +88,27 @@ public class Cargo {
     return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
   }
 
+  /**
+   * @param object to compare
+   * @return True if tracking ids are equal.
+   */
   @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Cargo)) {
+  public boolean equals(Object object) {
+    if (!(object instanceof Cargo)) {
       return false;
     }
-    Cargo rhs = (Cargo) obj;
-    return new EqualsBuilder()
-      .append(trackingId, rhs.trackingId)
-      .append(origin, rhs.origin)
-      .append(finalDestination, rhs.finalDestination)
-      .isEquals();
+    Cargo other = (Cargo) object;
+    return trackingId.equals(other.trackingId);
   }
 
+  /**
+   * @return Hash code of tracking id.
+   */
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(7, 39)
-    .append(trackingId)
-    .append(origin)
-    .append(finalDestination)
-    .toHashCode();
+    return trackingId.hashCode();
   }
-  
+
   // Needed by Hibernate
   Cargo() {}
-  
 }

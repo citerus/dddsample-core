@@ -1,6 +1,9 @@
 package se.citerus.dddsample.repository;
 
-import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.HandlingEvent;
+import se.citerus.dddsample.domain.Location;
+import se.citerus.dddsample.domain.TrackingId;
 
 import java.util.Date;
 import java.util.Map;
@@ -33,21 +36,11 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     flush();
 
     Map<String,Object> result = sjt.queryForMap("select * from HandlingEvent where id = ?", event.id());
-    assertEquals("XYZ", result.get("CARGO_ID"));
+    assertEquals(1L, result.get("CARGO_ID"));
     assertEquals(new Date(10), result.get("COMPLETIONTIME"));
     assertEquals(new Date(20), result.get("REGISTRATIONTIME"));
     assertEquals("CLAIM", result.get("TYPE"));
     // TODO: the rest of the columns
   }
 
-  public void testFindDeliveryHistory() {
-    DeliveryHistory dh = handlingEventRepository.findDeliveryHistory(new TrackingId("XYZ"));
-
-    assertNotNull(dh);
-    assertEquals(12, dh.eventsOrderedByTime().size());
-    HandlingEvent lastEvent = dh.lastEvent();
-    assertNotNull(lastEvent);
-    assertEquals("AUMEL", lastEvent.location().unlocode());
-    // TODO: the rest of the properties, and maybe a longer list of events
-  }
 }

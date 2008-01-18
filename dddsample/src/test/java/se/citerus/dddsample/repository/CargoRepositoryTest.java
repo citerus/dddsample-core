@@ -24,6 +24,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals(trackingId, cargo.trackingId());
     assertEquals(origin, cargo.origin());
     assertEquals(finalDestination, cargo.finalDestination());
+    // TODO: verify delivery history
   }
 
   public void testSave() {
@@ -39,9 +40,9 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     flush();
 
-    Map<String, Object> map = jdbcTemplate.queryForMap("select * from Cargo where id = 'AAA'");
+    Map<String, Object> map = sjt.queryForMap("select * from Cargo where tracking_id = 'AAA'");
 
-    assertEquals("AAA", map.get("ID"));
+    assertEquals("AAA", map.get("TRACKING_ID"));
     // TODO: check origin/finalDestination ids
   }
 
