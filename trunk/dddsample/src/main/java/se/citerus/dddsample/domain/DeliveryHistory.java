@@ -3,25 +3,21 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.util.*;
 
 /**
- * The delivery history of a cargo. This is a value object.
+ * The delivery history of a cargo.
  *
  */
+@Embeddable
 public class DeliveryHistory {
 
-  private final Set<HandlingEvent> events;
-
- 
-
-  public DeliveryHistory() {
-    this(Collections.<HandlingEvent>emptySet());
-  }
-
-  public DeliveryHistory(Collection<HandlingEvent> events) {
-    this.events = new HashSet<HandlingEvent>(events);
-  }
+  @OneToMany
+  @JoinColumn(name = "cargo_id")
+  private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
 
   /**
    * Adds the HandlingEvent to the sorted set.
@@ -35,7 +31,7 @@ public class DeliveryHistory {
   /**
    * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
    */
-  public List<HandlingEvent> eventsOrderedByTime() {
+  public List<HandlingEvent> eventsOrderedByCompletionTime() {
     List<HandlingEvent> eventList = new ArrayList<HandlingEvent>(events);
     Collections.sort(eventList, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
     return Collections.unmodifiableList(eventList);
@@ -48,7 +44,7 @@ public class DeliveryHistory {
     if (events.isEmpty()) {
       return null;
     } else {
-      List<HandlingEvent> orderedEvents = eventsOrderedByTime();
+      List<HandlingEvent> orderedEvents = eventsOrderedByCompletionTime();
       return orderedEvents.get(orderedEvents.size() - 1);
     }
   }
@@ -58,5 +54,7 @@ public class DeliveryHistory {
     return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
   }
 
+  // Needed by Hibernate
+  DeliveryHistory() {}
 
 }

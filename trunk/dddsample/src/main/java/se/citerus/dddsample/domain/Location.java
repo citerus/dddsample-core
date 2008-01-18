@@ -1,8 +1,5 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,28 +17,42 @@ public class Location {
 
   private String unlocode;
 
-  // Exclude the id field from equals() and hashcode()
-  private static final String[] excludedFields = {"id"};
-
   public Location(String unlocode) {
     this.unlocode = unlocode;
   }
 
+  /**
+   * @return United Nations Location Code for this location.
+   */
   public String unlocode() {
     return unlocode;
   }
 
+  /**
+   * @param object to compare
+   * @return True if unlocodes are equal.
+   */
   @Override
-  public boolean equals(Object obj) {
-    if (this == UNKNOWN || obj == UNKNOWN) {
-      return this == obj;
+  public boolean equals(Object object) {
+    if (object == null) {
+      return false;
     }
-    return EqualsBuilder.reflectionEquals(this, obj, excludedFields);
+    if (this == UNKNOWN || object == UNKNOWN) {
+      return this == object;
+    }
+    if (!(object instanceof Location)) {
+      return false;
+    }
+    Location other = (Location) object;
+    return this.unlocode.equals(other.unlocode);
   }
 
+  /**
+   * @return Hash code of unlocode.
+   */
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, excludedFields);
+    return unlocode.hashCode();
   }
 
   @Override

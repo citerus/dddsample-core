@@ -1,9 +1,11 @@
 package se.citerus.dddsample.service;
 
 import org.springframework.transaction.annotation.Transactional;
-import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.CarrierMovement;
+import se.citerus.dddsample.domain.HandlingEvent;
+import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.HandlingEventRepository;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
@@ -11,7 +13,6 @@ import java.util.List;
 
 public class CargoServiceImpl implements CargoService {
   private CargoRepository cargoRepository;
-  private HandlingEventRepository handlingEventRepository;
 
   @Transactional(readOnly = true)
   public CargoWithHistoryDTO find(String trackingId) {
@@ -20,8 +21,7 @@ public class CargoServiceImpl implements CargoService {
     if (cargo == null) {
       return null;
     }
-    DeliveryHistory deliveryHistory = handlingEventRepository.findDeliveryHistory(tid);
-    HandlingEvent lastEvent = deliveryHistory.lastEvent();
+    HandlingEvent lastEvent = cargo.deliveryHistory().lastEvent();
     String currentLocation;
     if (lastEvent != null) {
       currentLocation = lastEvent.location().unlocode();
@@ -34,7 +34,7 @@ public class CargoServiceImpl implements CargoService {
             cargo.finalDestination().unlocode(),
             currentLocation
     );
-    final List<HandlingEvent> events = deliveryHistory.eventsOrderedByTime();
+    final List<HandlingEvent> events = cargo.deliveryHistory().eventsOrderedByCompletionTime();
     for (HandlingEvent event : events) {
       CarrierMovement cm = event.carrierMovement();
       String carrierIdString = (cm == null) ? "" : cm.carrierId().idString();
@@ -50,10 +50,6 @@ public class CargoServiceImpl implements CargoService {
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
-  }
-
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
   }
 
 }

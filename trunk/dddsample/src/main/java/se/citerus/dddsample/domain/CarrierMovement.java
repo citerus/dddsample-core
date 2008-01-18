@@ -1,14 +1,20 @@
 package se.citerus.dddsample.domain;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 
+/**
+ * A carrier movement is a vessel voyage from one location to another.
+ *
+ */
 @Entity
 public class CarrierMovement {
 
-  @EmbeddedId
+  @Id
+  @GeneratedValue
+  private Long id;
+
+  @Embedded
   private CarrierMovementId carrierMovementId;
 
   @ManyToOne

@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
+import org.springframework.transaction.support.TransactionTemplate;
 import se.citerus.dddsample.util.SampleDataGenerator;
 
 public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
@@ -31,7 +32,7 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
 
   @Override
   protected void onSetUpInTransaction() throws Exception {
-    SampleDataGenerator.loadSampleData(jdbcTemplate);
+    SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
     sjt = new SimpleJdbcTemplate(jdbcTemplate);
   }
 

@@ -71,6 +71,13 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
    */
   public void testCargoServiceFindByTrackingIdScenario() {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
+    HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, new Location("SESTO"));
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("MUGER"));
+    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, carrierMovement);
+    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, carrierMovement);
+    // Add out of order to verify ordering in DTO
+    cargo.deliveryHistory().addEvent(loaded, unloaded, claimed);
+
     final IAnswer<Cargo> cargoAnswer = new TransactionVerifyingAnswer<Cargo>() {
       public Cargo answerWithinTransaction() throws Throwable {
         return cargo;
@@ -78,22 +85,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     };
     expect(cargoRepository.find(new TrackingId("XYZ"))).andAnswer(cargoAnswer);
 
-    final IAnswer<DeliveryHistory> deliveryHistoryAnswer = new TransactionVerifyingAnswer<DeliveryHistory>() {
-      protected DeliveryHistory answerWithinTransaction() throws Throwable {
-        DeliveryHistory dh = new DeliveryHistory();
-        HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, new Location("SESTO"));
-        CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("MUGER"));
-        HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, carrierMovement);
-        HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, carrierMovement);
-
-        // Add out of order to verify ordering in DTO
-        dh.addEvent(loaded, unloaded, claimed);
-        return dh;
-      }
-    };
-    expect(handlingEventRepository.findDeliveryHistory(new TrackingId("XYZ"))).andAnswer(deliveryHistoryAnswer);
-
-    replay(cargoRepository, handlingEventRepository);
+    replay(cargoRepository);
 
 
     // Tested call

@@ -1,15 +1,10 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.UUID;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -24,14 +19,15 @@ public class HandlingEvent {
   /**
    * Comparator used to be able to sort HandlingEvents according to their completion time
    */
-  public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = new Comparator<HandlingEvent>(){
+  public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = new Comparator<HandlingEvent>() {
     public int compare(HandlingEvent o1, HandlingEvent o2) {
       return o1.completionTime().compareTo(o2.completionTime());
     }
   };
 
   @Id
-  private String id;
+  @GeneratedValue
+  private Long id;
 
   @Enumerated(EnumType.STRING)
   private Type type;
@@ -47,7 +43,7 @@ public class HandlingEvent {
   private Date registrationTime;
 
   @ManyToOne
-  @JoinColumn
+  @JoinColumn(name = "cargo_id")
   private Cargo cargo;
 
   public enum Type {
@@ -55,7 +51,6 @@ public class HandlingEvent {
   }
 
   private HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type) {
-    this.id = UUID.randomUUID().toString();
     this.registrationTime = registrationTime;
     this.completionTime = completionTime;
     this.type = type;
@@ -100,7 +95,7 @@ public class HandlingEvent {
     }
   }
 
-  public String id() {
+  public Long id() {
     return this.id;
   }
 
@@ -128,19 +123,42 @@ public class HandlingEvent {
     return this.cargo;
   }
 
+  /**
+   * @param object to compare
+   * @return True if location, completion time and type are equal.
+   */
   @Override
-  public boolean equals(Object obj) {
-    return (obj instanceof HandlingEvent) &&
-            sameIdentityAs((HandlingEvent) obj);
+  public boolean equals(Object object) {
+    if (object == null) {
+      return false;
+    }
+    if (!(object instanceof HandlingEvent)) {
+      return false;
+    }
+    HandlingEvent other = (HandlingEvent) object;
+    return this.location.equals(other.location) &&
+           this.completionTime.equals(other.completionTime) &&
+           this.type.equals(other.type);
   }
 
-  public boolean sameIdentityAs(HandlingEvent other) {
-    return other != null && id.equals(other.id);
-  }
-
+  /**
+   * @return Hash code calculated from the same properties as equals().
+   */
   @Override
   public int hashCode() {
-    return id.hashCode();
+    return new HashCodeBuilder(7, 39).
+            append(this.location).
+            append(this.completionTime).
+            append(this.type).
+            toHashCode();
+  }
+
+  /**
+   * @param other to compare
+   * @return True if the ids are equal.
+   */
+  public boolean sameIdentityAs(HandlingEvent other) {
+    return other != null && id.equals(other.id);
   }
 
   // Needed by Hibernate
