@@ -42,7 +42,7 @@ public class SampleDataGenerator implements ServletContextListener {
         {UUID.randomUUID().toString().getBytes(), new Timestamp(100), new Timestamp(101), "UNLOAD", 2, "CAR_005", "XYZ"},        
         {UUID.randomUUID().toString().getBytes(), new Timestamp(110), new Timestamp(111), "CLAIM", 2, null, "XYZ"},
             
-        //ZYX (AUMEL - USCHI - DEHAM - SESTO)
+        //ZYX (AUMEL - USCHI - DEHAM -)
         {UUID.randomUUID().toString().getBytes(), new Timestamp(0), new Timestamp(1), "RECEIVE", 2, null, "ZYX"},  
         {UUID.randomUUID().toString().getBytes(), new Timestamp(10), new Timestamp(11), "LOAD", 2, "CAR_007", "ZYX"},
         {UUID.randomUUID().toString().getBytes(), new Timestamp(20), new Timestamp(21), "UNLOAD", 7, "CAR_007", "ZYX"},
@@ -52,6 +52,8 @@ public class SampleDataGenerator implements ServletContextListener {
         
         //ABC
         {UUID.randomUUID().toString().getBytes(), new Timestamp(20), new Timestamp(21), "CLAIM", 2, null, "ABC"}
+        
+        //CBA
     };
     for (Object[] handlingEventArg : handlingEventArgs) {
       jdbcTemplate.update(handlingEventSql, handlingEventArg);

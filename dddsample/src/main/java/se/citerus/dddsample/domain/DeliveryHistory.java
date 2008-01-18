@@ -13,7 +13,7 @@ public class DeliveryHistory {
 
   private final Set<HandlingEvent> events;
 
-  private static final HandlingEventByTimeComparator HANDLING_EVENT_COMPARATOR = new HandlingEventByTimeComparator();
+ 
 
   public DeliveryHistory() {
     this(Collections.<HandlingEvent>emptySet());
@@ -37,7 +37,7 @@ public class DeliveryHistory {
    */
   public List<HandlingEvent> eventsOrderedByTime() {
     List<HandlingEvent> eventList = new ArrayList<HandlingEvent>(events);
-    Collections.sort(eventList, HANDLING_EVENT_COMPARATOR);
+    Collections.sort(eventList, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
     return Collections.unmodifiableList(eventList);
   }
 
@@ -58,9 +58,5 @@ public class DeliveryHistory {
     return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
   }
 
-  private static class HandlingEventByTimeComparator implements Comparator<HandlingEvent> {
-    public int compare(HandlingEvent o1, HandlingEvent o2) {
-      return o1.completionTime().compareTo(o2.completionTime());
-    }
-  }
+
 }

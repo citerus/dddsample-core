@@ -44,10 +44,10 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     DeliveryHistory dh = handlingEventRepository.findDeliveryHistory(new TrackingId("XYZ"));
 
     assertNotNull(dh);
-    assertEquals(1, dh.eventsOrderedByTime().size());
+    assertEquals(12, dh.eventsOrderedByTime().size());
     HandlingEvent lastEvent = dh.lastEvent();
     assertNotNull(lastEvent);
-    assertEquals("SESTO", lastEvent.location().unlocode());
+    assertEquals("AUMEL", lastEvent.location().unlocode());
     // TODO: the rest of the properties, and maybe a longer list of events
   }
 }
