@@ -1,8 +1,15 @@
 package se.citerus.dddsample.domain;
 
-import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * HandlingEvent links the type of handling with a CarrierMovement.
@@ -14,6 +21,14 @@ import java.util.UUID;
  */
 @Entity
 public class HandlingEvent {
+  /**
+   * Comparator used to be able to sort HandlingEvents according to their completion time
+   */
+  public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = new Comparator<HandlingEvent>(){
+    public int compare(HandlingEvent o1, HandlingEvent o2) {
+      return o1.completionTime().compareTo(o2.completionTime());
+    }
+  };
 
   @Id
   private String id;
