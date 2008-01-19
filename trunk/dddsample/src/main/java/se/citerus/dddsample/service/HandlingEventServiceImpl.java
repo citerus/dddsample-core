@@ -15,62 +15,38 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   private HandlingEventRepository handlingEventRepository;
 
   @Transactional(readOnly = false)
-  public void registerLoad(Date completionTime, String carrierMovementId, String[] trackingIds) {
-    doRegisterWithCarrierMovement(completionTime, findCarrierMovement(carrierMovementId), HandlingEvent.Type.LOAD, trackingIds);
-  }
-
-  @Transactional(readOnly = false)
-  public void registerUnload(Date completionTime, String carrierMovementId, String[] trackingIds) {
-    doRegisterWithCarrierMovement(completionTime, findCarrierMovement(carrierMovementId), HandlingEvent.Type.UNLOAD, trackingIds);
-  }
-
-  @Transactional(readOnly = false)
-  public void registerClaim(Date completionTime, String unlocode, String[] trackingIds) {
-    doRegisterWithLocation(completionTime, findLocation(unlocode), HandlingEvent.Type.CLAIM, trackingIds);
-  }
-
-  @Transactional(readOnly = false)
-  public void registerRecieve(Date completionTime, String unlocode, String[] trackingIds) {
-    doRegisterWithLocation(completionTime, findLocation(unlocode), HandlingEvent.Type.RECEIVE, trackingIds);
-  }
-
-  @Transactional(readOnly = false)
-  public void registerCustomsCleared(Date completionTime, String unlocode, String[] trackingIds) {
-    doRegisterWithLocation(completionTime, findLocation(unlocode), HandlingEvent.Type.CUSTOMS, trackingIds);
-  }
-
-  private void doRegisterWithLocation(Date completionTime, Location location, HandlingEvent.Type type, String[] trackingIds) {
-    for (String tid: trackingIds) {
-      Cargo cargo = findCargo(tid);
-      Date registrationTime = new Date();
-      HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location);
-      handlingEventRepository.save(event);
+  public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, String unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException {
+    Cargo cargo = findCargo(trackingId);
+    CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
+    Location location = findLocation(unlocode);
+    Date registrationTime = new Date();
+    HandlingEvent event;
+    if (carrierMovement != null) {
+      event = new HandlingEvent(cargo, completionTime, registrationTime, type, carrierMovement);
+    } else {
+      event = new HandlingEvent(cargo, completionTime, registrationTime, type, location);
     }
+    handlingEventRepository.save(event);
   }
 
-  private void doRegisterWithCarrierMovement(Date completionTime, CarrierMovement carrierMovement, HandlingEvent.Type type, String[] trackingIds) {
-    for (String tid: trackingIds) {
-      Cargo cargo = findCargo(tid);
-      Date registrationTime = new Date();
-      HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, carrierMovement);
-      handlingEventRepository.save(event);
-    }
-  }
-
-  private Cargo findCargo(String trackingId) {
+  private Cargo findCargo(TrackingId trackingId) throws UnknownTrackingIdException {
     Validate.notNull(trackingId, "Tracking ID is required");
-    Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
-    Validate.notNull(cargo, "Cargo is not found. Tracking ID=" + trackingId);
+    Cargo cargo = cargoRepository.find(trackingId);
+    if (cargo == null) {
+      throw new UnknownTrackingIdException(trackingId);
+    }
 
     return cargo;
   }
 
-  private CarrierMovement findCarrierMovement(String carrierId) {
-    Validate.notNull(carrierId, "Carrier ID is required");
-    CarrierMovement carrier = carrierMovementRepository.find(new CarrierMovementId(carrierId));
-    Validate.notNull(carrier, "Carrier is not found: Carrier ID=" + carrierId);
+  private CarrierMovement findCarrierMovement(CarrierMovementId carrierMovementId) throws UnknownCarrierMovementIdException {
+    Validate.notNull(carrierMovementId, "Carrier ID is required");
+    CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
+    if (carrierMovement == null) {
+      throw new UnknownCarrierMovementIdException(carrierMovementId);
+    }
 
-    return carrier;
+    return carrierMovement;
   }
 
   private Location findLocation(String unlocode) {

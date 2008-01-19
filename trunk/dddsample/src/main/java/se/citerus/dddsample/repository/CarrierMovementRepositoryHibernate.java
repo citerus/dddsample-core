@@ -14,7 +14,7 @@ public class CarrierMovementRepositoryHibernate extends HibernateRepository impl
   public CarrierMovement find(CarrierMovementId carrierMovementId) {
     return (CarrierMovement) getSession().
             createQuery("from CarrierMovement where carrierMovementId = ?").
-            setParameter(1, carrierMovementId).
+            setParameter(0, carrierMovementId).
             uniqueResult();
   }
 

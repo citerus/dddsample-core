@@ -27,6 +27,11 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
   HandlingEventRepository handlingEventRepository;
   SessionFactory sessionFactory;
 
+  public CargoServiceTest() {
+    setAutowireMode(AUTOWIRE_BY_NAME);
+    setDependencyCheck(false);    
+  }
+
   public void setCargoService(CargoService cargoService) {
     this.cargoService = cargoService;
   }
