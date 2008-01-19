@@ -1,5 +1,9 @@
 package se.citerus.dddsample.service;
 
+import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.CarrierMovementId;
+import se.citerus.dddsample.domain.HandlingEvent;
+
 import java.util.Date;
 
 
@@ -10,47 +14,15 @@ import java.util.Date;
 public interface HandlingEventService {
 
   /**
-   * Register that a cargo has been loaded.
-   *
    * @param completionTime when the event was completed, for example finished loading
-   * @param carrierMovementId carrier movement id
-   * @param trackingIds tracking ids of cargos to register this event for
+   * @param trackingId tracking id
+   * @param carrierMovementId carrier movement
+   * @param unlocode United Nations Location Code for the location of the event
+   * @param type type of event
+   * @throws UnknownCarrierMovementIdException if there's not carrier movement with this id
+   * @throws se.citerus.dddsample.service.UnknownTrackingIdException if there's no cargo with this tracking id
    */
-  void registerLoad(Date completionTime, String carrierMovementId, String[] trackingIds);
+  void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, String unlocode, HandlingEvent.Type type)
+  throws UnknownCarrierMovementIdException, UnknownTrackingIdException;
 
-  /**
-   * Register that a cargo has been unloaded.
-   *
-   * @param completionTime when the event was completed, for example finished loading
-   * @param carrierMovementId carrier movement id
-   * @param trackingIds tracking ids of cargos to register this event for
-   */
-  void registerUnload(Date completionTime, String carrierMovementId, String[] trackingIds);
-
-  /**
-   * Register that a cargo has been claimed.
-   *
-   * @param completionTime when the event was completed, for example finished loading
-   * @param unlocode United Nations Location Code, for example "SESTO" for SwEden/STOckholm
-   * @param trackingIds tracking ids of cargos to register this event for
-   */
-  void registerClaim(Date completionTime, String unlocode, String[] trackingIds);
-
-  /**
-   * Register that a cargo has been recieved.
-   *
-   * @param completionTime when the event was completed, for example finished loading
-   * @param unlocode United Nations Location Code, for example "SESTO" for SwEden/STOckholm
-   * @param trackingIds tracking ids of cargos to register this event for
-   */
-  void registerRecieve(Date completionTime, String unlocode, String[] trackingIds);
-
-  /**
-   * Register that a cargo has been cleared by customs.
-   *
-   * @param completionTime when the event was completed, for example finished loading
-   * @param unlocode United Nations Location Code, for example "SESTO" for SwEden/STOckholm
-   * @param trackingIds tracking ids of cargos to register this event for
-   */
-  void registerCustomsCleared(Date completionTime, String unlocode, String[] trackingIds);
 }

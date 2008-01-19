@@ -30,6 +30,16 @@
     <url-pattern>*.html</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>jaxws-servlet</servlet-name>
+    <servlet-class>com.sun.xml.ws.transport.http.servlet.WSSpringServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>jaxws-servlet</servlet-name>
+    <url-pattern>/ws/*</url-pattern>
+  </servlet-mapping>
+
   <filter>
     <filter-name>sitemesh</filter-name>
     <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>

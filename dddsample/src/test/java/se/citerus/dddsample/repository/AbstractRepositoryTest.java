@@ -13,6 +13,7 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
   SimpleJdbcTemplate sjt;
 
   protected AbstractRepositoryTest() {
+    setAutowireMode(AUTOWIRE_BY_NAME);
     setDependencyCheck(false);
   }
 

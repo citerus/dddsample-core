@@ -44,7 +44,8 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="carrierMovementRepository" class="se.citerus.dddsample.repository.CarrierMovementRepositoryInMem">
+  <bean id="carrierMovementRepository" class="se.citerus.dddsample.repository.CarrierMovementRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
 </beans>
