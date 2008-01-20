@@ -1,21 +1,28 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
 
 /**
- * HandlingEvent links the type of handling with a CarrierMovement.
- * 
- * Since HandlingEvents can be added in any order to a Cargo (or
- * DeliveryHistory), they need to implement Comparable to be able to be sorted
- * in correct order.
- *
+ * A HandlingEvent is used to register the event when, for instance, a cargo is unloaded from a carrier at a some loacation at a given time. The
+ * HandlingEvent's are sent from different Incident Logging Applications some time after the event occured and contain information about the
+ * {@link TrackingID}, {@link Location}, timestamp of the completion of the event, and possibly, if applicable a {@link CarrierMovement}.
+ * <br><br>
+ * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type.LOAD} or 
+ * {@link Type.UNLOAD}. All other events must be of {@link Type.RECEIVE}, {@link Type.CLAIM} or {@link Type.CUSTOMS}.
  */
 @Entity
 public class HandlingEvent {
+  private static final Type[] VALID_TYPES_WITH_CARRIERMOVEMENT = new Type[]{Type.LOAD, Type.UNLOAD};
+
+  private static final Type[] VALID_TYPES_NO_CARRIERMOVEMENT = new Type[]{Type.CLAIM, Type.RECEIVE, Type.CUSTOMS};
+
   /**
    * Comparator used to be able to sort HandlingEvents according to their completion time
    */
@@ -50,12 +57,6 @@ public class HandlingEvent {
     LOAD, UNLOAD, RECEIVE, CLAIM, CUSTOMS
   }
 
-  private HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type) {
-    this.registrationTime = registrationTime;
-    this.completionTime = completionTime;
-    this.type = type;
-    this.cargo = cargo;
-  }
 
   /**
    * Constructor for events that do not have a carrier movement associated.
@@ -67,8 +68,13 @@ public class HandlingEvent {
    * @param location where the event took place
    */
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
-    this(cargo, completionTime, registrationTime, type);
+    this.registrationTime = registrationTime;
+    this.completionTime = completionTime;
+    this.type = type;
+    this.cargo = cargo;
     this.location = location;
+    
+    validateType(type, VALID_TYPES_NO_CARRIERMOVEMENT);
   }
 
   /**
@@ -81,19 +87,21 @@ public class HandlingEvent {
    * @param completionTime completion time
    * @param registrationTime registration time
    * @param type type of event. Legal values are LOAD and UNLOAD
+   * @param location where the event took place
    * @param carrierMovement carrier movement.
    */
-  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, CarrierMovement carrierMovement) {
-    this(cargo, completionTime, registrationTime, type);
+  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location, CarrierMovement carrierMovement) {
+    this.registrationTime = registrationTime;
+    this.completionTime = completionTime;
+    this.type = type;
+    this.cargo = cargo;
+    this.location = location;
     this.carrierMovement = carrierMovement;
-    if (Type.LOAD.equals(type)) {
-      this.location = carrierMovement.from();
-    } else if (Type.UNLOAD.equals(type)) {
-      this.location = carrierMovement.to();
-    } else {
-      throw new IllegalArgumentException("Can't derive location from carrier movement for event type " + type);
-    }
+    
+    validateType(type, VALID_TYPES_WITH_CARRIERMOVEMENT);
+    Validate.notNull(carrierMovement, "CarrierMovementId must not be null for this type of event");
   }
+
 
   public Long id() {
     return this.id;
@@ -161,6 +169,21 @@ public class HandlingEvent {
     return other != null && id.equals(other.id);
   }
 
+  /**
+   * Private helper that validate a HandlingEvent type agains an array of valid types
+   * 
+   * @param type The type that should be validated
+   * @param validTypes The list of valid types
+   */
+  private void validateType(Type type, Type[] validTypes) {
+    for (Type validType : validTypes) {
+      if (type.equals(validType)){
+        return;
+      }
+    }
+    throw new IllegalArgumentException("Illegal event type " + type + ". Valid types are: " + ToStringBuilder.reflectionToString(validTypes, ToStringStyle.NO_FIELD_NAMES_STYLE));
+  }
+  
   // Needed by Hibernate
   HandlingEvent() {}
 
