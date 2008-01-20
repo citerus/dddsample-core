@@ -16,9 +16,9 @@ public class DeliveryHistoryTest extends TestCase {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("FROM"), new Location("TO"));
     HandlingEvent he1 = new HandlingEvent(null, df.parse("2010-01-03"), new Date(), HandlingEvent.Type.RECEIVE, new Location("TO"));
-    HandlingEvent he2 = new HandlingEvent(null, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, carrierMovement);
+    HandlingEvent he2 = new HandlingEvent(null, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, new Location("TO"), carrierMovement);
     HandlingEvent he3 = new HandlingEvent(null, df.parse("2010-01-04"), new Date(), HandlingEvent.Type.CLAIM, new Location("FROM"));
-    HandlingEvent he4 = new HandlingEvent(null, df.parse("2010-01-02"), new Date(), HandlingEvent.Type.UNLOAD, carrierMovement);
+    HandlingEvent he4 = new HandlingEvent(null, df.parse("2010-01-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("FROM"), carrierMovement);
     dh.addEvent(he1, he2, he3, he4);
 
     List<HandlingEvent> orderEvents = dh.eventsOrderedByCompletionTime();

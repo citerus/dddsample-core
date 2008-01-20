@@ -22,7 +22,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     Date registrationTime = new Date();
     HandlingEvent event;
     if (carrierMovement != null) {
-      event = new HandlingEvent(cargo, completionTime, registrationTime, type, carrierMovement);
+      event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
     } else {
       event = new HandlingEvent(cargo, completionTime, registrationTime, type, location);
     }
