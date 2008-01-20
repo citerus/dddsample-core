@@ -69,6 +69,13 @@ public class Cargo {
    */
   public Location lastKnownLocation() {
     HandlingEvent lastEvent = deliveryHistory.lastEvent();
+    
+    if (lastEvent == null) {
+      return Location.UNKNOWN;
+    }
+    
+    
+    
     if (lastEvent != null) {
       return lastEvent.location();
     } else {

@@ -15,15 +15,15 @@ public class HandlingEventTest extends TestCase {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
     CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("C01"), origin, finalDestination);
 
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, carrierMovement);
+    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, origin, carrierMovement);
     assertEquals(origin, e1.location());
 
-    HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, carrierMovement);
+    HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, finalDestination, carrierMovement);
     assertEquals(finalDestination, e2.location());
     
     for (Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
       try {
-        new HandlingEvent(cargo, new Date(), new Date(), type, carrierMovement);
+        new HandlingEvent(cargo, new Date(), new Date(), type, origin, carrierMovement);
         fail("Handling event with carrier movement and type " + type + " is not legal");
       } catch (IllegalArgumentException expected) {}
     }
@@ -47,7 +47,7 @@ public class HandlingEventTest extends TestCase {
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
     
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), LOAD, cm);
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), LOAD, locationAAA, cm);
     
     assertEquals(locationAAA, ev.location());
   }
@@ -58,7 +58,7 @@ public class HandlingEventTest extends TestCase {
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
     
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), UNLOAD, cm);
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), UNLOAD, locationBBB, cm);
     
     assertEquals(locationBBB, ev.location());
   }
@@ -98,8 +98,8 @@ public class HandlingEventTest extends TestCase {
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
 
-    HandlingEvent ev1 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, cm);
-    HandlingEvent ev2 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, cm);
+    HandlingEvent ev1 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, locationAAA, cm);
+    HandlingEvent ev2 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, locationAAA, cm);
 
     // Two handling events are not equal() even if all non-uuid fields are identical
     assertTrue(ev1.equals(ev2));
