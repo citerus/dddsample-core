@@ -47,7 +47,7 @@
       <email>peter.backlund@citerus.se</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>GMT+1</timezone>
+      <timezone>+1</timezone>
     </developer>
     <developer>
       <id>patrikfr</id>
@@ -55,7 +55,7 @@
       <email>patrikfr@users.sourceforge.net</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>GMT+1</timezone>
+      <timezone>+1</timezone>
     </developer>
     <developer>
       <id>jeham</id>
@@ -63,7 +63,7 @@
       <email>jeham@users.sourceforge.net</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>GMT+1</timezone>
+      <timezone>+1</timezone>
     </developer>
     <developer>
       <id>jorgen_falk</id>
@@ -71,7 +71,7 @@
       <email>jorgen.falk@citerus.se</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>GMT+1</timezone>
+      <timezone>+1</timezone>
     </developer>
   </developers>
   <licenses>
@@ -83,7 +83,7 @@
   </licenses>
   <scm>
     <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
-    <url>http://dddsample.svn.sourceforge.net/viewvc/dddsample/</url>
+    <url>http://ddd.sventon.org</url>
   </scm>
   <build>
     <plugins>
@@ -246,4 +246,25 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
+
+  <reporting>
+    <plugins>
+      <!-- Javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <!-- Source code cross reference -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+      <!-- Test report -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
 </project>
