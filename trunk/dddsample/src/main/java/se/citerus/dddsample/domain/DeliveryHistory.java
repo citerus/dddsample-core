@@ -20,14 +20,23 @@ public class DeliveryHistory {
   private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
 
   /**
-   * Adds the HandlingEvent to the sorted set.
+   * Adds all HandlingEvent to the delivery history.
    *
    * @param events events to add
    */
-  public void addEvent(HandlingEvent... events) {
-    this.events.addAll(Arrays.asList(events));
+  public void addAllEvents(Collection<HandlingEvent> events) {
+    this.events.addAll(events);
   }
 
+  /**
+   * Adds a HandlingEvent to the delivery history.
+   *
+   * @param event event to add.
+   */
+  public void addEvent(HandlingEvent event) {
+    this.events.add(event);
+  }
+  
   /**
    * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
    */
