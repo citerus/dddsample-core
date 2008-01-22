@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,12 +35,12 @@ public class TrackingScenarioTest extends TestCase {
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
             new CarrierMovementId("CAR_002"), new Location("DEHAM"), new Location("CNHKG"));
     DeliveryHistory dh = new DeliveryHistory();
-    dh.addEvent(
+    dh.addAllEvents(Arrays.asList(
             new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, new Location("SESTO"), stockholmToHamburg),
             new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("DEHAM"), stockholmToHamburg),
             new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, new Location("DEHAM"), hamburgToHongKong),
             new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, new Location("CNHKG"), hamburgToHongKong)
-    );
+    ));
     return dh;
   }
 

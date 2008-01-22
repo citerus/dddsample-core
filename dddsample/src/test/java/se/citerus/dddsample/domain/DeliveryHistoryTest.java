@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class DeliveryHistoryTest extends TestCase {
     HandlingEvent he2 = new HandlingEvent(null, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, new Location("TO"), carrierMovement);
     HandlingEvent he3 = new HandlingEvent(null, df.parse("2010-01-04"), new Date(), HandlingEvent.Type.CLAIM, new Location("FROM"));
     HandlingEvent he4 = new HandlingEvent(null, df.parse("2010-01-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("FROM"), carrierMovement);
-    dh.addEvent(he1, he2, he3, he4);
+    dh.addAllEvents(Arrays.asList(he1, he2, he3, he4));
 
     List<HandlingEvent> orderEvents = dh.eventsOrderedByCompletionTime();
     assertEquals(4, orderEvents.size());

@@ -1,6 +1,8 @@
 package se.citerus.dddsample.service;
 
 import static org.easymock.EasyMock.*;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.easymock.IAnswer;
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
@@ -16,6 +18,7 @@ import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -81,7 +84,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, new Location("SESTO"), carrierMovement);
     HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, new Location("MUGER"), carrierMovement);
     // Add out of order to verify ordering in DTO
-    cargo.deliveryHistory().addEvent(loaded, unloaded, claimed);
+    cargo.deliveryHistory().addAllEvents(Arrays.asList(loaded, unloaded, claimed));
 
     final IAnswer<Cargo> cargoAnswer = new TransactionVerifyingAnswer<Cargo>() {
       public Cargo answerWithinTransaction() throws Throwable {
