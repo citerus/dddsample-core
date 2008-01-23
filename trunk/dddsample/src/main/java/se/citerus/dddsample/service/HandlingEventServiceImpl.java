@@ -40,7 +40,9 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   }
 
   private CarrierMovement findCarrierMovement(CarrierMovementId carrierMovementId) throws UnknownCarrierMovementIdException {
-    Validate.notNull(carrierMovementId, "Carrier ID is required");
+    if (carrierMovementId == null) {
+      return null;
+    }
     CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
     if (carrierMovement == null) {
       throw new UnknownCarrierMovementIdException(carrierMovementId);
