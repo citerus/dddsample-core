@@ -6,9 +6,9 @@ import se.citerus.dddsample.domain.CarrierMovementId;
 import se.citerus.dddsample.domain.HandlingEvent;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.service.HandlingEventService;
+import se.citerus.dddsample.service.InvalidEventTypeException;
 import se.citerus.dddsample.service.UnknownCarrierMovementIdException;
 import se.citerus.dddsample.service.UnknownTrackingIdException;
-import se.citerus.dddsample.service.InvalidEventTypeException;
 
 import javax.jws.WebService;
 import java.text.ParseException;
@@ -20,20 +20,24 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
 
   private HandlingEventService handlingEventService;
   private static final Log logger = LogFactory.getLog(HandlingEventServiceEndpointImpl.class);
-  private static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
+  protected static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
 
   public void register(String completionTime, String trackingId, String carrierMovementId,
                        String unlocode, String eventType) {
     try {
       Date date = parseIso8601Date(completionTime);
       TrackingId tid = new TrackingId(trackingId);
-      CarrierMovementId cid = new CarrierMovementId(carrierMovementId);
+      CarrierMovementId cid;
+      if (carrierMovementId != null) {
+        cid = new CarrierMovementId(carrierMovementId);
+      } else {
+        cid = null;
+      }
       HandlingEvent.Type type = parseEventType(eventType);
 
       handlingEventService.register(date, tid, cid, unlocode, type);
-      
     } catch (ParseException pe) {
-      logger.error("Invalid date format: " + completionTime);
+      logger.error("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
     } catch (UnknownTrackingIdException utid) {
       handleRetry(utid);
     } catch (UnknownCarrierMovementIdException ucmi) {

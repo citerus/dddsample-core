@@ -15,10 +15,10 @@ public class HandlingEventServiceTest extends TestCase {
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
   
-  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("ABCFROM"), new Location("ABCTO"));
-  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("XYZFROM"), new Location("XYZTO"));
+  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("AFROM"), new Location("ABCTO"));
+  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("XFROM"), new Location("XYZTO"));
   private final CarrierMovement cmAAA_BBB = new CarrierMovement(
-          new CarrierMovementId("CAR_001"), new Location("AAA"), new Location("BBB"));
+          new CarrierMovementId("CAR_001"), new Location("AAAAA"), new Location("BBBBB"));
 
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();
@@ -51,7 +51,21 @@ public class HandlingEventServiceTest extends TestCase {
     
     service.register(date, trackingId, carrierMovementId, "SESTO", HandlingEvent.Type.LOAD);
   }
+
+  public void testRegisterEventWithoutCarrierMovement() throws Exception {
+    final Date date = new Date();
+
+    final TrackingId trackingId = new TrackingId("ABC");
+    expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
+
+    handlingEventRepository.save(isA(HandlingEvent.class));
+
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
+
+    service.register(date, trackingId, null, "SESTO", HandlingEvent.Type.CLAIM);
+  }
   
+
   public void testRegisterEventInvalidCarrier() throws Exception {
     final Date date = new Date();
 
@@ -59,7 +73,7 @@ public class HandlingEventServiceTest extends TestCase {
     expect(carrierMovementRepository.find(carrierMovementId)).andReturn(null);
 
     final TrackingId trackingId = new TrackingId("XYZ");
-    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, new Location("FROM"), new Location("TO")));
+    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, new Location("FROMX"), new Location("TOYYY")));
 
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository);
     
