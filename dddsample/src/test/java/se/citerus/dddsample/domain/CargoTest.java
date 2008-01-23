@@ -60,10 +60,10 @@ public class CargoTest extends TestCase {
   }
   
   public void testEquality() throws Exception {
-    Cargo c1 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("C"));
-    Cargo c2 = new Cargo(new TrackingId("CBA"), new Location("A"), new Location("C"));
-    Cargo c3 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("X"));
-    Cargo c4 = new Cargo(new TrackingId("ABC"), new Location("A"), new Location("C"));
+    Cargo c1 = new Cargo(new TrackingId("ABC"), new Location("AAAAA"), new Location("CCCCC"));
+    Cargo c2 = new Cargo(new TrackingId("CBA"), new Location("AAAAA"), new Location("CCCCC"));
+    Cargo c3 = new Cargo(new TrackingId("ABC"), new Location("AAAAA"), new Location("XXXXX"));
+    Cargo c4 = new Cargo(new TrackingId("ABC"), new Location("AAAAA"), new Location("CCCCC"));
 
     assertTrue("Cargos should be equal when TrackingIDs are equal", c1.equals(c4));
     assertTrue("Cargos should be equal when TrackingIDs are equal", c1.equals(c3));

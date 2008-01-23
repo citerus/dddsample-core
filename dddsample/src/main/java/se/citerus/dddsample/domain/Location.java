@@ -1,15 +1,14 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.Validate;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.regex.Pattern;
 
 @Entity
 public class Location {
-  /**
-   * Special Location object that marks an unknown location.
-   */
-  public static final Location UNKNOWN = new Location("Unknown");
 
   @Id
   @GeneratedValue
@@ -17,7 +16,29 @@ public class Location {
 
   private String unlocode;
 
+  /**
+   * Regular expression of a UN Locode (exactly five letters of the english alphabet)
+   */
+  private static final Pattern unlocodePattern = Pattern.compile("[a-zA-Z]{5}");
+
+  /**
+   * Special Location object that marks an unknown location.
+   */
+  public static final Location UNKNOWN = new Location();
+
+  // Internal constructor
+  private Location() {
+    this.unlocode = "Unknown";
+  }
+
+  /**
+   * @param unlocode UN locode
+   * @throws IllegalArgumentException if the UN locode is anything other than five letters of the US alphabet
+   */
   public Location(String unlocode) {
+    Validate.notNull(unlocode);
+    Validate.isTrue(unlocodePattern.matcher(unlocode).matches(),
+            "\"" + unlocode + "\" is not a valid UN Locode");
     this.unlocode = unlocode;
   }
 
@@ -59,8 +80,5 @@ public class Location {
   public String toString() {
     return unlocode;
   }
-
-  // Needed by Hibernate
-  Location() {}
 
 }

@@ -10,8 +10,8 @@ import java.util.Date;
 public class HandlingEventTest extends TestCase {
 
   public void testNewWithCarrierMovement() throws Exception {
-    Location origin = new Location("FROM");
-    Location finalDestination = new Location("TO");
+    Location origin = new Location("FROMX");
+    Location finalDestination = new Location("TOYYY");
     Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
     CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("C01"), origin, finalDestination);
 
@@ -20,30 +20,37 @@ public class HandlingEventTest extends TestCase {
 
     HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, finalDestination, carrierMovement);
     assertEquals(finalDestination, e2.location());
-    
+
+      // These event types prohibit a carrier movement association
     for (Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
       try {
         new HandlingEvent(cargo, new Date(), new Date(), type, origin, carrierMovement);
-        fail("Handling event with carrier movement and type " + type + " is not legal");
+        fail("Handling event type " + type + " prohibits carrier movement");
       } catch (IllegalArgumentException expected) {}
+    }
+
+      // These event types requires a carrier movement association
+    for (Type type : asList(LOAD, UNLOAD)) {
+        try {
+          new HandlingEvent(cargo, new Date(), new Date(), type, origin);
+            fail("Handling event type " + type + " requires carrier movement");
+        } catch (IllegalArgumentException expected) {}
     }
   }
 
   public void testNewWithLocation() throws Exception {
-    Location origin = new Location("FROM");
-    Location finalDestination = new Location("TO");
+    Location origin = new Location("FROMX");
+    Location finalDestination = new Location("TOYYY");
     Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
 
-    Location location = new Location("FOO");
+    Location location = new Location("FOOOO");
     HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), Type.CLAIM, location);
     assertEquals(location, e1.location());
-
-    
   }
 
   public void testCurrentLocationLoadEvent() throws Exception {
-    Location locationAAA = new Location("AAA");
-    Location locationBBB = new Location("BBB");
+    Location locationAAA = new Location("AAAAA");
+    Location locationBBB = new Location("BBBBB");
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
     
@@ -53,8 +60,8 @@ public class HandlingEventTest extends TestCase {
   }
   
   public void testCurrentLocationUnloadEvent() throws Exception {
-    Location locationAAA = new Location("AAA");
-    Location locationBBB = new Location("BBB");
+    Location locationAAA = new Location("AAAAA");
+    Location locationBBB = new Location("BBBBB");
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
     
@@ -64,14 +71,14 @@ public class HandlingEventTest extends TestCase {
   }
   
   public void testCurrentLocationReceivedEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), RECEIVE, new Location("TEST"));
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), RECEIVE, new Location("ATEST"));
 
-    assertEquals(new Location("TEST"), ev.location());
+    assertEquals(new Location("ATEST"), ev.location());
   }
   public void testCurrentLocationClaimedEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), CLAIM, new Location("TEST"));
+    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), CLAIM, new Location("ATEST"));
 
-    assertEquals(new Location("TEST"), ev.location());
+    assertEquals(new Location("ATEST"), ev.location());
   }
   
   public void testParseType() throws Exception {
@@ -93,8 +100,8 @@ public class HandlingEventTest extends TestCase {
   public void testEqualsAndSameAs() throws Exception {
     Date timeOccured = new Date();
     Date timeRegistered = new Date();
-    Location locationAAA = new Location("AAA");
-    Location locationBBB = new Location("BBB");
+    Location locationAAA = new Location("AAAAA");
+    Location locationBBB = new Location("BBBBB");
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, locationAAA, locationBBB);
 
