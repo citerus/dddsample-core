@@ -43,8 +43,8 @@ public class CargoTrackingControllerTest extends TestCase {
   private CargoService getCargoServiceMock() {
     return new CargoService() {
       public CargoWithHistoryDTO find(String trackingId) {
-        Cargo cargo = new Cargo(new TrackingId(trackingId), new Location("AAA"), new Location("BBB"));
-        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, new Location("BBB"));
+        Cargo cargo = new Cargo(new TrackingId(trackingId), new Location("AAAAA"), new Location("BBBBB"));
+        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, new Location("BBBBB"));
 //        cargo.handle(event);
 
         // TODO: use DTO assemblers
@@ -52,7 +52,7 @@ public class CargoTrackingControllerTest extends TestCase {
                 cargo.trackingId().idString(),
                 cargo.origin().unlocode(),
                 cargo.finalDestination().unlocode(),
-                "AAA"
+                "AAAAA"
         );
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unlocode(),
@@ -93,7 +93,7 @@ public class CargoTrackingControllerTest extends TestCase {
     // Errors, command are two standard map attributes, the third should be the cargo object
     assertEquals(3, mav.getModel().size());
     CargoWithHistoryDTO cargo = (CargoWithHistoryDTO) mav.getModel().get("cargo");
-    assertEquals("AAA", cargo.getCurrentLocation());
+    assertEquals("AAAAA", cargo.getCurrentLocation());
   }
 
   public void testUnknownCargo() throws Exception {

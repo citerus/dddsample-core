@@ -1,8 +1,6 @@
 package se.citerus.dddsample.service;
 
 import static org.easymock.EasyMock.*;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.easymock.IAnswer;
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
@@ -78,7 +76,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
    * Cargo returned.
    */
   public void testCargoServiceFindByTrackingIdScenario() {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIG"), new Location("DEST"));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIGI"), new Location("DESTI"));
     HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, new Location("SESTO"));
     CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("MUGER"));
     HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, new Location("SESTO"), carrierMovement);
@@ -101,8 +99,8 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
 
     assertEquals("XYZ", cargoDTO.getTrackingId());
-    assertEquals("ORIG", cargoDTO.getOrigin());
-    assertEquals("DEST", cargoDTO.getFinalDestination());
+    assertEquals("ORIGI", cargoDTO.getOrigin());
+    assertEquals("DESTI", cargoDTO.getFinalDestination());
     assertEquals("MUGER", cargoDTO.getCurrentLocation());
 
     List<HandlingEventDTO> events = cargoDTO.getEvents();

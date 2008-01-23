@@ -23,7 +23,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
   public void testSave() {
     // TODO: introduce Location repository
-    Location location = new Location("ABC");
+    Location location = new Location("ABCDE");
     sessionFactory.getCurrentSession().saveOrUpdate(location);
 
     Cargo cargo = cargoRepository.find(new TrackingId("XYZ"));

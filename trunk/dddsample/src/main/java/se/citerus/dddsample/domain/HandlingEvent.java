@@ -2,8 +2,6 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.Comparator;
@@ -12,16 +10,13 @@ import java.util.Date;
 /**
  * A HandlingEvent is used to register the event when, for instance, a cargo is unloaded from a carrier at a some loacation at a given time. The
  * HandlingEvent's are sent from different Incident Logging Applications some time after the event occured and contain information about the
- * {@link TrackingID}, {@link Location}, timestamp of the completion of the event, and possibly, if applicable a {@link CarrierMovement}.
+ * {@link TrackingId}, {@link Location}, timestamp of the completion of the event, and possibly, if applicable a {@link CarrierMovement}.
  * <br><br>
- * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type.LOAD} or 
+ * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type.LOAD} or
  * {@link Type.UNLOAD}. All other events must be of {@link Type.RECEIVE}, {@link Type.CLAIM} or {@link Type.CUSTOMS}.
  */
 @Entity
 public class HandlingEvent {
-  private static final Type[] VALID_TYPES_WITH_CARRIERMOVEMENT = new Type[]{Type.LOAD, Type.UNLOAD};
-
-  private static final Type[] VALID_TYPES_NO_CARRIERMOVEMENT = new Type[]{Type.CLAIM, Type.RECEIVE, Type.CUSTOMS};
 
   /**
    * Comparator used to be able to sort HandlingEvents according to their completion time
@@ -54,18 +49,42 @@ public class HandlingEvent {
   private Cargo cargo;
 
   public enum Type {
-    LOAD, UNLOAD, RECEIVE, CLAIM, CUSTOMS
+    LOAD(true),
+    UNLOAD(true),
+    RECEIVE(false),
+    CLAIM(false),
+    CUSTOMS(false);
+
+    private boolean carrierMovementRequired;
+
+    private Type(boolean carrierMovementRequired) {
+      this.carrierMovementRequired = carrierMovementRequired;
+    }
+
+    /**
+     * @return True if a carrier movement association is required for this event type.
+     */
+    public boolean requiresCarrierMovement() {
+      return carrierMovementRequired;
+    }
+
+    /**
+     * @return True if a carrier movement association is prohibited for this event type.
+     */
+    public boolean prohibitsCarrierMovement() {
+      return !requiresCarrierMovement();
+    }
   }
 
 
   /**
    * Constructor for events that do not have a carrier movement associated.
    *
-   * @param cargo cargo
-   * @param completionTime completion time
+   * @param cargo            cargo
+   * @param completionTime   completion time
    * @param registrationTime registration time
-   * @param type type of event. Legal values are CLAIM, RECIEVE and CUSTOMS
-   * @param location where the event took place
+   * @param type             type of event. Legal values are CLAIM, RECIEVE and CUSTOMS
+   * @param location         where the event took place
    */
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
     this.registrationTime = registrationTime;
@@ -73,8 +92,8 @@ public class HandlingEvent {
     this.type = type;
     this.cargo = cargo;
     this.location = location;
-    
-    validateType(type, VALID_TYPES_NO_CARRIERMOVEMENT);
+
+    validateType();
   }
 
   /**
@@ -83,12 +102,12 @@ public class HandlingEvent {
    * the location is the starting point of the movement, if the type is UNLOAD the location
    * is the end point.
    *
-   * @param cargo cargo
-   * @param completionTime completion time
+   * @param cargo            cargo
+   * @param completionTime   completion time
    * @param registrationTime registration time
-   * @param type type of event. Legal values are LOAD and UNLOAD
-   * @param location where the event took place
-   * @param carrierMovement carrier movement.
+   * @param type             type of event. Legal values are LOAD and UNLOAD
+   * @param location         where the event took place
+   * @param carrierMovement  carrier movement.
    */
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location, CarrierMovement carrierMovement) {
     this.registrationTime = registrationTime;
@@ -97,9 +116,9 @@ public class HandlingEvent {
     this.cargo = cargo;
     this.location = location;
     this.carrierMovement = carrierMovement;
-    
-    validateType(type, VALID_TYPES_WITH_CARRIERMOVEMENT);
+
     Validate.notNull(carrierMovement, "CarrierMovementId must not be null for this type of event");
+    validateType();
   }
 
 
@@ -145,8 +164,8 @@ public class HandlingEvent {
     }
     HandlingEvent other = (HandlingEvent) object;
     return this.location.equals(other.location) &&
-           this.completionTime.equals(other.completionTime) &&
-           this.type.equals(other.type);
+            this.completionTime.equals(other.completionTime) &&
+            this.type.equals(other.type);
   }
 
   /**
@@ -170,21 +189,21 @@ public class HandlingEvent {
   }
 
   /**
-   * Private helper that validate a HandlingEvent type agains an array of valid types
-   * 
-   * @param type The type that should be validated
-   * @param validTypes The list of valid types
+   * Validate that the event type is compatible with the carrier movement value.
+   * <p/>
+   * Only certain types of events may be associated with a carrier movement.
    */
-  private void validateType(Type type, Type[] validTypes) {
-    for (Type validType : validTypes) {
-      if (type.equals(validType)){
-        return;
-      }
+  private void validateType() {
+    if (type.requiresCarrierMovement() && carrierMovement == null) {
+      throw new IllegalArgumentException("Carrier movement is required for event type " + type);
     }
-    throw new IllegalArgumentException("Illegal event type " + type + ". Valid types are: " + ToStringBuilder.reflectionToString(validTypes, ToStringStyle.NO_FIELD_NAMES_STYLE));
+    if (type.prohibitsCarrierMovement() && carrierMovement != null) {
+      throw new IllegalArgumentException("Carrier movement is not allowed with event type " + type);
+    }
   }
-  
+
   // Needed by Hibernate
-  HandlingEvent() {}
+  HandlingEvent() {
+  }
 
 }

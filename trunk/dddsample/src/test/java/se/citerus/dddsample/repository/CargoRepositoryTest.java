@@ -29,8 +29,8 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   public void testSave() {
     // TODO: introduce Location repository
-    Location finalDestination = new Location("TO");
-    Location origin = new Location("FROM");
+    Location finalDestination = new Location("TOZZZ");
+    Location origin = new Location("FROMZ");
     sessionFactory.getCurrentSession().saveOrUpdate(origin);
     sessionFactory.getCurrentSession().saveOrUpdate(finalDestination);
 
