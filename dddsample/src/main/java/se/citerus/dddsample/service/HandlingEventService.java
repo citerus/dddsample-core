@@ -23,6 +23,6 @@ public interface HandlingEventService {
    * @throws UnknownTrackingIdException if there's no cargo with this tracking id
    */
   void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, String unlocode, HandlingEvent.Type type)
-  throws UnknownCarrierMovementIdException, UnknownTrackingIdException;
+  throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException;
 
 }

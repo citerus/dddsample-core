@@ -48,4 +48,7 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
+  <bean id="locationRepository" class="se.citerus.dddsample.repository.LocationRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
 </beans>

@@ -21,6 +21,7 @@
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="handlingEventRepository" ref="handlingEventRepository"/>
     <property name="carrierRepository" ref="carrierMovementRepository"/>
+    <property name="locationRepository" ref="locationRepository"/>
   </bean>
 
 </beans>
