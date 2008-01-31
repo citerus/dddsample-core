@@ -119,10 +119,31 @@
         </executions>
         <configuration>
           <sei>se.citerus.dddsample.ws.HandlingEventServiceEndpointImpl</sei>
+          <genWsdl>true</genWsdl>
           <verbose>true</verbose>
         </configuration>
       </plugin>
-
+      
+      <!-- Jar plugin for generation of WS Client classes -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>ws-client</classifier>
+              <includes>
+                <include>**/se/citerus/dddsample/ws/*</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
   <dependencies>

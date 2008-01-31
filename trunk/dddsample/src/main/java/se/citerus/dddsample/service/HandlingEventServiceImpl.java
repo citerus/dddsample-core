@@ -6,6 +6,7 @@ import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.HandlingEventRepository;
+import se.citerus.dddsample.repository.LocationRepository;
 
 import java.util.Date;
 
@@ -13,9 +14,10 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   private CargoRepository cargoRepository;
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
+  private LocationRepository locationRepository;
 
   @Transactional(readOnly = false)
-  public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, String unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException {
+  public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, String unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
     Cargo cargo = findCargo(trackingId);
     CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
     Location location = findLocation(unlocode);
@@ -51,9 +53,17 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     return carrierMovement;
   }
 
-  private Location findLocation(String unlocode) {
-    // TODO: introdcue Location repository, lookup and add new Location when not found
-    return new Location(unlocode);
+  private Location findLocation(String unlocode) throws UnknownLocationException {
+    if (unlocode == null){
+      return Location.UNKNOWN;
+    }
+    
+    Location location = locationRepository.find(unlocode);
+    if (location == null){
+      throw new UnknownLocationException(unlocode);
+    }
+    
+    return location;
   }
 
   public void setCargoRepository(CargoRepository cargoRepository) {
@@ -66,5 +76,9 @@ public class HandlingEventServiceImpl implements HandlingEventService {
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
+  }
+
+  public void setLocationRepository(LocationRepository locationRepository) {
+    this.locationRepository = locationRepository;
   }
 }
