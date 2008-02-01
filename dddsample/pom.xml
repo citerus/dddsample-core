@@ -137,7 +137,7 @@
             <configuration>
               <classifier>ws-client</classifier>
               <includes>
-                <include>**/se/citerus/dddsample/ws/*</include>
+                <include>**/se/citerus/dddsample/ws/**</include>
               </includes>
             </configuration>
           </execution>
