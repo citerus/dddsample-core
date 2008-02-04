@@ -9,6 +9,7 @@
 
   <bean id="registerApp" class="se.citerus.registerapp.RegisterApp">
     <property name="handlingEventService" ref="handlingEventServiceWs"/>
+    <property name="debugUI" value="false" />
   </bean>
 
   <bean id="handlingEventServiceWs" class="se.citerus.registerapp.service.HandlingEventServiceWs">

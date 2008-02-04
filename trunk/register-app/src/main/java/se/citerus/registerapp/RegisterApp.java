@@ -15,8 +15,8 @@ import javax.swing.text.DefaultFormatter;
 
 import se.citerus.registerapp.service.HandlingEventService;
 
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class RegisterApp {
@@ -32,6 +32,9 @@ public class RegisterApp {
   private JButton registerButton;
   
   private HandlingEventService handlingEventService;
+  private boolean debugUI;
+
+
 
   /////////////////////////////////////////////////////////////////////////////
   // GUI EVENT HANDLING
@@ -74,6 +77,9 @@ public class RegisterApp {
     this.handlingEventService = handlingEventService;
   }
 
+  public void setDebugUI(boolean on){
+    this.debugUI = on;
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // GUI SETUP
@@ -112,39 +118,61 @@ public class RegisterApp {
   }
 
   private JComponent createMainPanel() {
-    FormLayout layout = createFormLayout();
-    PanelBuilder builder = createBuilder(layout);
+    JComponent fieldPanel = createFieldPanel();
+    JComponent buttonPanel = createButtonPanel();
     
- // Obtain a reusable constraints object to place components in the grid.
-    CellConstraints cc = new CellConstraints();
+    DefaultFormBuilder mainBuilder = createBuilder("right:pref");
+    mainBuilder.append(fieldPanel);
+    mainBuilder.append(buttonPanel);
     
-    builder.addLabel("Completion Time",         cc.xy (1,  1   ));
-    builder.add(completionTimeField,            cc.xyw(3,  1, 3));
-    builder.addLabel("Tracking Id",             cc.xy (1,  3   ));
-    builder.add(trackingIdField,                cc.xyw(3,  3, 3));
-    builder.addLabel("Carrier Movement",        cc.xy (1,  5   ));
-    builder.add(carrierMovementField,           cc.xyw(3,  5, 3));
-    builder.addLabel("Location",                cc.xy (1,  7   ));
-    builder.add(locationField,                  cc.xyw(3,  7, 3));
-    builder.addLabel("Event Type",              cc.xy (1,  9   ));
-    builder.add(eventTypeField,                 cc.xyw(3,  9, 3));
-    builder.add(registerButton,                 cc.xy (5,  11  ));
+    return mainBuilder.getPanel();
+  }
+
+
+  private JComponent createButtonPanel() {
+    DefaultFormBuilder builder = createBuilder("right:pref, 3dlu");
+    
+    builder.append(registerButton);
     
     return builder.getPanel();
   }
 
-  private PanelBuilder createBuilder(FormLayout layout) {
-    PanelBuilder builder = new PanelBuilder(layout);
-    builder.setDefaultDialogBorder();
+
+  private JComponent createFieldPanel() {
+    DefaultFormBuilder builder = createBuilder("right:pref, 3dlu, 100dlu, 3dlu, p");
     
+    builder.appendSeparator("Completion");
+    builder.append("Completion Time", completionTimeField); builder.nextLine();
+    
+    builder.appendSeparator("Cargo");
+    builder.append("Tracking Id", trackingIdField); builder.nextLine();
+    
+    builder.appendSeparator("Event");
+    builder.append("Carrier Movement", carrierMovementField); builder.nextLine();
+    builder.append("Location", locationField); builder.nextLine();
+    builder.append("Event Type", eventTypeField); builder.nextLine();
+    
+    builder.appendSeparator("");
+    
+    return builder.getPanel();
+  }
+
+
+  private DefaultFormBuilder createBuilder(String colSpec) {
+    FormLayout layout = new FormLayout(colSpec);
+
+    DefaultFormBuilder builder = createDefaultFormBuilder(layout);
+    builder.setDefaultDialogBorder();
     return builder;
   }
 
-  private FormLayout createFormLayout() {
-    FormLayout layout = new FormLayout(
-        "right:pref, 3dlu, 100dlu, 3dlu, pref",                  // columns
-        "p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu"); // rows
-    
-    return layout;
+
+  private DefaultFormBuilder createDefaultFormBuilder(FormLayout layout) {
+    if (debugUI){
+      return new DefaultFormBuilder(layout, new FormDebugPanel());
+    } else {
+      return new DefaultFormBuilder(layout);
+    }
   }
+ 
 }
