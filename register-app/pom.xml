@@ -1,32 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.citerus</groupId>
   <artifactId>register-app</artifactId>
-  <packaging>jar</packaging>
   <name>register-app</name>
   <version>1.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
-  <repositories>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
-    </pluginRepository>
-  </pluginRepositories>
   <build>
     <plugins>
-      <!-- Compiler -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -36,7 +16,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
@@ -61,6 +40,20 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -95,72 +88,72 @@
       <classifier>ws-client</classifier>
       <exclusions>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-core</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-webmvc</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-hibernate3</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-jdbc</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-aop</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-mock</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-context</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>spring-beans</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.hibernate</groupId>
           <artifactId>hibernate</artifactId>
+          <groupId>org.hibernate</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.hibernate</groupId>
           <artifactId>hibernate-annotations</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.hibernate</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>hibernate-commons-annotations</artifactId>
+          <groupId>org.hibernate</groupId>
         </exclusion>
         <exclusion>
-          <groupId>commons-dbcp</groupId>
           <artifactId>commons-dbcp</artifactId>
+          <groupId>commons-dbcp</groupId>
         </exclusion>
         <exclusion>
-          <groupId>hsqldb</groupId>
           <artifactId>hsqldb</artifactId>
+          <groupId>hsqldb</groupId>
         </exclusion>
         <exclusion>
-          <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>taglibs</groupId>
-          <artifactId>standard</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>javax.servlet</groupId>
-          <artifactId>jstl</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>opensymphony</groupId>
+          <artifactId>standard</artifactId>
+          <groupId>taglibs</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jstl</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>sitemesh</artifactId>
+          <groupId>opensymphony</groupId>
         </exclusion>
       </exclusions>
     </dependency>
