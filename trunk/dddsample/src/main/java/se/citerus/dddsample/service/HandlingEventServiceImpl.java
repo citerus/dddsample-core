@@ -17,7 +17,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   private LocationRepository locationRepository;
 
   @Transactional(readOnly = false)
-  public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, String unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
+  public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
     Cargo cargo = findCargo(trackingId);
     CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
     Location location = findLocation(unlocode);
@@ -53,13 +53,13 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     return carrierMovement;
   }
 
-  private Location findLocation(String unlocode) throws UnknownLocationException {
-    if (unlocode == null){
+  private Location findLocation(UnLocode unlocode) throws UnknownLocationException {
+    if (unlocode == null) {
       return Location.UNKNOWN;
     }
     
     Location location = locationRepository.find(unlocode);
-    if (location == null){
+    if (location == null) {
       throw new UnknownLocationException(unlocode);
     }
     

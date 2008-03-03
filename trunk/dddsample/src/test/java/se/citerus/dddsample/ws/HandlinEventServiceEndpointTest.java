@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.CarrierMovementId;
 import se.citerus.dddsample.domain.HandlingEvent;
 import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.UnLocode;
 import se.citerus.dddsample.service.HandlingEventService;
 import se.citerus.dddsample.service.UnknownCarrierMovementIdException;
 import se.citerus.dddsample.service.UnknownTrackingIdException;
@@ -28,7 +29,7 @@ public class HandlinEventServiceEndpointTest extends TestCase {
   public void testRegisterValidEvent() throws Exception {
     Date date = new Date(100);
 
-    handlingEventService.register(date, new TrackingId("FOO"), new CarrierMovementId("CAR_456"), "CNHKG", HandlingEvent.Type.LOAD);
+    handlingEventService.register(date, new TrackingId("FOO"), new CarrierMovementId("CAR_456"), new UnLocode("CN","HKG"), HandlingEvent.Type.LOAD);
     replay(handlingEventService);
 
     // Tested call
@@ -40,8 +41,9 @@ public class HandlinEventServiceEndpointTest extends TestCase {
     Date date = new Date(100);
 
     TrackingId trackingId = new TrackingId("NOTFOUND");
+    UnLocode unlocode = new UnLocode("SE","STO");
 
-      handlingEventService.register(date, trackingId, null, "SESTO", HandlingEvent.Type.CLAIM);
+    handlingEventService.register(date, trackingId, null, unlocode, HandlingEvent.Type.CLAIM);
     expectLastCall().andThrow(new UnknownTrackingIdException(trackingId));
     replay(handlingEventService);
 
@@ -55,7 +57,7 @@ public class HandlinEventServiceEndpointTest extends TestCase {
       TrackingId trackingId = new TrackingId("XYZ");
       CarrierMovementId carrierMovementId = new CarrierMovementId("NOTFOUND");
 
-      handlingEventService.register(date, trackingId, carrierMovementId, "AUMEL", HandlingEvent.Type.UNLOAD);
+      handlingEventService.register(date, trackingId, carrierMovementId, new UnLocode("AU","MEL"), HandlingEvent.Type.UNLOAD);
       expectLastCall().andThrow(new UnknownCarrierMovementIdException(carrierMovementId));
       replay(handlingEventService);
 

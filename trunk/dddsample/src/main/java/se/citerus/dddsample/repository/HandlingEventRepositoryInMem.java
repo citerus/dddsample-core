@@ -31,7 +31,8 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
    * @throws ParseException
    */
   public void init() throws ParseException {
-    
+/*
+
     // CargoXYZ
     final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
     registerEvent(cargoXYZ, "2007-11-30", HandlingEvent.Type.RECEIVE, null);
@@ -69,6 +70,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
     //CargoCBA
     final Cargo cargoCBA = new Cargo(new TrackingId("CBA"), new Location("FIHEL"), new Location("SESTO"));
     registerEvent(cargoCBA, "2008-01-10", HandlingEvent.Type.RECEIVE, null);
+*/
   }
 
   

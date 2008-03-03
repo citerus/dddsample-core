@@ -87,15 +87,15 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   private static void loadLocationData(JdbcTemplate jdbcTemplate) {
-    String locationSql = "insert into Location (id, unlocode) values (?, ?)";
+    String locationSql = "insert into Location (id, unlocode, name) values (?, ?, ?)";
     Object[][] locationArgs = {
-      {1, "SESTO"},
-      {2, "AUMEL"},
-      {3, "CNHKG"},
-      {4, "JPTOK"},
-      {5, "FIHEL"},
-      {6, "DEHAM"},
-      {7, "USCHI"}
+      {1, "SESTO", "Stockholm"},
+      {2, "AUMEL", "Melbourne"},
+      {3, "CNHKG", "Hongkong"},
+      {4, "JPTOK", "Tokyo"},
+      {5, "FIHEL", "Helsinki"},
+      {6, "DEHAM", "Hamburg"},
+      {7, "USCHI", "Chicago"}
     };
     executeUpdate(jdbcTemplate, locationSql, locationArgs);
   }

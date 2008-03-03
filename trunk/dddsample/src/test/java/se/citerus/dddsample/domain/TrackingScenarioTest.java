@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.List;
 
 public class TrackingScenarioTest extends TestCase {
+  private final Location stockholm = new Location(new UnLocode("SE","STO"), "Stockholm");
+  private final Location hamburg = new Location(new UnLocode("DE","HAM"), "Hamburg");
+  private final Location melbourne = new Location(new UnLocode("AU","MEL"), "Melbourne");
+  private final Location hongkong = new Location(new UnLocode("CN","HKG"), "Hongkong");
 
   public void testTrackingScenarioStage1() throws Exception {
 
@@ -30,22 +34,22 @@ public class TrackingScenarioTest extends TestCase {
 
   private DeliveryHistory populateDeliveryHistory(Cargo cargo) throws Exception {
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
-            new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
+            new CarrierMovementId("CAR_001"), stockholm, hamburg);
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
-            new CarrierMovementId("CAR_002"), new Location("DEHAM"), new Location("CNHKG"));
+            new CarrierMovementId("CAR_002"), hamburg, hongkong);
     DeliveryHistory dh = new DeliveryHistory();
     dh.addAllEvents(Arrays.asList(
-            new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, new Location("SESTO"), stockholmToHamburg),
-            new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("DEHAM"), stockholmToHamburg),
-            new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, new Location("DEHAM"), hamburgToHongKong),
-            new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, new Location("CNHKG"), hamburgToHongKong)
+            new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, stockholm, stockholmToHamburg),
+            new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, hamburg, stockholmToHamburg),
+            new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, hamburg, hamburgToHongKong),
+            new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, hongkong, hamburgToHongKong)
     ));
     return dh;
   }
 
   private Cargo populateCargo() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("SESTO"), new Location("AUMEL"));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), stockholm, melbourne);
 
     return cargo;
   }

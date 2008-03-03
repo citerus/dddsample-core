@@ -9,10 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.HandlingEvent;
-import se.citerus.dddsample.domain.Location;
-import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
@@ -43,19 +40,21 @@ public class CargoTrackingControllerTest extends TestCase {
   private CargoService getCargoServiceMock() {
     return new CargoService() {
       public CargoWithHistoryDTO find(String trackingId) {
-        Cargo cargo = new Cargo(new TrackingId(trackingId), new Location("AAAAA"), new Location("BBBBB"));
-        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, new Location("BBBBB"));
+        final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
+        final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
+        Cargo cargo = new Cargo(new TrackingId(trackingId), a5, b5);
+        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, b5);
 //        cargo.handle(event);
 
         // TODO: use DTO assemblers
         CargoWithHistoryDTO cargoDTO = new CargoWithHistoryDTO(
                 cargo.trackingId().idString(),
-                cargo.origin().unlocode(),
-                cargo.finalDestination().unlocode(),
+                cargo.origin().unLocode().idString(),
+                cargo.finalDestination().unLocode().idString(),
                 "AAAAA"
         );
         cargoDTO.addEvent(new HandlingEventDTO(
-          event.location().unlocode(),
+          event.location().unLocode().idString(),
           event.type().toString(),
           null, // TODO: event hierarchy will remove this kind of code
           event.completionTime()));
@@ -85,6 +84,7 @@ public class CargoTrackingControllerTest extends TestCase {
 
   public void testHandlePost() throws Exception {
     controller.setCargoService(getCargoServiceMock());
+    request.addParameter("trackingId","JKL456");
     request.setMethod("POST");
 
     ModelAndView mav = controller.handleRequest(request, response);

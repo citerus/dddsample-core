@@ -30,7 +30,6 @@
     <property name="hibernateProperties">
       <props>
         <!-- These are properties that are common for test and production -->
-        <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
         <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
       </props>
     </property>

@@ -22,6 +22,10 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
     transactionManager = new HibernateTransactionManager(sessionFactory);
   }
 
+  public SessionFactory getSessionFactory() {
+    return sessionFactory;
+  }
+
   protected void flush() {
     sessionFactory.getCurrentSession().flush();
   }

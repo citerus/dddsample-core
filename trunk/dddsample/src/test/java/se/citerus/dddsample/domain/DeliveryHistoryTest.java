@@ -15,11 +15,13 @@ public class DeliveryHistoryTest extends TestCase {
     assertTrue(dh.eventsOrderedByCompletionTime().isEmpty());
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("FROMX"), new Location("TOXXX"));
-    HandlingEvent he1 = new HandlingEvent(null, df.parse("2010-01-03"), new Date(), HandlingEvent.Type.RECEIVE, new Location("TOXXX"));
-    HandlingEvent he2 = new HandlingEvent(null, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, new Location("TOXXX"), carrierMovement);
-    HandlingEvent he3 = new HandlingEvent(null, df.parse("2010-01-04"), new Date(), HandlingEvent.Type.CLAIM, new Location("FROMX"));
-    HandlingEvent he4 = new HandlingEvent(null, df.parse("2010-01-02"), new Date(), HandlingEvent.Type.UNLOAD, new Location("FROMX"), carrierMovement);
+    final Location from = new Location(new UnLocode("FR","OMX"), "From");
+    final Location to = new Location(new UnLocode("TO","XXX"), "To");
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), from, to);
+    HandlingEvent he1 = new HandlingEvent(null, df.parse("2010-01-03"), new Date(), HandlingEvent.Type.RECEIVE, to);
+    HandlingEvent he2 = new HandlingEvent(null, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, to, carrierMovement);
+    HandlingEvent he3 = new HandlingEvent(null, df.parse("2010-01-04"), new Date(), HandlingEvent.Type.CLAIM, from);
+    HandlingEvent he4 = new HandlingEvent(null, df.parse("2010-01-02"), new Date(), HandlingEvent.Type.UNLOAD, from, carrierMovement);
     dh.addAllEvents(Arrays.asList(he1, he2, he3, he4));
 
     List<HandlingEvent> orderEvents = dh.eventsOrderedByCompletionTime();

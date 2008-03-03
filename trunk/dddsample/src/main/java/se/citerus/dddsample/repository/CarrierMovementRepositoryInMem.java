@@ -2,7 +2,6 @@ package se.citerus.dddsample.repository;
 
 import se.citerus.dddsample.domain.CarrierMovement;
 import se.citerus.dddsample.domain.CarrierMovementId;
-import se.citerus.dddsample.domain.Location;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +15,7 @@ public class CarrierMovementRepositoryInMem implements CarrierMovementRepository
   }
 
   private void setup() {
+/*
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
             new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
@@ -32,6 +32,7 @@ public class CarrierMovementRepositoryInMem implements CarrierMovementRepository
     carriers.put(new CarrierMovementId("AUMEL_JPTOK"), melbourneToTokyo);
     carriers.put(new CarrierMovementId("JPTOK_USLA"), tokyoToLosAngeles);
     carriers.put(new CarrierMovementId("SESTO_FIHEL"), stockholmToHelsinki);
+*/
   }
 
   public CarrierMovement find(CarrierMovementId carrierMovementId) {
