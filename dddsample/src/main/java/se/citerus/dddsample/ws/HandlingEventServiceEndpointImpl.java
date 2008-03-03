@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import se.citerus.dddsample.domain.CarrierMovementId;
 import se.citerus.dddsample.domain.HandlingEvent;
 import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.UnLocode;
 import se.citerus.dddsample.service.HandlingEventService;
 import se.citerus.dddsample.service.InvalidEventTypeException;
 import se.citerus.dddsample.service.UnknownCarrierMovementIdException;
@@ -35,7 +36,9 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       }
       HandlingEvent.Type type = parseEventType(eventType);
 
-      handlingEventService.register(date, tid, cid, unlocode, type);
+      UnLocode ul = new UnLocode(unlocode.substring(0,2), unlocode.substring(2,5));
+
+      handlingEventService.register(date, tid, cid, ul, type);
     } catch (ParseException pe) {
       logger.error("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
     } catch (UnknownTrackingIdException utid) {

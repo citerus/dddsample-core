@@ -2,7 +2,6 @@ package se.citerus.dddsample.repository;
 
 import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
 
 import java.util.HashMap;
@@ -43,6 +42,7 @@ public class CargoRepositoryInMem implements CargoRepository {
    * @throws Exception
    */
   public void init() throws Exception {
+/*
     String trackIdXYZ = "XYZ";
     final Cargo cargoXYZ = new Cargo(new TrackingId(trackIdXYZ), new Location("SESTO"), new Location("AUMEL"));
     cargoDb.put(trackIdXYZ, cargoXYZ);
@@ -58,6 +58,7 @@ public class CargoRepositoryInMem implements CargoRepository {
     String trackIdCBA = "CBA";
     final Cargo cargoCBA = new Cargo(new TrackingId(trackIdCBA), new Location("FIHEL"), new Location("SESTO"));
     cargoDb.put(trackIdCBA, cargoCBA);
+*/
 
     /*
     for (Cargo cargo : cargoDb.values()) {

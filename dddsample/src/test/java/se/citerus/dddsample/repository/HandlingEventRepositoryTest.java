@@ -1,9 +1,6 @@
 package se.citerus.dddsample.repository;
 
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.HandlingEvent;
-import se.citerus.dddsample.domain.Location;
-import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -12,6 +9,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
   HandlingEventRepository handlingEventRepository;
   CargoRepository cargoRepository;
+  LocationRepository locationRepository;
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
@@ -21,10 +19,12 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     this.cargoRepository = cargoRepository;
   }
 
+  public void setLocationRepository(LocationRepository locationRepository) {
+    this.locationRepository = locationRepository;
+  }
+
   public void testSave() {
-    // TODO: introduce Location repository
-    Location location = new Location("ABCDE");
-    sessionFactory.getCurrentSession().saveOrUpdate(location);
+    Location location = locationRepository.find(new UnLocode("SE","STO"));
 
     Cargo cargo = cargoRepository.find(new TrackingId("XYZ"));
     Date completionTime = new Date(10);

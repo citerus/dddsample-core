@@ -1,14 +1,16 @@
 package se.citerus.dddsample.repository;
 
 import se.citerus.dddsample.domain.Location;
+import se.citerus.dddsample.domain.UnLocode;
 
 public class LocationRepositoryTest extends AbstractRepositoryTest {
   private LocationRepository locationRepository;
   
   public void testFind() throws Exception {
-    Location location = locationRepository.find("AUMEL");
+    final UnLocode melbourne = new UnLocode("AU", "MEL");
+    Location location = locationRepository.find(melbourne);
     assertNotNull(location);
-    assertEquals("AUMEL", location.unlocode());
+    assertEquals(melbourne, location.unLocode());
   }
 
   public void setLocationRepository(LocationRepository locationRepository) {

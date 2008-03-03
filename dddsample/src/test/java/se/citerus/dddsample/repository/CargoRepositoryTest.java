@@ -3,12 +3,15 @@ package se.citerus.dddsample.repository;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.UnLocode;
 
 import java.util.Map;
 
 public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   CargoRepository cargoRepository;
+  private final Location stockholm = new Location(new UnLocode("SE","STO"), "Stockholm");
+  private final Location melbourne = new Location(new UnLocode("AU","MEL"), "Melbourne");
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
@@ -16,26 +19,21 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   public void testFindByCargoId() {
     final TrackingId trackingId = new TrackingId("XYZ");
-    final Location origin = new Location("SESTO");
-    final Location finalDestination = new Location("AUMEL");
 
     Cargo cargo = cargoRepository.find(trackingId);
 
     assertEquals(trackingId, cargo.trackingId());
-    assertEquals(origin, cargo.origin());
-    assertEquals(finalDestination, cargo.finalDestination());
+    assertEquals(stockholm, cargo.origin());
+    assertEquals(melbourne, cargo.finalDestination());
     // TODO: verify delivery history
   }
 
   public void testSave() {
-    // TODO: introduce Location repository
-    Location finalDestination = new Location("TOZZZ");
-    Location origin = new Location("FROMZ");
-    sessionFactory.getCurrentSession().saveOrUpdate(origin);
-    sessionFactory.getCurrentSession().saveOrUpdate(finalDestination);
+    sessionFactory.getCurrentSession().saveOrUpdate(stockholm);
+    sessionFactory.getCurrentSession().saveOrUpdate(melbourne);
 
 
-    Cargo cargo = new Cargo(new TrackingId("AAA"), origin, finalDestination);
+    Cargo cargo = new Cargo(new TrackingId("AAA"), stockholm, melbourne);
     cargoRepository.save(cargo);
 
     flush();

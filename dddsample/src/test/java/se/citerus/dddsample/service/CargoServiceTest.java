@@ -76,11 +76,15 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
    * Cargo returned.
    */
   public void testCargoServiceFindByTrackingIdScenario() {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new Location("ORIGI"), new Location("DESTI"));
-    HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, new Location("SESTO"));
-    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("MUGER"));
-    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, new Location("SESTO"), carrierMovement);
-    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, new Location("MUGER"), carrierMovement);
+    Location origin = new Location(new UnLocode("OR","IGI"), "Origin");
+    Location finalDestination = new Location(new UnLocode("DE","STI"), "Destination");
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
+    Location sesto = new Location(new UnLocode("SE","STO"), "Stockholm");
+    HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, sesto);
+    Location to = new Location(new UnLocode("MU","GER"), "München");
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), sesto, to);
+    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, sesto, carrierMovement);
+    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, to, carrierMovement);
     // Add out of order to verify ordering in DTO
     cargo.deliveryHistory().addAllEvents(Arrays.asList(loaded, unloaded, claimed));
 
@@ -99,30 +103,30 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
 
     assertEquals("XYZ", cargoDTO.getTrackingId());
-    assertEquals("ORIGI", cargoDTO.getOrigin());
-    assertEquals("DESTI", cargoDTO.getFinalDestination());
-    assertEquals("MUGER", cargoDTO.getCurrentLocation());
+    assertEquals("ORIGI (Origin)", cargoDTO.getOrigin());
+    assertEquals("DESTI (Destination)", cargoDTO.getFinalDestination());
+    assertEquals("MUGER (München)", cargoDTO.getCurrentLocation());
 
     List<HandlingEventDTO> events = cargoDTO.getEvents();
     assertEquals(3, events.size());
 
     // Claim happened first
     HandlingEventDTO eventDTO = events.get(0);
-    assertEquals("SESTO", eventDTO.getLocation());
+    assertEquals("SESTO (Stockholm)", eventDTO.getLocation());
     assertEquals("CLAIM", eventDTO.getType());
     assertEquals("", eventDTO.getCarrier());
     assertEquals(new Date(10), eventDTO.getTime());
 
     // Then load
     eventDTO = events.get(1);
-    assertEquals("SESTO", eventDTO.getLocation());
+    assertEquals("SESTO (Stockholm)", eventDTO.getLocation());
     assertEquals("LOAD", eventDTO.getType());
     assertEquals("CAR_001", eventDTO.getCarrier());
     assertEquals(new Date(12), eventDTO.getTime());
 
     // Finally unload
     eventDTO = events.get(2);
-    assertEquals("MUGER", eventDTO.getLocation());
+    assertEquals("MUGER (München)", eventDTO.getLocation());
     assertEquals("UNLOAD", eventDTO.getType());
     assertEquals("CAR_001", eventDTO.getCarrier());
     assertEquals(new Date(100), eventDTO.getTime());

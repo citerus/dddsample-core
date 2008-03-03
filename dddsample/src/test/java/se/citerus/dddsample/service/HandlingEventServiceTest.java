@@ -16,15 +16,23 @@ public class HandlingEventServiceTest extends TestCase {
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
-  
-  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new Location("AFROM"), new Location("ABCTO"));
-  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new Location("XFROM"), new Location("XYZTO"));
+
+  private Location origin = new Location(new UnLocode("AF","ROM"), "AFROM");
+  private Location finalDestination = new Location(new UnLocode("AB","CTO"), "ABCTO");
+  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), origin, finalDestination);
+
+  private Location xfrom = new Location(new UnLocode("XF","ROM"), "XFROM");
+  private Location xyzto = new Location(new UnLocode("XY","ZTO"), "XYZTO");
+  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), xfrom, xyzto);
+
+  private Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
+  private Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
   private final CarrierMovement cmAAA_BBB = new CarrierMovement(
-          new CarrierMovementId("CAR_001"), new Location("AAAAA"), new Location("BBBBB"));
+          new CarrierMovementId("CAR_001"), a5, b5);
   
-  private final Location locationSESTO = new Location("SESTO");
-  private final Location locationAUMEL = new Location("AUMEL");
-  private final Location locationCNHKG = new Location("CNHKG");
+  private final Location stockholm = new Location(new UnLocode("SE","STO"), "Stockholm");
+  private final Location melbourne = new Location(new UnLocode("AU","MEL"), "Melbourne");
+  private final Location hongkong = new Location(new UnLocode("CN","HKG"), "Hongkong");
 
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();
@@ -51,15 +59,16 @@ public class HandlingEventServiceTest extends TestCase {
 
     final CarrierMovementId carrierMovementId = new CarrierMovementId("AAA_BBB");
     expect(carrierMovementRepository.find(carrierMovementId)).andReturn(cmAAA_BBB);
-    
-    expect(locationRepository.find("SESTO")).andReturn(locationSESTO);
+
+    final UnLocode unLocode = new UnLocode("SE", "STO");
+    expect(locationRepository.find(unLocode)).andReturn(stockholm);
 
     // TODO: does not inspect the handling event instance in a sufficient way
     handlingEventRepository.save(isA(HandlingEvent.class));
 
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
     
-    service.register(date, trackingId, carrierMovementId, "SESTO", HandlingEvent.Type.LOAD);
+    service.register(date, trackingId, carrierMovementId, unLocode, HandlingEvent.Type.LOAD);
   }
 
   public void testRegisterEventWithoutCarrierMovement() throws Exception {
@@ -70,11 +79,11 @@ public class HandlingEventServiceTest extends TestCase {
 
     handlingEventRepository.save(isA(HandlingEvent.class));
     
-    expect(locationRepository.find("SESTO")).andReturn(locationSESTO);
+    expect(locationRepository.find(stockholm.unLocode())).andReturn(stockholm);
 
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
 
-    service.register(date, trackingId, null, "SESTO", HandlingEvent.Type.CLAIM);
+    service.register(date, trackingId, null, stockholm.unLocode(), HandlingEvent.Type.CLAIM);
   }
   
 
@@ -85,14 +94,14 @@ public class HandlingEventServiceTest extends TestCase {
     expect(carrierMovementRepository.find(carrierMovementId)).andReturn(null);
 
     final TrackingId trackingId = new TrackingId("XYZ");
-    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, new Location("FROMX"), new Location("TOYYY")));
+    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, a5, b5));
 
-    expect(locationRepository.find("AUMEL")).andReturn(locationAUMEL);
+    expect(locationRepository.find(melbourne.unLocode())).andReturn(melbourne);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
     
     try {
-      service.register(date, trackingId, carrierMovementId, "AUMEL", HandlingEvent.Type.UNLOAD);
+      service.register(date, trackingId, carrierMovementId, melbourne.unLocode(), HandlingEvent.Type.UNLOAD);
       fail("Should not be able to register an event with non-existing carrier movement");
     } catch (UnknownCarrierMovementIdException expected) {}
   }
@@ -103,12 +112,12 @@ public class HandlingEventServiceTest extends TestCase {
     final TrackingId trackingId = new TrackingId("XYZ");
     expect(cargoRepository.find(trackingId)).andReturn(null);
 
-    expect(locationRepository.find("CNHKG")).andReturn(locationCNHKG);
+    expect(locationRepository.find(hongkong.unLocode())).andReturn(hongkong);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
     
     try {
-      service.register(date, trackingId, null, "CNHKG", HandlingEvent.Type.CLAIM);
+      service.register(date, trackingId, null, hongkong.unLocode(), HandlingEvent.Type.CLAIM);
       fail("Should not be able to register an event with non-existing cargo");
     } catch (UnknownTrackingIdException expected) {}
   }
@@ -118,12 +127,13 @@ public class HandlingEventServiceTest extends TestCase {
 
     final TrackingId trackingId = new TrackingId("XYZ");
     expect(cargoRepository.find(trackingId)).andReturn(cargoXYZ);
-    expect(locationRepository.find("WAY_OFF")).andReturn(null);
+    UnLocode wayOff = new UnLocode("XX", "YYY");
+    expect(locationRepository.find(wayOff)).andReturn(null);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
     
     try {
-      service.register(date, trackingId, null, "WAY_OFF", HandlingEvent.Type.CLAIM);
+      service.register(date, trackingId, null, wayOff, HandlingEvent.Type.CLAIM);
       fail("Should not be able to register an event with non-existing Location");
     } catch (UnknownLocationException expected) {}
   }

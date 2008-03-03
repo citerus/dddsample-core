@@ -85,6 +85,9 @@
     <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
     <url>http://ddd.sventon.org</url>
   </scm>
+  <properties>
+    <spring.version>2.5.1</spring.version>
+  </properties>
   <build>
     <plugins>
       <!-- Compiler -->
@@ -101,6 +104,7 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.4</version>
         <configuration>
           <!--scanIntervalSeconds>10</scanIntervalSeconds-->
         </configuration>
@@ -110,6 +114,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
+        <version>1.9</version>
         <executions>
           <execution>
             <goals>
@@ -120,13 +125,11 @@
         <configuration>
           <sei>se.citerus.dddsample.ws.HandlingEventServiceEndpointImpl</sei>
           <genWsdl>true</genWsdl>
-          <verbose>true</verbose>
         </configuration>
       </plugin>
-      
+
       <!-- Jar plugin for generation of WS Client classes -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
@@ -143,7 +146,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
     </plugins>
   </build>
   <dependencies>
@@ -156,29 +159,27 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>2.0.8</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-hibernate3</artifactId>
-      <!-- -orm in 2.5.x -->
-      <version>2.0.8</version>
+      <artifactId>spring-orm</artifactId>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>2.0.8</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>2.0.8</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-mock</artifactId>
-      <!-- -test in 2.5.x -->
-      <version>2.0.8</version>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -272,17 +273,14 @@
     <plugins>
       <!-- Javadoc -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
       <!-- Source code cross reference -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
       </plugin>
       <!-- Test report -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
       </plugin>
     </plugins>

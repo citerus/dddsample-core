@@ -2,10 +2,10 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.regex.Pattern;
 
 @Entity
 public class Location {
@@ -14,44 +14,50 @@ public class Location {
   @GeneratedValue
   private Long id;
 
-  private String unlocode;
+  @Embedded
+  private UnLocode unLocode;
 
-  /**
-   * Regular expression of a UN Locode (exactly five letters of the english alphabet)
-   */
-  private static final Pattern unlocodePattern = Pattern.compile("[a-zA-Z]{5}");
+  private String name;
 
   /**
    * Special Location object that marks an unknown location.
    */
-  public static final Location UNKNOWN = new Location();
+  public static final Location UNKNOWN = new Location(
+    new UnLocode("XX","XXX"), "Unknown location"
+  );
 
-  // Internal constructor
-  private Location() {
-    this.unlocode = "Unknown";
+  /**
+   * @param unLocode UN Locode
+   * @param name location name
+   * @throws IllegalArgumentException if the UN Locode or name is null
+   */
+  public Location(UnLocode unLocode, String name) {
+    // TODO:
+    // It shouldn't really be possible to create a new location -
+    // it should only be looked up in the location repository.
+    Validate.notNull(unLocode);
+    Validate.notNull(name);
+    this.unLocode = unLocode;
+    this.name = name;
   }
 
   /**
-   * @param unlocode UN locode
-   * @throws IllegalArgumentException if the UN locode is anything other than five letters of the US alphabet
+   * @return UN Locode for this location.
    */
-  public Location(String unlocode) {
-    Validate.notNull(unlocode);
-    Validate.isTrue(unlocodePattern.matcher(unlocode).matches(),
-            "\"" + unlocode + "\" is not a valid UN Locode");
-    this.unlocode = unlocode;
+  public UnLocode unLocode() {
+    return unLocode;
   }
 
   /**
-   * @return United Nations Location Code for this location.
+   * @return Actual name of this location, e.g. "Stockholm".
    */
-  public String unlocode() {
-    return unlocode;
+  public String name() {
+    return name;
   }
 
   /**
    * @param object to compare
-   * @return True if unlocodes are equal.
+   * @return True iff UN locodes are equal.
    */
   @Override
   public boolean equals(Object object) {
@@ -65,20 +71,23 @@ public class Location {
       return false;
     }
     Location other = (Location) object;
-    return this.unlocode.equals(other.unlocode);
+    return this.unLocode.equals(other.unLocode);
   }
 
   /**
-   * @return Hash code of unlocode.
+   * @return Hash code of UN locode.
    */
   @Override
   public int hashCode() {
-    return unlocode.hashCode();
+    return unLocode.hashCode();
   }
 
   @Override
   public String toString() {
-    return unlocode;
+    return unLocode.idString() + " (" + name + ")";
   }
+
+  // Needed by Hibernate
+  Location() {}
 
 }
