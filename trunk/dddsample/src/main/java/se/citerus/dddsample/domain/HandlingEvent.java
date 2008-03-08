@@ -12,8 +12,8 @@ import java.util.Date;
  * HandlingEvent's are sent from different Incident Logging Applications some time after the event occured and contain information about the
  * {@link TrackingId}, {@link Location}, timestamp of the completion of the event, and possibly, if applicable a {@link CarrierMovement}.
  * <br><br>
- * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type.LOAD} or
- * {@link Type.UNLOAD}. All other events must be of {@link Type.RECEIVE}, {@link Type.CLAIM} or {@link Type.CUSTOMS}.
+ * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type#LOAD} or
+ * {@link Type#UNLOAD}. All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
 @Entity
 public class HandlingEvent {

@@ -29,6 +29,9 @@ public class Cargo {
   @Embedded
   private DeliveryHistory deliveryHistory;
 
+  @OneToOne
+  private Itinerary itinerary;
+
   public Cargo(TrackingId trackingId, Location origin, Location finalDestination) {
     this.trackingId = trackingId;
     this.origin = origin;
@@ -81,6 +84,23 @@ public class Cargo {
    */
   public boolean hasArrived() {
     return finalDestination.equals(lastKnownLocation());
+  }
+
+  /**
+   * Assigns an itinerary to this cargo.
+   * @param itinerary an itinerary
+   */
+  public void assignItinerary(Itinerary itinerary) {
+    this.itinerary = itinerary;
+  }
+
+  /**
+   * @return True if the cargo has been misdirected,
+   * that is if the cargo is in a location that's not in the itinerary.
+   */
+  public boolean isMisdirected() {
+    // TODO: implement
+    return false;
   }
 
   @Override
