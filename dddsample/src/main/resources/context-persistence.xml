@@ -19,20 +19,7 @@
 
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
-    <property name="annotatedClasses">
-      <list>
-        <value>se.citerus.dddsample.domain.Cargo</value>
-        <value>se.citerus.dddsample.domain.Location</value>
-        <value>se.citerus.dddsample.domain.HandlingEvent</value>
-        <value>se.citerus.dddsample.domain.CarrierMovement</value>
-      </list>
-    </property>
-    <property name="hibernateProperties">
-      <props>
-        <!-- These are properties that are common for test and production -->
-        <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
-      </props>
-    </property>
+    <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
   </bean>
 
   <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryHibernate">
