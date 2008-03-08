@@ -211,6 +211,12 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>avalon-framework</groupId>
+          <artifactId>avalon-framework</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -250,6 +256,10 @@
       <version>2.3</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- JAX-WS integration with Spring. Lots of broken pom files unfortunately,
+      so we need a few excluded-and-overridden dependencies.
+      This problem will mostly go away when we move to Java 6. -->
     <dependency>
       <groupId>org.jvnet.jax-ws-commons.spring</groupId>
       <artifactId>jaxws-spring</artifactId>
@@ -259,12 +269,33 @@
           <groupId>org.springframework</groupId>
           <artifactId>spring</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.stream.buffer</groupId>
+          <artifactId>streambuffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jvnet.staxex</groupId>
+          <artifactId>stax-ex</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jvnet.staxex</groupId>
+      <artifactId>stax-ex</artifactId>
+      <version>1.2</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.stream.buffer</groupId>
+      <artifactId>streambuffer</artifactId>
+      <version>0.7</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
       <version>2.1.3</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.istack</groupId>
