@@ -24,22 +24,5 @@
   <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.ws.HandlingEventServiceEndpointImpl">
     <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
-  <!--
-  -->
-
-  <!-- jax-ws-spring does not work with spring 2.5 yet
-  <beans xmlns="http://www.springframework.org/schema/beans"
-         xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-         xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="
-          http://jax-ws.dev.java.net/spring/core https://jax-ws.dev.java.net/spring/core.xsd
-          http://jax-ws.dev.java.net/spring/servlet https://jax-ws.dev.java.net/spring/servlet.xsd
-          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-
-  <ws:service id="handlingEventServiceWS" bean="handlingEventServiceEndpoint"/>
-
-  <wss:binding url="/registerEvent" service="#handlingEventServiceWS"/>
-  -->
 
 </beans>
