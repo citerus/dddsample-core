@@ -48,7 +48,7 @@ public class LocationsImporter implements ServletContextListener {
     while (iterator.hasNext()) {
       String line = iterator.nextLine();
       Location location = parseLocation(line);
-      if (location != null) {
+      if (location != Location.UNKNOWN) {
           session.save(location);
           if (insertCount % BATCH_SIZE == 0) {
             session.flush();
@@ -70,7 +70,7 @@ public class LocationsImporter implements ServletContextListener {
       UnLocode unlocode = new UnLocode(countryCode, locationCode);
       return new Location(unlocode, name);
     } else {
-      return null;
+      return Location.UNKNOWN;
     }
   }
 
