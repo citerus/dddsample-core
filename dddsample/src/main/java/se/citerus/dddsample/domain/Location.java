@@ -82,6 +82,9 @@ public class Location {
     return unLocode.hashCode();
   }
 
+  /**
+   * @return Unlocode and name, on the format "SESTO (Stockholm)"
+   */
   @Override
   public String toString() {
     return unLocode.idString() + " (" + name + ")";
