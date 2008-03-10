@@ -15,7 +15,9 @@ public abstract class AbstractFormValidationDecorator implements FormValidationD
 
     component.addKeyListener(new KeyListener(){
       public void keyPressed(KeyEvent e) {
-        undecorate(component);
+        for (final Entry<JComponent, ComponentValidator> entry : validators.entrySet()) {
+          undecorate(entry.getKey());
+        }
       }
 
       public void keyReleased(KeyEvent e) {}
