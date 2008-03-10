@@ -55,12 +55,23 @@ public class RegisterApp {
     assert handlingEventService != null : "No HandlingEventService available";
     
     handlingEventService.register(ISO8601_DATE_FORMAT.format(completionTimeField.getValue()), 
-                                  trackingIdField.getValue().toString(), 
-                                  carrierMovementField.getValue().toString(), 
-                                  locationField.getValue().toString(), 
-                                  eventTypeField.getValue().toString());
+                                  getStringValue(trackingIdField), 
+                                  getStringValue(carrierMovementField), 
+                                  getStringValue(locationField), 
+                                  getStringValue(eventTypeField));
     
     clearForm();
+  }
+
+
+  private String getStringValue(JFormattedTextField formattedTextField) {
+    Object value = formattedTextField.getValue();
+    
+    if (value != null) {
+      return value.toString();
+    } else {
+      return null;
+    }
   }
   
   
@@ -140,6 +151,7 @@ public class RegisterApp {
     
     validator.add(eventTypeField, new MandatoryTextFieldValidator("Event type can't be empty"));
     validator.add(trackingIdField, new MandatoryTextFieldValidator("Tracking id can't be empty"));
+    validator.add(locationField, new MandatoryTextFieldValidator("Location can't be empty"));
   }
   
   

@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 public class FormValidationSwingDecorator extends AbstractFormValidationDecorator{
 
-  private static final int POPUP_Y_OFFSET = 4;
+  private static final int POPUP_Y_OFFSET = 0;
   private static final int POPUP_X_OFFSET = 12;
   private Color oldColor = Color.WHITE;
   private JFrame form;
@@ -31,7 +31,10 @@ public class FormValidationSwingDecorator extends AbstractFormValidationDecorato
     glassPane.setLayout(null);
 //    glassPane.setPreferredSize(form.getPreferredSize());
     glassPane.setSize(form.getSize());
+    
     form.setGlassPane(glassPane);
+    
+    
   }
 
   public FormValidationSwingDecorator(JFrame form, String message) {
@@ -48,6 +51,7 @@ public class FormValidationSwingDecorator extends AbstractFormValidationDecorato
     } else {
       popupPane = new JPanel(new FlowLayout());
       glassPane.add(popupPane);
+      glassPane.setVisible(true);
       
       popupPane.add(getIconLabel());
       popupPane.add(getMessageLabel());
@@ -98,8 +102,9 @@ public class FormValidationSwingDecorator extends AbstractFormValidationDecorato
     this.message = validator.getMessage();
     this.oldColor = component.getBackground();
     component.setBackground(Color.PINK);
-    popups.put(component, createPopupRelativeTo(component));
-    glassPane.setVisible(true);
+    JPanel panel = createPopupRelativeTo(component);
+    popups.put(component, panel);
+    panel.setVisible(true);
   }
 
   @Override
@@ -109,6 +114,5 @@ public class FormValidationSwingDecorator extends AbstractFormValidationDecorato
     if (panel != null){
       panel.setVisible(false);
     }
-    glassPane.setVisible(false);
   }
 }
