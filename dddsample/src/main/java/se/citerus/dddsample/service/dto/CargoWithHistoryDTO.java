@@ -1,5 +1,7 @@
 package se.citerus.dddsample.service.dto;
 
+import se.citerus.dddsample.domain.StatusCode;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +19,6 @@ public class CargoWithHistoryDTO implements Serializable {
   String currentLocationId;
   List<HandlingEventDTO> events;
   String carrierMovementId;
-  String locationId;
   StatusCode statusCode;
 
   public CargoWithHistoryDTO(String trackingId, String origin, String finalDestination,
@@ -64,11 +65,4 @@ public class CargoWithHistoryDTO implements Serializable {
     return carrierMovementId;
   }
 
-  public String getLocationId() {
-    return locationId;
-  }
-
-  public enum StatusCode {
-    notReceived, inPort, onBoardCarrier, claimed
-  }
 }

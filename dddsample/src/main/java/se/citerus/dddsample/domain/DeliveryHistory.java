@@ -66,4 +66,41 @@ public class DeliveryHistory {
   // Needed by Hibernate
   DeliveryHistory() {}
 
+  public StatusCode status() {
+    if (lastEvent() == null)
+      return StatusCode.notReceived;
+
+    HandlingEvent.Type type = lastEvent().type();
+    if (type == HandlingEvent.Type.LOAD)
+      return StatusCode.onBoardCarrier;
+
+    if (type == HandlingEvent.Type.UNLOAD)
+      return StatusCode.inPort;
+
+    if (type == HandlingEvent.Type.RECEIVE)
+      return StatusCode.inPort;
+
+    if (type == HandlingEvent.Type.CLAIM)
+      return StatusCode.claimed;
+
+
+    return null;
+  }
+
+  public Location currentLocation() {
+    if (status().equals(StatusCode.inPort)) {
+      return lastEvent().location();
+    } else {
+      return null;
+    }
+  }
+
+  public CarrierMovement currentCarrierMovement() {
+    if (status().equals(StatusCode.onBoardCarrier)) {
+      return lastEvent().carrierMovement();
+    } else {
+      return null;
+    }
+  }
+  
 }
