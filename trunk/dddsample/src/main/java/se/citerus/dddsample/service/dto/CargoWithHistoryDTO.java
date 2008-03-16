@@ -14,14 +14,20 @@ public class CargoWithHistoryDTO implements Serializable {
   String trackingId;
   String origin;
   String finalDestination;
-  String currentLocation;
+  String currentLocationId;
   List<HandlingEventDTO> events;
+  String carrierMovementId;
+  String locationId;
+  StatusCode statusCode;
 
-  public CargoWithHistoryDTO(String trackingId, String origin, String finalDestination, String currentLocation) {
+  public CargoWithHistoryDTO(String trackingId, String origin, String finalDestination,
+                             StatusCode statusCode, String currentLocationId, String carrierMovementId) {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
-    this.currentLocation = currentLocation;
+    this.statusCode = statusCode;
+    this.currentLocationId = currentLocationId;
+    this.carrierMovementId = carrierMovementId;
 
     this.events = new ArrayList<HandlingEventDTO>();
   }
@@ -46,7 +52,23 @@ public class CargoWithHistoryDTO implements Serializable {
     return trackingId;
   }
 
-  public String getCurrentLocation() {
-    return currentLocation;
+  public String getCurrentLocationId() {
+    return currentLocationId;
+  }
+
+  public StatusCode getStatusCode() {
+    return statusCode;
+  }
+
+  public String getCarrierMovementId() {
+    return carrierMovementId;
+  }
+
+  public String getLocationId() {
+    return locationId;
+  }
+
+  public enum StatusCode {
+    notReceived, inPort, onBoardCarrier, claimed
   }
 }

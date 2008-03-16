@@ -12,7 +12,7 @@
 </head>
 <body>
   <div id="apptitle">
-    <h1>DDDSample</h1>
+    <h1>Domain Driven Delivery</h1>
   </div>
   <div id="body">
     <decorator:body/>

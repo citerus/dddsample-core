@@ -1,6 +1,5 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
@@ -96,7 +95,7 @@ public class HandlingEvent {
     validateType();
   }
 
-  /**
+    /**
    * Constructor for events that have a carrier movement associated. The location where
    * the event took place is derived from the carrier movement: if the type of event is LOAD,
    * the location is the starting point of the movement, if the type is UNLOAD the location
@@ -117,7 +116,7 @@ public class HandlingEvent {
     this.location = location;
     this.carrierMovement = carrierMovement;
 
-    Validate.notNull(carrierMovement, "CarrierMovementId must not be null for this type of event");
+
     validateType();
   }
 

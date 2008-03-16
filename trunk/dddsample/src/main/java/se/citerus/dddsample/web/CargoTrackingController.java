@@ -29,7 +29,7 @@ public class CargoTrackingController extends SimpleFormController {
   @Override
   protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
     final TrackCommand trackCommand = (TrackCommand) command;
-    final CargoWithHistoryDTO cargo = cargoService.find(trackCommand.getTrackingId());
+    final CargoWithHistoryDTO cargo = cargoService.track(trackCommand.getTrackingId());
 
     final Map<String, Object> model = new HashMap<String, Object>();
     if (cargo != null) {

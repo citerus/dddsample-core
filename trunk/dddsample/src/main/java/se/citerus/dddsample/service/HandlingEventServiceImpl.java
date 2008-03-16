@@ -18,27 +18,33 @@ public class HandlingEventServiceImpl implements HandlingEventService {
 
   @Transactional(readOnly = false)
   public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
-    Cargo cargo = findCargo(trackingId);
+    Validate.noNullElements(new Object[] {trackingId, unlocode, type});
+
+    Cargo cargo = cargoRepository.find(trackingId);
+    if (cargo == null) throw new UnknownTrackingIdException(trackingId);
+
     CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
     Location location = findLocation(unlocode);
     Date registrationTime = new Date();
+    HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
+
+    //DeliveryHistory deliveryHistory = deliveryHistoryRepository.findByTrackingId(trackingId);
+    //DeliveryHistory deliveryHistory = cargo.deliveryHistory();
+
+    //deliveryHistory.addEvent(event);
+    //deliveryHistoryRepository.save(deliveryHistory);
+
+    /*
     HandlingEvent event;
     if (carrierMovement != null) {
       event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
     } else {
       event = new HandlingEvent(cargo, completionTime, registrationTime, type, location);
     }
+    */
     handlingEventRepository.save(event);
-  }
 
-  private Cargo findCargo(TrackingId trackingId) throws UnknownTrackingIdException {
-    Validate.notNull(trackingId, "Tracking ID is required");
-    Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      throw new UnknownTrackingIdException(trackingId);
-    }
-
-    return cargo;
+    //assert cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event); // <- FALSE here
   }
 
   private CarrierMovement findCarrierMovement(CarrierMovementId carrierMovementId) throws UnknownCarrierMovementIdException {

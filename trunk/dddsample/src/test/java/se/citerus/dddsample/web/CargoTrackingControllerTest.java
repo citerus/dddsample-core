@@ -39,7 +39,7 @@ public class CargoTrackingControllerTest extends TestCase {
 
   private CargoService getCargoServiceMock() {
     return new CargoService() {
-      public CargoWithHistoryDTO find(String trackingId) {
+      public CargoWithHistoryDTO track(String trackingId) {
         final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
         final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
         Cargo cargo = new Cargo(new TrackingId(trackingId), a5, b5);
@@ -51,8 +51,9 @@ public class CargoTrackingControllerTest extends TestCase {
                 cargo.trackingId().idString(),
                 cargo.origin().unLocode().idString(),
                 cargo.finalDestination().unLocode().idString(),
-                "AAAAA"
-        );
+                CargoWithHistoryDTO.StatusCode.claimed, 
+                "AAAAA",
+                "BALO");
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unLocode().idString(),
           event.type().toString(),
@@ -65,7 +66,7 @@ public class CargoTrackingControllerTest extends TestCase {
   
   private CargoService getCargoServiceNullMock() {
     return new CargoService() {
-      public CargoWithHistoryDTO find(String trackingId) {
+      public CargoWithHistoryDTO track(String trackingId) {
         return null;
       }
     };
@@ -93,7 +94,7 @@ public class CargoTrackingControllerTest extends TestCase {
     // Errors, command are two standard map attributes, the third should be the cargo object
     assertEquals(3, mav.getModel().size());
     CargoWithHistoryDTO cargo = (CargoWithHistoryDTO) mav.getModel().get("cargo");
-    assertEquals("AAAAA", cargo.getCurrentLocation());
+    assertEquals("AAAAA", cargo.getCurrentLocationId());
   }
 
   public void testUnknownCargo() throws Exception {

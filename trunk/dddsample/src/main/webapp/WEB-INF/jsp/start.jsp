@@ -28,8 +28,8 @@
 
   <c:if test="${cargo ne null}">
     <div id="result">	
-	<h2>Your cargo is currently at: ${cargo.currentLocation}</h2>
-	<h3>Tracking History</h3>
+    <h2>Status: <spring:message code="cargo.status.${cargo.statusCode}"/>&nbsp;${cargo.currentLocationId}&nbsp;${cargo.carrierMovementId}</h2>
+    <h3>Tracking History</h3>
     <table cellspacing="4">
       <thead>
         <tr>

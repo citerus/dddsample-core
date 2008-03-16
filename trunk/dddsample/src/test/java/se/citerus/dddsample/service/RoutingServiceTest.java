@@ -16,7 +16,6 @@ public class RoutingServiceTest extends TestCase {
   public void testCalculateRoute() throws Exception {
     TrackingId trackingId = new TrackingId("XYZ123");
     Cargo cargo = cargoRepository.find(trackingId);
-
     Specification specification = null;
 
     /*
@@ -30,7 +29,7 @@ public class RoutingServiceTest extends TestCase {
       Someone, or something, selects the most appropriate itinerary and
       assigns that itinerary to the cargo.
      */
-    Itinerary itinerary = selectItinerary(itineraryCandidates);
+    Itinerary itinerary = stubbedItinerarySelection(itineraryCandidates);
     cargo.assignItinerary(itinerary);
 
     /*
@@ -57,8 +56,7 @@ public class RoutingServiceTest extends TestCase {
   }
 
 
-  // Stub for the itinerary selection process
-  private Itinerary selectItinerary(Set<Itinerary> itineraryCandidates) {
+  private Itinerary stubbedItinerarySelection(Set<Itinerary> itineraryCandidates) {
     return itineraryCandidates.iterator().next();
   }
 

@@ -99,13 +99,13 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
 
     // Tested call
-    CargoWithHistoryDTO cargoDTO = cargoService.find("XYZ");
+    CargoWithHistoryDTO cargoDTO = cargoService.track("XYZ");
 
 
     assertEquals("XYZ", cargoDTO.getTrackingId());
     assertEquals("ORIGI (Origin)", cargoDTO.getOrigin());
     assertEquals("DESTI (Destination)", cargoDTO.getFinalDestination());
-    assertEquals("MUGER (München)", cargoDTO.getCurrentLocation());
+    assertEquals("MUGER", cargoDTO.getCurrentLocationId());
 
     List<HandlingEventDTO> events = cargoDTO.getEvents();
     assertEquals(3, events.size());
@@ -137,7 +137,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     replay(cargoRepository);
 
     // Tested call
-    CargoWithHistoryDTO cargoDTO = cargoService.find("XYZ");
+    CargoWithHistoryDTO cargoDTO = cargoService.track("XYZ");
     
     assertNull(cargoDTO);
   }
