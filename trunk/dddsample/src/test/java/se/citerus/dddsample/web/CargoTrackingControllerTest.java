@@ -51,7 +51,7 @@ public class CargoTrackingControllerTest extends TestCase {
                 cargo.trackingId().idString(),
                 cargo.origin().unLocode().idString(),
                 cargo.finalDestination().unLocode().idString(),
-                CargoWithHistoryDTO.StatusCode.claimed, 
+                StatusCode.claimed,
                 "AAAAA",
                 "BALO");
         cargoDTO.addEvent(new HandlingEventDTO(

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class DeliveryHistoryTest extends TestCase {
+  private Location ham = new Location(new UnLocode("DE", "HAM"), "Hamburg");
 
   public void testEvensOrderedByTimeOccured() throws Exception {
     DeliveryHistory dh = new DeliveryHistory();
@@ -32,5 +33,36 @@ public class DeliveryHistoryTest extends TestCase {
     assertSame(he3, orderEvents.get(3));
   }
 
-  
+  public void testCargoStatusFromLastHandlingEvent() {
+    DeliveryHistory deliveryHistory = new DeliveryHistory();
+
+    assertEquals(StatusCode.notReceived, deliveryHistory.status());
+
+    deliveryHistory.addEvent(new HandlingEvent(null, new Date(10), null, HandlingEvent.Type.RECEIVE, ham));
+    assertEquals(StatusCode.inPort, deliveryHistory.status());
+
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("ABC"), ham, ham);
+    deliveryHistory.addEvent(new HandlingEvent(null, new Date(20), null, HandlingEvent.Type.LOAD, ham, carrierMovement));
+    assertEquals(StatusCode.onBoardCarrier, deliveryHistory.status());
+
+    deliveryHistory.addEvent(new HandlingEvent(null, new Date(30), null, HandlingEvent.Type.UNLOAD, ham, carrierMovement));
+    assertEquals(StatusCode.inPort, deliveryHistory.status());
+
+    deliveryHistory.addEvent(new HandlingEvent(null, new Date(40), null, HandlingEvent.Type.CLAIM, ham));
+    assertEquals(StatusCode.claimed, deliveryHistory.status());
+  }
+
+  public void testCurrentLocation() throws Exception {
+    DeliveryHistory deliveryHistory = new DeliveryHistory();
+
+    assertNull(deliveryHistory.currentLocation());
+
+    deliveryHistory.addEvent(new HandlingEvent(null, new Date(10), null, HandlingEvent.Type.RECEIVE, ham));
+    assertEquals(ham, deliveryHistory.currentLocation());
+
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("ABC"), ham, ham);
+    deliveryHistory.addEvent(new HandlingEvent(null, new Date(20), null, HandlingEvent.Type.LOAD, ham, carrierMovement));
+    assertNull(deliveryHistory.currentLocation());
+  }
+
 }

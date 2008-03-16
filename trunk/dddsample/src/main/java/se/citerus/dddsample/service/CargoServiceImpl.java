@@ -1,10 +1,7 @@
 package se.citerus.dddsample.service;
 
 import org.springframework.transaction.annotation.Transactional;
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.CarrierMovement;
-import se.citerus.dddsample.domain.HandlingEvent;
-import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
@@ -22,30 +19,22 @@ public class CargoServiceImpl implements CargoService {
       return null;
     }
 
-    HandlingEvent lastEvent = cargo.deliveryHistory().lastEvent();
+    DeliveryHistory deliveryHistory = cargo.deliveryHistory();
 
     //CargoWithHistoryDTO
 
-    String currentLocationId = null;
-    String carrierMovementId = null;
-
-    if (lastEvent.type() == HandlingEvent.Type.UNLOAD || lastEvent.type() == HandlingEvent.Type.RECEIVE)
-      currentLocationId = cargo.lastKnownLocation().unLocode().idString();
-
-    if (lastEvent.type() == HandlingEvent.Type.LOAD)
-      carrierMovementId = lastEvent.carrierMovement().carrierId().idString();
-
-
+    Location currentLocation = deliveryHistory.currentLocation();
+    CarrierMovement currentCarrierMovement = deliveryHistory.currentCarrierMovement();
     final CargoWithHistoryDTO dto = new CargoWithHistoryDTO(
             cargo.trackingId().idString(),
             cargo.origin().toString(),
             cargo.finalDestination().toString(),
-            statusForLastEvent(lastEvent),
-            currentLocationId,
-            carrierMovementId
+            deliveryHistory.status(),
+            currentLocation == null ? null : currentLocation.unLocode().idString(),
+            currentCarrierMovement == null ? null : currentCarrierMovement.carrierId().idString()
     );
 
-    final List<HandlingEvent> events = cargo.deliveryHistory().eventsOrderedByCompletionTime();
+    final List<HandlingEvent> events = deliveryHistory.eventsOrderedByCompletionTime();
     for (HandlingEvent event : events) {
       CarrierMovement cm = event.carrierMovement();
       String carrierIdString = (cm == null) ? "" : cm.carrierId().idString();
@@ -64,25 +53,4 @@ public class CargoServiceImpl implements CargoService {
     this.cargoRepository = cargoRepository;
   }
 
-  public CargoWithHistoryDTO.StatusCode statusForLastEvent(HandlingEvent lastEvent) {
-
-    if (lastEvent == null)
-      return CargoWithHistoryDTO.StatusCode.notReceived;
-
-    HandlingEvent.Type type = lastEvent.type();
-    if (type == HandlingEvent.Type.LOAD)
-      return CargoWithHistoryDTO.StatusCode.onBoardCarrier;
-
-    if (type == HandlingEvent.Type.UNLOAD)
-      return CargoWithHistoryDTO.StatusCode.inPort;
-
-    if (type == HandlingEvent.Type.RECEIVE)
-      return CargoWithHistoryDTO.StatusCode.inPort;
-
-    if (type == HandlingEvent.Type.CLAIM)
-      return CargoWithHistoryDTO.StatusCode.claimed;
-
-
-    return null;
-  }
 }
