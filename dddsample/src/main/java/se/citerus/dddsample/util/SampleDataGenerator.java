@@ -47,9 +47,12 @@ public class SampleDataGenerator implements ServletContextListener {
         {ts((50)),  ts((51)),   "LOAD",     6,  9,     3},
 
         //ABC
-        {ts((20)),  ts((21)),   "CLAIM",    2,  null,  2}
+        {ts((20)),  ts((21)),   "CLAIM",    2,  null,  2},
 
         //CBA
+        {ts((0)),   ts((1)),    "RECEIVE",  2,  null,  4},
+        {ts((10)),  ts((11)),   "LOAD",     2,  7,     4},
+        {ts((20)),  ts((21)),   "UNLOAD",   7,  7,     4},
     };
     executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
   }
