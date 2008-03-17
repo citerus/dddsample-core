@@ -7,15 +7,18 @@ import java.util.Date;
 import java.util.List;
 
 public class ItineraryTest extends TestCase {
+  private final Location shanghai = new Location(new UnLocode("CN", "SHA"), "Shanghai");
+  private final Location rotterdam = new Location(new UnLocode("NL", "RTM"), "Rotterdam");
+  private final Location goteborg = new Location(new UnLocode("SE", "GOT"), "Goteborg");
+  private final Location hangzhou = new Location(new UnLocode("CN", "HGH"), "Hangzhou");
+  private final Location nyc = new Location(new UnLocode("US", "NYC"), "New York");
+  private final Location longBeach = new Location(new UnLocode("US", "LGB"), "Long Beach");
+  private final CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), shanghai, rotterdam);
+  private final CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), rotterdam, goteborg);
+  private final CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), rotterdam, nyc);
+  private final CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), shanghai, longBeach);
 
   public void testCargoOnTrack() throws Exception {
-
-    Location shanghai = new Location(new UnLocode("CN", "SHA"), "Shanghai");
-    Location rotterdam = new Location(new UnLocode("NL", "RTM"), "Rotterdam");
-    Location goteborg = new Location(new UnLocode("SE", "GOT"), "Goteborg");
-    Location hangzhou = new Location(new UnLocode("CN", "HGH"), "Hangzhou");
-    Location nyc = new Location(new UnLocode("US", "NYC"), "New York");
-    Location longBeach = new Location(new UnLocode("US", "LGB"), "Long Beach");
 
     Cargo cargo = new Cargo(new TrackingId("CARGO1")); //Immutable things go into the constructor
 
@@ -28,11 +31,6 @@ public class ItineraryTest extends TestCase {
        new Leg(new CarrierMovementId("ABC"), shanghai, rotterdam),
        new Leg(new CarrierMovementId("DEF"), rotterdam, goteborg)
     );
-
-    CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), shanghai, rotterdam);
-    CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), rotterdam, goteborg);
-    CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), rotterdam, nyc);
-    CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), shanghai, longBeach);
 
     //Happy path
     HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, shanghai);
@@ -54,7 +52,6 @@ public class ItineraryTest extends TestCase {
     assertTrue(itinerary.isExpected(event));
 
     //Customs event changes nothing
-    //TODO: Is this OK?
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, goteborg);
     assertTrue(itinerary.isExpected(event));
 
@@ -76,7 +73,7 @@ public class ItineraryTest extends TestCase {
   }
 
   public void testNextExpectedEvent() throws Exception {
-    
+
   }
 
   public void testCreateItinerary() throws Exception {
