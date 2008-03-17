@@ -15,7 +15,6 @@
     <mapping class="se.citerus.dddsample.domain.CarrierMovement"/>
     <mapping class="se.citerus.dddsample.domain.Itinerary"/>
     <mapping class="se.citerus.dddsample.domain.TrackingId"/>
-    <mapping class="se.citerus.dddsample.domain.DeliveryHistory"/>
     <mapping class="se.citerus.dddsample.domain.CarrierMovementId"/>
     <mapping class="se.citerus.dddsample.domain.UnLocode"/>
   </session-factory>

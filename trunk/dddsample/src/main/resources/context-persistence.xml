@@ -24,6 +24,7 @@
 
   <bean id="cargoRepository" class="se.citerus.dddsample.repository.CargoRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="handlingEventRepository" ref="handlingEventRepository"/>
   </bean>
 
   <bean id="handlingEventRepository" class="se.citerus.dddsample.repository.HandlingEventRepositoryHibernate">
