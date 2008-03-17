@@ -112,8 +112,7 @@ public class Cargo {
    *         that is if the cargo is in a location that's not in the itinerary.
    */
   public boolean isMisdirected() {
-    // TODO: implement
-    return false;
+    return !itinerary.isExpected(deliveryHistory.lastEvent());
   }
 
   @Override
