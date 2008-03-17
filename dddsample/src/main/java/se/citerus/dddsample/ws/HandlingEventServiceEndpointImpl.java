@@ -1,5 +1,6 @@
 package se.citerus.dddsample.ws;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import se.citerus.dddsample.domain.CarrierMovementId;
@@ -29,7 +30,7 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       Date date = parseIso8601Date(completionTime);
       TrackingId tid = new TrackingId(trackingId);
       CarrierMovementId cid;
-      if (carrierMovementId != null) {
+      if (StringUtils.isNotBlank(carrierMovementId)) {
         cid = new CarrierMovementId(carrierMovementId);
       } else {
         cid = null;
