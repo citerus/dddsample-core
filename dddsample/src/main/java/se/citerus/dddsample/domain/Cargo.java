@@ -26,8 +26,8 @@ public class Cargo {
   @ManyToOne
   private Location finalDestination;
 
-  @Embedded
-  private DeliveryHistory deliveryHistory;
+  @Transient
+  private DeliveryHistory deliveryHistory = new DeliveryHistory();
 
   @OneToOne
   private Itinerary itinerary;
@@ -36,7 +36,6 @@ public class Cargo {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
-    this.deliveryHistory =  new DeliveryHistory();
   }
 
   /**

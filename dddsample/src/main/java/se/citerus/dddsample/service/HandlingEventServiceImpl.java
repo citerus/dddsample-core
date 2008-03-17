@@ -18,6 +18,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
 
   @Transactional(readOnly = false)
   public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
+    // Carrier movement may be null for certain event types
     Validate.noNullElements(new Object[] {trackingId, unlocode, type});
 
     Cargo cargo = cargoRepository.find(trackingId);
@@ -28,23 +29,18 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     Date registrationTime = new Date();
     HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
 
-    //DeliveryHistory deliveryHistory = deliveryHistoryRepository.findByTrackingId(trackingId);
-    //DeliveryHistory deliveryHistory = cargo.deliveryHistory();
-
-    //deliveryHistory.addEvent(event);
-    //deliveryHistoryRepository.save(deliveryHistory);
-
-    /*
-    HandlingEvent event;
-    if (carrierMovement != null) {
-      event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
-    } else {
-      event = new HandlingEvent(cargo, completionTime, registrationTime, type, location);
-    }
-    */
     handlingEventRepository.save(event);
 
-    //assert cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event); // <- FALSE here
+    /*
+      NOTE:
+        The cargo instance that's loaded and associated with the handling event is
+        in an inconsitent state, because the cargo delivery history's collection of
+        events does not contain the event created here. However, this is not a problem,
+        because cargo is in a different aggregate from handling event.
+        The rules of an aggregate dictate that all consistency rules within the aggregate
+        are enforced synchronously in the transaction, but consistency rules of other aggregates
+        are enforced by asynchronous updates, after the commit of this transaction.
+     */
   }
 
   private CarrierMovement findCarrierMovement(CarrierMovementId carrierMovementId) throws UnknownCarrierMovementIdException {

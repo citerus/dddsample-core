@@ -3,20 +3,14 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import java.util.*;
 
 /**
  * The delivery history of a cargo.
  *
  */
-@Embeddable
 public class DeliveryHistory {
 
-  @OneToMany
-  @JoinColumn(name = "cargo_id")
   private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
 
   /**

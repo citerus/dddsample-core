@@ -8,10 +8,7 @@ import se.citerus.dddsample.domain.HandlingEvent.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class HandlingEventRepositoryInMem implements HandlingEventRepository{
   private HashMap<String, HandlingEvent> eventDB;
@@ -109,6 +106,10 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
       cargo.handle(event);
     }
     */
+  }
+
+  public List<HandlingEvent> findEventsForCargo(TrackingId trackingId) {
+    return new ArrayList<HandlingEvent>(eventDB.values());
   }
 
   public DeliveryHistory findDeliveryHistory(TrackingId trackingId) {

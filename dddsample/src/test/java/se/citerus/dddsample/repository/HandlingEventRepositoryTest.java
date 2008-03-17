@@ -3,6 +3,7 @@ package se.citerus.dddsample.repository;
 import se.citerus.dddsample.domain.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
@@ -41,6 +42,11 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     assertEquals(new Date(20), result.get("REGISTRATIONTIME"));
     assertEquals("CLAIM", result.get("TYPE"));
     // TODO: the rest of the columns
+  }
+
+  public void testFindEventsForCargo() throws Exception {
+    List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(new TrackingId("XYZ"));
+    assertEquals(12, handlingEvents.size());
   }
 
 }
