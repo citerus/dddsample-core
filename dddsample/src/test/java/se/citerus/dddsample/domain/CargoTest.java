@@ -5,15 +5,21 @@ import junit.framework.TestCase;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 public class CargoTest extends TestCase {
   private final Location stockholm = new Location(new UnLocode("SE", "STO"), "Stockholm");
   private final Location melbourne = new Location(new UnLocode("AU", "MEL"), "Melbourne");
   private final Location hongkong = new Location(new UnLocode("CN", "HKG"), "Hongkong");
   private final Location hamburg = new Location(new UnLocode("DE", "HAM"), "Hamburg");
+
+  private final Location shanghai = new Location(new UnLocode("CN", "SHA"), "Shanghai");
+  private final Location rotterdam = new Location(new UnLocode("NL", "RTM"), "Rotterdam");
+  private final Location goteborg = new Location(new UnLocode("SE", "GOT"), "Goteborg");
+  private final Location hangzhou = new Location(new UnLocode("CN", "HGH"), "Hangzhou");
+  private final Location nyc = new Location(new UnLocode("US", "NYC"), "New York");
 
   // TODO:
   // it seems that events are not added to the system by cargo.deliveryHistory().addEvent(),
@@ -176,35 +182,15 @@ public class CargoTest extends TestCase {
     return cargo;
   }
 
-  public void testCargoOnTrack() throws Exception {
+  public void testIsMisdirected() throws Exception {
 
-    Location shanghai = new Location(new UnLocode("CN", "SHA"), "Shanghai");
-    Location rotterdam = new Location(new UnLocode("NL", "RTM"), "Rotterdam");
-    Location goteborg = new Location(new UnLocode("SE", "GOT"), "Goteborg");
-    Location hangzhou = new Location(new UnLocode("CN", "HGH"), "Hangzhou");
-    Location nyc = new Location(new UnLocode("US", "NYC"), "New York");
-    Location longBeach = new Location(new UnLocode("US", "LGB"), "Long Beach");
+    Cargo cargo = setUpCargoWithItinerary(shanghai, rotterdam, goteborg);
 
-    Cargo cargo = new Cargo(new TrackingId("CARGO1")); //Immutable things go into the constructor
-
-    //Mutable things in setters
-    cargo.setOrigin(shanghai);
-    cargo.setDestination(goteborg);
-
-
-    Itinerary itinerary = new Itinerary(
-       new Leg(new CarrierMovementId("ABC"), shanghai, rotterdam),
-       new Leg(new CarrierMovementId("DEF"), rotterdam, goteborg)
-    );
+    Collection<HandlingEvent> handlingEvents = new ArrayList<HandlingEvent>();
 
     CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), shanghai, rotterdam);
     CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), rotterdam, goteborg);
     CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), rotterdam, nyc);
-    CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), shanghai, longBeach);
-
-    cargo.assignItinerary(itinerary);
-
-    Collection<HandlingEvent> handlingEvents = new ArrayList<HandlingEvent>();
 
     //Happy path
     handlingEvents.add(new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.RECEIVE, shanghai));
@@ -218,27 +204,55 @@ public class CargoTest extends TestCase {
     cargo.deliveryHistory().addAllEvents(handlingEvents);
     assertFalse(cargo.isMisdirected());
 
-    /*
-    TODO: FIX THIS!
-    //Customs event changes nothing
-    //TODO: Is this OK?
+    //Try a couple of failing ones
 
-    //Received at the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, hangzhou);
-    assertFalse(itinerary.isExpected(event));
+    cargo = setUpCargoWithItinerary(shanghai, rotterdam, goteborg);
+    handlingEvents = new ArrayList<HandlingEvent>();
 
-    //Loaded to onto the wrong ship, correct location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, rotterdam, ghi);
-    assertFalse(itinerary.isExpected(event));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, hangzhou));
+    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    assertTrue(cargo.isMisdirected());
 
-    //Unloaded from the wrong ship in the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, longBeach, jkl);
-    assertFalse(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, rotterdam);
-    assertFalse(itinerary.isExpected(event));
-    */
+    cargo = setUpCargoWithItinerary(shanghai, rotterdam, goteborg);
+    handlingEvents = new ArrayList<HandlingEvent>();
 
+    handlingEvents.add(new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.RECEIVE, shanghai));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(30), new Date(40), HandlingEvent.Type.LOAD, shanghai, abc));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(50), new Date(60), HandlingEvent.Type.UNLOAD, rotterdam, abc));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(70), new Date(80), HandlingEvent.Type.LOAD, rotterdam, ghi));
+
+    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    assertTrue(cargo.isMisdirected());
+
+
+    cargo = setUpCargoWithItinerary(shanghai, rotterdam, goteborg);
+    handlingEvents = new ArrayList<HandlingEvent>();
+
+    handlingEvents.add(new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.RECEIVE, shanghai));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(30), new Date(40), HandlingEvent.Type.LOAD, shanghai, abc));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(50), new Date(60), HandlingEvent.Type.UNLOAD, rotterdam, abc));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, rotterdam));
+
+    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    assertTrue(cargo.isMisdirected());
+  }
+
+  private Cargo setUpCargoWithItinerary(Location shanghai, Location rotterdam, Location goteborg) {
+    Cargo cargo = new Cargo(new TrackingId("CARGO1")); //Immutable things go into the constructor
+
+    //Mutable things in setters
+    cargo.setOrigin(shanghai);
+    cargo.setDestination(goteborg);
+
+
+    Itinerary itinerary = new Itinerary(
+       new Leg(new CarrierMovementId("ABC"), shanghai, rotterdam),
+       new Leg(new CarrierMovementId("DEF"), rotterdam, goteborg)
+    );
+
+    cargo.assignItinerary(itinerary);
+    return cargo;
   }
 
   /**
