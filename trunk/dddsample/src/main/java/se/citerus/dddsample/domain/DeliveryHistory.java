@@ -7,7 +7,6 @@ import java.util.*;
 
 /**
  * The delivery history of a cargo.
- *
  */
 public class DeliveryHistory {
 
@@ -30,7 +29,7 @@ public class DeliveryHistory {
   public void addEvent(HandlingEvent event) {
     this.events.add(event);
   }
-  
+
   /**
    * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
    */
@@ -58,7 +57,8 @@ public class DeliveryHistory {
   }
 
   // Needed by Hibernate
-  DeliveryHistory() {}
+  DeliveryHistory() {
+  }
 
   public StatusCode status() {
     if (lastEvent() == null)
@@ -77,7 +77,7 @@ public class DeliveryHistory {
     if (type == HandlingEvent.Type.CLAIM)
       return StatusCode.claimed;
 
-
+    //TODO: What about Type.CUSTOMS?
     return null;
   }
 
@@ -96,5 +96,5 @@ public class DeliveryHistory {
       return null;
     }
   }
-  
+
 }

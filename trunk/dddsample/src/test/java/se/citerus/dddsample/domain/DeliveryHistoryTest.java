@@ -4,9 +4,7 @@ import junit.framework.TestCase;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DeliveryHistoryTest extends TestCase {
   private Location ham = new Location(new UnLocode("DE", "HAM"), "Hamburg");
@@ -16,8 +14,8 @@ public class DeliveryHistoryTest extends TestCase {
     assertTrue(dh.eventsOrderedByCompletionTime().isEmpty());
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    final Location from = new Location(new UnLocode("FR","OMX"), "From");
-    final Location to = new Location(new UnLocode("TO","XXX"), "To");
+    final Location from = new Location(new UnLocode("FR", "OMX"), "From");
+    final Location to = new Location(new UnLocode("TO", "XXX"), "To");
     CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), from, to);
     HandlingEvent he1 = new HandlingEvent(null, df.parse("2010-01-03"), new Date(), HandlingEvent.Type.RECEIVE, to);
     HandlingEvent he2 = new HandlingEvent(null, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, to, carrierMovement);

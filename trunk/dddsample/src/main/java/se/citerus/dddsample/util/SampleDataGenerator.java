@@ -79,7 +79,7 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
-    String cargoSql = "insert into Cargo (id, tracking_id, origin_id, finalDestination_id) values (?, ?, ?, ?)";
+    String cargoSql = "insert into Cargo (id, tracking_id, origin_id, destination_id) values (?, ?, ?, ?)";
     Object[][] cargoArgs = {
       {1, "XYZ",1,2},
       {2, "ABC",1,5},

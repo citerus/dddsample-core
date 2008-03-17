@@ -40,6 +40,6 @@ public class TrackingId {
   }
 
   // Needed by Hibernate
-  TrackingId() {}
+  protected TrackingId() {}
 
 }

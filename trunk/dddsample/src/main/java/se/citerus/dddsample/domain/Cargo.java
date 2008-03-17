@@ -8,7 +8,6 @@ import javax.persistence.*;
 
 /**
  * A Cargo.
- *
  */
 @Entity
 public class Cargo {
@@ -22,21 +21,27 @@ public class Cargo {
 
   @ManyToOne
   private Location origin;
-  
+
   @ManyToOne
-  private Location finalDestination;
+  private Location destination;
 
   @Transient
   private DeliveryHistory deliveryHistory = new DeliveryHistory();
 
-  @OneToOne
+  @Transient
   private Itinerary itinerary;
 
-  public Cargo(TrackingId trackingId, Location origin, Location finalDestination) {
+  //TODO Remove this constructor
+  public Cargo(TrackingId trackingId, Location origin, Location destination) {
     this.trackingId = trackingId;
     this.origin = origin;
-    this.finalDestination = finalDestination;
+    this.destination = destination;
   }
+
+  public Cargo(TrackingId trackingId) {
+    this.trackingId = trackingId;
+  }
+
 
   /**
    * @return Tracking id.
@@ -52,11 +57,19 @@ public class Cargo {
     return this.origin;
   }
 
+  public void setOrigin(Location origin) {
+    this.origin = origin;
+  }
+
+  public void setDestination(Location destination) {
+    this.destination = destination;
+  }
+
   /**
    * @return Final destination.
    */
   public Location finalDestination() {
-    return this.finalDestination;
+    return this.destination;
   }
 
   /**
@@ -82,11 +95,12 @@ public class Cargo {
    * @return True if the cargo has arrived at its final destination.
    */
   public boolean hasArrived() {
-    return finalDestination.equals(lastKnownLocation());
+    return destination.equals(lastKnownLocation());
   }
 
   /**
    * Assigns an itinerary to this cargo.
+   *
    * @param itinerary an itinerary
    */
   public void assignItinerary(Itinerary itinerary) {
@@ -95,7 +109,7 @@ public class Cargo {
 
   /**
    * @return True if the cargo has been misdirected,
-   * that is if the cargo is in a location that's not in the itinerary.
+   *         that is if the cargo is in a location that's not in the itinerary.
    */
   public boolean isMisdirected() {
     // TODO: implement
@@ -129,5 +143,6 @@ public class Cargo {
   }
 
   // Needed by Hibernate
-  Cargo() {}
+  protected Cargo() {
+  }
 }
