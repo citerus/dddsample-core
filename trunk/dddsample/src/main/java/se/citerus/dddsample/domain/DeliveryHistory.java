@@ -7,6 +7,8 @@ import java.util.*;
 
 /**
  * The delivery history of a cargo.
+ *
+ * Is this an entiy or a value object?
  */
 public class DeliveryHistory {
 

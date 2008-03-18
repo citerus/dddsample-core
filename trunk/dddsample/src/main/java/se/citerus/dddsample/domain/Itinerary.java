@@ -75,8 +75,28 @@ public class Itinerary {
       return (leg.to().equals(event.location()));
     }
 
-
     //HandlingEvent.Type.CUSTOMS;
     return true;
+  }
+
+  private boolean sameValueAs(Itinerary other) {
+    if (!legs.equals(other.legs)) return false;
+
+    return true;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Itinerary itinerary = (Itinerary) o;
+
+    return sameValueAs(itinerary);
+  }
+
+  @Override
+  public int hashCode() {
+    return legs.hashCode();
   }
 }

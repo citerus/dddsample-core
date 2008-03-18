@@ -1,7 +1,5 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
@@ -80,9 +78,9 @@ public class HandlingEvent {
    * Constructor for events that do not have a carrier movement associated.
    *
    * @param cargo            cargo
-   * @param completionTime   completion time
-   * @param registrationTime registration time
-   * @param type             type of event. Legal values are CLAIM, RECIEVE and CUSTOMS
+   * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
+   * @param registrationTime registration time, the time the message is received
+   * @param type             type of event. Legal values are CLAIM, RECEIVE and CUSTOMS
    * @param location         where the event took place
    */
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
@@ -102,8 +100,8 @@ public class HandlingEvent {
    * is the end point.
    *
    * @param cargo            cargo
-   * @param completionTime   completion time
-   * @param registrationTime registration time
+   * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
+   * @param registrationTime registration time, the time the message is received
    * @param type             type of event. Legal values are LOAD and UNLOAD
    * @param location         where the event took place
    * @param carrierMovement  carrier movement.
@@ -115,7 +113,6 @@ public class HandlingEvent {
     this.cargo = cargo;
     this.location = location;
     this.carrierMovement = carrierMovement;
-
 
     validateType();
   }
@@ -149,42 +146,46 @@ public class HandlingEvent {
     return this.cargo;
   }
 
-  /**
-   * @param object to compare
-   * @return True if location, completion time and type are equal.
-   */
-  @Override
-  public boolean equals(Object object) {
-    if (object == null) {
-      return false;
-    }
-    if (!(object instanceof HandlingEvent)) {
-      return false;
-    }
-    HandlingEvent other = (HandlingEvent) object;
-    return this.location.equals(other.location) &&
-            this.completionTime.equals(other.completionTime) &&
-            this.type.equals(other.type);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    HandlingEvent event = (HandlingEvent) o;
+
+    return sameEventAs(event);
   }
 
   /**
-   * @return Hash code calculated from the same properties as equals().
+   * Events compare by the attributes that identify the underlying event as opposed to the report of the event.
+   * Therefore the completion time is part of the comparison but not the registration time.
+   *
+   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
+   * Compare this behavior to the entity {@link se.citerus.dddsample.domain.Cargo#sameIdentityAs(Cargo)}
+   *
+   * @param other The other hanling event.
+   * @return <code>true</code> if the given handling event and this event are regarded as the same.
    */
+  public boolean sameEventAs(HandlingEvent other) {
+    if (cargo != null ? !cargo.equals(other.cargo) : other.cargo != null) return false;
+    if (carrierMovement != null ? !carrierMovement.equals(other.carrierMovement) : other.carrierMovement != null)
+      return false;
+    if (completionTime != null ? !completionTime.equals(other.completionTime) : other.completionTime != null)
+      return false;
+    if (location != null ? !location.equals(other.location) : other.location != null) return false;
+    if (type != other.type) return false;
+
+    return true;
+  }
+
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(7, 39).
-            append(this.location).
-            append(this.completionTime).
-            append(this.type).
-            toHashCode();
-  }
-
-  /**
-   * @param other to compare
-   * @return True if the ids are equal.
-   */
-  public boolean sameIdentityAs(HandlingEvent other) {
-    return other != null && id.equals(other.id);
+    int result;
+    result = (type != null ? type.hashCode() : 0);
+    result = 31 * result + (carrierMovement != null ? carrierMovement.hashCode() : 0);
+    result = 31 * result + (location != null ? location.hashCode() : 0);
+    result = 31 * result + (completionTime != null ? completionTime.hashCode() : 0);
+    result = 31 * result + (cargo != null ? cargo.hashCode() : 0);
+    return result;
   }
 
   /**
