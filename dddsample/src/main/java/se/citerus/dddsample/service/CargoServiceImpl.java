@@ -1,5 +1,7 @@
 package se.citerus.dddsample.service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
@@ -10,11 +12,11 @@ import java.util.List;
 
 public class CargoServiceImpl implements CargoService {
   private CargoRepository cargoRepository;
+  private static final Log logger = LogFactory.getLog(CargoServiceImpl.class);
 
   @Transactional(readOnly = true)
-  public CargoWithHistoryDTO track(String trackingId) {
-    final TrackingId tid = new TrackingId(trackingId);
-    final Cargo cargo = cargoRepository.find(tid);
+  public CargoWithHistoryDTO track(TrackingId trackingId) {
+    final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       return null;
     }
@@ -47,6 +49,16 @@ public class CargoServiceImpl implements CargoService {
     }
     return dto;
 
+  }
+
+  @Transactional(readOnly = true)
+  public void notifyIfMisdirected(TrackingId trackingId) {
+    Cargo cargo = cargoRepository.find(trackingId);
+    if (cargo.isMisdirected()) {
+      // TODO: more elaborate notification than logging - mail, xmpp, other?
+      logger.info("Cargo " + trackingId + " has been misdirected. " +
+                  "Last event was " + cargo.deliveryHistory().lastEvent());
+    }
   }
 
   public void setCargoRepository(CargoRepository cargoRepository) {

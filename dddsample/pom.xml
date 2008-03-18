@@ -23,13 +23,13 @@
     <repository>
       <id>maven2-repository.dev.java.net</id>
       <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
+      <url>http://download.java.net/maven/2</url>
       <layout>default</layout>
     </repository>
     <repository>
       <id>maven-repository.dev.java.net</id>
       <name>Java.net Repository for Maven 1</name>
-      <url>http://download.java.net/maven/1/</url>
+      <url>http://download.java.net/maven/1</url>
       <layout>legacy</layout>
     </repository>
   </repositories>
@@ -37,7 +37,7 @@
     <pluginRepository>
       <id>maven2-repository.dev.java.net</id>
       <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
+      <url>http://download.java.net/maven/2</url>
     </pluginRepository>
   </pluginRepositories>
   <developers>
@@ -178,6 +178,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>${spring.version}</version>
       <scope>test</scope>
@@ -216,6 +221,10 @@
           <groupId>avalon-framework</groupId>
           <artifactId>avalon-framework</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>logkit</groupId>
+          <artifactId>logkit</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -251,6 +260,23 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-core</artifactId>
+      <version>5.0.0</version>
+      <exclusions>
+        <!--
+          This is a snapshot dependency, with no published pom.
+          It does not appear to be needed either:
+          
+          http://mail-archives.apache.org/mod_mbox/activemq-commits/200610.mbox/%3C20061005025744.0C6591A981A@eris.apache.org%3E
+        -->
+        <exclusion>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>activeio-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
       <version>2.3</version>
@@ -259,7 +285,11 @@
 
     <!-- JAX-WS integration with Spring. Lots of broken pom files unfortunately,
       so we need a few excluded-and-overridden dependencies.
-      This problem will mostly go away when we move to Java 6. -->
+      This problem will mostly go away when we move to Java 6.
+
+      javax.activation is excluded because of class loading issues with Jetty:
+      http://jira.codehaus.org/browse/JETTY-420
+      -->
     <dependency>
       <groupId>org.jvnet.jax-ws-commons.spring</groupId>
       <artifactId>jaxws-spring</artifactId>
@@ -277,6 +307,10 @@
           <groupId>org.jvnet.staxex</groupId>
           <artifactId>stax-ex</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -284,12 +318,24 @@
       <artifactId>stax-ex</artifactId>
       <version>1.2</version>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.stream.buffer</groupId>
       <artifactId>streambuffer</artifactId>
       <version>0.7</version>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>

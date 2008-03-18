@@ -15,6 +15,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
+  private EventService eventService;
 
   @Transactional(readOnly = false)
   public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
@@ -27,9 +28,8 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
     Location location = findLocation(unlocode);
     Date registrationTime = new Date();
-    HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
 
-    handlingEventRepository.save(event);
+    HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
 
     /*
       NOTE:
@@ -41,6 +41,9 @@ public class HandlingEventServiceImpl implements HandlingEventService {
         are enforced synchronously in the transaction, but consistency rules of other aggregates
         are enforced by asynchronous updates, after the commit of this transaction.
      */
+    handlingEventRepository.save(event);
+
+    eventService.fireHandlingEventRegistered(event);
   }
 
   private CarrierMovement findCarrierMovement(CarrierMovementId carrierMovementId) throws UnknownCarrierMovementIdException {
@@ -72,7 +75,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     this.cargoRepository = cargoRepository;
   }
 
-  public void setCarrierRepository(CarrierMovementRepository carrierMovementRepository) {
+  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
     this.carrierMovementRepository = carrierMovementRepository;
   }
 
@@ -82,5 +85,9 @@ public class HandlingEventServiceImpl implements HandlingEventService {
 
   public void setLocationRepository(LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
+  }
+
+  public void setEventService(EventService eventService) {
+    this.eventService = eventService;
   }
 }
