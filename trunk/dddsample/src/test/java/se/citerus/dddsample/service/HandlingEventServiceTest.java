@@ -12,6 +12,7 @@ import java.util.Date;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
+  private EventService eventService;
   private CargoRepository cargoRepository;
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
@@ -40,15 +41,17 @@ public class HandlingEventServiceTest extends TestCase {
     carrierMovementRepository = createMock(CarrierMovementRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     locationRepository = createMock(LocationRepository.class);
-    
+    eventService = createMock(EventService.class);
+
     service.setCargoRepository(cargoRepository);
-    service.setCarrierRepository(carrierMovementRepository);
+    service.setCarrierMovementRepository(carrierMovementRepository);
     service.setHandlingEventRepository(handlingEventRepository);
     service.setLocationRepository(locationRepository);
+    service.setEventService(eventService);
   }
 
   protected void tearDown() throws Exception {
-    verify(cargoRepository, carrierMovementRepository, handlingEventRepository);
+    verify(cargoRepository, carrierMovementRepository, handlingEventRepository, eventService);
   }
 
   public void testRegisterEvent() throws Exception {
@@ -65,8 +68,9 @@ public class HandlingEventServiceTest extends TestCase {
 
     // TODO: does not inspect the handling event instance in a sufficient way
     handlingEventRepository.save(isA(HandlingEvent.class));
+    eventService.fireHandlingEventRegistered(isA(HandlingEvent.class));
 
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
     
     service.register(date, trackingId, carrierMovementId, unLocode, HandlingEvent.Type.LOAD);
   }
@@ -78,10 +82,11 @@ public class HandlingEventServiceTest extends TestCase {
     expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
 
     handlingEventRepository.save(isA(HandlingEvent.class));
-    
+    eventService.fireHandlingEventRegistered(isA(HandlingEvent.class));
+
     expect(locationRepository.find(stockholm.unLocode())).andReturn(stockholm);
 
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
 
     service.register(date, trackingId, null, stockholm.unLocode(), HandlingEvent.Type.CLAIM);
   }
@@ -98,7 +103,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(melbourne.unLocode())).andReturn(melbourne);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
     
     try {
       service.register(date, trackingId, carrierMovementId, melbourne.unLocode(), HandlingEvent.Type.UNLOAD);
@@ -114,7 +119,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(hongkong.unLocode())).andReturn(hongkong);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
     
     try {
       service.register(date, trackingId, null, hongkong.unLocode(), HandlingEvent.Type.CLAIM);
@@ -130,7 +135,7 @@ public class HandlingEventServiceTest extends TestCase {
     UnLocode wayOff = new UnLocode("XX", "YYY");
     expect(locationRepository.find(wayOff)).andReturn(null);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
     
     try {
       service.register(date, trackingId, null, wayOff, HandlingEvent.Type.CLAIM);

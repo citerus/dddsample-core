@@ -20,8 +20,20 @@
   <bean id="handlingEventService" class="se.citerus.dddsample.service.HandlingEventServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="handlingEventRepository" ref="handlingEventRepository"/>
-    <property name="carrierRepository" ref="carrierMovementRepository"/>
+    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
+    <property name="eventService" ref="eventService"/>
   </bean>
+
+  <bean id="eventService" class="se.citerus.dddsample.service.JmsEventServiceImpl">
+    <property name="jmsOperations" ref="jmsOperations"/>
+    <property name="destination" ref="handlingEventTopic"/>
+  </bean>
+
+  <!--
+  <bean id="eventService" class="se.citerus.dddsample.service.ThreadBasedEventServiceImpl">
+    <property name="cargoService" ref="cargoService"/>
+  </bean>
+  -->
 
 </beans>

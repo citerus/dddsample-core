@@ -39,10 +39,10 @@ public class CargoTrackingControllerTest extends TestCase {
 
   private CargoService getCargoServiceMock() {
     return new CargoService() {
-      public CargoWithHistoryDTO track(String trackingId) {
+      public CargoWithHistoryDTO track(TrackingId trackingId) {
         final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
         final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
-        Cargo cargo = new Cargo(new TrackingId(trackingId), a5, b5);
+        Cargo cargo = new Cargo(trackingId, a5, b5);
         HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, b5);
 //        cargo.handle(event);
 
@@ -61,14 +61,18 @@ public class CargoTrackingControllerTest extends TestCase {
           event.completionTime()));
         return cargoDTO;
       }
+
+      public void notifyIfMisdirected(TrackingId trackingId) {
+      }
     };
   }
   
   private CargoService getCargoServiceNullMock() {
     return new CargoService() {
-      public CargoWithHistoryDTO track(String trackingId) {
+      public CargoWithHistoryDTO track(TrackingId trackingId) {
         return null;
       }
+      public void notifyIfMisdirected(TrackingId trackingId) {}
     };
   }
 

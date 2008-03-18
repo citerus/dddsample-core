@@ -3,6 +3,7 @@ package se.citerus.dddsample.web;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
@@ -29,7 +30,8 @@ public class CargoTrackingController extends SimpleFormController {
   @Override
   protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
     final TrackCommand trackCommand = (TrackCommand) command;
-    final CargoWithHistoryDTO cargo = cargoService.track(trackCommand.getTrackingId());
+    final String tidStr = trackCommand.getTrackingId();
+    final CargoWithHistoryDTO cargo = cargoService.track(new TrackingId(tidStr));
 
     final Map<String, Object> model = new HashMap<String, Object>();
     if (cargo != null) {

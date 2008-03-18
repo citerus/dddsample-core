@@ -99,7 +99,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
 
     // Tested call
-    CargoWithHistoryDTO cargoDTO = cargoService.track("XYZ");
+    CargoWithHistoryDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
 
 
     assertEquals("XYZ", cargoDTO.getTrackingId());
@@ -137,7 +137,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     replay(cargoRepository);
 
     // Tested call
-    CargoWithHistoryDTO cargoDTO = cargoService.track("XYZ");
+    CargoWithHistoryDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
     
     assertNull(cargoDTO);
   }

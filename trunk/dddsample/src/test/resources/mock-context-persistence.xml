@@ -20,7 +20,16 @@
     <constructor-arg value="se.citerus.dddsample.repository.CarrierMovementRepository"/>
   </bean>
 
-  <bean id="locationRepository" class="se.citerus.dddsample.repository.LocationRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
+  <bean id="locationRepository" class="org.easymock.EasyMock" factory-method="createMock">
+    <constructor-arg value="se.citerus.dddsample.repository.LocationRepository"/>
   </bean>
+
+  <bean id="jmsOperations" class="org.easymock.EasyMock" factory-method="createMock">
+    <constructor-arg value="org.springframework.jms.core.JmsOperations"/>
+  </bean>
+
+  <bean id="handlingEventTopic" class="org.easymock.EasyMock" factory-method="createMock">
+    <constructor-arg value="javax.jms.Destination"/>
+  </bean>
+  
 </beans>
