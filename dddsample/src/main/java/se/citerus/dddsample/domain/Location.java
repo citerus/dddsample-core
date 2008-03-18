@@ -23,12 +23,12 @@ public class Location {
    * Special Location object that marks an unknown location.
    */
   public static final Location UNKNOWN = new Location(
-    new UnLocode("XX","XXX"), "Unknown location"
+     new UnLocode("XX", "XXX"), "Unknown location"
   );
 
   /**
    * @param unLocode UN Locode
-   * @param name location name
+   * @param name     location name
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
   public Location(UnLocode unLocode, String name) {
@@ -57,7 +57,7 @@ public class Location {
 
   /**
    * @param object to compare
-   * @return True iff UN locodes are equal.
+   * @return Since this is an entiy this will be true iff UN locodes are equal.
    */
   @Override
   public boolean equals(Object object) {
@@ -71,6 +71,20 @@ public class Location {
       return false;
     }
     Location other = (Location) object;
+    return sameIdentityAs(other);
+  }
+
+  /**
+   * Entities compare by identity, therefore the unLocode field is the only basis of comparison. For persistence we
+   * have an id field, but it is not used for identiy comparison.
+   *
+   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
+   *
+   * @param other The other location.
+   * @return <code>true</code> if the given location's and this locations's unLocode is the same, regardles of other
+   * attributes.
+   */
+  public boolean sameIdentityAs(Location other) {
     return this.unLocode.equals(other.unLocode);
   }
 
@@ -91,6 +105,7 @@ public class Location {
   }
 
   // Needed by Hibernate
-  Location() {}
+  Location() {
+  }
 
 }

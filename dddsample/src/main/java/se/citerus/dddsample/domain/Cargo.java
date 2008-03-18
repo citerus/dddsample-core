@@ -121,6 +121,20 @@ public class Cargo {
   }
 
   /**
+   * Entities compare by identity, therefore the trackingId field is the only basis of comparison. For persistence we
+   * have an id field, but it is not used for identiy comparison.
+   *
+   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
+   *
+   * @param other The other cargo.
+   * @return <code>true</code> if the given cargo's and this cargos's trackingId is the same, regardles of other
+   * attributes.
+   */
+  private boolean sameIdentityAs(Cargo other) {
+    return trackingId.equals(other.trackingId);
+  }
+
+  /**
    * @param object to compare
    * @return True if tracking ids are equal.
    */
@@ -130,7 +144,7 @@ public class Cargo {
       return false;
     }
     Cargo other = (Cargo) object;
-    return trackingId.equals(other.trackingId);
+    return sameIdentityAs(other);
   }
 
   /**
