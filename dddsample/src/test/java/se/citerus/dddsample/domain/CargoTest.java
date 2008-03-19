@@ -184,7 +184,14 @@ public class CargoTest extends TestCase {
 
   public void testIsMisdirected() throws Exception {
 
-    Cargo cargo = setUpCargoWithItinerary(shanghai, rotterdam, goteborg);
+    //A cargo with no itinerary is not misdirected
+    Cargo cargo = new Cargo(new TrackingId("TRKID"));
+    assertFalse(cargo.isMisdirected());
+
+    cargo = setUpCargoWithItinerary(shanghai, rotterdam, goteborg);
+
+    //A cargo with no handling events is not misdirected
+    assertFalse(cargo.isMisdirected());
 
     Collection<HandlingEvent> handlingEvents = new ArrayList<HandlingEvent>();
 

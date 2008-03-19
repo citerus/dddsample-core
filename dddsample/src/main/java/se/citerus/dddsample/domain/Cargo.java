@@ -108,11 +108,22 @@ public class Cargo {
   }
 
   /**
-   * @return True if the cargo has been misdirected,
-   *         that is if the cargo is in a location that's not in the itinerary.
+   * Check if cargo is misdirected.
+   * <p/>
+   * <ul>
+   * <li>A cargo is misdirected if it is in a location that's not in the itinerary.
+   * <li>A cargo with no itinerary can not be misdirected.
+   * <li>A cargo that has received no handling events can not be misdirected.
+   * </ul>
+   *
+   * @return <code>true</code> if the cargo has been misdirected,
    */
   public boolean isMisdirected() {
-    return itinerary != null && !itinerary.isExpected(deliveryHistory.lastEvent());
+    final HandlingEvent lastEvent = deliveryHistory.lastEvent();
+    if (itinerary == null || lastEvent == null)
+      return false;
+
+    return !itinerary.isExpected(lastEvent);
   }
 
   public Itinerary itinerary() {
@@ -127,12 +138,12 @@ public class Cargo {
   /**
    * Entities compare by identity, therefore the trackingId field is the only basis of comparison. For persistence we
    * have an id field, but it is not used for identiy comparison.
-   *
+   * <p/>
    * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
    *
    * @param other The other cargo.
    * @return <code>true</code> if the given cargo's and this cargos's trackingId is the same, regardles of other
-   * attributes.
+   *         attributes.
    */
   private boolean sameIdentityAs(Cargo other) {
     return trackingId.equals(other.trackingId);
