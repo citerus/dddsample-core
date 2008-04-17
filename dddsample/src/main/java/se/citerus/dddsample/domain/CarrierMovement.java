@@ -1,5 +1,8 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.Validate;
+
 import javax.persistence.*;
 
 
@@ -23,6 +26,7 @@ public class CarrierMovement {
   private Location to;
 
   public CarrierMovement(CarrierMovementId carrierMovementId, Location from, Location to) {
+    Validate.noNullElements(new Object[] {carrierMovementId, from, to});
     this.carrierMovementId = carrierMovementId;
     this.from = from;
     this.to = to;
@@ -52,14 +56,11 @@ public class CarrierMovement {
    * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
    *
    * @param other The other cargo.
-   * @return <code>true</code> if the given carrier movement's and this carrier movement's carrierId is the same,
+   * @return <code>true</code> if the given carrier movement's and this carrier movement's carrier id are the same,
    *         regardles of other attributes.
    */
   public boolean sameIdentityAs(CarrierMovement other) {
-    if (carrierMovementId != null ? !carrierMovementId.equals(other.carrierMovementId) : other.carrierMovementId != null)
-      return false;
-
-    return true;
+    return carrierMovementId.equals(other.carrierMovementId);
   }
 
   @Override
@@ -72,13 +73,11 @@ public class CarrierMovement {
     return sameIdentityAs(that);
   }
 
+  /**
+   * @return Hashcode of carrier movement id.
+   */
   @Override
   public int hashCode() {
-    int result;
-    result = (id != null ? id.hashCode() : 0);
-    result = 31 * result + (carrierMovementId != null ? carrierMovementId.hashCode() : 0);
-    result = 31 * result + (from != null ? from.hashCode() : 0);
-    result = 31 * result + (to != null ? to.hashCode() : 0);
-    return result;
+    return carrierMovementId.hashCode();
   }
 }

@@ -12,9 +12,9 @@ public class HandlingEventTest extends TestCase {
   private final Location finalDestination = new Location(new UnLocode("TO","YYY"), "To");
   private final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
   private final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
+  private final Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
 
   public void testNewWithCarrierMovement() throws Exception {
-    Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
     CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("C01"), origin, finalDestination);
 
     HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, origin, carrierMovement);
@@ -34,27 +34,23 @@ public class HandlingEventTest extends TestCase {
       // These event types requires a carrier movement association
     for (Type type : asList(LOAD, UNLOAD)) {
         try {
-          new HandlingEvent(cargo, new Date(), new Date(), type, origin);
+          new HandlingEvent(cargo, new Date(), new Date(), type, origin, null);
             fail("Handling event type " + type + " requires carrier movement");
         } catch (IllegalArgumentException expected) {}
     }
   }
 
   public void testNewWithLocation() throws Exception {
-    Location origin = this.origin;
-    Location finalDestination = this.finalDestination;
-    Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
-
     Location location = new Location(new UnLocode("FO","OOO"), "Foo");
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), Type.CLAIM, location);
+    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), Type.CLAIM, location, null);
     assertEquals(location, e1.location());
   }
 
   public void testCurrentLocationLoadEvent() throws Exception {
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, a5, b5);
-    
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), LOAD, a5, cm);
+
+    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), LOAD, a5, cm);
     
     assertEquals(a5, ev.location());
   }
@@ -62,19 +58,19 @@ public class HandlingEventTest extends TestCase {
   public void testCurrentLocationUnloadEvent() throws Exception {
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, a5, b5);
-    
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), UNLOAD, b5, cm);
+
+    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, b5, cm);
     
     assertEquals(b5, ev.location());
   }
   
   public void testCurrentLocationReceivedEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), RECEIVE, a5);
+    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, a5, null);
 
     assertEquals(a5, ev.location());
   }
   public void testCurrentLocationClaimedEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(null, new Date(), new Date(), CLAIM, a5);
+    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, a5, null);
 
     assertEquals(a5, ev.location());
   }
@@ -101,8 +97,8 @@ public class HandlingEventTest extends TestCase {
     CarrierMovementId carrierMovementId = new CarrierMovementId("CAR_001");
     CarrierMovement cm = new CarrierMovement(carrierMovementId, a5, b5);
 
-    HandlingEvent ev1 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, a5, cm);
-    HandlingEvent ev2 = new HandlingEvent(null, timeOccured, timeRegistered, LOAD, a5, cm);
+    HandlingEvent ev1 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, a5, cm);
+    HandlingEvent ev2 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, a5, cm);
 
     // Two handling events are not equal() even if all non-uuid fields are identical
     assertTrue(ev1.equals(ev2));

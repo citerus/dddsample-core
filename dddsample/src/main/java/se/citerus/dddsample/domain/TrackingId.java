@@ -40,7 +40,9 @@ public class TrackingId {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
-  // Needed by Hibernate
-  protected TrackingId() {}
+
+  TrackingId() {
+    // Needed by Hibernate
+  }
 
 }
