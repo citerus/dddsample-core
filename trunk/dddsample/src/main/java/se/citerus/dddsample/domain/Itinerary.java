@@ -79,10 +79,12 @@ public class Itinerary {
     return true;
   }
 
-  private boolean sameValueAs(Itinerary other) {
-    if (!legs.equals(other.legs)) return false;
-
-    return true;
+  /**
+   * @param other itinerary to compare
+   * @return <code>true</code> if the legs in this and the other itinerary are all equal.
+   */
+  public boolean sameValueAs(Itinerary other) {
+    return legs.equals(other.legs);
   }
 
   @Override

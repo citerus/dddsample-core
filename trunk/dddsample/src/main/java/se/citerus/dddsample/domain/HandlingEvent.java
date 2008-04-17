@@ -1,5 +1,9 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.Validate;
+
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
@@ -75,25 +79,6 @@ public class HandlingEvent {
 
 
   /**
-   * Constructor for events that do not have a carrier movement associated.
-   *
-   * @param cargo            cargo
-   * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
-   * @param registrationTime registration time, the time the message is received
-   * @param type             type of event. Legal values are CLAIM, RECEIVE and CUSTOMS
-   * @param location         where the event took place
-   */
-  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
-    this.registrationTime = registrationTime;
-    this.completionTime = completionTime;
-    this.type = type;
-    this.cargo = cargo;
-    this.location = location;
-
-    validateType();
-  }
-
-    /**
    * Constructor for events that have a carrier movement associated. The location where
    * the event took place is derived from the carrier movement: if the type of event is LOAD,
    * the location is the starting point of the movement, if the type is UNLOAD the location
@@ -107,6 +92,7 @@ public class HandlingEvent {
    * @param carrierMovement  carrier movement.
    */
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location, CarrierMovement carrierMovement) {
+    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location});
     this.registrationTime = registrationTime;
     this.completionTime = completionTime;
     this.type = type;
@@ -166,26 +152,24 @@ public class HandlingEvent {
    * @return <code>true</code> if the given handling event and this event are regarded as the same.
    */
   public boolean sameEventAs(HandlingEvent other) {
-    if (cargo != null ? !cargo.equals(other.cargo) : other.cargo != null) return false;
-    if (carrierMovement != null ? !carrierMovement.equals(other.carrierMovement) : other.carrierMovement != null)
-      return false;
-    if (completionTime != null ? !completionTime.equals(other.completionTime) : other.completionTime != null)
-      return false;
-    if (location != null ? !location.equals(other.location) : other.location != null) return false;
-    if (type != other.type) return false;
-
-    return true;
+    return other != null && new EqualsBuilder().
+      append(this.cargo, other.cargo).
+      append(this.carrierMovement, other.carrierMovement).
+      append(this.completionTime, other.completionTime).
+      append(this.location, other.location).
+      append(this.type, other.type).
+      isEquals();
   }
 
   @Override
   public int hashCode() {
-    int result;
-    result = (type != null ? type.hashCode() : 0);
-    result = 31 * result + (carrierMovement != null ? carrierMovement.hashCode() : 0);
-    result = 31 * result + (location != null ? location.hashCode() : 0);
-    result = 31 * result + (completionTime != null ? completionTime.hashCode() : 0);
-    result = 31 * result + (cargo != null ? cargo.hashCode() : 0);
-    return result;
+    return new HashCodeBuilder(13,41).
+      append(cargo).
+      append(carrierMovement).
+      append(completionTime).
+      append(location).
+      append(type).
+      toHashCode();
   }
 
   /**

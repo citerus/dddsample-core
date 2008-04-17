@@ -2,6 +2,7 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang.Validate;
 
 import javax.persistence.*;
 
@@ -33,12 +34,14 @@ public class Cargo {
 
   //TODO Remove this constructor
   public Cargo(TrackingId trackingId, Location origin, Location destination) {
+    Validate.noNullElements(new Object[] {trackingId, origin, destination});
     this.trackingId = trackingId;
     this.origin = origin;
     this.destination = destination;
   }
 
   public Cargo(TrackingId trackingId) {
+    Validate.notNull(trackingId);
     this.trackingId = trackingId;
   }
 
@@ -130,11 +133,6 @@ public class Cargo {
     return this.itinerary;
   }
 
-  @Override
-  public String toString() {
-    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
-  }
-
   /**
    * Entities compare by identity, therefore the trackingId field is the only basis of comparison. For persistence we
    * have an id field, but it is not used for identiy comparison.
@@ -151,7 +149,8 @@ public class Cargo {
 
   /**
    * @param object to compare
-   * @return True if tracking ids are equal.
+   * @return True if they have the same identity
+   * @see #sameIdentityAs(Cargo)
    */
   @Override
   public boolean equals(Object object) {
@@ -170,7 +169,12 @@ public class Cargo {
     return trackingId.hashCode();
   }
 
-  // Needed by Hibernate
-  protected Cargo() {
+  @Override
+  public String toString() {
+    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+  }
+
+  Cargo() {
+    // Needed by Hibernate
   }
 }

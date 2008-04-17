@@ -64,27 +64,27 @@ public class DeliveryHistory {
 
   public StatusCode status() {
     if (lastEvent() == null)
-      return StatusCode.notReceived;
+      return StatusCode.NOT_RECIEVED;
 
     HandlingEvent.Type type = lastEvent().type();
     if (type == HandlingEvent.Type.LOAD)
-      return StatusCode.onBoardCarrier;
+      return StatusCode.ONBOARD_CARRIER;
 
     if (type == HandlingEvent.Type.UNLOAD)
-      return StatusCode.inPort;
+      return StatusCode.IN_PORT;
 
     if (type == HandlingEvent.Type.RECEIVE)
-      return StatusCode.inPort;
+      return StatusCode.IN_PORT;
 
     if (type == HandlingEvent.Type.CLAIM)
-      return StatusCode.claimed;
+      return StatusCode.CLAIMED;
 
     //TODO: What about Type.CUSTOMS?
     return null;
   }
 
   public Location currentLocation() {
-    if (status().equals(StatusCode.inPort)) {
+    if (status().equals(StatusCode.IN_PORT)) {
       return lastEvent().location();
     } else {
       return null;
@@ -92,11 +92,13 @@ public class DeliveryHistory {
   }
 
   public CarrierMovement currentCarrierMovement() {
-    if (status().equals(StatusCode.onBoardCarrier)) {
+    if (status().equals(StatusCode.ONBOARD_CARRIER)) {
       return lastEvent().carrierMovement();
     } else {
       return null;
     }
   }
+
+  // TODO: what about equals, hashCode, toString?
 
 }

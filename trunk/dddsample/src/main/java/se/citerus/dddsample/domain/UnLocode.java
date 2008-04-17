@@ -32,7 +32,7 @@ public class UnLocode {
   }
 
   private void validateArgs(String countryCode, String locationCode) {
-    Validate.noNullElements(Arrays.asList(countryCode, locationCode),
+    Validate.noNullElements(new Object[] {countryCode, locationCode},
             "Neither country code nor location code may be null");
     Validate.isTrue(countryCodePattern.matcher(countryCode).matches(),
       "\"" + countryCode + "\" is not a valid country code");
@@ -57,7 +57,7 @@ public class UnLocode {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
-  // Needed by Hibernate
   UnLocode() {
+    // Needed by Hibernate
   }
 }

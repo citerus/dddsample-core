@@ -32,6 +32,7 @@ public class Location {
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
   public Location(UnLocode unLocode, String name) {
+    Validate.noNullElements(new Object[] {unLocode, name});
     // TODO:
     // It shouldn't really be possible to create a new location -
     // it should only be looked up in the location repository.
@@ -101,11 +102,13 @@ public class Location {
    */
   @Override
   public String toString() {
+    // TODO: this is presentation logic and very inconsistent, move to DTO assembler
     return unLocode.idString() + " (" + name + ")";
   }
 
-  // Needed by Hibernate
+
   Location() {
+    // Needed by Hibernate
   }
 
 }

@@ -33,7 +33,7 @@ public class ItineraryTest extends TestCase {
     );
 
     //Happy path
-    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, shanghai);
+    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, shanghai,null);
     assertTrue(itinerary.isExpected(event));
 
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, shanghai, abc);
@@ -48,15 +48,15 @@ public class ItineraryTest extends TestCase {
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, goteborg, def);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, goteborg);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, goteborg, null);
     assertTrue(itinerary.isExpected(event));
 
     //Customs event changes nothing
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, goteborg);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, goteborg, null);
     assertTrue(itinerary.isExpected(event));
 
     //Received at the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, hangzhou);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, hangzhou, null);
     assertFalse(itinerary.isExpected(event));
 
     //Loaded to onto the wrong ship, correct location
@@ -67,7 +67,7 @@ public class ItineraryTest extends TestCase {
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, longBeach, jkl);
     assertFalse(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, rotterdam);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, rotterdam, null);
     assertFalse(itinerary.isExpected(event));
 
   }

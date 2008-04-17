@@ -2,6 +2,7 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.Validate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,6 +18,7 @@ public class CarrierMovementId {
   private String id;
 
   public CarrierMovementId(String id) {
+    Validate.notNull(id);
     this.id = id;
   }
 

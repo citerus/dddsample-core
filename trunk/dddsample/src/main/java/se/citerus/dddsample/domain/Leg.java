@@ -1,11 +1,21 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.Validate;
+
+/**
+ * An itinerary consists of one or more legs.
+ */
 public class Leg {
   private CarrierMovementId carrierMovementId;
   private Location from;
   private Location to;
 
   public Leg(CarrierMovementId carrierMovementId, Location from, Location to) {
+    Validate.noNullElements(new Object[] {carrierMovementId, from, to});
     this.carrierMovementId = carrierMovementId;
     this.from = from;
     this.to = to;
@@ -34,12 +44,11 @@ public class Leg {
    * @return <code>true</code> if the given leg's and this leg's attributes are the same.
    */
   public boolean sameValueAs(Leg other) {
-    if (carrierMovementId != null ? !carrierMovementId.equals(other.carrierMovementId) : other.carrierMovementId != null)
-      return false;
-    if (from != null ? !from.equals(other.from) : other.from != null) return false;
-    if (to != null ? !to.equals(other.to) : other.to != null) return false;
-
-    return true;
+    return other != null && new EqualsBuilder().
+      append(this.carrierMovementId, other.carrierMovementId).
+      append(this.from, other.from).
+      append(this.to, other.to).
+      isEquals();
   }
 
   @Override
@@ -54,10 +63,15 @@ public class Leg {
 
   @Override
   public int hashCode() {
-    int result;
-    result = (carrierMovementId != null ? carrierMovementId.hashCode() : 0);
-    result = 31 * result + (from != null ? from.hashCode() : 0);
-    result = 31 * result + (to != null ? to.hashCode() : 0);
-    return result;
+    return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  @Override
+  public String toString() {
+    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+  }
+
+  Leg() {
+    // Needed by Hibernate
   }
 }
