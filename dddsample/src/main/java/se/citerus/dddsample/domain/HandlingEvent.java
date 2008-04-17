@@ -79,11 +79,6 @@ public class HandlingEvent {
 
 
   /**
-   * Constructor for events that have a carrier movement associated. The location where
-   * the event took place is derived from the carrier movement: if the type of event is LOAD,
-   * the location is the starting point of the movement, if the type is UNLOAD the location
-   * is the end point.
-   *
    * @param cargo            cargo
    * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
    * @param registrationTime registration time, the time the message is received
