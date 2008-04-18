@@ -43,17 +43,17 @@ public class CargoTrackingControllerTest extends TestCase {
         final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
         final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
         Cargo cargo = new Cargo(trackingId, a5, b5);
-        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, b5);
-//        cargo.handle(event);
+        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, b5, null);
 
         // TODO: use DTO assemblers
         CargoWithHistoryDTO cargoDTO = new CargoWithHistoryDTO(
                 cargo.trackingId().idString(),
                 cargo.origin().unLocode().idString(),
                 cargo.finalDestination().unLocode().idString(),
-                StatusCode.claimed,
+                StatusCode.CLAIMED,
                 "AAAAA",
-                "BALO");
+                "BALO",
+                cargo.isMisdirected());
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unLocode().idString(),
           event.type().toString(),
