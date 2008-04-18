@@ -52,8 +52,7 @@ public class CargoTrackingControllerTest extends TestCase {
                 cargo.finalDestination().unLocode().idString(),
                 StatusCode.CLAIMED,
                 "AAAAA",
-                "BALO",
-                cargo.isMisdirected());
+                "BALO");
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unLocode().idString(),
           event.type().toString(),
