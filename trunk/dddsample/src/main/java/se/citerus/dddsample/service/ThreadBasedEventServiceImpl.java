@@ -11,7 +11,7 @@ public class ThreadBasedEventServiceImpl implements EventService {
   public void fireHandlingEventRegistered(final HandlingEvent event) {
     new Thread(new Runnable() {
       public void run() {
-        cargoService.notifyIfMisdirected(event.cargo().trackingId());
+        cargoService.notify(event.cargo().trackingId());
       }
     }).start();
   }

@@ -13,13 +13,14 @@ import javax.jms.*;
 public class JmsEventServiceImpl implements EventService {
   private JmsOperations jmsOperations;
   private Destination destination;
+  public static final String TRACKING_ID_KEY = TrackingId.class.getName() + ".KEY";
 
   public void fireHandlingEventRegistered(final HandlingEvent event) {
     jmsOperations.send(destination, new MessageCreator() {
-
+      // TODO: richer message type
       public Message createMessage(Session session) throws JMSException {
         MapMessage message = session.createMapMessage();
-        message.setStringProperty(TrackingId.class.getName(), event.cargo().trackingId().idString());
+        message.setStringProperty(TRACKING_ID_KEY, event.cargo().trackingId().idString());
         return message;
       }
 

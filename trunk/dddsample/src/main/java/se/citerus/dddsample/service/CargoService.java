@@ -16,9 +16,11 @@ public interface CargoService {
   CargoWithHistoryDTO track(TrackingId trackingId);
 
   /**
-   * Sends a notification to whom it may concern if a cargo is misrouted.  
+   * Send relevant notifications to interested parties,
+   * for example if a cargo has been misdirected, or unloaded
+   * at the final destination.
    *
    * @param trackingId cargo tracking id
    */
-  void notifyIfMisdirected(TrackingId trackingId);
+  void notify(TrackingId trackingId);
 }

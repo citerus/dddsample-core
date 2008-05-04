@@ -19,12 +19,12 @@ public class HandlingEventServiceTest extends TestCase {
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
 
-  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), DEHAM, JPTKO);
+  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), HAMBURG, TOKYO);
 
   private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), HONGKONG, HELSINKI);
 
   private final CarrierMovement cmAAA_BBB = new CarrierMovement(
-          new CarrierMovementId("CAR_001"), USCHI, STOCKHOLM);
+          new CarrierMovementId("CAR_001"), CHICAGO, STOCKHOLM);
   
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();
@@ -90,7 +90,7 @@ public class HandlingEventServiceTest extends TestCase {
     expect(carrierMovementRepository.find(carrierMovementId)).andReturn(null);
 
     final TrackingId trackingId = new TrackingId("XYZ");
-    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, USCHI, STOCKHOLM));
+    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, CHICAGO, STOCKHOLM));
 
     expect(locationRepository.find(MELBOURNE.unLocode())).andReturn(MELBOURNE);
     

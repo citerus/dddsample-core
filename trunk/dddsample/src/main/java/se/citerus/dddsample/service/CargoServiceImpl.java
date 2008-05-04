@@ -54,12 +54,16 @@ public class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = true)
-  public void notifyIfMisdirected(TrackingId trackingId) {
+  public void notify(TrackingId trackingId) {
     Cargo cargo = cargoRepository.find(trackingId);
+    // TODO: more elaborate notifications, such as email to affected customer
     if (cargo.isMisdirected()) {
-      // TODO: more elaborate notification than logging - mail, xmpp, other?
       logger.info("Cargo " + trackingId + " has been misdirected. " +
                   "Last event was " + cargo.deliveryHistory().lastEvent());
+    }
+    if (cargo.isUnloadedAtDestination()) {
+      logger.info("Cargo " + trackingId + " has been unloaded " +
+                  "at its final destination " + cargo.finalDestination());
     }
   }
 

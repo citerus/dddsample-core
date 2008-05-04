@@ -1,5 +1,5 @@
 package se.citerus.dddsample.domain;
-
+                        
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.lang.Validate;
@@ -145,6 +145,27 @@ public class Cargo {
   }
 
   /**
+   * Does not take into account the possibility of the cargo havin been
+   * (errouneously) loaded onto another carrier after it has been unloaded
+   * at the final destination.
+   *
+   * @return True if the cargo has been unloaded at the final destination.
+   */
+  public boolean isUnloadedAtDestination() {
+    Location destination = finalDestination();
+    if (destination == null) {
+      return false;
+    }
+    for (HandlingEvent event : deliveryHistory.eventsOrderedByCompletionTime()) {
+      if (HandlingEvent.Type.UNLOAD.equals(event.type()) &&
+          destination.equals(event.location())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Entities compare by identity, therefore the trackingId field is the only basis of comparison. For persistence we
    * have an id field, but it is not used for identiy comparison.
    * <p/>
@@ -183,4 +204,5 @@ public class Cargo {
   Cargo() {
     // Needed by Hibernate
   }
+
 }
