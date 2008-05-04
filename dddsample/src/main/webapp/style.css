@@ -238,3 +238,14 @@ input.radio {
 .event-type-CLAIM {
   background: #66FF99;
 }
+
+.notify {
+  border: 1px solid red;
+  padding: 4px;
+  font-weight: bold;
+}
+
+.notify img {
+  margin-right: 6px;
+  vertical-align: middle;
+}
