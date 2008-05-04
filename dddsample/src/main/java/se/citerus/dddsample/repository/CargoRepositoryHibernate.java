@@ -17,6 +17,9 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
             createQuery("from Cargo where trackingId = :tid").
             setParameter("tid", tid).
             uniqueResult();
+    if (cargo == null) {
+      return null;
+    }
     /*  There's no OR-mapped relation between the cargo delivery history and its handling events
         because the handling events are in a different aggregate.
 

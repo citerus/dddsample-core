@@ -8,10 +8,10 @@ public class LocationsImporterTest extends AbstractRepositoryTest {
     LocationsImporter importer = new LocationsImporter();
     long t = System.currentTimeMillis();
 
-    //importer.importLocations(getSessionFactory().getCurrentSession());
-
+    int inserted = importer.importLocations(jdbcTemplate);
+    assertEquals(54600, inserted);
+    
     System.out.println("\n* * * Time to import: " + (System.currentTimeMillis() - t)/1000.0 + " seconds.\n");
-    //setComplete();
   }
 
 }

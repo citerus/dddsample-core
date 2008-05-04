@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
 import se.citerus.dddsample.domain.*;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
@@ -40,10 +41,8 @@ public class CargoTrackingControllerTest extends TestCase {
   private CargoService getCargoServiceMock() {
     return new CargoService() {
       public CargoWithHistoryDTO track(TrackingId trackingId) {
-        final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
-        final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
-        Cargo cargo = new Cargo(trackingId, a5, b5);
-        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, b5, null);
+        Cargo cargo = new Cargo(trackingId, HONGKONG, JPTKO);
+        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
 
         // TODO: use DTO assemblers
         CargoWithHistoryDTO cargoDTO = new CargoWithHistoryDTO(
@@ -52,12 +51,14 @@ public class CargoTrackingControllerTest extends TestCase {
                 cargo.finalDestination().unLocode().idString(),
                 StatusCode.CLAIMED,
                 "AAAAA",
-                "BALO");
+                "BALO",
+                false);
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unLocode().idString(),
           event.type().toString(),
-          null, // TODO: event hierarchy will remove this kind of code
-          event.completionTime()));
+          null,
+          event.completionTime(),
+          true));
         return cargoDTO;
       }
 

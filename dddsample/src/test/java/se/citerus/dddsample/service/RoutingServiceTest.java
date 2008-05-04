@@ -31,7 +31,7 @@ public class RoutingServiceTest extends TestCase {
       assigns that itinerary to the cargo.
      */
     Itinerary itinerary = stubbedItinerarySelection(itineraryCandidates);
-    cargo.assignItinerary(itinerary);
+    cargo.setItinerary(itinerary);
 
     /*
       A number of events occur, all of which are according to plan

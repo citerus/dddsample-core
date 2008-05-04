@@ -258,7 +258,7 @@ public class CargoTest extends TestCase {
        new Leg(new CarrierMovementId("DEF"), rotterdam, goteborg)
     );
 
-    cargo.assignItinerary(itinerary);
+    cargo.setItinerary(itinerary);
     return cargo;
   }
 

@@ -20,15 +20,18 @@ public class CargoWithHistoryDTO implements Serializable {
   List<HandlingEventDTO> events;
   String carrierMovementId;
   StatusCode statusCode;
+  boolean misdirected;
 
   public CargoWithHistoryDTO(String trackingId, String origin, String finalDestination,
-                             StatusCode statusCode, String currentLocationId, String carrierMovementId) {
+                             StatusCode statusCode, String currentLocationId, String carrierMovementId,
+                             boolean isMisdirected) {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
     this.statusCode = statusCode;
     this.currentLocationId = currentLocationId;
     this.carrierMovementId = carrierMovementId;
+    this.misdirected = isMisdirected;
 
     this.events = new ArrayList<HandlingEventDTO>();
   }
@@ -63,6 +66,10 @@ public class CargoWithHistoryDTO implements Serializable {
 
   public String getCarrierMovementId() {
     return carrierMovementId;
+  }
+
+  public boolean isMisdirected() {
+    return misdirected;
   }
 
 }

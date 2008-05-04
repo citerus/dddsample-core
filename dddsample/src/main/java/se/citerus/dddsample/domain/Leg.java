@@ -6,12 +6,23 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.Validate;
 
+import javax.persistence.*;
+
 /**
  * An itinerary consists of one or more legs.
  */
+@Entity
 public class Leg {
+  @Id
+  @GeneratedValue
+  private Long id;
+
+  // TODO: why is this not related to CarrierMovement?
+  @Embedded
   private CarrierMovementId carrierMovementId;
+  @ManyToOne
   private Location from;
+  @ManyToOne
   private Location to;
 
   public Leg(CarrierMovementId carrierMovementId, Location from, Location to) {
@@ -63,7 +74,11 @@ public class Leg {
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+    return new HashCodeBuilder(13,17).
+      append(carrierMovementId).
+      append(from).
+      append(to).
+      toHashCode();
   }
 
   @Override
