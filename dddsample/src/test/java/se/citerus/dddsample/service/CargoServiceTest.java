@@ -77,12 +77,12 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
    * Cargo returned.
    */
   public void testCargoServiceFindByTrackingIdScenario() {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, USCHI);
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, CHICAGO);
 
     HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, STOCKHOLM, null);
-    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), STOCKHOLM, USCHI);
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), STOCKHOLM, CHICAGO);
     HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, STOCKHOLM, carrierMovement);
-    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, USCHI, carrierMovement);
+    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, CHICAGO, carrierMovement);
     // Add out of order to verify ordering in DTO
     cargo.deliveryHistory().addAllEvents(Arrays.asList(loaded, unloaded, claimed));
 

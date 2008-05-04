@@ -41,7 +41,7 @@ public class CargoTrackingControllerTest extends TestCase {
   private CargoService getCargoServiceMock() {
     return new CargoService() {
       public CargoWithHistoryDTO track(TrackingId trackingId) {
-        Cargo cargo = new Cargo(trackingId, HONGKONG, JPTKO);
+        Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
         HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
 
         // TODO: use DTO assemblers
@@ -62,7 +62,7 @@ public class CargoTrackingControllerTest extends TestCase {
         return cargoDTO;
       }
 
-      public void notifyIfMisdirected(TrackingId trackingId) {
+      public void notify(TrackingId trackingId) {
       }
     };
   }
@@ -72,7 +72,7 @@ public class CargoTrackingControllerTest extends TestCase {
       public CargoWithHistoryDTO track(TrackingId trackingId) {
         return null;
       }
-      public void notifyIfMisdirected(TrackingId trackingId) {}
+      public void notify(TrackingId trackingId) {}
     };
   }
 

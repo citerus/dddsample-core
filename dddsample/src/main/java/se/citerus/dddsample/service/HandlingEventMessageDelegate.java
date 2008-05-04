@@ -22,10 +22,12 @@ public class HandlingEventMessageDelegate implements MessageListener {
   private static final Log logger = LogFactory.getLog(HandlingEventMessageDelegate.class);
 
   public void onMessage(Message message) {
-    logger.info("Received message " + message);
+    if (logger.isDebugEnabled()) {
+      logger.debug("Received message " + message);
+    }
     try {
-      String tidString = message.getStringProperty(TrackingId.class.getName());
-      cargoService.notifyIfMisdirected(new TrackingId(tidString));
+      String tidString = message.getStringProperty(JmsEventServiceImpl.TRACKING_ID_KEY);
+      cargoService.notify(new TrackingId(tidString));
     } catch (JMSException e) {
       logger.error(e, e);
     }
