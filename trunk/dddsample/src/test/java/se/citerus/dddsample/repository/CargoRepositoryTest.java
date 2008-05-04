@@ -1,39 +1,77 @@
 package se.citerus.dddsample.repository;
 
-import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.Location;
-import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.domain.UnLocode;
+import se.citerus.dddsample.domain.*;
+import static se.citerus.dddsample.domain.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 
 import java.util.Map;
+import java.util.List;
+import java.util.Date;
 
 public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   CargoRepository cargoRepository;
-  private final Location stockholm = new Location(new UnLocode("SE","STO"), "Stockholm");
-  private final Location melbourne = new Location(new UnLocode("AU","MEL"), "Melbourne");
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
   }
 
   public void testFindByCargoId() {
-    final TrackingId trackingId = new TrackingId("XYZ");
+    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
+    assertEquals(HONGKONG, cargo.origin());
+    assertEquals(HELSINKI, cargo.finalDestination());
 
-    Cargo cargo = cargoRepository.find(trackingId);
+    DeliveryHistory dh = cargo.deliveryHistory();
+    assertNotNull(dh);
 
-    assertEquals(trackingId, cargo.trackingId());
-    assertEquals(stockholm, cargo.origin());
-    assertEquals(melbourne, cargo.finalDestination());
-    // TODO: verify delivery history
+    List<HandlingEvent> events = dh.eventsOrderedByCompletionTime();
+    assertEquals(2, events.size());
+
+    HandlingEvent firstEvent = events.get(0);
+    assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, 100, 160, null);
+
+    HandlingEvent secondEvent = events.get(1);
+    CarrierMovement expectedCm = new CarrierMovement(new CarrierMovementId("CAR_010"), HONGKONG, MELBOURNE);
+    assertHandlingEvent(cargo,  secondEvent, LOAD, HONGKONG, 150, 110, expectedCm);
+
+    List<Leg> legs = cargo.itinerary().legs();
+    assertEquals(3, legs.size());
+
+    Leg firstLeg = legs.get(0);
+    assertLeg(firstLeg, "CAR_010", HONGKONG, MELBOURNE);
+
+    Leg secondLeg = legs.get(1);
+    assertLeg(secondLeg, "CAR_011", MELBOURNE, STOCKHOLM);
+
+    Leg thirdLeg = legs.get(2);
+    assertLeg(thirdLeg, "CAR_011", STOCKHOLM, HELSINKI);
+  }
+
+  private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType, Location expectedLocation, int completionTimeMs, int registrationTimeMs, CarrierMovement expectedCarrierMovement) {
+    assertEquals(expectedEventType, event.type());
+    assertEquals(expectedLocation, event.location());
+    assertEquals(new Date(completionTimeMs), event.completionTime());
+    assertEquals(new Date(registrationTimeMs), event.registrationTime());
+    if (expectedCarrierMovement == null) {
+      assertNull(event.carrierMovement());
+    } else {
+      assertEquals(expectedCarrierMovement, event.carrierMovement());
+    }
+    assertEquals(cargo, event.cargo());
+  }
+
+  private void assertLeg(Leg firstLeg, String cmId, Location expectedFrom, Location expectedTo) {
+    assertEquals(new CarrierMovementId(cmId), firstLeg.carrierMovementId());
+    assertEquals(expectedFrom, firstLeg.from());
+    assertEquals(expectedTo, firstLeg.to());
   }
 
   public void testSave() {
-    sessionFactory.getCurrentSession().saveOrUpdate(stockholm);
-    sessionFactory.getCurrentSession().saveOrUpdate(melbourne);
+    sessionFactory.getCurrentSession().saveOrUpdate(STOCKHOLM);
+    sessionFactory.getCurrentSession().saveOrUpdate(MELBOURNE);
 
 
-    Cargo cargo = new Cargo(new TrackingId("AAA"), stockholm, melbourne);
+    Cargo cargo = new Cargo(new TrackingId("AAA"), STOCKHOLM, MELBOURNE);
     cargoRepository.save(cargo);
 
     flush();

@@ -23,6 +23,7 @@ public class SampleDataGenerator implements ServletContextListener {
     String handlingEventSql =
       "insert into HandlingEvent (completionTime, registrationTime, type, location_id, carrierMovement_id, cargo_id) " +
       "values (?, ?, ?, ?, ?, ?)";
+
     Object[][] handlingEventArgs = {
         //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
         {ts(0),     ts((1)),    "RECEIVE",  1,  null,  1},
@@ -53,12 +54,24 @@ public class SampleDataGenerator implements ServletContextListener {
         {ts((0)),   ts((1)),    "RECEIVE",  2,  null,  4},
         {ts((10)),  ts((11)),   "LOAD",     2,  7,     4},
         {ts((20)),  ts((21)),   "UNLOAD",   7,  7,     4},
+
+        //FGH
+        {ts(100),   ts(160),    "RECEIVE",  3,  null,   5},
+        {ts(150),   ts(110),    "LOAD",     3,  10,     5},
+
+        // JKL
+        {ts(200),   ts(220),    "RECEIVE",  6,  null,   6},
+        {ts(300),   ts(330),    "LOAD",     6,  12,     6},
+        {ts(400),   ts(440),    "UNLOAD",   5,  12,     6}  // Unexpected event
     };
     executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
   }
 
   private static void loadCarrierMovementData(JdbcTemplate jdbcTemplate) {
-    String carrierMovementSql = "insert into CarrierMovement (id, carrier_movement_id, from_id, to_id) values (?,?,?,?)";
+    String carrierMovementSql =
+      "insert into CarrierMovement (id, carrier_movement_id, from_id, to_id) " +
+      "values (?,?,?,?)";
+
     Object[][] carrierMovementArgs = {
      // SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL
       {1, "CAR_001",1,5},
@@ -73,24 +86,43 @@ public class SampleDataGenerator implements ServletContextListener {
       // AUMEL - USCHI - DEHAM - SESTO
       {7, "CAR_007",2,7},
       {8, "CAR_008",7,6},
-      {9, "CAR_009",6,1}
+      {9, "CAR_009",6,1},
+
+      // CNHKG - AUMEL
+      {10,"CAR_010",3,2},
+      // AUMEL - FIHEL
+      {11,"CAR_011",2,5},
+      // DEHAM - SESTO
+      {12,"CAR_020",6,1},
+      // SESTO - USCHI
+      {13,"CAR_021",1,7},
+      // USCHI - JPTKO
+      {14,"CAR_022",7,4}
     };
     executeUpdate(jdbcTemplate, carrierMovementSql, carrierMovementArgs);
   }
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
-    String cargoSql = "insert into Cargo (id, tracking_id, origin_id, destination_id) values (?, ?, ?, ?)";
+    String cargoSql =
+      "insert into Cargo (id, tracking_id, origin_id, destination_id, itinerary_id) " +
+      "values (?, ?, ?, ?, ?)";
+
     Object[][] cargoArgs = {
-      {1, "XYZ",1,2},
-      {2, "ABC",1,5},
-      {3, "ZYX",2,1},
-      {4, "CBA",5,1}
+      {1, "XYZ", 1, 2, null},
+      {2, "ABC", 1, 5, null},
+      {3, "ZYX", 2, 1, null},
+      {4, "CBA", 5, 1, null},
+      {5, "FGH", 3, 5, 1},
+      {6, "JKL", 6, 4, 2}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }
 
   private static void loadLocationData(JdbcTemplate jdbcTemplate) {
-    String locationSql = "insert into Location (id, unlocode, name) values (?, ?, ?)";
+    String locationSql =
+      "insert into Location (id, unlocode, name) " +
+      "values (?, ?, ?)";
+
     Object[][] locationArgs = {
       {1, "SESTO", "Stockholm"},
       {2, "AUMEL", "Melbourne"},
@@ -101,6 +133,32 @@ public class SampleDataGenerator implements ServletContextListener {
       {7, "USCHI", "Chicago"}
     };
     executeUpdate(jdbcTemplate, locationSql, locationArgs);
+  }
+
+  private static void loadItineraryData(JdbcTemplate jdbcTemplate) {
+    String itinerarySql = "insert into Itinerary (id) values (?)";
+
+    Object[][] itineraryArgs = {
+      {1},
+      {2}
+    };
+    executeUpdate(jdbcTemplate, itinerarySql, itineraryArgs);
+
+    String legSql =
+      "insert into Leg (id, itinerary_id, carrier_movement_id, from_id, to_id) " +
+      "values (?,?,?,?,?)";
+
+    Object [][] legArgs = {
+      // Cargo 5: Hongkong - Melbourne - Stockholm - Helsinki
+      {1,1,"CAR_010",3,2},
+      {2,1,"CAR_011",2,1},
+      {3,1,"CAR_011",1,5},
+      // Cargo 6: Hamburg - Stockholm - Chicago - Tokyo
+      {4,2,"CAR_020",6,1},
+      {5,2,"CAR_021",1,7},
+      {6,2,"CAR_022",7,4}
+    };
+    executeUpdate(jdbcTemplate, legSql, legArgs);
   }
 
   public void contextInitialized(ServletContextEvent event) {
@@ -116,8 +174,9 @@ public class SampleDataGenerator implements ServletContextListener {
     transactionTemplate.execute(new TransactionCallbackWithoutResult() {
       protected void doInTransactionWithoutResult(TransactionStatus status) {
         loadLocationData(jdbcTemplate);
-        loadCargoData(jdbcTemplate);
         loadCarrierMovementData(jdbcTemplate);
+        loadItineraryData(jdbcTemplate);
+        loadCargoData(jdbcTemplate);
         loadHandlingEventData(jdbcTemplate);
       }
     });

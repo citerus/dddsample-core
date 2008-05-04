@@ -27,15 +27,14 @@ public class Location {
   );
 
   /**
+   * Package-level constructor, visible for test only.
+   * 
    * @param unLocode UN Locode
    * @param name     location name
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  public Location(UnLocode unLocode, String name) {
+  Location(UnLocode unLocode, String name) {
     Validate.noNullElements(new Object[] {unLocode, name});
-    // TODO:
-    // It shouldn't really be possible to create a new location -
-    // it should only be looked up in the location repository.
     Validate.notNull(unLocode);
     Validate.notNull(name);
     this.unLocode = unLocode;

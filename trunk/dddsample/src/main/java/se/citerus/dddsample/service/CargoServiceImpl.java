@@ -28,12 +28,13 @@ public class CargoServiceImpl implements CargoService {
     Location currentLocation = deliveryHistory.currentLocation();
     CarrierMovement currentCarrierMovement = deliveryHistory.currentCarrierMovement();
     final CargoWithHistoryDTO dto = new CargoWithHistoryDTO(
-            cargo.trackingId().idString(),
-            cargo.origin().toString(),
-            cargo.finalDestination().toString(),
-            deliveryHistory.status(),
-            currentLocation == null ? null : currentLocation.unLocode().idString(),
-            currentCarrierMovement == null ? null : currentCarrierMovement.carrierId().idString()
+      cargo.trackingId().idString(),
+      cargo.origin().toString(),
+      cargo.finalDestination().toString(),
+      deliveryHistory.status(),
+      currentLocation == null ? null : currentLocation.unLocode().idString(),
+      currentCarrierMovement == null ? null : currentCarrierMovement.carrierId().idString(),
+      cargo.isMisdirected()
     );
 
     final List<HandlingEvent> events = deliveryHistory.eventsOrderedByCompletionTime();
@@ -41,10 +42,11 @@ public class CargoServiceImpl implements CargoService {
       CarrierMovement cm = event.carrierMovement();
       String carrierIdString = (cm == null) ? "" : cm.carrierId().idString();
       dto.addEvent(new HandlingEventDTO(
-              event.location().toString(),
-              event.type().toString(),
-              carrierIdString,
-              event.completionTime()
+        event.location().toString(),
+        event.type().toString(),
+        carrierIdString,
+        event.completionTime(),
+        cargo.itinerary().isExpected(event)
       ));
     }
     return dto;

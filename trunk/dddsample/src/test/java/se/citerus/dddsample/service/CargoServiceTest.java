@@ -10,6 +10,7 @@ import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import se.citerus.dddsample.domain.*;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.HandlingEventRepository;
 import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
@@ -76,15 +77,12 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
    * Cargo returned.
    */
   public void testCargoServiceFindByTrackingIdScenario() {
-    Location origin = new Location(new UnLocode("OR","IGI"), "Origin");
-    Location finalDestination = new Location(new UnLocode("DE","STI"), "Destination");
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
-    Location sesto = new Location(new UnLocode("SE","STO"), "Stockholm");
-    HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, sesto, null);
-    Location to = new Location(new UnLocode("MU","GER"), "München");
-    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), sesto, to);
-    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, sesto, carrierMovement);
-    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, to, carrierMovement);
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, USCHI);
+
+    HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, STOCKHOLM, null);
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), STOCKHOLM, USCHI);
+    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, STOCKHOLM, carrierMovement);
+    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, USCHI, carrierMovement);
     // Add out of order to verify ordering in DTO
     cargo.deliveryHistory().addAllEvents(Arrays.asList(loaded, unloaded, claimed));
 
@@ -103,9 +101,9 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
 
     assertEquals("XYZ", cargoDTO.getTrackingId());
-    assertEquals("ORIGI (Origin)", cargoDTO.getOrigin());
-    assertEquals("DESTI (Destination)", cargoDTO.getFinalDestination());
-    assertEquals("MUGER", cargoDTO.getCurrentLocationId());
+    assertEquals("SESTO (Stockholm)", cargoDTO.getOrigin());
+    assertEquals("USCHI (Chicago)", cargoDTO.getFinalDestination());
+    assertEquals("USCHI", cargoDTO.getCurrentLocationId());
 
     List<HandlingEventDTO> events = cargoDTO.getEvents();
     assertEquals(3, events.size());
@@ -126,7 +124,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
     // Finally unload
     eventDTO = events.get(2);
-    assertEquals("MUGER (München)", eventDTO.getLocation());
+    assertEquals("USCHI (Chicago)", eventDTO.getLocation());
     assertEquals("UNLOAD", eventDTO.getType());
     assertEquals("CAR_001", eventDTO.getCarrier());
     assertEquals(new Date(100), eventDTO.getTime());

@@ -77,14 +77,6 @@ public class ItineraryTest extends TestCase {
   }
 
   public void testCreateItinerary() throws Exception {
-    //An empty legs list is not OK:
-    try {
-      new Itinerary();
-      fail("An empty itinerary is not OK");
-    } catch (IllegalArgumentException iae) {
-      //Expected
-    }
-
     try {
       new Itinerary(new ArrayList<Leg>());
       fail("An empty itinerary is not OK");

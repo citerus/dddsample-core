@@ -29,10 +29,11 @@ public class Cargo {
   @Transient
   private DeliveryHistory deliveryHistory = new DeliveryHistory();
 
-  @Transient
+  @ManyToOne
   private Itinerary itinerary;
 
   //TODO Remove this constructor
+  //TODO Shouldn't origin and destination be implicitly derived from itinerary?
   public Cargo(TrackingId trackingId, Location origin, Location destination) {
     Validate.noNullElements(new Object[] {trackingId, origin, destination});
     this.trackingId = trackingId;
@@ -61,10 +62,12 @@ public class Cargo {
   }
 
   public void setOrigin(Location origin) {
+    Validate.notNull(origin);
     this.origin = origin;
   }
 
   public void setDestination(Location destination) {
+    Validate.notNull(destination);
     this.destination = destination;
   }
 
@@ -80,6 +83,17 @@ public class Cargo {
    */
   public DeliveryHistory deliveryHistory() {
     return this.deliveryHistory;
+  }
+
+  /**
+   * @return The itinerary.
+   */
+  public Itinerary itinerary() {
+    if (this.itinerary == null) {
+      return Itinerary.EMPTY_ITINERARY;
+    } else {
+      return this.itinerary;
+    }
   }
 
   /**
@@ -106,7 +120,8 @@ public class Cargo {
    *
    * @param itinerary an itinerary
    */
-  public void assignItinerary(Itinerary itinerary) {
+  public void setItinerary(Itinerary itinerary) {
+    Validate.notNull(itinerary);
     this.itinerary = itinerary;
   }
 
@@ -129,10 +144,6 @@ public class Cargo {
     return !itinerary.isExpected(lastEvent);
   }
 
-  public Itinerary itinerary() {
-    return this.itinerary;
-  }
-
   /**
    * Entities compare by identity, therefore the trackingId field is the only basis of comparison. For persistence we
    * have an id field, but it is not used for identiy comparison.
@@ -144,7 +155,7 @@ public class Cargo {
    *         attributes.
    */
   private boolean sameIdentityAs(Cargo other) {
-    return trackingId.equals(other.trackingId);
+    return other != null && trackingId.equals(other.trackingId);
   }
 
   /**
@@ -167,11 +178,6 @@ public class Cargo {
   @Override
   public int hashCode() {
     return trackingId.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
   }
 
   Cargo() {
