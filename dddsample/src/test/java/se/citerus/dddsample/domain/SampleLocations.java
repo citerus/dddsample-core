@@ -1,5 +1,9 @@
 package se.citerus.dddsample.domain;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A few locations for easy testing.
  *
@@ -19,4 +23,22 @@ public class SampleLocations {
   public static final Location HANGZOU = new Location(new UnLocode("CN", "HGH"), "Hangzhou");
   public static final Location NEWYORK = new Location(new UnLocode("US", "NYC"), "New York");
 
+  public static final List<Location> all = new ArrayList<Location>();
+
+  static {
+    for (Field field : SampleLocations.class.getDeclaredFields()) {
+      if (field.getType().equals(Location.class)) {
+        try {
+          all.add((Location) field.get(null));
+        } catch (IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+  }
+
+  public static List<Location> getAll() {
+    return all;
+  }
+  
 }

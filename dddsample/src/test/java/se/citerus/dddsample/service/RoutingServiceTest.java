@@ -1,69 +1,55 @@
 package se.citerus.dddsample.service;
 
 import junit.framework.TestCase;
+import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.*;
-import se.citerus.dddsample.repository.CargoRepository;
+import static se.citerus.dddsample.domain.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
+import se.citerus.dddsample.repository.LocationRepository;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class RoutingServiceTest extends TestCase {
 
-  RoutingService routingService;
-  CargoRepository cargoRepository;
-  HandlingEventService handlingEventService;
+  RoutingServiceImpl routingService;
+  LocationRepository locationRepository;
 
-  public void xtestCalculateRoute() throws Exception {
-
-    TrackingId trackingId = new TrackingId("XYZ123");
-    Cargo cargo = cargoRepository.find(trackingId);
-    Specification specification = null;
-
-    /*
-      The routing service calculates a number of possible routes that
-      satisfy the given specification (must arrive in three days, must not
-      cost more than $10,000 etc).
-     */
-    Set<Itinerary> itineraryCandidates = routingService.calculatePossibleRoutes(cargo, specification);
-
-    /*
-      Someone, or something, selects the most appropriate itinerary and
-      assigns that itinerary to the cargo.
-     */
-    Itinerary itinerary = stubbedItinerarySelection(itineraryCandidates);
-    cargo.setItinerary(itinerary);
-
-    /*
-      A number of events occur, all of which are according to plan
-     */
-    handlingEventService.register(new Date(), trackingId, new CarrierMovementId("A001"), new UnLocode("SE","STO"), null);
-    handlingEventService.register(new Date(), trackingId, new CarrierMovementId("B002"), null, null);
-    handlingEventService.register(new Date(), trackingId, new CarrierMovementId("C003"), null, null);
-
-    /*
-      Cargo should not be misdirected at this point.
-     */
-    assertFalse(cargo.isMisdirected());
-
-    /*
-      An unexpected event occur.
-     */
-    handlingEventService.register(null, null, null, null, null);
-
-    /*
-      Now the cargo is misdirected.
-     */
-    assertTrue(cargo.isMisdirected());
+  protected void setUp() throws Exception {
+    routingService = new RoutingServiceImpl();
+    locationRepository = createMock(LocationRepository.class);
+    routingService.setLocationRepository(locationRepository);
   }
 
-  public void testRun() throws Exception
-  {
+  public void testCalculatePossibleRoutes() {
+    expect(locationRepository.findAll()).andStubReturn(SampleLocations.getAll());
+    replay(locationRepository);
+
+    Cargo cargo = new Cargo(new TrackingId("ABC"), HONGKONG, HELSINKI);
+    Set<Itinerary> candidates = routingService.calculatePossibleRoutes(cargo, null);
+    assertNotNull(candidates);
     
-  }
+    for (Itinerary itinerary : candidates) {
+      List<Leg> legs = itinerary.legs();
+      assertNotNull(legs);
+      assertFalse(legs.isEmpty());
+
+      // Cargo origin and start of first leg should match
+      Location firstLegStart = legs.get(0).from();
+      assertEquals(cargo.origin(), firstLegStart);
+
+      // Cargo final destination and last leg stop should match
+      Location lastLegStop = legs.get(legs.size() - 1).to();
+      assertEquals(cargo.finalDestination(), lastLegStop);
+
+      for (int i = 0; i < legs.size() - 1; i++) {
+        // Assert that all legs are conencted
+        assertEquals(legs.get(i).to(), legs.get(i + 1).from());
+      }
+    }
 
 
-  private Itinerary stubbedItinerarySelection(Set<Itinerary> itineraryCandidates) {
-    return itineraryCandidates.iterator().next();
+    verify(locationRepository);
   }
 
 }
