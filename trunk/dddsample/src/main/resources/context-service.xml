@@ -30,6 +30,10 @@
     <property name="destination" ref="handlingEventTopic"/>
   </bean>
 
+  <bean id="routingService" class="se.citerus.dddsample.service.RoutingServiceImpl">
+    <property name="locationRepository" ref="locationRepository"/>
+  </bean>
+
   <!--
   <bean id="eventService" class="se.citerus.dddsample.service.ThreadBasedEventServiceImpl">
     <property name="cargoService" ref="cargoService"/>
