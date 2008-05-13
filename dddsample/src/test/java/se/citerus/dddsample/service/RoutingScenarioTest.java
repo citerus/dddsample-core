@@ -24,7 +24,7 @@ public class RoutingScenarioTest extends TestCase {
       satisfy the given specification (must arrive in three days, must not
       cost more than $10,000 etc).
      */
-    Set<Itinerary> itineraryCandidates = routingService.calculatePossibleRoutes(cargo, specification);
+    Set<Itinerary> itineraryCandidates = routingService.calculatePossibleRoutes(trackingId, specification);
 
     /*
       Someone, or something, selects the most appropriate itinerary and

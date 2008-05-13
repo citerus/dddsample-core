@@ -3,10 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <bean name="/start.html" class="se.citerus.dddsample.web.CargoTrackingController">
+  <bean name="/cargo/track.html" class="se.citerus.dddsample.web.CargoTrackingController">
     <property name="sessionForm" value="true"/>
     <property name="commandName" value="trackCommand"/>
-    <property name="formView" value="start"/>
+    <property name="formView" value="cargo/track"/>
     <property name="successView" value="start"/>
     <property name="cargoService" ref="cargoService"/>
     <property name="validator" ref="trackCommandValidator"/>

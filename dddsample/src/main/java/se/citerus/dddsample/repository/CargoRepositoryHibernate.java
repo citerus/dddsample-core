@@ -4,6 +4,8 @@ import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.TrackingId;
 
+import java.util.UUID;
+
 /**
  * Hibernate implementation of CargoRepository.
  */
@@ -32,6 +34,14 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
 
   public void save(Cargo cargo) {
     getSession().saveOrUpdate(cargo);
+  }
+
+  public TrackingId nextTrackingId() {
+    // TODO:
+    // Could be an opportunity to maybe illustrate how to handle pessimistic locking
+    // and aggregate boundaries, and maybe problems with a distributed application
+    // sharing a database. For now it's simply random though.
+    return new TrackingId(UUID.randomUUID().toString());
   }
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
