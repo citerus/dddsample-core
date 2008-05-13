@@ -1,21 +1,37 @@
 package se.citerus.dddsample.service;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
+import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
 import java.util.List;
 
 public class CargoServiceImpl implements CargoService {
+
   private CargoRepository cargoRepository;
   private static final Log logger = LogFactory.getLog(CargoServiceImpl.class);
 
+  @Transactional(readOnly = false)
+  public TrackingId registerNew(Location origin, Location destination) {
+    Validate.notNull(origin);
+    Validate.notNull(destination);
+
+    TrackingId trackingId = cargoRepository.nextTrackingId();
+    Cargo cargo = new Cargo(trackingId, origin, destination);
+    cargoRepository.save(cargo);
+
+    logger.info("Registered new cargo with tracking id " + trackingId.idString());
+    
+    return trackingId;
+  }
+
   @Transactional(readOnly = true)
-  public CargoWithHistoryDTO track(TrackingId trackingId) {
+  public CargoTrackingDTO track(TrackingId trackingId) {
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       return null;
@@ -23,11 +39,9 @@ public class CargoServiceImpl implements CargoService {
 
     DeliveryHistory deliveryHistory = cargo.deliveryHistory();
 
-    //CargoWithHistoryDTO
-
     Location currentLocation = deliveryHistory.currentLocation();
     CarrierMovement currentCarrierMovement = deliveryHistory.currentCarrierMovement();
-    final CargoWithHistoryDTO dto = new CargoWithHistoryDTO(
+    final CargoTrackingDTO dto = new CargoTrackingDTO(
       cargo.trackingId().idString(),
       cargo.origin().toString(),
       cargo.finalDestination().toString(),
@@ -53,6 +67,7 @@ public class CargoServiceImpl implements CargoService {
 
   }
 
+  // TODO: move this to another class?
   @Transactional(readOnly = true)
   public void notify(TrackingId trackingId) {
     Cargo cargo = cargoRepository.find(trackingId);

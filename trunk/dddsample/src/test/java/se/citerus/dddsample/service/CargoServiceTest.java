@@ -10,10 +10,11 @@ import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import se.citerus.dddsample.domain.*;
-import static se.citerus.dddsample.domain.SampleLocations.*;
+import static se.citerus.dddsample.domain.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.HandlingEventRepository;
-import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
+import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
 import java.sql.Connection;
@@ -97,7 +98,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
 
 
     // Tested call
-    CargoWithHistoryDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
+    CargoTrackingDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
 
 
     assertEquals("XYZ", cargoDTO.getTrackingId());
@@ -135,7 +136,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     replay(cargoRepository);
 
     // Tested call
-    CargoWithHistoryDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
+    CargoTrackingDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
     
     assertNull(cargoDTO);
   }

@@ -1,7 +1,8 @@
 package se.citerus.dddsample.service;
 
+import se.citerus.dddsample.domain.Location;
 import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
+import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 
 /**
  * Cargo service.
@@ -10,10 +11,19 @@ import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
 public interface CargoService {
 
   /**
+   * Registers a new cargo in the tracking system, not yet routed.
+   *
+   * @param origin cargo origin
+   * @param destination cargo destination
+   * @return Cargo tracking id
+   */
+  TrackingId registerNew(Location origin, Location destination);
+
+  /**
    * @param trackingId tracking id
    * @return A cargo and its delivery history, or null if no cargo with given tracking id is found.
    */
-  CargoWithHistoryDTO track(TrackingId trackingId);
+  CargoTrackingDTO track(TrackingId trackingId);
 
   /**
    * Send relevant notifications to interested parties,

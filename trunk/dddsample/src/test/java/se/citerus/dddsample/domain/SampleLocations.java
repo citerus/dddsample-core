@@ -13,7 +13,7 @@ public class SampleLocations {
   public static final Location HONGKONG = new Location(new UnLocode("CN", "HKG"), "Hongkong");
   public static final Location MELBOURNE = new Location(new UnLocode("AU","MEL"), "Melbourne");
   public static final Location STOCKHOLM = new Location(new UnLocode("SE","STO"), "Stockholm");
-  public static final Location HELSINKI = new Location(new UnLocode("Fi","HEL"), "Helsinki");
+  public static final Location HELSINKI = new Location(new UnLocode("FI","HEL"), "Helsinki");
   public static final Location CHICAGO = new Location(new UnLocode("US", "CHI"), "Chicago");
   public static final Location TOKYO = new Location(new UnLocode("JN","TKO"), "Tokyo");
   public static final Location HAMBURG = new Location(new UnLocode("DE", "HAM"), "Hamburg");

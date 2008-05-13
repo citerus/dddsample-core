@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.HELSINKI;
 import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
+import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.LocationRepository;
 
 import java.util.List;
@@ -14,19 +15,25 @@ public class RoutingServiceTest extends TestCase {
 
   RoutingServiceImpl routingService;
   LocationRepository locationRepository;
+  CargoRepository cargoRepository;
 
   protected void setUp() throws Exception {
     routingService = new RoutingServiceImpl();
     locationRepository = createMock(LocationRepository.class);
     routingService.setLocationRepository(locationRepository);
+    cargoRepository = createMock(CargoRepository.class);
+    routingService.setCargoRepository(cargoRepository);
   }
 
   public void testCalculatePossibleRoutes() {
-    expect(locationRepository.findAll()).andStubReturn(SampleLocations.getAll());
-    replay(locationRepository);
+    TrackingId trackingId = new TrackingId("ABC");
+    Cargo cargo = new Cargo(trackingId, HONGKONG, HELSINKI);
 
-    Cargo cargo = new Cargo(new TrackingId("ABC"), HONGKONG, HELSINKI);
-    Set<Itinerary> candidates = routingService.calculatePossibleRoutes(cargo, null);
+    expect(locationRepository.findAll()).andStubReturn(SampleLocations.getAll());
+    expect(cargoRepository.find(isA(TrackingId.class))).andReturn(cargo);
+    replay(locationRepository, cargoRepository);
+
+    Set<Itinerary> candidates = routingService.calculatePossibleRoutes(trackingId, null);
     assertNotNull(candidates);
     
     for (Itinerary itinerary : candidates) {
@@ -48,8 +55,7 @@ public class RoutingServiceTest extends TestCase {
       }
     }
 
-
-    verify(locationRepository);
+    verify(locationRepository, cargoRepository);
   }
 
 }

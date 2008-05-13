@@ -32,6 +32,7 @@
 
   <bean id="routingService" class="se.citerus.dddsample.service.RoutingServiceImpl">
     <property name="locationRepository" ref="locationRepository"/>
+    <property name="cargoRepository" ref="cargoRepository"/>
   </bean>
 
   <!--

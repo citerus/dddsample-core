@@ -21,7 +21,7 @@
   <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
     <property name="exceptionMappings">
       <props>
-        <prop key="org.springframework.dao.DataAccessException">dataAccessFailure</prop>
+        <prop key="org.springframework.dao.DataAccessException">error/dataAccessFailure</prop>
       </props>
     </property>
   </bean>

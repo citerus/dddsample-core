@@ -5,7 +5,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.service.CargoService;
-import se.citerus.dddsample.service.dto.CargoWithHistoryDTO;
+import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,9 +31,9 @@ public class CargoTrackingController extends SimpleFormController {
   protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
     final TrackCommand trackCommand = (TrackCommand) command;
     final String tidStr = trackCommand.getTrackingId();
-    final CargoWithHistoryDTO cargo = cargoService.track(new TrackingId(tidStr));
+    final CargoTrackingDTO cargo = cargoService.track(new TrackingId(tidStr));
 
-    final Map<String, Object> model = new HashMap<String, Object>();
+    final Map<String, CargoTrackingDTO> model = new HashMap<String, CargoTrackingDTO>();
     if (cargo != null) {
       model.put("cargo", cargo);
     } else {

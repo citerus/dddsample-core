@@ -11,7 +11,7 @@ import java.util.List;
  * DTO for a cargo and its delivery history.
  *
  */
-public class CargoWithHistoryDTO implements Serializable {
+public class CargoTrackingDTO implements Serializable {
 
   String trackingId;
   String origin;
@@ -22,7 +22,7 @@ public class CargoWithHistoryDTO implements Serializable {
   StatusCode statusCode;
   boolean misdirected;
 
-  public CargoWithHistoryDTO(String trackingId, String origin, String finalDestination,
+  public CargoTrackingDTO(String trackingId, String origin, String finalDestination,
                              StatusCode statusCode, String currentLocationId, String carrierMovementId,
                              boolean isMisdirected) {
     this.trackingId = trackingId;

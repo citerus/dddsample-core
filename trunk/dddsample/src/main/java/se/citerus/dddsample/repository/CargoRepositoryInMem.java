@@ -6,6 +6,7 @@ import se.citerus.dddsample.domain.TrackingId;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
@@ -35,6 +36,10 @@ public class CargoRepositoryInMem implements CargoRepository {
   
   public void save(Cargo cargo) {
     //No need to save anything with InMem
+  }
+
+  public TrackingId nextTrackingId() {
+    return new TrackingId(UUID.randomUUID().toString());
   }
 
   /**

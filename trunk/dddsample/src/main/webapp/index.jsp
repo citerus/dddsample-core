@@ -1,3 +1,3 @@
 <%
-  response.sendRedirect("start.html");
+  response.sendRedirect("cargo/track.html");
 %>
