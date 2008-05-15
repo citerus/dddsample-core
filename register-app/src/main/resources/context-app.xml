@@ -5,7 +5,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+       xmlns:context="http://www.springframework.org/schema/context">
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <value>classpath:app.properties</value>
+    </property>
+  </bean>
 
   <bean id="registerApp" class="se.citerus.registerapp.RegisterApp">
     <property name="handlingEventService" ref="handlingEventServiceWs"/>
@@ -18,7 +25,7 @@
 
   <bean id="handlingEventWebServiceEndPoint" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
     <property name="serviceInterface" value="se.citerus.dddsample.ws.HandlingEventServiceEndpoint" />
-    <property name="wsdlDocumentUrl" value="http://localhost:8080/dddsample/ws/RegisterEvent?wsdl" />
+    <property name="wsdlDocumentUrl" value="${wsdl.url}" />
     <property name="namespaceUri" value="http://ws.dddsample.citerus.se/" />
     <property name="serviceName" value="HandlingEventServiceEndpointImplService" />
     <property name="portName" value="HandlingEventServiceEndpointImplPort" />
