@@ -32,7 +32,7 @@ public interface CargoService {
   /**
    * @return A list of all locations where the company ships cargo to.
    */
-  List<String> shippingLocations();
+  List<UnLocode> shippingLocations();
 
   /**
    * Send relevant notifications to interested parties,

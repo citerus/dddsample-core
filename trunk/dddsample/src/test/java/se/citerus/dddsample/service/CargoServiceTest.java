@@ -51,6 +51,9 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     this.sessionFactory = sessionFactory;
   }
 
+  // TODO: scrap the mock-persistence-context altogether, don't bother verifying transactions.
+  // TODO: use mocks instead of stubs in this test
+
   protected void onSetUp() {
     Session session = createMock(Session.class);
     Connection connection = createMock(Connection.class);
