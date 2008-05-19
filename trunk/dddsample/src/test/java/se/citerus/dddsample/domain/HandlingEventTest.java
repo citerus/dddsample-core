@@ -3,30 +3,30 @@ package se.citerus.dddsample.domain;
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.HandlingEvent.Type;
 import static se.citerus.dddsample.domain.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.domain.SampleLocations.NEWYORK;
 
 import static java.util.Arrays.asList;
 import java.util.Date;
 
 public class HandlingEventTest extends TestCase {
-  private final Location origin = new Location(new UnLocode("FR","OMX"), "From");
-  private final Location finalDestination = new Location(new UnLocode("TO","YYY"), "To");
-  private final Location a5 = new Location(new UnLocode("AA","AAA"), "AAAAA");
-  private final Location b5 = new Location(new UnLocode("BB","BBB"), "BBBBB");
-  private final Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, finalDestination);
+  private final Location a5 = new Location(new UnLocode("AAAAA"), "AAAAA");
+  private final Location b5 = new Location(new UnLocode("BBBBB"), "BBBBB");
+  private final Cargo cargo = new Cargo(new TrackingId("XYZ"), HONGKONG, NEWYORK);
 
   public void testNewWithCarrierMovement() throws Exception {
-    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("C01"), origin, finalDestination);
+    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("C01"), HONGKONG, NEWYORK);
 
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, origin, carrierMovement);
-    assertEquals(origin, e1.location());
+    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, HONGKONG, carrierMovement);
+    assertEquals(HONGKONG, e1.location());
 
-    HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, finalDestination, carrierMovement);
-    assertEquals(finalDestination, e2.location());
+    HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, NEWYORK, carrierMovement);
+    assertEquals(NEWYORK, e2.location());
 
       // These event types prohibit a carrier movement association
     for (Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
       try {
-        new HandlingEvent(cargo, new Date(), new Date(), type, origin, carrierMovement);
+        new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, carrierMovement);
         fail("Handling event type " + type + " prohibits carrier movement");
       } catch (IllegalArgumentException expected) {}
     }
@@ -34,14 +34,14 @@ public class HandlingEventTest extends TestCase {
       // These event types requires a carrier movement association
     for (Type type : asList(LOAD, UNLOAD)) {
         try {
-          new HandlingEvent(cargo, new Date(), new Date(), type, origin, null);
+          new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null);
             fail("Handling event type " + type + " requires carrier movement");
         } catch (IllegalArgumentException expected) {}
     }
   }
 
   public void testNewWithLocation() throws Exception {
-    Location location = new Location(new UnLocode("FO","OOO"), "Foo");
+    Location location = new Location(new UnLocode("FOOOO"), "Foo");
     HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), Type.CLAIM, location, null);
     assertEquals(location, e1.location());
   }

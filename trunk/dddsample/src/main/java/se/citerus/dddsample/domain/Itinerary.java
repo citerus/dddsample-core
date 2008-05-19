@@ -4,8 +4,8 @@ import org.apache.commons.lang.Validate;
 
 import javax.persistence.*;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -17,7 +17,7 @@ public class Itinerary {
   @GeneratedValue
   private Long id;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "itinerary_id")
   private List<Leg> legs = Collections.emptyList();
 

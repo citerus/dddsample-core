@@ -5,7 +5,7 @@ import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 public class RoutingScenarioTest extends TestCase {
 
@@ -24,7 +24,7 @@ public class RoutingScenarioTest extends TestCase {
       satisfy the given specification (must arrive in three days, must not
       cost more than $10,000 etc).
      */
-    Set<Itinerary> itineraryCandidates = routingService.calculatePossibleRoutes(trackingId, specification);
+    List<Itinerary> itineraryCandidates = routingService.calculatePossibleRoutes(trackingId, specification);
 
     /*
       Someone, or something, selects the most appropriate itinerary and
@@ -36,7 +36,7 @@ public class RoutingScenarioTest extends TestCase {
     /*
       A number of events occur, all of which are according to plan
      */
-    handlingEventService.register(new Date(), trackingId, new CarrierMovementId("A001"), new UnLocode("SE","STO"), null);
+    handlingEventService.register(new Date(), trackingId, new CarrierMovementId("A001"), new UnLocode("SESTO"), null);
     handlingEventService.register(new Date(), trackingId, new CarrierMovementId("B002"), null, null);
     handlingEventService.register(new Date(), trackingId, new CarrierMovementId("C003"), null, null);
 
@@ -62,7 +62,7 @@ public class RoutingScenarioTest extends TestCase {
   }
 
 
-  private Itinerary stubbedItinerarySelection(Set<Itinerary> itineraryCandidates) {
+  private Itinerary stubbedItinerarySelection(List<Itinerary> itineraryCandidates) {
     return itineraryCandidates.iterator().next();
   }
 

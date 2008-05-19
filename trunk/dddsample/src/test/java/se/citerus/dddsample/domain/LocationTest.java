@@ -6,15 +6,15 @@ public class LocationTest extends TestCase {
 
   public void testEquals() {
     // Same UN locode - equal
-    assertTrue(new Location(new UnLocode("AT","EST"),"test-name").
-        equals(new Location(new UnLocode("AT","EST"),"test-name")));
+    assertTrue(new Location(new UnLocode("ATEST"),"test-name").
+        equals(new Location(new UnLocode("ATEST"),"test-name")));
 
     // Different UN locodes - not equal
-    assertFalse(new Location(new UnLocode("AT","EST"),"test-name").
-         equals(new Location(new UnLocode("TE","STB"), "test-name")));
+    assertFalse(new Location(new UnLocode("ATEST"),"test-name").
+         equals(new Location(new UnLocode("TESTB"), "test-name")));
 
     // Always equal to itself
-    Location location = new Location(new UnLocode("AT","EST"),"test-name");
+    Location location = new Location(new UnLocode("ATEST"),"test-name");
     assertTrue(location.equals(location));
 
     // Never equal to null

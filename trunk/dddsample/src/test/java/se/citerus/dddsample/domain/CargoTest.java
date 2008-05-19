@@ -1,6 +1,7 @@
 package se.citerus.dddsample.domain;
 
 import junit.framework.TestCase;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,8 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-
-import static se.citerus.dddsample.domain.SampleLocations.*;
 
 public class CargoTest extends TestCase {
 
@@ -102,6 +101,28 @@ public class CargoTest extends TestCase {
       new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, NEWYORK, cm1));
     assertTrue(cargo.isUnloadedAtDestination());
   }
+
+  /* TODO implement nextExpectedEvent
+  public void testNextExpectedEvent() {
+    Cargo cargo = setUpCargoWithItinerary(HANGZOU, TOKYO, NEWYORK);
+    CarrierMovementId cmid = new CarrierMovementId("CM1");
+    CarrierMovement cm1 = new CarrierMovement(cmid, HANGZOU, TOKYO);
+    CarrierMovement cm2 = new CarrierMovement(cmid, TOKYO, NEWYORK);
+
+    HandlingEvent event1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU, null);
+
+    assertEquals(event1, cargo.nextExpectedEvent());
+
+    cargo.deliveryHistory().addEvent(event1);
+
+    HandlingEvent event2 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, HANGZOU, cm1);
+
+    assertEquals(event2, cargo.nextExpectedEvent());
+
+    cargo.deliveryHistory().addEvent(event2);
+  }
+  */
+
 
   // TODO: Generate test data some better way
   private Cargo populateCargoReceivedStockholm() throws Exception {
@@ -204,9 +225,8 @@ public class CargoTest extends TestCase {
   }
 
   public void testIsMisdirected() throws Exception {
-
     //A cargo with no itinerary is not misdirected
-    Cargo cargo = new Cargo(new TrackingId("TRKID"));
+    Cargo cargo = new Cargo(new TrackingId("TRKID"), SHANGHAI, GOTHENBURG);
     assertFalse(cargo.isMisdirected());
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
@@ -267,12 +287,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
-    Cargo cargo = new Cargo(new TrackingId("CARGO1")); //Immutable things go into the constructor
-
-    //Mutable things in setters
-    cargo.setOrigin(origin);
-    cargo.setDestination(destination);
-
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), origin, destination);
 
     Itinerary itinerary = new Itinerary(
        new Leg(new CarrierMovementId("ABC"), origin, midpoint),

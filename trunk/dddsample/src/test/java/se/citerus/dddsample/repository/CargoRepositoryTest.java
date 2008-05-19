@@ -1,12 +1,13 @@
 package se.citerus.dddsample.repository;
 
 import se.citerus.dddsample.domain.*;
-import static se.citerus.dddsample.domain.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.HandlingEvent.Type.RECEIVE;
 import static se.citerus.dddsample.domain.SampleLocations.*;
 
-import java.util.Map;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class CargoRepositoryTest extends AbstractRepositoryTest {
 
@@ -80,6 +81,12 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     assertEquals("AAA", map.get("TRACKING_ID"));
     // TODO: check origin/finalDestination ids
+  }
+
+  public void testFindAll() {
+    List<Cargo> all = cargoRepository.findAll();
+    assertNotNull(all);
+    assertEquals(6, all.size());
   }
 
 }

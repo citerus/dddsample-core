@@ -9,7 +9,6 @@ import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.LocationRepository;
 
 import java.util.List;
-import java.util.Set;
 
 public class RoutingServiceTest extends TestCase {
 
@@ -33,7 +32,7 @@ public class RoutingServiceTest extends TestCase {
     expect(cargoRepository.find(isA(TrackingId.class))).andReturn(cargo);
     replay(locationRepository, cargoRepository);
 
-    Set<Itinerary> candidates = routingService.calculatePossibleRoutes(trackingId, null);
+    List<Itinerary> candidates = routingService.calculatePossibleRoutes(trackingId, null);
     assertNotNull(candidates);
     
     for (Itinerary itinerary : candidates) {

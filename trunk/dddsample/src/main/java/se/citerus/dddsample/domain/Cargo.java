@@ -1,7 +1,5 @@
 package se.citerus.dddsample.domain;
-                        
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+
 import org.apache.commons.lang.Validate;
 
 import javax.persistence.*;
@@ -29,23 +27,15 @@ public class Cargo {
   @Transient
   private DeliveryHistory deliveryHistory = new DeliveryHistory();
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   private Itinerary itinerary;
 
-  //TODO Remove this constructor
-  //TODO Shouldn't origin and destination be implicitly derived from itinerary?
   public Cargo(TrackingId trackingId, Location origin, Location destination) {
     Validate.noNullElements(new Object[] {trackingId, origin, destination});
     this.trackingId = trackingId;
     this.origin = origin;
     this.destination = destination;
   }
-
-  public Cargo(TrackingId trackingId) {
-    Validate.notNull(trackingId);
-    this.trackingId = trackingId;
-  }
-
 
   /**
    * @return Tracking id.

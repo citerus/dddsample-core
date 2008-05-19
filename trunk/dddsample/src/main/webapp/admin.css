@@ -1,0 +1,33 @@
+html,body {
+  height: 100%;
+}
+
+body {
+  font: Arial, sans-serif; 
+  color: black;
+  padding: 10px;
+}
+
+ul#menu {
+}
+
+ul#menu li {
+  margin: 5px;
+  display: inline;
+}
+
+table {
+}
+
+table td {
+  padding: 4px 10px;
+}
+
+table thead {
+  font-weight: bold;
+}
+
+table caption {
+  text-align: left;
+  font-weight: bold;
+}

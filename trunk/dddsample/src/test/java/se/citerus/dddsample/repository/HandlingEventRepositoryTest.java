@@ -25,7 +25,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
   }
 
   public void testSave() {
-    Location location = locationRepository.find(new UnLocode("SE","STO"));
+    Location location = locationRepository.find(new UnLocode("SESTO"));
 
     Cargo cargo = cargoRepository.find(new TrackingId("XYZ"));
     Date completionTime = new Date(10);
