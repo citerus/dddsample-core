@@ -13,11 +13,14 @@ import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.SampleLocations.TOKYO;
 import se.citerus.dddsample.service.CargoService;
+import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
+import se.citerus.dddsample.service.dto.LegDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
 import java.util.Date;
+import java.util.List;
 
 public class CargoTrackingControllerTest extends TestCase {
   CargoTrackingController controller;
@@ -40,10 +43,7 @@ public class CargoTrackingControllerTest extends TestCase {
   }
 
   private CargoService getCargoServiceMock() {
-    return new CargoService() {
-      public TrackingId registerNew(Location origin, Location destination) {
-        return null;
-      }
+    return new EmptyStubCargoService() {
 
       public CargoTrackingDTO track(TrackingId trackingId) {
         Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
@@ -66,23 +66,11 @@ public class CargoTrackingControllerTest extends TestCase {
           true));
         return cargoDTO;
       }
-
-      public void notify(TrackingId trackingId) {
-      }
     };
   }
   
   private CargoService getCargoServiceNullMock() {
-    return new CargoService() {
-      public TrackingId registerNew(Location origin, Location destination) {
-        return null;
-      }
-
-      public CargoTrackingDTO track(TrackingId trackingId) {
-        return null;
-      }
-      public void notify(TrackingId trackingId) {}
-    };
+    return new EmptyStubCargoService();
   }
 
   public void testHandleGet() throws Exception {
@@ -130,4 +118,31 @@ public class CargoTrackingControllerTest extends TestCase {
     assertEquals(command.getTrackingId(), fe.getArguments()[0]);
   }
 
+  private class EmptyStubCargoService implements CargoService {
+    public TrackingId registerNew(UnLocode origin, UnLocode destination) {
+      return null;
+    }
+
+    public List<String> shippingLocations() {
+      return null;
+    }
+
+    public CargoTrackingDTO track(TrackingId trackingId) {
+      return null;
+    }
+
+    public void notify(TrackingId trackingId) {
+    }
+
+    public CargoRoutingDTO loadForRouting(TrackingId trackingId) {
+      return null;
+    }
+
+    public List<CargoRoutingDTO> loadAllForRouting() {
+      return null;
+    }
+
+    public void assignItinerary(TrackingId trackingId, List<LegDTO> legDTOs) {
+    }
+  }
 }

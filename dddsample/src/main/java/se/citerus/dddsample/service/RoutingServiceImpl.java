@@ -5,7 +5,10 @@ import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.LocationRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Simple routing service implementation that randomly creates a number
@@ -17,41 +20,56 @@ public class RoutingServiceImpl implements RoutingService {
   LocationRepository locationRepository;
   CargoRepository cargoRepository;
 
+  Random random = new Random();
+
   @Transactional(readOnly = true)
-  public Set<Itinerary> calculatePossibleRoutes(TrackingId trackingId, Specification specification) {
+  public List<Itinerary> calculatePossibleRoutes(TrackingId trackingId, Specification specification) {
     Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
-      return Collections.emptySet();
+      return Collections.emptyList();
     }
     List<Location> allLocations = locationRepository.findAll();
 
     allLocations.remove(cargo.origin());
     allLocations.remove(cargo.finalDestination());
 
-    // TODO: vary the number of locations and number of candidates randomly
-
-    int candidateCount = 3;
-    Set<Itinerary> candidates = new HashSet<Itinerary>(candidateCount);
+    int candidateCount = getRandomNumberOfCandidates();
+    List<Itinerary> candidates = new ArrayList<Itinerary>(candidateCount);
     for (int i = 0; i < candidateCount; i++) {
-      Collections.shuffle(allLocations);
+      allLocations = getRandomChunkOfLocations(allLocations);
       List<Leg> legs = new ArrayList<Leg>(allLocations.size() - 1);
 
       Location firstLegTo = allLocations.get(0);
-      legs.add(new Leg(new CarrierMovementId("CM000"), cargo.origin(), firstLegTo));
+      legs.add(new Leg(new CarrierMovementId("CAR_002"), cargo.origin(), firstLegTo));
 
       for (int j = 0; j < allLocations.size() - 1 ; j++) {
         legs.add(new Leg(
-          new CarrierMovementId("CM00" + j),
+          getRandomCarrierMovementId(),
           allLocations.get(j), allLocations.get(j + 1)));
       }
 
       Location lastLegFrom = allLocations.get(allLocations.size() - 1);
-      legs.add(new Leg(new CarrierMovementId("CM999"), lastLegFrom, cargo.finalDestination()));
+      legs.add(new Leg(getRandomCarrierMovementId(), lastLegFrom, cargo.finalDestination()));
 
       candidates.add(new Itinerary(legs));
     }
 
     return candidates;
+  }
+
+  private List<Location> getRandomChunkOfLocations(List<Location> allLocations) {
+    Collections.shuffle(allLocations);
+    int total = allLocations.size();
+    int chunk = total > 4 ? (total - 4) + random.nextInt(5) : total;
+    return allLocations.subList(0, chunk);
+  }
+
+  private int getRandomNumberOfCandidates() {
+    return 1 + random.nextInt(4);
+  }
+
+  private CarrierMovementId getRandomCarrierMovementId() {
+    return new CarrierMovementId("CM" + random.nextInt(1000));
   }
 
   public void setLocationRepository(LocationRepository locationRepository) {

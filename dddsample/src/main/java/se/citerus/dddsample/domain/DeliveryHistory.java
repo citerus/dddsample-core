@@ -64,7 +64,7 @@ public class DeliveryHistory {
 
   public StatusCode status() {
     if (lastEvent() == null)
-      return StatusCode.NOT_RECIEVED;
+      return StatusCode.NOT_RECEIVED;
 
     HandlingEvent.Type type = lastEvent().type();
     if (type == HandlingEvent.Type.LOAD)

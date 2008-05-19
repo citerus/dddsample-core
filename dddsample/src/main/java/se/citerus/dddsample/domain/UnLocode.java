@@ -5,7 +5,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.Embeddable;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -19,25 +18,15 @@ public class UnLocode {
 
   private String unlocode;
 
-  // Country code is exactly two letters
-  private static final Pattern countryCodePattern = Pattern.compile("[a-zA-Z]{2}");
-
+  // Country code is exactly two letters.
   // Location code is usually three letters, but may contain the numbers 2-9 as well
-  private static final Pattern locationCodePattern = Pattern.compile("[a-zA-Z2-9]{3}");
+  private static final Pattern validPattern = Pattern.compile("[a-zA-Z]{2}[a-zA-Z2-9]{3}");
 
-  public UnLocode(String countryCode, String locationCode) {
-    validateArgs(countryCode, locationCode);
+  public UnLocode(String countryAndLocation) {
+    Validate.notNull(countryAndLocation);
+    Validate.isTrue(validPattern.matcher(countryAndLocation).matches());
 
-    this.unlocode = (countryCode + locationCode).toUpperCase();
-  }
-
-  private void validateArgs(String countryCode, String locationCode) {
-    Validate.noNullElements(new Object[] {countryCode, locationCode},
-            "Neither country code nor location code may be null");
-    Validate.isTrue(countryCodePattern.matcher(countryCode).matches(),
-      "\"" + countryCode + "\" is not a valid country code");
-    Validate.isTrue(locationCodePattern.matcher(locationCode).matches(),
-      "\"" + locationCode + "\" is not a valid location code");
+    this.unlocode = countryAndLocation.toUpperCase();
   }
 
   /**

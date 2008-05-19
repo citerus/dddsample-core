@@ -5,6 +5,7 @@ import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.TrackingId;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,6 +41,10 @@ public class CargoRepositoryInMem implements CargoRepository {
 
   public TrackingId nextTrackingId() {
     return new TrackingId(UUID.randomUUID().toString());
+  }
+
+  public List<Cargo> findAll() {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
   }
 
   /**

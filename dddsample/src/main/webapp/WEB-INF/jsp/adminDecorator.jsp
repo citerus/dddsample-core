@@ -6,21 +6,28 @@
   <title><decorator:title/></title>
   <script type="text/javascript" charset="UTF-8"></script>
   <style type="text/css" title="style" media="screen">
-    @import "${rc.contextPath}/style.css";
+    @import "${rc.contextPath}/admin.css";
   </style>
   <decorator:head/>
 </head>
 <body>
   <div id="outer">
-    <div id="apptitle">
-      <img src="${rc.contextPath}/images/dddsample_logotype.png" alt="Domain Driven Delivery"/>
-    </div>
+    <h1>Cargo administration</h1>
+    <ul id="menu">
+      <li>
+        <a href="${rc.contextPath}/admin/list.html">
+          List all cargos
+        </a>
+      </li>
+      <li>
+        <a href="${rc.contextPath}/admin/registrationForm.html">
+          Register cargo
+        </a>
+      </li>
+    </ul>
     <div id="body">
       <decorator:body/>
     </div>
-    <div id="footer">
-      This application is written by <a href="http://www.citerus.se" target="_blank">Citerus</a>
-      and <a href="http://www.domainlanguage.com" target="_blank">Domain Language</a></div>
   </div>
 </body>
 </html>

@@ -23,7 +23,7 @@ public class Location {
    * Special Location object that marks an unknown location.
    */
   public static final Location UNKNOWN = new Location(
-     new UnLocode("XX", "XXX"), "Unknown location"
+     new UnLocode("XXXXX"), "Unknown location"
   );
 
   /**

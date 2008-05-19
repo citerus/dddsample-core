@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.TrackingId;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,7 +42,14 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
     // Could be an opportunity to maybe illustrate how to handle pessimistic locking
     // and aggregate boundaries, and maybe problems with a distributed application
     // sharing a database. For now it's simply random though.
-    return new TrackingId(UUID.randomUUID().toString());
+    String random = UUID.randomUUID().toString().toUpperCase();
+    return new TrackingId(
+      random.substring(0, random.indexOf("-"))
+    );
+  }
+
+  public List<Cargo> findAll() {
+    return getSession().createQuery("from Cargo").list();
   }
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {

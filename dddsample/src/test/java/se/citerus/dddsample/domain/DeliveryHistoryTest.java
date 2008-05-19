@@ -36,7 +36,7 @@ public class DeliveryHistoryTest extends TestCase {
   public void testCargoStatusFromLastHandlingEvent() {
     DeliveryHistory deliveryHistory = new DeliveryHistory();
 
-    assertEquals(StatusCode.NOT_RECIEVED, deliveryHistory.status());
+    assertEquals(StatusCode.NOT_RECEIVED, deliveryHistory.status());
 
     deliveryHistory.addEvent(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG, null));
     assertEquals(StatusCode.IN_PORT, deliveryHistory.status());

@@ -37,7 +37,7 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       }
       HandlingEvent.Type type = parseEventType(eventType);
 
-      UnLocode ul = new UnLocode(unlocode.substring(0,2), unlocode.substring(2,5));
+      UnLocode ul = new UnLocode(unlocode);
 
       handlingEventService.register(date, tid, cid, ul, type);
     } catch (ParseException pe) {

@@ -54,7 +54,7 @@ public class HandlingEventServiceTest extends TestCase {
     final CarrierMovementId carrierMovementId = new CarrierMovementId("AAA_BBB");
     expect(carrierMovementRepository.find(carrierMovementId)).andReturn(cmAAA_BBB);
 
-    final UnLocode unLocode = new UnLocode("SE", "STO");
+    final UnLocode unLocode = new UnLocode("SESTO");
     expect(locationRepository.find(unLocode)).andReturn(STOCKHOLM);
 
     // TODO: does not inspect the handling event instance in a sufficient way
@@ -123,7 +123,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     final TrackingId trackingId = new TrackingId("XYZ");
     expect(cargoRepository.find(trackingId)).andReturn(cargoXYZ);
-    UnLocode wayOff = new UnLocode("XX", "YYY");
+    UnLocode wayOff = new UnLocode("XXYYY");
     expect(locationRepository.find(wayOff)).andReturn(null);
     
     replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);

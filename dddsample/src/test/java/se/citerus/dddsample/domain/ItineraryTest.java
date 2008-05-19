@@ -1,73 +1,63 @@
 package se.citerus.dddsample.domain;
 
 import junit.framework.TestCase;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ItineraryTest extends TestCase {
-  private final Location shanghai = new Location(new UnLocode("CN", "SHA"), "Shanghai");
-  private final Location rotterdam = new Location(new UnLocode("NL", "RTM"), "Rotterdam");
-  private final Location goteborg = new Location(new UnLocode("SE", "GOT"), "Goteborg");
-  private final Location hangzhou = new Location(new UnLocode("CN", "HGH"), "Hangzhou");
-  private final Location nyc = new Location(new UnLocode("US", "NYC"), "New York");
-  private final Location longBeach = new Location(new UnLocode("US", "LGB"), "Long Beach");
-  private final CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), shanghai, rotterdam);
-  private final CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), rotterdam, goteborg);
-  private final CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), rotterdam, nyc);
-  private final CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), shanghai, longBeach);
+  private final CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM);
+  private final CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG);
+  private final CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), ROTTERDAM, NEWYORK);
+  private final CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), SHANGHAI, HELSINKI);
 
   public void testCargoOnTrack() throws Exception {
 
-    Cargo cargo = new Cargo(new TrackingId("CARGO1")); //Immutable things go into the constructor
-
-    //Mutable things in setters
-    cargo.setOrigin(shanghai);
-    cargo.setDestination(goteborg);
-
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), SHANGHAI, GOTHENBURG);
 
     Itinerary itinerary = new Itinerary(
-       new Leg(new CarrierMovementId("ABC"), shanghai, rotterdam),
-       new Leg(new CarrierMovementId("DEF"), rotterdam, goteborg)
+       new Leg(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM),
+       new Leg(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG)
     );
 
     //Happy path
-    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, shanghai,null);
+    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, SHANGHAI,null);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, shanghai, abc);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, SHANGHAI, abc);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, rotterdam, abc);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, ROTTERDAM, abc);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, rotterdam, def);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, ROTTERDAM, def);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, goteborg, def);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, GOTHENBURG, def);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, goteborg, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, GOTHENBURG, null);
     assertTrue(itinerary.isExpected(event));
 
     //Customs event changes nothing
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, goteborg, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, GOTHENBURG, null);
     assertTrue(itinerary.isExpected(event));
 
     //Received at the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, hangzhou, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU, null);
     assertFalse(itinerary.isExpected(event));
 
     //Loaded to onto the wrong ship, correct location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, rotterdam, ghi);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, ROTTERDAM, ghi);
     assertFalse(itinerary.isExpected(event));
 
     //Unloaded from the wrong ship in the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, longBeach, jkl);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, HELSINKI, jkl);
     assertFalse(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, rotterdam, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM, null);
     assertFalse(itinerary.isExpected(event));
 
   }

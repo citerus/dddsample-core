@@ -4,23 +4,27 @@
 </head>
 <body>
 <div id="container">
+  <h1>Track Your Cargo</h1>
   <div id="search">
-  <h1>Search for Your Cargo</h1>
   <form:form method="post" commandName="trackCommand">
-    <table cellspacing="0" cellpadding="4">
+    <table>
       <tr>
-        <td align="right">
+        <td>
           Enter tracking id:
         </td>
         <td>
           <form:input path="trackingId" id="idInput"/>
         </td>
         <td>
-          <form:errors path="trackingId" cssClass="error"/>
-        </td>
-        <td>
           <input type="submit" value="Track!">
         </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <form:errors path="trackingId" cssClass="error"/>
+        </td>
+        <td></td>
       </tr>
     </table>
   </form:form>

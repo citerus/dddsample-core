@@ -1,23 +1,14 @@
-
-/*********************************************************
-   HTML Elements
- *********************************************************/
-
-html,
-body {
+html,body {
   height: 100%;
 }
 
 body {
-  margin-left: 150px;
-  margin-right: 150px;
-  padding: 0;
+  margin: auto;
   font: 400 0.7em verdana, arial, sans-serif;
   line-height: 170%;
-  
   color: #555;
+  background-color: orange;
 }
-
 
 /* Headers */
 h1, h2, h3, h4, h5, h6 {
@@ -31,7 +22,6 @@ h1 {
 
   font: 400 1.6em arial, sans-serif;
   color: #536C71;
-  border-bottom: 6px solid #ddd;
 }
 
 h2 {
@@ -57,11 +47,11 @@ h5 {
 /* Links */
 a {
   text-decoration: none;
-  color: #3B5D77;
+  color: blue;
 }
 
 a:hover {
-  color: #668FA3;
+  color: darkblue;
 }
 
 a img {
@@ -181,41 +171,77 @@ input.radio {
   border: 0px;
 }
 
+table {
+  width: 100%;
+}
 
+table caption {
+  font-weight: bold;
+  text-align: left;
+  margin: 5px 0;
+}
 
 
 /**************************************************************
    Custom div and span
  **************************************************************/
-#apptitle h1{
-  font-size: 1.6em;
-  margin-left: 200px;
-  margin-bottom: 10px;
-  border-bottom: 0px
-  
+
+div#outer {
+  margin: auto;
+  padding: 0 20px;
+  width: 600px;
+  height: 100%;
+  text-align: center;
+  background-color: white;
+  border-left: 5px dashed orange;
+  border-right: 5px dashed orange;
+}
+
+
+#apptitle {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #555;
+}
+
+#footer {
+  border-top: 2px solid #555;
+  margin-top: 30px;
+  padding-top: 10px;
+  background-color: white;
 }
 
 #container {
   text-align: left;
-  width: 500px;
+  background-color: white;
 }
 
 #search {
   font-size: 1.0em;
-  border-bottom: 6px solid #ddd;
+  padding: 10px 0;
+  text-align: center;
+}
+
+#search table {
+  width: 320px;
+  margin: 0 auto;
+}
+
+#search td {
+  white-space: nowrap;
 }
 
 #result {
   font-size: 1.0em;
-  border-bottom: 6px solid #ddd;
 }
 
-#result thead{
+#result thead {
   font-size: 1.2em;
   font-weight: bold;	
 }
 
-#result tr{
+#result tr {
   line-height: 120%;
 }
 

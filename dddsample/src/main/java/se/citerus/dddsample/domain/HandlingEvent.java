@@ -1,8 +1,8 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.Validate;
 
 import javax.persistence.*;
 import java.util.Comparator;

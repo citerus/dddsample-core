@@ -14,4 +14,9 @@
 
   <bean id="trackCommandValidator" class="se.citerus.dddsample.web.command.TrackCommandValidator"/>
 
+  <bean name="/admin/*" class="se.citerus.dddsample.web.CargoAdminController">
+    <property name="cargoService" ref="cargoService"/>
+    <property name="routingService" ref="routingService"/>
+  </bean>
+
 </beans>
