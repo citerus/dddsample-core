@@ -123,7 +123,7 @@ public class CargoTrackingControllerTest extends TestCase {
       return null;
     }
 
-    public List<String> shippingLocations() {
+    public List<UnLocode> shippingLocations() {
       return null;
     }
 

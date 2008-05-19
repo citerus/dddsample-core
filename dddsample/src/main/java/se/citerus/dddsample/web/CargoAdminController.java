@@ -29,7 +29,12 @@ public class CargoAdminController extends MultiActionController {
 
   public Map registrationForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
     Map map = new HashMap();
-    map.put("unlocodes", cargoService.shippingLocations());
+    List<UnLocode> unLocodes = cargoService.shippingLocations();
+    List<String> unLocodeStrings = new ArrayList<String>();
+    for (UnLocode unLocode : unLocodes) {
+      unLocodeStrings.add(unLocode.idString());
+    }
+    map.put("unlocodes", unLocodeStrings);
     return map;
   }
 

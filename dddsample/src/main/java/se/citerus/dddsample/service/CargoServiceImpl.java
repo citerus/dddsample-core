@@ -39,11 +39,11 @@ public class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = true)
-  public List<String> shippingLocations() {
+  public List<UnLocode> shippingLocations() {
     List<Location> allLocations = locationRepository.findAll();
-    List<String> unlocodes = new ArrayList<String>(allLocations.size());
+    List<UnLocode> unlocodes = new ArrayList<UnLocode>(allLocations.size());
     for (Location location : allLocations) {
-      unlocodes.add(location.unLocode().idString());
+      unlocodes.add(location.unLocode());
     }
     return unlocodes;
   }
@@ -177,7 +177,8 @@ public class CargoServiceImpl implements CargoService {
         locationRepository.find(new UnLocode(legDTO.getTo())))
       );
     }
-
+    // TODO: delete orphaned itineraries manually.
+    // Can't cascade delete-orphan for many-to-one using mapping directives.
     cargo.setItinerary(new Itinerary(legs));
     cargoRepository.save(cargo);
   }
