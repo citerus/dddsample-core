@@ -9,9 +9,7 @@
        xmlns:context="http://www.springframework.org/schema/context">
 
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="locations">
-      <value>classpath:app.properties</value>
-    </property>
+    <property name="locations" value="classpath:app.properties"/>
   </bean>
 
   <bean id="registerApp" class="se.citerus.registerapp.RegisterApp">
@@ -20,7 +18,7 @@
   </bean>
 
   <bean id="handlingEventServiceWs" class="se.citerus.registerapp.service.HandlingEventServiceWs">
-    <property name="endPoint" ref="handlingEventWebServiceEndPoint"></property>
+    <property name="endPoint" ref="handlingEventWebServiceEndPoint"/>
   </bean>
 
   <bean id="handlingEventWebServiceEndPoint" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
