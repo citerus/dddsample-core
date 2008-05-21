@@ -17,13 +17,13 @@ import java.util.Date;
  * {@link Type#UNLOAD}. All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
 @Entity
-public class HandlingEvent {
+public final class HandlingEvent {
 
   /**
    * Comparator used to be able to sort HandlingEvents according to their completion time
    */
   public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = new Comparator<HandlingEvent>() {
-    public int compare(HandlingEvent o1, HandlingEvent o2) {
+    public int compare(final HandlingEvent o1, final HandlingEvent o2) {
       return o1.completionTime().compareTo(o2.completionTime());
     }
   };
@@ -58,7 +58,12 @@ public class HandlingEvent {
 
     private boolean carrierMovementRequired;
 
-    private Type(boolean carrierMovementRequired) {
+    /**
+     * Private enum constructor.
+     *
+     * @param carrierMovementRequired Required status.
+     */
+    private Type(final boolean carrierMovementRequired) {
       this.carrierMovementRequired = carrierMovementRequired;
     }
 
@@ -77,7 +82,6 @@ public class HandlingEvent {
     }
   }
 
-
   /**
    * @param cargo            cargo
    * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
@@ -86,8 +90,9 @@ public class HandlingEvent {
    * @param location         where the event took place
    * @param carrierMovement  carrier movement.
    */
-  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location, CarrierMovement carrierMovement) {
-    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location});
+  public HandlingEvent(final Cargo cargo, final Date completionTime, final Date registrationTime, final Type type,
+                       final Location location, final CarrierMovement carrierMovement) {
+    Validate.noNullElements(new Object[]{cargo, completionTime, registrationTime, type, location});
     this.registrationTime = registrationTime;
     this.completionTime = completionTime;
     this.type = type;
@@ -126,11 +131,11 @@ public class HandlingEvent {
     return this.cargo;
   }
 
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    HandlingEvent event = (HandlingEvent) o;
+    final HandlingEvent event = (HandlingEvent) o;
 
     return sameEventAs(event);
   }
@@ -138,14 +143,14 @@ public class HandlingEvent {
   /**
    * Events compare by the attributes that identify the underlying event as opposed to the report of the event.
    * Therefore the completion time is part of the comparison but not the registration time.
-   *
+   * <p/>
    * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
    * Compare this behavior to the entity {@link se.citerus.dddsample.domain.Cargo#sameIdentityAs(Cargo)}
    *
    * @param other The other hanling event.
    * @return <code>true</code> if the given handling event and this event are regarded as the same.
    */
-  public boolean sameEventAs(HandlingEvent other) {
+  public boolean sameEventAs(final HandlingEvent other) {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
       append(this.carrierMovement, other.carrierMovement).
@@ -157,7 +162,7 @@ public class HandlingEvent {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(13,41).
+    return new HashCodeBuilder().
       append(cargo).
       append(carrierMovement).
       append(completionTime).

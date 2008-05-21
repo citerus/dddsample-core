@@ -10,21 +10,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class HandlingEventRepositoryInMem implements HandlingEventRepository{
-  private HashMap<String, HandlingEvent> eventDB;
-  private CarrierMovementRepository carrierMovementRepository;
-  
+public class HandlingEventRepositoryInMem implements HandlingEventRepository {
   private final Log logger = LogFactory.getLog(getClass());
-
-  public HandlingEventRepositoryInMem() throws ParseException {
-    eventDB = new HashMap<String, HandlingEvent>();
-  }
+  private final HashMap<String, HandlingEvent> eventDB = new HashMap<String, HandlingEvent>();
+  private CarrierMovementRepository carrierMovementRepository;
 
   /**
    * Initilaze the in mem repository.
-   * 
+   * <p/>
    * SpringIoC will call this init-method after the bean has bean created and properties has been set.
-   * 
+   *
    * @throws ParseException
    */
   public void init() throws ParseException {
@@ -70,12 +65,11 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
 */
   }
 
-  
-  private void registerEvent(Cargo cargo, String date, Type type, CarrierMovement carrierMovement) throws ParseException{
+  private void registerEvent(Cargo cargo, String date, Type type, CarrierMovement carrierMovement) throws ParseException {
     HandlingEvent event = new HandlingEvent(cargo, getDate(date), new Date(), type, null, carrierMovement);
     //cargo.handle(event);
     String id = cargo.trackingId() + "_" + type + "_" + date;
-    
+
     logger.debug("Adding event " + id + "(" + event + ")");
     eventDB.put(id, event);
   }
@@ -83,23 +77,21 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
 
   /**
    * Parse an ISO 8601 (YYYY-MM-DD) String to Date
-   * 
-   * @param isoFormat
-   *            String to parse.
+   *
+   * @param isoFormat String to parse.
    * @return Created date instance.
-   * @throws ParseException
-   *             Thrown if parsing fails.
+   * @throws ParseException Thrown if parsing fails.
    */
-  private Date getDate(String isoFormat) throws ParseException {
+  private Date getDate(final String isoFormat) throws ParseException {
     final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     return dateFormat.parse(isoFormat);
   }
-  
-  public HandlingEvent find(String handlingEventId){
+
+  public HandlingEvent find(final String handlingEventId) {
     return eventDB.get(handlingEventId);
   }
 
-  public void save(HandlingEvent event) {
+  public void save(final HandlingEvent event) {
     // Mimmick saving to database
     /*
     for (Cargo cargo : event.registerdCargos()) {
@@ -108,17 +100,17 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
     */
   }
 
-  public List<HandlingEvent> findEventsForCargo(TrackingId trackingId) {
+  public List<HandlingEvent> findEventsForCargo(final TrackingId trackingId) {
     return new ArrayList<HandlingEvent>(eventDB.values());
   }
 
-  public DeliveryHistory findDeliveryHistory(TrackingId trackingId) {
+  public DeliveryHistory findDeliveryHistory(final TrackingId trackingId) {
     return null;  //To change body of implemented methods use File | Settings | File Templates.
   }
 
   @SuppressWarnings("unchecked")
   public Set<HandlingEvent> findByTrackingId(final TrackingId trackingId) {
-    Set<HandlingEvent> events = new HashSet<HandlingEvent>();
+    final Set<HandlingEvent> events = new HashSet<HandlingEvent>();
     for (HandlingEvent event : eventDB.values()) {
       /*
       for (Cargo cargo : event.registerdCargos()) {
@@ -129,13 +121,13 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository{
       }
         */
     }
-    
+
     logger.debug("findByTrackingId " + trackingId + " finds " + events);
-    
+
     return events;
   }
 
-  public void setCarrierRepository(CarrierMovementRepository carrierMovementRepository) {
+  public void setCarrierRepository(final CarrierMovementRepository carrierMovementRepository) {
     this.carrierMovementRepository = carrierMovementRepository;
   }
 }

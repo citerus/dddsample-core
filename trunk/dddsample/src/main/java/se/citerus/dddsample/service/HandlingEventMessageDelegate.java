@@ -11,17 +11,17 @@ import javax.jms.MessageListener;
 /**
  * Consumes JMS messages and delegates notification of misdirected
  * cargo to the cargo service.
- *
+ * <p/>
  * This point of this is to decouple the cargo service from JMS,
  * and to allow a thread-based messaging implementation to live in
- * parallell. 
+ * parallell.
  */
 public class HandlingEventMessageDelegate implements MessageListener {
 
-  CargoService cargoService;
-  private static final Log logger = LogFactory.getLog(HandlingEventMessageDelegate.class);
+  private CargoService cargoService;
+  private final Log logger = LogFactory.getLog(getClass());
 
-  public void onMessage(Message message) {
+  public void onMessage(final Message message) {
     if (logger.isDebugEnabled()) {
       logger.debug("Received message " + message);
     }

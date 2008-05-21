@@ -6,6 +6,7 @@ import se.citerus.dddsample.domain.HandlingEvent;
  * Thread based implementation.
  */
 public class ThreadBasedEventServiceImpl implements EventService {
+
   private CargoService cargoService;
 
   public void fireHandlingEventRegistered(final HandlingEvent event) {

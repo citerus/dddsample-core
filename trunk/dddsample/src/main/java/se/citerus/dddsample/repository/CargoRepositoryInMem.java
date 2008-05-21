@@ -12,30 +12,33 @@ import java.util.UUID;
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
  * class not intended for usage in real application.
- * 
+ * <p/>
  * It setup a simple local hash with a number of Cargo's with TrackingId as key
  * defined at compile time.
- * 
+ * <p/>
  * To be able to test exceptions, a DataRetrievalFailureException is thrown when finding a Cargo with trackingId "DAE".
- * 
  */
 public class CargoRepositoryInMem implements CargoRepository {
+
   private Map<String, Cargo> cargoDb;
   private HandlingEventRepository handlingEventRepository;
 
-  public CargoRepositoryInMem() throws Exception {
+  /**
+   * Constructor.
+   */
+  public CargoRepositoryInMem() {
     cargoDb = new HashMap<String, Cargo>();
   }
 
-  public Cargo find(TrackingId trackingId) {
-    if (trackingId.idString().equalsIgnoreCase("DAE")){
+  public Cargo find(final TrackingId trackingId) {
+    if (trackingId.idString().equalsIgnoreCase("DAE")) {
       throw new DataRetrievalFailureException("Network failure. Please try again");
     }
-    
+
     return cargoDb.get(trackingId.idString());
   }
-  
-  public void save(Cargo cargo) {
+
+  public void save(final Cargo cargo) {
     //No need to save anything with InMem
   }
 
@@ -48,7 +51,6 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   /**
-   * 
    * @throws Exception
    */
   public void init() throws Exception {
@@ -79,7 +81,7 @@ public class CargoRepositoryInMem implements CargoRepository {
     */
   }
 
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
+  public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
   }
 }

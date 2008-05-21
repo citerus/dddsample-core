@@ -21,11 +21,11 @@ import java.util.Date;
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {
 
   private HandlingEventService handlingEventService;
-  private static final Log logger = LogFactory.getLog(HandlingEventServiceEndpointImpl.class);
+  private final Log logger = LogFactory.getLog(getClass());
   protected static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
 
-  public void register(String completionTime, String trackingId, String carrierMovementId,
-                       String unlocode, String eventType) {
+  public void register(final String completionTime, final String trackingId, final String carrierMovementId,
+                       final String unlocode, final String eventType) {
     try {
       Date date = parseIso8601Date(completionTime);
       TrackingId tid = new TrackingId(trackingId);
@@ -54,10 +54,10 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     // TODO: possibly handle "Duplicate event" exceptions due to unique constraint violations
   }
 
-  private HandlingEvent.Type parseEventType(String eventType) throws InvalidEventTypeException {
+  private HandlingEvent.Type parseEventType(final String eventType) throws InvalidEventTypeException {
     try {
       return HandlingEvent.Type.valueOf(eventType);
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       throw new InvalidEventTypeException(eventType);
     }
   }
@@ -67,11 +67,11 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     // TODO: actually place in a retry queue
   }
 
-  private Date parseIso8601Date(String completionTime) throws ParseException {
+  private Date parseIso8601Date(final String completionTime) throws ParseException {
     return new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
   }
 
-  public void setHandlingEventService(HandlingEventService handlingEventService) {
+  public void setHandlingEventService(final HandlingEventService handlingEventService) {
     this.handlingEventService = handlingEventService;
   }
 }

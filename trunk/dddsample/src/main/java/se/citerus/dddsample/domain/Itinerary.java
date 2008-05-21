@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 @Entity
-public class Itinerary {
+public final class Itinerary {
 
   @Id
   @GeneratedValue
@@ -23,13 +23,18 @@ public class Itinerary {
 
   public static final Itinerary EMPTY_ITINERARY = new Itinerary();
 
-  public Itinerary(List<Leg> legs) {
+  /**
+   * Constructor.
+   *
+   * @param legs List of legs for this itinerary.
+   */
+  public Itinerary(final List<Leg> legs) {
     Validate.notEmpty(legs);
     Validate.noNullElements(legs);
     this.legs = legs;
   }
 
-  public Itinerary(Leg... legs) {
+  public Itinerary(final Leg... legs) {
     this(Arrays.asList(legs));
   }
 
@@ -43,14 +48,14 @@ public class Itinerary {
    * @param event Event to test.
    * @return <code>true</code> if the event is expected
    */
-  public boolean isExpected(HandlingEvent event) {
+  public boolean isExpected(final HandlingEvent event) {
     if (legs.isEmpty()) {
       return true;
     }
 
     if (event.type() == HandlingEvent.Type.RECEIVE) {
       //Check that the first leg's origin is the event's location
-      Leg leg = legs.get(0);
+      final Leg leg = legs.get(0);
       return (leg.from().equals(event.location()));
     }
 
@@ -58,7 +63,7 @@ public class Itinerary {
       //Check that the there is one leg with same from location and carrier movement
       for (Leg leg : legs) {
         if (leg.from().equals(event.location())
-           && leg.carrierMovement().equals(event.carrierMovement()))
+          && leg.carrierMovement().equals(event.carrierMovement()))
           return true;
       }
       return false;
@@ -68,7 +73,7 @@ public class Itinerary {
       //Check that the there is one leg with same to loc and carrier movement
       for (Leg leg : legs) {
         if (leg.to().equals(event.location())
-           && leg.carrierMovement().equals(event.carrierMovement()))
+          && leg.carrierMovement().equals(event.carrierMovement()))
           return true;
       }
       return false;
@@ -76,7 +81,7 @@ public class Itinerary {
 
     if (event.type() == HandlingEvent.Type.CLAIM) {
       //Check that the last leg's destination is from the event's location
-      Leg leg = legs.get(legs.size() - 1);
+      final Leg leg = legs.get(legs.size() - 1);
       return (leg.to().equals(event.location()));
     }
 
@@ -88,16 +93,16 @@ public class Itinerary {
    * @param other itinerary to compare
    * @return <code>true</code> if the legs in this and the other itinerary are all equal.
    */
-  public boolean sameValueAs(Itinerary other) {
+  public boolean sameValueAs(final Itinerary other) {
     return other != null && legs.equals(other.legs);
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    Itinerary itinerary = (Itinerary) o;
+    final Itinerary itinerary = (Itinerary) o;
 
     return sameValueAs(itinerary);
   }

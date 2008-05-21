@@ -2,15 +2,14 @@ package se.citerus.dddsample.service.dto;
 
 /**
  * DTO for a leg in an itinerary.
- *
  */
-public class LegDTO {
+public final class LegDTO {
 
-  String carrierMovementId;
-  String from;
-  String to;
+  private final String carrierMovementId;
+  private final String from;
+  private final String to;
 
-  public LegDTO(String carrierMovementId, String from, String to) {
+  public LegDTO(final String carrierMovementId, final String from, final String to) {
     this.carrierMovementId = carrierMovementId;
     this.from = from;
     this.to = to;

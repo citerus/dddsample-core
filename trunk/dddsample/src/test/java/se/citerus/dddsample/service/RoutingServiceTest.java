@@ -17,10 +17,10 @@ import java.util.List;
 
 public class RoutingServiceTest extends TestCase {
 
-  RoutingServiceImpl routingService;
-  LocationRepository locationRepository;
-  CargoRepository cargoRepository;
-  CarrierMovementRepository carrierMovementRepository;
+  private RoutingServiceImpl routingService;
+  private LocationRepository locationRepository;
+  private CargoRepository cargoRepository;
+  private CarrierMovementRepository carrierMovementRepository;
 
   protected void setUp() throws Exception {
     routingService = new RoutingServiceImpl();

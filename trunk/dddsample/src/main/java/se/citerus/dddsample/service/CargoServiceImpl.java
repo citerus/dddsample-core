@@ -13,24 +13,24 @@ import se.citerus.dddsample.service.dto.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CargoServiceImpl implements CargoService {
+public final class CargoServiceImpl implements CargoService {
 
   private CargoRepository cargoRepository;
   private LocationRepository locationRepository;
   private CarrierMovementRepository carrierMovementRepository;
 
-  private static final Log logger = LogFactory.getLog(CargoServiceImpl.class);
+  private final Log logger = LogFactory.getLog(getClass());
 
   @Transactional(readOnly = false)
-  public TrackingId registerNew(UnLocode originUnLocode, UnLocode destinationUnLocode) {
+  public TrackingId registerNew(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
 
-    TrackingId trackingId = cargoRepository.nextTrackingId();
-    Location origin = locationRepository.find(originUnLocode);
-    Location destination = locationRepository.find(destinationUnLocode);
+    final TrackingId trackingId = cargoRepository.nextTrackingId();
+    final Location origin = locationRepository.find(originUnLocode);
+    final Location destination = locationRepository.find(destinationUnLocode);
 
-    Cargo cargo = new Cargo(trackingId,origin,destination);
+    final Cargo cargo = new Cargo(trackingId, origin, destination);
 
     cargoRepository.save(cargo);
     logger.info("Registered new cargo with tracking id " + trackingId.idString());
@@ -40,8 +40,8 @@ public class CargoServiceImpl implements CargoService {
 
   @Transactional(readOnly = true)
   public List<UnLocode> shippingLocations() {
-    List<Location> allLocations = locationRepository.findAll();
-    List<UnLocode> unlocodes = new ArrayList<UnLocode>(allLocations.size());
+    final List<Location> allLocations = locationRepository.findAll();
+    final List<UnLocode> unlocodes = new ArrayList<UnLocode>(allLocations.size());
     for (Location location : allLocations) {
       unlocodes.add(location.unLocode());
     }
@@ -49,7 +49,7 @@ public class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = true)
-  public CargoTrackingDTO track(TrackingId trackingId) {
+  public CargoTrackingDTO track(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
     final Cargo cargo = cargoRepository.find(trackingId);
@@ -57,11 +57,11 @@ public class CargoServiceImpl implements CargoService {
       return null;
     }
 
-    DeliveryHistory deliveryHistory = cargo.deliveryHistory();
+    final DeliveryHistory deliveryHistory = cargo.deliveryHistory();
 
     // TODO: use DTO assemblers
-    Location currentLocation = deliveryHistory.currentLocation();
-    CarrierMovement currentCarrierMovement = deliveryHistory.currentCarrierMovement();
+    final Location currentLocation = deliveryHistory.currentLocation();
+    final CarrierMovement currentCarrierMovement = deliveryHistory.currentCarrierMovement();
     final CargoTrackingDTO dto = new CargoTrackingDTO(
       cargo.trackingId().idString(),
       cargo.origin().toString(),
@@ -74,8 +74,8 @@ public class CargoServiceImpl implements CargoService {
 
     final List<HandlingEvent> events = deliveryHistory.eventsOrderedByCompletionTime();
     for (HandlingEvent event : events) {
-      CarrierMovement cm = event.carrierMovement();
-      String carrierIdString = (cm == null) ? "" : cm.carrierMovementId().idString();
+      final CarrierMovement cm = event.carrierMovement();
+      final String carrierIdString = (cm == null) ? "" : cm.carrierMovementId().idString();
       dto.addEvent(new HandlingEventDTO(
         event.location().toString(),
         event.type().toString(),
@@ -90,10 +90,10 @@ public class CargoServiceImpl implements CargoService {
 
   // TODO: move this to another class?
   @Transactional(readOnly = true)
-  public void notify(TrackingId trackingId) {
+  public void notify(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
-    Cargo cargo = cargoRepository.find(trackingId);
+    final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       logger.warn("Can't notify listeners for non-existing cargo " + trackingId);
       return;
@@ -102,22 +102,22 @@ public class CargoServiceImpl implements CargoService {
     // TODO: more elaborate notifications, such as email to affected customer
     if (cargo.isMisdirected()) {
       logger.info("Cargo " + trackingId + " has been misdirected. " +
-                  "Last event was " + cargo.deliveryHistory().lastEvent());
+        "Last event was " + cargo.deliveryHistory().lastEvent());
     }
     if (cargo.isUnloadedAtDestination()) {
       logger.info("Cargo " + trackingId + " has been unloaded " +
-                  "at its final destination " + cargo.finalDestination());
+        "at its final destination " + cargo.finalDestination());
     }
   }
 
   @Transactional(readOnly = true)
   public List<CargoRoutingDTO> loadAllForRouting() {
-    List<Cargo> allCargos = cargoRepository.findAll();
+    final List<Cargo> allCargos = cargoRepository.findAll();
 
     // TODO: use DTO assembler
-    List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(allCargos.size());
+    final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(allCargos.size());
     for (Cargo cargo : allCargos) {
-      CargoRoutingDTO dto = new CargoRoutingDTO(
+      final CargoRoutingDTO dto = new CargoRoutingDTO(
         cargo.trackingId().idString(),
         cargo.origin().toString(),
         cargo.finalDestination().toString()
@@ -136,15 +136,15 @@ public class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = true)
-  public CargoRoutingDTO loadForRouting(TrackingId trackingId) {
+  public CargoRoutingDTO loadForRouting(final TrackingId trackingId) {
     Validate.notNull(trackingId);
-    Cargo cargo = cargoRepository.find(trackingId);
+    final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       return null;
     }
 
     // TODO: use DTO assembler
-    CargoRoutingDTO dto = new CargoRoutingDTO(
+    final CargoRoutingDTO dto = new CargoRoutingDTO(
       cargo.trackingId().idString(),
       cargo.origin().toString(),
       cargo.finalDestination().toString()
@@ -160,25 +160,22 @@ public class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = false)
-  public void assignItinerary(TrackingId trackingId, ItineraryCandidateDTO itinerary) {
+  public void assignItinerary(final TrackingId trackingId, final ItineraryCandidateDTO itinerary) {
     Validate.notNull(trackingId);
     Validate.notNull(itinerary);
 
-    Cargo cargo = cargoRepository.find(trackingId);
+    final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
     }
 
-    List<Leg> legs = new ArrayList<Leg>(itinerary.getLegs().size());
+    final List<Leg> legs = new ArrayList<Leg>(itinerary.getLegs().size());
     for (LegDTO legDTO : itinerary.getLegs()) {
-      legs.add(new Leg(
-        carrierMovementRepository.find(
-          new CarrierMovementId(legDTO.getCarrierMovementId())),
-        locationRepository.find(
-          new UnLocode(legDTO.getFrom())),
-        locationRepository.find(
-          new UnLocode(legDTO.getTo())))
-      );
+      final CarrierMovementId carrierMovementId = new CarrierMovementId(legDTO.getCarrierMovementId());
+      final CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
+      final Location from = locationRepository.find(new UnLocode(legDTO.getFrom()));
+      final Location to = locationRepository.find(new UnLocode(legDTO.getTo()));
+      legs.add(new Leg(carrierMovement, from, to));
     }
     // TODO: delete orphaned itineraries.
     // Can't cascade delete-orphan for many-to-one using mapping directives.
@@ -186,12 +183,11 @@ public class CargoServiceImpl implements CargoService {
     cargoRepository.save(cargo);
   }
 
-
-  public void setCargoRepository(CargoRepository cargoRepository) {
+  public void setCargoRepository(final CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
   }
 
-  public void setLocationRepository(LocationRepository locationRepository) {
+  public void setLocationRepository(final LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
   }
 

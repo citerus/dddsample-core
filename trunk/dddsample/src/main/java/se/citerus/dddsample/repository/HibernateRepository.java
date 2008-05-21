@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Functionality common to all Hibernate repositories.
- *
  */
 public abstract class HibernateRepository {
 
-  SessionFactory sessionFactory;
+  private SessionFactory sessionFactory;
 
   @Required
-  public void setSessionFactory(SessionFactory sessionFactory) {
+  public void setSessionFactory(final SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 

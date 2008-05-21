@@ -4,9 +4,9 @@ import se.citerus.dddsample.domain.UnLocode;
 
 public class UnknownLocationException extends Exception {
 
-  private UnLocode unlocode;
+  private final UnLocode unlocode;
 
-  public UnknownLocationException(UnLocode unlocode) {
+  public UnknownLocationException(final UnLocode unlocode) {
     this.unlocode = unlocode;
   }
 

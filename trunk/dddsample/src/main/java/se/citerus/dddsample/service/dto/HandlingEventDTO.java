@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * DTO for a handling event.
  */
-public class HandlingEventDTO implements Serializable {
+public final class HandlingEventDTO implements Serializable {
 
   private final String type;
   private final String location;
@@ -14,7 +14,8 @@ public class HandlingEventDTO implements Serializable {
   private final Date time;
   private boolean expected;
 
-  public HandlingEventDTO(String location, String type, String carrier, Date time, boolean expected) {
+  public HandlingEventDTO(final String location, final String type, final String carrier, final Date time,
+                          final boolean expected) {
     this.location = location;
     this.type = type;
     this.carrier = carrier;

@@ -7,7 +7,7 @@ import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import java.util.List;
 
 /**
- *  
+ *
  */
 public interface RoutingService {
 

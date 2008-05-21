@@ -7,19 +7,19 @@ import java.util.*;
 
 /**
  * The delivery history of a cargo.
- *
+ * <p/>
  * Is this an entiy or a value object?
  */
-public class DeliveryHistory {
+public final class DeliveryHistory {
 
-  private Set<HandlingEvent> events = new HashSet<HandlingEvent>();
+  private final Set<HandlingEvent> events = new HashSet<HandlingEvent>();
 
   /**
    * Adds all HandlingEvent to the delivery history.
    *
    * @param events events to add
    */
-  public void addAllEvents(Collection<HandlingEvent> events) {
+  public void addAllEvents(final Collection<HandlingEvent> events) {
     this.events.addAll(events);
   }
 
@@ -28,7 +28,7 @@ public class DeliveryHistory {
    *
    * @param event event to add.
    */
-  public void addEvent(HandlingEvent event) {
+  public void addEvent(final HandlingEvent event) {
     this.events.add(event);
   }
 
@@ -36,7 +36,7 @@ public class DeliveryHistory {
    * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
    */
   public List<HandlingEvent> eventsOrderedByCompletionTime() {
-    List<HandlingEvent> eventList = new ArrayList<HandlingEvent>(events);
+    final List<HandlingEvent> eventList = new ArrayList<HandlingEvent>(events);
     Collections.sort(eventList, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
     return Collections.unmodifiableList(eventList);
   }
@@ -48,7 +48,7 @@ public class DeliveryHistory {
     if (events.isEmpty()) {
       return null;
     } else {
-      List<HandlingEvent> orderedEvents = eventsOrderedByCompletionTime();
+      final List<HandlingEvent> orderedEvents = eventsOrderedByCompletionTime();
       return orderedEvents.get(orderedEvents.size() - 1);
     }
   }
@@ -66,7 +66,7 @@ public class DeliveryHistory {
     if (lastEvent() == null)
       return StatusCode.NOT_RECEIVED;
 
-    HandlingEvent.Type type = lastEvent().type();
+    final HandlingEvent.Type type = lastEvent().type();
     if (type == HandlingEvent.Type.LOAD)
       return StatusCode.ONBOARD_CARRIER;
 

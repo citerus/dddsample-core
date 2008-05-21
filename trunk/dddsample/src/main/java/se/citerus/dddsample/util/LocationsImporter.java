@@ -27,29 +27,28 @@ import java.util.zip.ZipFile;
 
 /**
  * Imports about 55 000 locations from an official UN Locode CSV export.
- *
+ * <p/>
  * NOTE: not yet used
- *
  */
 public class LocationsImporter implements ServletContextListener {
   private static final String ZIP_FILE_NAME = "unlocodes.zip";
   private static final String ZIP_ENTRY_NAME = "2006-2 UNLOCODE CodeList.txt";
   private static final int BATCH_SIZE = 1000;
-  private static final Log logger = LogFactory.getLog(LocationsImporter.class);
+  private final Log logger = LogFactory.getLog(getClass());
 
-  protected int importLocations(JdbcTemplate jt) throws IOException {
-    ZipFile zipFile = new ZipFile(new ClassPathResource(ZIP_FILE_NAME).getFile());
-    ZipEntry zipEntry = zipFile.getEntry(ZIP_ENTRY_NAME);
-    InputStream inputStream = zipFile.getInputStream(zipEntry);
-    LineIterator iterator = IOUtils.lineIterator(inputStream, "ISO-8859-1");
+  protected int importLocations(final JdbcTemplate jt) throws IOException {
+    final ZipFile zipFile = new ZipFile(new ClassPathResource(ZIP_FILE_NAME).getFile());
+    final ZipEntry zipEntry = zipFile.getEntry(ZIP_ENTRY_NAME);
+    final InputStream inputStream = zipFile.getInputStream(zipEntry);
+    final LineIterator iterator = IOUtils.lineIterator(inputStream, "ISO-8859-1");
 
     int count = 0;
-    String sql = "INSERT INTO Location (unlocode,name) VALUES (?,?)";
+    final String sql = "INSERT INTO Location (unlocode,name) VALUES (?,?)";
 
     final String[][] batchArgs = new String[BATCH_SIZE][2];
     while (iterator.hasNext()) {
-      String line = iterator.nextLine();
-      String[] args = parseLocation(line);
+      final String line = iterator.nextLine();
+      final String[] args = parseLocation(line);
       if (args != null) {
         int pos = count % BATCH_SIZE;
         batchArgs[pos][0] = args[0];
@@ -61,6 +60,7 @@ public class LocationsImporter implements ServletContextListener {
               ps.setString(1, batchArgs[i][0]);
               ps.setString(2, batchArgs[i][1]);
             }
+
             public int getBatchSize() {
               return BATCH_SIZE;
             }
@@ -74,27 +74,26 @@ public class LocationsImporter implements ServletContextListener {
     return count;
   }
 
-  private String[] parseLocation(String line) {
-    String countryCode = line.substring(3, 5);
-    String locationCode = line.substring(6, 9);
+  private String[] parseLocation(final String line) {
+    final String countryCode = line.substring(3, 5);
+    final String locationCode = line.substring(6, 9);
     if (locationCode.trim().length() == 3) {
-      String name = line.substring(10, 46).trim();
-      return new String[] {countryCode + locationCode, name};
+      final String name = line.substring(10, 46).trim();
+      return new String[]{countryCode + locationCode, name};
     } else {
       return null;
     }
   }
 
-  public void contextInitialized(ServletContextEvent event) {
-    WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext());
-    PlatformTransactionManager ptm = (PlatformTransactionManager) BeanFactoryUtils.beanOfType(context, PlatformTransactionManager.class);
-    TransactionTemplate tt = new TransactionTemplate(ptm);
-    DataSource dataSource = (DataSource) BeanFactoryUtils.beanOfType(context, DataSource.class);
+  public void contextInitialized(final ServletContextEvent event) {
+    final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext());
+    final PlatformTransactionManager ptm = (PlatformTransactionManager) BeanFactoryUtils.beanOfType(context, PlatformTransactionManager.class);
+    final TransactionTemplate tt = new TransactionTemplate(ptm);
+    final DataSource dataSource = (DataSource) BeanFactoryUtils.beanOfType(context, DataSource.class);
     final JdbcTemplate jt = new JdbcTemplate(dataSource);
 
-
-    long t = System.currentTimeMillis();
-    Integer count = (Integer) tt.execute(new TransactionCallback() {
+    final long t = System.currentTimeMillis();
+    final Integer count = (Integer) tt.execute(new TransactionCallback() {
       public Object doInTransaction(TransactionStatus status) {
         try {
           return importLocations(jt);
@@ -103,8 +102,9 @@ public class LocationsImporter implements ServletContextListener {
         }
       }
     });
-    logger.info("Imported " + count + " locations in " + (System.currentTimeMillis() - t)/1000.0 + " seconds.");
+    logger.info("Imported " + count + " locations in " + (System.currentTimeMillis() - t) / 1000.0 + " seconds.");
   }
 
-  public void contextDestroyed(ServletContextEvent event) {}
+  public void contextDestroyed(final ServletContextEvent event) {
+  }
 }
