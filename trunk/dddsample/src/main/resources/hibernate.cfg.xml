@@ -8,7 +8,8 @@
 
   <session-factory>
     <!-- Properties defined here are shared between test and production -->
-    <property name="cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+    
     <mapping class="se.citerus.dddsample.domain.Cargo"/>
     <mapping class="se.citerus.dddsample.domain.TrackingId"/>
     <mapping class="se.citerus.dddsample.domain.Leg"/>

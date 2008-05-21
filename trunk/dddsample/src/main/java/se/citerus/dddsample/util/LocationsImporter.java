@@ -6,27 +6,29 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Imports about 55 000 locations from an official UN Locode CSV export.
+ *
+ * NOTE: not yet used
  *
  */
 public class LocationsImporter implements ServletContextListener {

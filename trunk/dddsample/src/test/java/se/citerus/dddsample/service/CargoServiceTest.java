@@ -1,86 +1,36 @@
 package se.citerus.dddsample.service;
 
+import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import org.easymock.IAnswer;
-import org.hibernate.FlushMode;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.classic.Session;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.HandlingEventRepository;
+import se.citerus.dddsample.repository.LocationRepository;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 
-public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTests {
+public class CargoServiceTest extends TestCase {
 
-  CargoService cargoService;
+  CargoServiceImpl cargoService;
   CargoRepository cargoRepository;
-  HandlingEventRepository handlingEventRepository;
-  SessionFactory sessionFactory;
+  LocationRepository locationRepository;
 
-  public CargoServiceTest() {
-    setAutowireMode(AUTOWIRE_BY_NAME);
-    setDependencyCheck(false);    
+  protected void setUp() throws Exception {
+    cargoService = new CargoServiceImpl();
+    cargoRepository = createMock(CargoRepository.class);
+    locationRepository = createMock(LocationRepository.class);
+
+    cargoService.setCargoRepository(cargoRepository);
+    cargoService.setLocationRepository(locationRepository);
   }
 
-  public void setCargoService(CargoService cargoService) {
-    this.cargoService = cargoService;
-  }
-
-  public void setCargoRepository(CargoRepository cargoRepository) {
-    this.cargoRepository = cargoRepository;
-  }
-
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
-  }
-
-  public void setSessionFactory(SessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
-  }
-
-  // TODO: scrap the mock-persistence-context altogether, don't bother verifying transactions.
-  // TODO: use mocks instead of stubs in this test
-
-  protected void onSetUp() {
-    Session session = createMock(Session.class);
-    Connection connection = createMock(Connection.class);
-    Transaction transaction = createMock(Transaction.class);
-
-    expect(sessionFactory.openSession()).andReturn(session);
-    expect(session.connection()).andReturn(connection);
-    session.setFlushMode(FlushMode.NEVER);
-    expect(session.beginTransaction()).andReturn(transaction);
-    expect(session.isConnected()).andReturn(true);
-    expect(session.connection()).andReturn(connection);
-    transaction.commit();
-    expect(session.close()).andReturn(connection);
-
-    replay(session, sessionFactory, transaction, connection);
-  }
-
-  protected String[] getConfigLocations() {
-    return new String[] { "context-service.xml", "mock-context-persistence.xml" };
-  }
-
-  /**
-   * Tests that service call is executed within a transaction,
-   * and that the returning DTO is correctly assembled given the stubbed
-   * Cargo returned.
-   */
-  public void testCargoServiceFindByTrackingIdScenario() {
+  public void testTrackingScenario() {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, CHICAGO);
 
     HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, STOCKHOLM, null);
@@ -90,12 +40,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     // Add out of order to verify ordering in DTO
     cargo.deliveryHistory().addAllEvents(Arrays.asList(loaded, unloaded, claimed));
 
-    final IAnswer<Cargo> cargoAnswer = new TransactionVerifyingAnswer<Cargo>() {
-      public Cargo answerWithinTransaction() throws Throwable {
-        return cargo;
-      }
-    };
-    expect(cargoRepository.find(new TrackingId("XYZ"))).andAnswer(cargoAnswer);
+    expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargo);
 
     replay(cargoRepository);
 
@@ -134,7 +79,7 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     assertEquals(new Date(100), eventDTO.getTime());
   }
 
-  public void testCargoServiceFindByTrackingIdNullResult() {
+  public void testTrackNullResult() {
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(null);
     replay(cargoRepository);
 
@@ -144,27 +89,32 @@ public class CargoServiceTest extends AbstractDependencyInjectionSpringContextTe
     assertNull(cargoDTO);
   }
 
-  protected void onTearDown() throws Exception {
-    verify(cargoRepository, sessionFactory);
-    reset(cargoRepository, sessionFactory);
+  public void testRegisterNew() {
+    TrackingId expectedTrackingId = new TrackingId("TRK1");
+    UnLocode fromUnlocode = new UnLocode("USCHI");
+    UnLocode toUnlocode = new UnLocode("SESTO");
+
+    expect(cargoRepository.nextTrackingId()).andReturn(expectedTrackingId);
+    expect(locationRepository.find(fromUnlocode)).andReturn(CHICAGO);
+    expect(locationRepository.find(toUnlocode)).andReturn(STOCKHOLM);
+
+    cargoRepository.save(isA(Cargo.class));
+
+    replay(cargoRepository, locationRepository);
+    
+    TrackingId trackingId = cargoService.registerNew(fromUnlocode, toUnlocode);
+    assertEquals(expectedTrackingId, trackingId);
   }
 
-  /**
-   * EasyMock answer that verifies an ongoing transaction.
-   */
-  public static abstract class TransactionVerifyingAnswer<T> implements IAnswer<T> {
+  public void testRegisterNewNullArguments() {
+    try {
+      cargoService.registerNew(null, null);
+      fail("Null arguments should not be allowed");
+    } catch (IllegalArgumentException expected) {}
+  }
 
-    protected abstract T answerWithinTransaction() throws Throwable;
-
-    private void verifyTransaction() {
-      TransactionStatus ts = TransactionAspectSupport.currentTransactionStatus();
-      assertNotNull("Transaction should be active", ts);
-    }
-
-    public final T answer() throws Throwable {
-      verifyTransaction();
-      return answerWithinTransaction();
-    }
+  protected void onTearDown() throws Exception {
+    verify(cargoRepository, locationRepository);
   }
 
 }

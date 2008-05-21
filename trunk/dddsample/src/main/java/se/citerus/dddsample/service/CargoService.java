@@ -4,7 +4,7 @@ import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.domain.UnLocode;
 import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.LegDTO;
+import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 
 import java.util.List;
 
@@ -63,8 +63,8 @@ public interface CargoService {
    * based on this list of legs.
    *
    * @param trackingId cargo tracking id
-   * @param legDTOs the legs of the route
+   * @param itinerary the new itinerary, from a selection
    */
-  void assignItinerary(TrackingId trackingId, List<LegDTO> legDTOs);
+  void assignItinerary(TrackingId trackingId, ItineraryCandidateDTO itinerary);
 
 }

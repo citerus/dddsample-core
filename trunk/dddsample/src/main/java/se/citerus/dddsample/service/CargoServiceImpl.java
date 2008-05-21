@@ -6,11 +6,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
+import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.LocationRepository;
-import se.citerus.dddsample.service.dto.CargoRoutingDTO;
-import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.HandlingEventDTO;
-import se.citerus.dddsample.service.dto.LegDTO;
+import se.citerus.dddsample.service.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,8 @@ public class CargoServiceImpl implements CargoService {
 
   private CargoRepository cargoRepository;
   private LocationRepository locationRepository;
+  private CarrierMovementRepository carrierMovementRepository;
+
   private static final Log logger = LogFactory.getLog(CargoServiceImpl.class);
 
   @Transactional(readOnly = false)
@@ -68,14 +68,14 @@ public class CargoServiceImpl implements CargoService {
       cargo.finalDestination().toString(),
       deliveryHistory.status(),
       currentLocation == null ? null : currentLocation.unLocode().idString(),
-      currentCarrierMovement == null ? null : currentCarrierMovement.carrierId().idString(),
+      currentCarrierMovement == null ? null : currentCarrierMovement.carrierMovementId().idString(),
       cargo.isMisdirected()
     );
 
     final List<HandlingEvent> events = deliveryHistory.eventsOrderedByCompletionTime();
     for (HandlingEvent event : events) {
       CarrierMovement cm = event.carrierMovement();
-      String carrierIdString = (cm == null) ? "" : cm.carrierId().idString();
+      String carrierIdString = (cm == null) ? "" : cm.carrierMovementId().idString();
       dto.addEvent(new HandlingEventDTO(
         event.location().toString(),
         event.type().toString(),
@@ -124,7 +124,7 @@ public class CargoServiceImpl implements CargoService {
       );
       for (Leg leg : cargo.itinerary().legs()) {
         dto.addLeg(
-          leg.carrierMovementId().idString(),
+          leg.carrierMovement().carrierMovementId().idString(),
           leg.from().unLocode().idString(),
           leg.to().unLocode().idString()
         );
@@ -151,7 +151,7 @@ public class CargoServiceImpl implements CargoService {
     );
     for (Leg leg : cargo.itinerary().legs()) {
       dto.addLeg(
-        leg.carrierMovementId().idString(),
+        leg.carrierMovement().carrierMovementId().idString(),
         leg.from().toString(),
         leg.to().toString()
       );
@@ -160,24 +160,27 @@ public class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = false)
-  public void assignItinerary(TrackingId trackingId, List<LegDTO> legDTOs) {
+  public void assignItinerary(TrackingId trackingId, ItineraryCandidateDTO itinerary) {
     Validate.notNull(trackingId);
-    Validate.notNull(legDTOs);
+    Validate.notNull(itinerary);
 
     Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
     }
 
-    List<Leg> legs = new ArrayList<Leg>(legDTOs.size());
-    for (LegDTO legDTO : legDTOs) {
+    List<Leg> legs = new ArrayList<Leg>(itinerary.getLegs().size());
+    for (LegDTO legDTO : itinerary.getLegs()) {
       legs.add(new Leg(
-        new CarrierMovementId(legDTO.getCarrierMovementId()),
-        locationRepository.find(new UnLocode(legDTO.getFrom())),
-        locationRepository.find(new UnLocode(legDTO.getTo())))
+        carrierMovementRepository.find(
+          new CarrierMovementId(legDTO.getCarrierMovementId())),
+        locationRepository.find(
+          new UnLocode(legDTO.getFrom())),
+        locationRepository.find(
+          new UnLocode(legDTO.getTo())))
       );
     }
-    // TODO: delete orphaned itineraries manually.
+    // TODO: delete orphaned itineraries.
     // Can't cascade delete-orphan for many-to-one using mapping directives.
     cargo.setItinerary(new Itinerary(legs));
     cargoRepository.save(cargo);
@@ -190,5 +193,9 @@ public class CargoServiceImpl implements CargoService {
 
   public void setLocationRepository(LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
+  }
+
+  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
+    this.carrierMovementRepository = carrierMovementRepository;
   }
 }

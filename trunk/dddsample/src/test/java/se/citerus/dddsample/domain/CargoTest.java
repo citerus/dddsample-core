@@ -289,9 +289,12 @@ public class CargoTest extends TestCase {
   private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), origin, destination);
 
+    CarrierMovement cm = new CarrierMovement(
+      new CarrierMovementId("ABC"), origin, destination);
+    
     Itinerary itinerary = new Itinerary(
-       new Leg(new CarrierMovementId("ABC"), origin, midpoint),
-       new Leg(new CarrierMovementId("DEF"), midpoint, destination)
+       new Leg(cm, origin, midpoint),
+       new Leg(cm, midpoint, destination)
     );
 
     cargo.setItinerary(itinerary);

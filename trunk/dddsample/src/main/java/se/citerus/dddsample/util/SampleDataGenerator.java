@@ -13,11 +13,24 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Provides sample data.
  */
 public class SampleDataGenerator implements ServletContextListener {
+
+  private static final Timestamp base; 
+  static {
+    try {
+      Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2008-01-01");
+      base = new Timestamp(date.getTime() - 1000L * 60 * 60 * 24 * 100);
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
     String handlingEventSql =
@@ -26,26 +39,26 @@ public class SampleDataGenerator implements ServletContextListener {
 
     Object[][] handlingEventArgs = {
         //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
-        {ts(0),     ts((1)),    "RECEIVE",  1,  null,  1},
-        {ts((10)),  ts((11)),   "LOAD",     1,  1,     1},
-        {ts((20)),  ts((21)),   "UNLOAD",   5,  1,     1},
-        {ts((30)),  ts((31)),   "LOAD",     5,  2,     1},
-        {ts((40)),  ts((41)),   "UNLOAD",   6,  2,     1},
-        {ts((50)),  ts((51)),   "LOAD",     6,  3,     1},
-        {ts((60)),  ts((61)),   "UNLOAD",   3,  3,     1},
-        {ts((70)),  ts((71)),   "LOAD",     3,  4,     1},
-        {ts((80)),  ts((81)),   "UNLOAD",   4,  4,     1},
-        {ts((90)),  ts((91)),   "LOAD",     4,  5,     1},
-        {ts((100)), ts((101)),  "UNLOAD",   2,  5,     1},
-        {ts((110)), ts((111)),  "CLAIM",    2,  null,  1},
+        {ts(0),     ts((0)),    "RECEIVE",  1,  null,  1},
+        {ts((4)),   ts((5)),    "LOAD",     1,  1,     1},
+        {ts((14)),  ts((14)),   "UNLOAD",   5,  1,     1},
+        {ts((15)),  ts((15)),   "LOAD",     5,  2,     1},
+        {ts((30)),  ts((30)),   "UNLOAD",   6,  2,     1},
+        {ts((33)),  ts((33)),   "LOAD",     6,  3,     1},
+        {ts((34)),  ts((34)),   "UNLOAD",   3,  3,     1},
+        {ts((60)),  ts((60)),   "LOAD",     3,  4,     1},
+        {ts((70)),  ts((71)),   "UNLOAD",   4,  4,     1},
+        {ts((75)),  ts((75)),   "LOAD",     4,  5,     1},
+        {ts((88)),  ts((88)),   "UNLOAD",   2,  5,     1},
+        {ts((100)), ts((102)),  "CLAIM",    2,  null,  1},
 
         //ZYX (AUMEL - USCHI - DEHAM -)
-        {ts((0)),   ts((1)),    "RECEIVE",  2,  null,  3},
-        {ts((10)),  ts((11)),   "LOAD",     2,  7,     3},
-        {ts((20)),  ts((21)),   "UNLOAD",   7,  7,     3},
-        {ts((30)),  ts((31)),   "LOAD",     7,  8,     3},
-        {ts((40)),  ts((41)),   "UNLOAD",   6,  8,     3},
-        {ts((50)),  ts((51)),   "LOAD",     6,  9,     3},
+        {ts((200)),   ts((201)),  "RECEIVE",  2,  null,  3},
+        {ts((202)),   ts((202)),  "LOAD",     2,  7,     3},
+        {ts((208)),   ts((208)),  "UNLOAD",   7,  7,     3},
+        {ts((212)),   ts((212)),  "LOAD",     7,  8,     3},
+        {ts((230)),   ts((230)),  "UNLOAD",   6,  8,     3},
+        {ts((235)),   ts((235)),  "LOAD",     6,  9,     3},
 
         //ABC
         {ts((20)),  ts((21)),   "CLAIM",    2,  null,  2},
@@ -145,18 +158,18 @@ public class SampleDataGenerator implements ServletContextListener {
     executeUpdate(jdbcTemplate, itinerarySql, itineraryArgs);
 
     String legSql =
-      "insert into Leg (id, itinerary_id, carrier_movement_id, from_id, to_id) " +
+      "insert into Leg (id, itinerary_id, carrierMovement_id, from_id, to_id) " +
       "values (?,?,?,?,?)";
 
     Object [][] legArgs = {
       // Cargo 5: Hongkong - Melbourne - Stockholm - Helsinki
-      {1,1,"CAR_010",3,2},
-      {2,1,"CAR_011",2,1},
-      {3,1,"CAR_011",1,5},
+      {1,1,10,3,2},
+      {2,1,11,2,1},
+      {3,1,11,1,5},
       // Cargo 6: Hamburg - Stockholm - Chicago - Tokyo
-      {4,2,"CAR_020",6,1},
-      {5,2,"CAR_021",1,7},
-      {6,2,"CAR_022",7,4}
+      {4,2,12,6,1},
+      {5,2,13,1,7},
+      {6,2,14,7,4}
     };
     executeUpdate(jdbcTemplate, legSql, legArgs);
   }
@@ -188,8 +201,11 @@ public class SampleDataGenerator implements ServletContextListener {
     }
   }
 
-  private static Timestamp ts(int time) {
-    return new Timestamp(time);
+  private static Timestamp ts(int hours) {
+    return new Timestamp(base.getTime() + 1000L * 60 * 60 * hours);
   }
 
+  public static Date offset(int hours) {
+    return new Date(ts(hours).getTime());
+  }
 }

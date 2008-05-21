@@ -18,8 +18,8 @@ public class ItineraryTest extends TestCase {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), SHANGHAI, GOTHENBURG);
 
     Itinerary itinerary = new Itinerary(
-       new Leg(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM),
-       new Leg(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG)
+       new Leg(new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM), SHANGHAI, ROTTERDAM),
+       new Leg(new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG), ROTTERDAM, GOTHENBURG)
     );
 
     //Happy path

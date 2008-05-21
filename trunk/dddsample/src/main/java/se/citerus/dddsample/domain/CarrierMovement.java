@@ -1,6 +1,5 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.Validate;
 
 import javax.persistence.*;
@@ -32,7 +31,7 @@ public class CarrierMovement {
     this.to = to;
   }
 
-  public CarrierMovementId carrierId() {
+  public CarrierMovementId carrierMovementId() {
     return carrierMovementId;
   }
 
