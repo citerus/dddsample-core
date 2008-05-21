@@ -1,8 +1,8 @@
 package se.citerus.dddsample.service;
 
-import se.citerus.dddsample.domain.Itinerary;
 import se.citerus.dddsample.domain.Specification;
 import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 
 import java.util.List;
 
@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface RoutingService {
 
-  List<Itinerary> calculatePossibleRoutes(TrackingId trackingId, Specification specification);
+  List<ItineraryCandidateDTO> calculatePossibleRoutes(TrackingId trackingId, Specification specification);
 
 }

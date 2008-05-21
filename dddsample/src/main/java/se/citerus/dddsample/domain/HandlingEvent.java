@@ -98,7 +98,6 @@ public class HandlingEvent {
     validateType();
   }
 
-
   public Long id() {
     return this.id;
   }

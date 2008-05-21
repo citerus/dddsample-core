@@ -4,6 +4,7 @@ import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.HandlingEvent.Type.RECEIVE;
 import static se.citerus.dddsample.domain.SampleLocations.*;
+import se.citerus.dddsample.util.SampleDataGenerator;
 
 import java.util.Date;
 import java.util.List;
@@ -51,8 +52,13 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType, Location expectedLocation, int completionTimeMs, int registrationTimeMs, CarrierMovement expectedCarrierMovement) {
     assertEquals(expectedEventType, event.type());
     assertEquals(expectedLocation, event.location());
-    assertEquals(new Date(completionTimeMs), event.completionTime());
-    assertEquals(new Date(registrationTimeMs), event.registrationTime());
+
+    Date expectedCompletionTime = SampleDataGenerator.offset(completionTimeMs);
+    assertEquals(expectedCompletionTime, event.completionTime());
+
+    Date expectedRegistrationTime = SampleDataGenerator.offset(registrationTimeMs);
+    assertEquals(expectedRegistrationTime, event.registrationTime());
+    
     if (expectedCarrierMovement == null) {
       assertNull(event.carrierMovement());
     } else {
@@ -62,7 +68,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   }
 
   private void assertLeg(Leg firstLeg, String cmId, Location expectedFrom, Location expectedTo) {
-    assertEquals(new CarrierMovementId(cmId), firstLeg.carrierMovementId());
+    assertEquals(new CarrierMovementId(cmId), firstLeg.carrierMovement().carrierMovementId());
     assertEquals(expectedFrom, firstLeg.from());
     assertEquals(expectedTo, firstLeg.to());
   }

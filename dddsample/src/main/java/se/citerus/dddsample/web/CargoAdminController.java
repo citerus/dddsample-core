@@ -1,12 +1,11 @@
 package se.citerus.dddsample.web;
 
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-import se.citerus.dddsample.domain.Itinerary;
-import se.citerus.dddsample.domain.Leg;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.domain.UnLocode;
 import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.service.RoutingService;
+import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.service.dto.LegDTO;
 import se.citerus.dddsample.web.command.RegistrationCommand;
 import se.citerus.dddsample.web.command.RoutingCommand;
@@ -64,20 +63,20 @@ public class CargoAdminController extends MultiActionController {
     Map map = new HashMap();
     TrackingId trackingId = new TrackingId(request.getParameter("trackingId"));
 
-    // TODO: more consistent to return some sort of LegDTO map/list from service layer, not the Itinerary
-    List<Itinerary> itineraries = routingService.calculatePossibleRoutes(trackingId, null);
+    List<ItineraryCandidateDTO> itineraries = routingService.calculatePossibleRoutes(trackingId, null);
 
     List<RoutingCommand.ItineraryCandidateCommand> itineraryCandidates = new ArrayList<RoutingCommand.ItineraryCandidateCommand>();
 
-    for (Itinerary itinerary : itineraries) {
+    // TODO: eliminate the routing command altogether, use the DTOs in the view
+    for (ItineraryCandidateDTO itinerary : itineraries) {
       RoutingCommand.ItineraryCandidateCommand itineraryCandidateCommand = new RoutingCommand.ItineraryCandidateCommand();
       itineraryCandidateCommand.setTrackingId(trackingId.idString());
       itineraryCandidates.add(itineraryCandidateCommand);
-      for (Leg leg : itinerary.legs()) {
+      for (LegDTO leg : itinerary.getLegs()) {
         RoutingCommand.LegCommand legCommand = new RoutingCommand.LegCommand();
-        legCommand.setCarrierMovementId(leg.carrierMovementId().idString());
-        legCommand.setFromUnlocode(leg.from().unLocode().idString());
-        legCommand.setToUnlocode(leg.to().unLocode().idString());
+        legCommand.setCarrierMovementId(leg.getCarrierMovementId());
+        legCommand.setFromUnlocode(leg.getFrom());
+        legCommand.setToUnlocode(leg.getTo());
         itineraryCandidateCommand.getLegs().add(legCommand);
       }
     }
@@ -90,7 +89,8 @@ public class CargoAdminController extends MultiActionController {
   public void assignItinerary(HttpServletRequest request, HttpServletResponse response) throws Exception {
     TrackingId trackingId = new TrackingId(request.getParameter("trackingId"));
 
-    // TODO:  gah, any attempt at a proper command object fails due to indexoutofbounds (legs[0].fromUnlocode etc)...fix
+    // TODO:  gah, stuck on indexoutofbounds (legs[0].fromUnlocode etc) when trying to bind...
+    // Revisit and fix this with a proper command object, this is just hideous
     String[] cmIds = (String[]) request.getParameterMap().get("legs.carrierMovementId");
     String[] fromUnlocodes = (String[]) request.getParameterMap().get("legs.fromUnlocode");
     String[] toUnlocodes = (String[]) request.getParameterMap().get("legs.toUnlocode");
@@ -100,7 +100,8 @@ public class CargoAdminController extends MultiActionController {
       legDTOs.add(new LegDTO(cmIds[i], fromUnlocodes[i], toUnlocodes[i]));
     }
 
-    cargoService.assignItinerary(trackingId, legDTOs);
+    ItineraryCandidateDTO selectedItinerary = new ItineraryCandidateDTO(legDTOs);
+    cargoService.assignItinerary(trackingId, selectedItinerary);
 
     response.sendRedirect("list.html");
   }

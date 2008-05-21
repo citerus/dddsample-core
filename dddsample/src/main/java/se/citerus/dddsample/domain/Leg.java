@@ -1,12 +1,15 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.Validate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * An itinerary consists of one or more legs.
@@ -17,17 +20,17 @@ public class Leg {
   @GeneratedValue
   private Long id;
 
-  // TODO: why is this not related to CarrierMovement?
-  @Embedded
-  private CarrierMovementId carrierMovementId;
+  @ManyToOne
+  private CarrierMovement carrierMovement;
+
   @ManyToOne
   private Location from;
   @ManyToOne
   private Location to;
 
-  public Leg(CarrierMovementId carrierMovementId, Location from, Location to) {
-    Validate.noNullElements(new Object[] {carrierMovementId, from, to});
-    this.carrierMovementId = carrierMovementId;
+  public Leg(CarrierMovement carrierMovement, Location from, Location to) {
+    Validate.noNullElements(new Object[] {carrierMovement, from, to});
+    this.carrierMovement = carrierMovement;
     this.from = from;
     this.to = to;
   }
@@ -40,8 +43,8 @@ public class Leg {
     return to;
   }
 
-  public CarrierMovementId carrierMovementId() {
-    return carrierMovementId;
+  public CarrierMovement carrierMovement() {
+    return carrierMovement;
   }
 
   
@@ -56,7 +59,7 @@ public class Leg {
    */
   public boolean sameValueAs(Leg other) {
     return other != null && new EqualsBuilder().
-      append(this.carrierMovementId, other.carrierMovementId).
+      append(this.carrierMovement, other.carrierMovement).
       append(this.from, other.from).
       append(this.to, other.to).
       isEquals();
@@ -75,7 +78,7 @@ public class Leg {
   @Override
   public int hashCode() {
     return new HashCodeBuilder(13,17).
-      append(carrierMovementId).
+      append(carrierMovement).
       append(from).
       append(to).
       toHashCode();

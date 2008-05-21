@@ -58,7 +58,7 @@ public class Itinerary {
       //Check that the there is one leg with same from location and carrier movement
       for (Leg leg : legs) {
         if (leg.from().equals(event.location())
-           && leg.carrierMovementId().equals(event.carrierMovement().carrierId()))
+           && leg.carrierMovement().equals(event.carrierMovement()))
           return true;
       }
       return false;
@@ -68,7 +68,7 @@ public class Itinerary {
       //Check that the there is one leg with same to loc and carrier movement
       for (Leg leg : legs) {
         if (leg.to().equals(event.location())
-           && leg.carrierMovementId().equals(event.carrierMovement().carrierId()))
+           && leg.carrierMovement().equals(event.carrierMovement()))
           return true;
       }
       return false;
