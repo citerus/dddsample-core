@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
  * An itinerary consists of one or more legs.
  */
 @Entity
-public class Leg {
+public final class Leg {
   @Id
   @GeneratedValue
   private Long id;
@@ -28,8 +28,15 @@ public class Leg {
   @ManyToOne
   private Location to;
 
-  public Leg(CarrierMovement carrierMovement, Location from, Location to) {
-    Validate.noNullElements(new Object[] {carrierMovement, from, to});
+  /**
+   * Constructor.
+   *
+   * @param carrierMovement
+   * @param from
+   * @param to
+   */
+  public Leg(final CarrierMovement carrierMovement, final Location from, final Location to) {
+    Validate.noNullElements(new Object[]{carrierMovement, from, to});
     this.carrierMovement = carrierMovement;
     this.from = from;
     this.to = to;
@@ -47,7 +54,7 @@ public class Leg {
     return carrierMovement;
   }
 
-  
+
   /**
    * Value objects compare by value, therefore the id field which must be part of the class in order to support
    * persistence is ignored in the comparison.
@@ -57,7 +64,7 @@ public class Leg {
    * @param other The other leg.
    * @return <code>true</code> if the given leg's and this leg's attributes are the same.
    */
-  public boolean sameValueAs(Leg other) {
+  public boolean sameValueAs(final Leg other) {
     return other != null && new EqualsBuilder().
       append(this.carrierMovement, other.carrierMovement).
       append(this.from, other.from).
@@ -66,7 +73,7 @@ public class Leg {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
@@ -77,7 +84,7 @@ public class Leg {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(13,17).
+    return new HashCodeBuilder().
       append(carrierMovement).
       append(from).
       append(to).

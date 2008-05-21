@@ -4,12 +4,11 @@ import org.apache.commons.lang.Validate;
 
 import javax.persistence.*;
 
-
 /**
  * A Cargo.
  */
 @Entity
-public class Cargo {
+public final class Cargo {
 
   @Id
   @GeneratedValue
@@ -25,13 +24,20 @@ public class Cargo {
   private Location destination;
 
   @Transient
-  private DeliveryHistory deliveryHistory = new DeliveryHistory();
+  private final DeliveryHistory deliveryHistory = new DeliveryHistory();
 
   @ManyToOne(cascade = CascadeType.ALL)
   private Itinerary itinerary;
 
-  public Cargo(TrackingId trackingId, Location origin, Location destination) {
-    Validate.noNullElements(new Object[] {trackingId, origin, destination});
+  /**
+   * Constructor.
+   *
+   * @param trackingId
+   * @param origin
+   * @param destination
+   */
+  public Cargo(final TrackingId trackingId, final Location origin, final Location destination) {
+    Validate.noNullElements(new Object[]{trackingId, origin, destination});
     this.trackingId = trackingId;
     this.origin = origin;
     this.destination = destination;
@@ -51,12 +57,12 @@ public class Cargo {
     return this.origin;
   }
 
-  public void setOrigin(Location origin) {
+  public void setOrigin(final Location origin) {
     Validate.notNull(origin);
     this.origin = origin;
   }
 
-  public void setDestination(Location destination) {
+  public void setDestination(final Location destination) {
     Validate.notNull(destination);
     this.destination = destination;
   }
@@ -90,7 +96,7 @@ public class Cargo {
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {
-    HandlingEvent lastEvent = deliveryHistory.lastEvent();
+    final HandlingEvent lastEvent = deliveryHistory.lastEvent();
     if (lastEvent != null) {
       return lastEvent.location();
     } else {
@@ -110,7 +116,7 @@ public class Cargo {
    *
    * @param itinerary an itinerary
    */
-  public void setItinerary(Itinerary itinerary) {
+  public void setItinerary(final Itinerary itinerary) {
     Validate.notNull(itinerary);
     this.itinerary = itinerary;
   }
@@ -128,10 +134,11 @@ public class Cargo {
    */
   public boolean isMisdirected() {
     final HandlingEvent lastEvent = deliveryHistory.lastEvent();
-    if (itinerary == null || lastEvent == null)
+    if (itinerary == null || lastEvent == null) {
       return false;
-
-    return !itinerary.isExpected(lastEvent);
+    } else {
+      return !itinerary.isExpected(lastEvent);
+    }
   }
 
   /**
@@ -142,13 +149,13 @@ public class Cargo {
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
-    Location destination = finalDestination();
+    final Location destination = finalDestination();
     if (destination == null) {
       return false;
     }
     for (HandlingEvent event : deliveryHistory.eventsOrderedByCompletionTime()) {
-      if (HandlingEvent.Type.UNLOAD.equals(event.type()) &&
-          destination.equals(event.location())) {
+      if (HandlingEvent.Type.UNLOAD.equals(event.type())
+        && destination.equals(event.location())) {
         return true;
       }
     }
@@ -165,7 +172,7 @@ public class Cargo {
    * @return <code>true</code> if the given cargo's and this cargos's trackingId is the same, regardles of other
    *         attributes.
    */
-  private boolean sameIdentityAs(Cargo other) {
+  private boolean sameIdentityAs(final Cargo other) {
     return other != null && trackingId.equals(other.trackingId);
   }
 
@@ -175,11 +182,11 @@ public class Cargo {
    * @see #sameIdentityAs(Cargo)
    */
   @Override
-  public boolean equals(Object object) {
+  public boolean equals(final Object object) {
     if (!(object instanceof Cargo)) {
       return false;
     }
-    Cargo other = (Cargo) object;
+    final Cargo other = (Cargo) object;
     return sameIdentityAs(other);
   }
 

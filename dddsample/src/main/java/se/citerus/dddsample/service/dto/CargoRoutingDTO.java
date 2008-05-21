@@ -6,15 +6,15 @@ import java.util.List;
 
 /**
  * DTO for registering and routing a cargo.
- *
  */
-public class CargoRoutingDTO {
-  String trackingId;
-  String origin;
-  String finalDestination;
-  List<LegDTO> legs;
+public final class CargoRoutingDTO {
 
-  public CargoRoutingDTO(String trackingId, String origin, String finalDestination) {
+  private final String trackingId;
+  private final String origin;
+  private final String finalDestination;
+  private final List<LegDTO> legs;
+
+  public CargoRoutingDTO(final String trackingId, final String origin, final String finalDestination) {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
@@ -33,10 +33,13 @@ public class CargoRoutingDTO {
     return finalDestination;
   }
 
-  public void addLeg(String carrierMovementId, String from, String to) {
+  public void addLeg(final String carrierMovementId, final String from, final String to) {
     legs.add(new LegDTO(carrierMovementId, from, to));
   }
 
+  /**
+   * @return An unmodifiable list DTOs.
+   */
   public List<LegDTO> getLegs() {
     return Collections.unmodifiableList(legs);
   }

@@ -5,13 +5,13 @@ import se.citerus.dddsample.domain.UnLocode;
 
 import java.util.List;
 
-public class LocationRepositoryHibernate extends HibernateRepository implements LocationRepository {
+public final class LocationRepositoryHibernate extends HibernateRepository implements LocationRepository {
 
-  public Location find(UnLocode unLocode) {
+  public Location find(final UnLocode unLocode) {
     return (Location) getSession().
-          createQuery("from Location where unLocode = ?").
-          setParameter(0, unLocode).
-          uniqueResult();
+      createQuery("from Location where unLocode = ?").
+      setParameter(0, unLocode).
+      uniqueResult();
   }
 
   public List<Location> findAll() {

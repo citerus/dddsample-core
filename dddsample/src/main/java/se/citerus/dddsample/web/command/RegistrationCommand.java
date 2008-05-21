@@ -3,7 +3,8 @@ package se.citerus.dddsample.web.command;
 /**
  *
  */
-public class RegistrationCommand {
+public final class RegistrationCommand {
+
   private String originUnlocode;
   private String destinationUnlocode;
 
@@ -11,7 +12,7 @@ public class RegistrationCommand {
     return originUnlocode;
   }
 
-  public void setOriginUnlocode(String originUnlocode) {
+  public void setOriginUnlocode(final String originUnlocode) {
     this.originUnlocode = originUnlocode;
   }
 
@@ -19,7 +20,7 @@ public class RegistrationCommand {
     return destinationUnlocode;
   }
 
-  public void setDestinationUnlocode(String destinationUnlocode) {
+  public void setDestinationUnlocode(final String destinationUnlocode) {
     this.destinationUnlocode = destinationUnlocode;
   }
 

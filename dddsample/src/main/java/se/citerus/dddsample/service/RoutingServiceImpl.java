@@ -5,7 +5,7 @@ import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.LocationRepository;
-import se.citerus.dddsample.service.dto.DTOAssembler;
+import se.citerus.dddsample.service.dto.assembler.DTOAssembler;
 import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 
 import java.util.ArrayList;
@@ -16,13 +16,12 @@ import java.util.Random;
 /**
  * Simple routing service implementation that randomly creates a number
  * of different itineraries.
- *
  */
 public class RoutingServiceImpl implements RoutingService {
 
-  LocationRepository locationRepository;
-  CargoRepository cargoRepository;
-  CarrierMovementRepository carrierMovementRepository;
+  private LocationRepository locationRepository;
+  private CargoRepository cargoRepository;
+  private CarrierMovementRepository carrierMovementRepository;
 
   Random random = new Random();
 
@@ -49,10 +48,10 @@ public class RoutingServiceImpl implements RoutingService {
       CarrierMovement cm1 = carrierMovementRepository.find(new CarrierMovementId("CAR_002"));
       legs.add(new Leg(cm1, cargo.origin(), firstLegTo));
 
-      for (int j = 0; j < allLocations.size() - 1 ; j++) {
+      for (int j = 0; j < allLocations.size() - 1; j++) {
         legs.add(new Leg(
-          getRandomCarrierMovement(),
-          allLocations.get(j), allLocations.get(j + 1)));
+            getRandomCarrierMovement(),
+            allLocations.get(j), allLocations.get(j + 1)));
       }
 
       Location lastLegFrom = allLocations.get(allLocations.size() - 1);

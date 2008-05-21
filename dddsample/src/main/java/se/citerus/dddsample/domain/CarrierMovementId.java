@@ -9,15 +9,19 @@ import javax.persistence.Embeddable;
 
 /**
  * Identifies a particular carrier movement, such as a flight number.
- *
  */
 @Embeddable
-public class CarrierMovementId {
+public final class CarrierMovementId {
 
   @Column(name = "carrier_movement_id")
   private String id;
 
-  public CarrierMovementId(String id) {
+  /**
+   * Constructor.
+   *
+   * @param id Id string.
+   */
+  public CarrierMovementId(final String id) {
     Validate.notNull(id);
     this.id = id;
   }
@@ -30,7 +34,7 @@ public class CarrierMovementId {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
@@ -40,6 +44,7 @@ public class CarrierMovementId {
   }
 
   // Needed by hibernate
-  CarrierMovementId() {}
+  CarrierMovementId() {
+  }
 
 }

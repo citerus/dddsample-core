@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Location {
+public final class Location {
 
   @Id
   @GeneratedValue
@@ -22,19 +22,17 @@ public class Location {
   /**
    * Special Location object that marks an unknown location.
    */
-  public static final Location UNKNOWN = new Location(
-     new UnLocode("XXXXX"), "Unknown location"
-  );
+  public static final Location UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location");
 
   /**
    * Package-level constructor, visible for test only.
-   * 
+   *
    * @param unLocode UN Locode
    * @param name     location name
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  Location(UnLocode unLocode, String name) {
-    Validate.noNullElements(new Object[] {unLocode, name});
+  Location(final UnLocode unLocode, final String name) {
+    Validate.noNullElements(new Object[]{unLocode, name});
     Validate.notNull(unLocode);
     Validate.notNull(name);
     this.unLocode = unLocode;
@@ -60,7 +58,7 @@ public class Location {
    * @return Since this is an entiy this will be true iff UN locodes are equal.
    */
   @Override
-  public boolean equals(Object object) {
+  public boolean equals(final Object object) {
     if (object == null) {
       return false;
     }
@@ -77,14 +75,14 @@ public class Location {
   /**
    * Entities compare by identity, therefore the unLocode field is the only basis of comparison. For persistence we
    * have an id field, but it is not used for identiy comparison.
-   *
+   * <p/>
    * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
    *
    * @param other The other location.
    * @return <code>true</code> if the given location's and this locations's unLocode is the same, regardles of other
-   * attributes.
+   *         attributes.
    */
-  public boolean sameIdentityAs(Location other) {
+  public boolean sameIdentityAs(final Location other) {
     return this.unLocode.equals(other.unLocode);
   }
 

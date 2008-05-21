@@ -10,7 +10,7 @@ import javax.jms.*;
 /**
  * JMS based implementation.
  */
-public class JmsEventServiceImpl implements EventService {
+public final class JmsEventServiceImpl implements EventService {
   private JmsOperations jmsOperations;
   private Destination destination;
   public static final String TRACKING_ID_KEY = TrackingId.class.getName() + ".KEY";
@@ -18,20 +18,20 @@ public class JmsEventServiceImpl implements EventService {
   public void fireHandlingEventRegistered(final HandlingEvent event) {
     jmsOperations.send(destination, new MessageCreator() {
       // TODO: richer message type
-      public Message createMessage(Session session) throws JMSException {
-        MapMessage message = session.createMapMessage();
+      public Message createMessage(final Session session) throws JMSException {
+        final MapMessage message = session.createMapMessage();
         message.setStringProperty(TRACKING_ID_KEY, event.cargo().trackingId().idString());
         return message;
       }
 
     });
   }
-  
-  public void setJmsOperations(JmsOperations jmsOperations) {
+
+  public void setJmsOperations(final JmsOperations jmsOperations) {
     this.jmsOperations = jmsOperations;
   }
 
-  public void setDestination(Destination destination) {
+  public void setDestination(final Destination destination) {
     this.destination = destination;
   }
 }

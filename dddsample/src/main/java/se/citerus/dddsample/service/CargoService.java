@@ -10,14 +10,13 @@ import java.util.List;
 
 /**
  * Cargo service.
- *
  */
 public interface CargoService {
 
   /**
    * Registers a new cargo in the tracking system, not yet routed.
    *
-   * @param origin cargo origin
+   * @param origin      cargo origin
    * @param destination cargo destination
    * @return Cargo tracking id
    */
@@ -63,7 +62,7 @@ public interface CargoService {
    * based on this list of legs.
    *
    * @param trackingId cargo tracking id
-   * @param itinerary the new itinerary, from a selection
+   * @param itinerary  the new itinerary, from a selection
    */
   void assignItinerary(TrackingId trackingId, ItineraryCandidateDTO itinerary);
 

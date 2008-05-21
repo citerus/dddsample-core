@@ -9,7 +9,7 @@ import javax.persistence.*;
  * A carrier movement is a vessel voyage from one location to another.
  */
 @Entity
-public class CarrierMovement {
+public final class CarrierMovement {
 
   @Id
   @GeneratedValue
@@ -24,8 +24,15 @@ public class CarrierMovement {
   @ManyToOne
   private Location to;
 
-  public CarrierMovement(CarrierMovementId carrierMovementId, Location from, Location to) {
-    Validate.noNullElements(new Object[] {carrierMovementId, from, to});
+  /**
+   * Constructor.
+   *
+   * @param carrierMovementId
+   * @param from
+   * @param to
+   */
+  public CarrierMovement(final CarrierMovementId carrierMovementId, final Location from, final Location to) {
+    Validate.noNullElements(new Object[]{carrierMovementId, from, to});
     this.carrierMovementId = carrierMovementId;
     this.from = from;
     this.to = to;
@@ -58,16 +65,16 @@ public class CarrierMovement {
    * @return <code>true</code> if the given carrier movement's and this carrier movement's carrier id are the same,
    *         regardles of other attributes.
    */
-  public boolean sameIdentityAs(CarrierMovement other) {
+  public boolean sameIdentityAs(final CarrierMovement other) {
     return carrierMovementId.equals(other.carrierMovementId);
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    CarrierMovement that = (CarrierMovement) o;
+    final CarrierMovement that = (CarrierMovement) o;
 
     return sameIdentityAs(that);
   }

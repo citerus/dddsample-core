@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * Handling event repository.
- *
  */
 public interface HandlingEventRepository {
 
@@ -16,11 +15,11 @@ public interface HandlingEventRepository {
    *
    * @param event handling event to save
    */
-  void save(HandlingEvent event);
+  void save(final HandlingEvent event);
 
   /**
    * @param trackingId cargo tracking id
    * @return All handling events for this cargo, ordered by completion time.
    */
-  List<HandlingEvent> findEventsForCargo(TrackingId trackingId);
+  List<HandlingEvent> findEventsForCargo(final TrackingId trackingId);
 }

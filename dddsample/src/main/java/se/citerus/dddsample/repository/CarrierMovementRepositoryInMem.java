@@ -6,9 +6,13 @@ import se.citerus.dddsample.domain.CarrierMovementId;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CarrierMovementRepositoryInMem implements CarrierMovementRepository {
+public final class CarrierMovementRepositoryInMem implements CarrierMovementRepository {
+
   private Map<CarrierMovementId, CarrierMovement> carriers;
 
+  /**
+   * Constructor.
+   */
   public CarrierMovementRepositoryInMem() {
     carriers = new HashMap<CarrierMovementId, CarrierMovement>();
     setup();
@@ -35,7 +39,7 @@ public class CarrierMovementRepositoryInMem implements CarrierMovementRepository
 */
   }
 
-  public CarrierMovement find(CarrierMovementId carrierMovementId) {
+  public CarrierMovement find(final CarrierMovementId carrierMovementId) {
     return carriers.get(carrierMovementId);
   }
 

@@ -6,16 +6,15 @@ import se.citerus.dddsample.domain.CarrierMovementId;
 
 /**
  * Hibernate implementation of CarrierMovementRepository.
- *
  */
 @Repository
-public class CarrierMovementRepositoryHibernate extends HibernateRepository implements CarrierMovementRepository {
+public final class CarrierMovementRepositoryHibernate extends HibernateRepository implements CarrierMovementRepository {
 
-  public CarrierMovement find(CarrierMovementId carrierMovementId) {
+  public CarrierMovement find(final CarrierMovementId carrierMovementId) {
     return (CarrierMovement) getSession().
-            createQuery("from CarrierMovement where carrierMovementId = ?").
-            setParameter(0, carrierMovementId).
-            uniqueResult();
+      createQuery("from CarrierMovement where carrierMovementId = ?").
+      setParameter(0, carrierMovementId).
+      uniqueResult();
   }
 
 }

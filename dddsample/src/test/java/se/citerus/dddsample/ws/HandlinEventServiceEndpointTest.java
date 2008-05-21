@@ -15,9 +15,9 @@ import java.util.Date;
 
 public class HandlinEventServiceEndpointTest extends TestCase {
 
-  HandlingEventServiceEndpointImpl endpoint;
-  HandlingEventService handlingEventService;
-  SimpleDateFormat sdf;
+  private HandlingEventServiceEndpointImpl endpoint;
+  private HandlingEventService handlingEventService;
+  private SimpleDateFormat sdf;
 
   protected void setUp() throws Exception {
     endpoint = new HandlingEventServiceEndpointImpl();
@@ -52,38 +52,38 @@ public class HandlinEventServiceEndpointTest extends TestCase {
   }
 
   public void testRegisterUnknownCarrierMovementId() throws Exception {
-      Date date = new Date(100);
+    Date date = new Date(100);
 
-      TrackingId trackingId = new TrackingId("XYZ");
-      CarrierMovementId carrierMovementId = new CarrierMovementId("NOTFOUND");
+    TrackingId trackingId = new TrackingId("XYZ");
+    CarrierMovementId carrierMovementId = new CarrierMovementId("NOTFOUND");
 
-      handlingEventService.register(date, trackingId, carrierMovementId, new UnLocode("AUMEL"), HandlingEvent.Type.UNLOAD);
-      expectLastCall().andThrow(new UnknownCarrierMovementIdException(carrierMovementId));
-      replay(handlingEventService);
+    handlingEventService.register(date, trackingId, carrierMovementId, new UnLocode("AUMEL"), HandlingEvent.Type.UNLOAD);
+    expectLastCall().andThrow(new UnknownCarrierMovementIdException(carrierMovementId));
+    replay(handlingEventService);
 
-      // Tested call
-      endpoint.register(sdf.format(date), "XYZ", "NOTFOUND", "AUMEL", "UNLOAD");
+    // Tested call
+    endpoint.register(sdf.format(date), "XYZ", "NOTFOUND", "AUMEL", "UNLOAD");
   }
 
   public void testRegisterInvalidEventType() throws Exception {
-      Date date = new Date(100);
-      
-      replay(handlingEventService);
+    Date date = new Date(100);
 
-      // Tested call
-      // Note: currently, every error is silently swallowed.
-      endpoint.register(sdf.format(date), "XYZ", "CAR_333", "AUMEL", "NO_SUCH_EVENT_TYPE");
+    replay(handlingEventService);
+
+    // Tested call
+    // Note: currently, every error is silently swallowed.
+    endpoint.register(sdf.format(date), "XYZ", "CAR_333", "AUMEL", "NO_SUCH_EVENT_TYPE");
   }
 
-    public void testRegisterInvalidDateFormat() throws Exception {
-        Date date = new Date(100);
+  public void testRegisterInvalidDateFormat() throws Exception {
+    Date date = new Date(100);
 
-        replay(handlingEventService);
+    replay(handlingEventService);
 
-        // Tested call
-        // Note: currently, every error is silently swallowed.
-        endpoint.register("1 2 3 4", "XYZ", "CAR_333", "AUMEL", "LOAD");
-    }
+    // Tested call
+    // Note: currently, every error is silently swallowed.
+    endpoint.register("1 2 3 4", "XYZ", "CAR_333", "AUMEL", "LOAD");
+  }
 
 
   protected void tearDown() throws Exception {

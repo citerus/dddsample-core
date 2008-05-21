@@ -10,7 +10,7 @@ import se.citerus.dddsample.repository.LocationRepository;
 
 import java.util.Date;
 
-public class HandlingEventServiceImpl implements HandlingEventService {
+public final class HandlingEventServiceImpl implements HandlingEventService {
   private CargoRepository cargoRepository;
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
@@ -18,18 +18,21 @@ public class HandlingEventServiceImpl implements HandlingEventService {
   private EventService eventService;
 
   @Transactional(readOnly = false)
-  public void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
+  public void register(final Date completionTime, final TrackingId trackingId, final CarrierMovementId carrierMovementId,
+                       final UnLocode unlocode, final HandlingEvent.Type type)
+    throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {
+
     // Carrier movement may be null for certain event types
-    Validate.noNullElements(new Object[] {trackingId, unlocode, type});
+    Validate.noNullElements(new Object[]{trackingId, unlocode, type});
 
     Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) throw new UnknownTrackingIdException(trackingId);
 
-    CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
-    Location location = findLocation(unlocode);
-    Date registrationTime = new Date();
+    final CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
+    final Location location = findLocation(unlocode);
+    final Date registrationTime = new Date();
 
-    HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
+    final HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
 
     /*
       NOTE:
@@ -47,11 +50,13 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     eventService.fireHandlingEventRegistered(event);
   }
 
-  private CarrierMovement findCarrierMovement(CarrierMovementId carrierMovementId) throws UnknownCarrierMovementIdException {
+  private CarrierMovement findCarrierMovement(final CarrierMovementId carrierMovementId)
+    throws UnknownCarrierMovementIdException {
+
     if (carrierMovementId == null) {
       return null;
     }
-    CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
+    final CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
     if (carrierMovement == null) {
       throw new UnknownCarrierMovementIdException(carrierMovementId);
     }
@@ -59,36 +64,36 @@ public class HandlingEventServiceImpl implements HandlingEventService {
     return carrierMovement;
   }
 
-  private Location findLocation(UnLocode unlocode) throws UnknownLocationException {
+  private Location findLocation(final UnLocode unlocode) throws UnknownLocationException {
     if (unlocode == null) {
       return Location.UNKNOWN;
     }
-    
-    Location location = locationRepository.find(unlocode);
+
+    final Location location = locationRepository.find(unlocode);
     if (location == null) {
       throw new UnknownLocationException(unlocode);
     }
-    
+
     return location;
   }
 
-  public void setCargoRepository(CargoRepository cargoRepository) {
+  public void setCargoRepository(final CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
   }
 
-  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
+  public void setCarrierMovementRepository(final CarrierMovementRepository carrierMovementRepository) {
     this.carrierMovementRepository = carrierMovementRepository;
   }
 
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
+  public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
   }
 
-  public void setLocationRepository(LocationRepository locationRepository) {
+  public void setLocationRepository(final LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
   }
 
-  public void setEventService(EventService eventService) {
+  public void setEventService(final EventService eventService) {
     this.eventService = eventService;
   }
 }

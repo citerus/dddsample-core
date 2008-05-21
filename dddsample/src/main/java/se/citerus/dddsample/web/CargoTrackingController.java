@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Controller for tracking cargo.
  */
-public class CargoTrackingController extends SimpleFormController {
+public final class CargoTrackingController extends SimpleFormController {
 
   /**
    * Service instance.
@@ -28,7 +28,9 @@ public class CargoTrackingController extends SimpleFormController {
   }
 
   @Override
-  protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+  protected ModelAndView onSubmit(final HttpServletRequest request, final HttpServletResponse response,
+                                  final Object command, final BindException errors) throws Exception {
+
     final TrackCommand trackCommand = (TrackCommand) command;
     final String tidStr = trackCommand.getTrackingId();
     final CargoTrackingDTO cargo = cargoService.track(new TrackingId(tidStr));
@@ -37,11 +39,12 @@ public class CargoTrackingController extends SimpleFormController {
     if (cargo != null) {
       model.put("cargo", cargo);
     } else {
-      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[] {trackCommand.getTrackingId()}, "Unknown tracking id");
+      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[]{trackCommand.getTrackingId()},
+        "Unknown tracking id");
     }
     return showForm(request, response, errors, model);
   }
-   
+
 
   /**
    * Sets the cargo service instance.
@@ -51,5 +54,5 @@ public class CargoTrackingController extends SimpleFormController {
   public void setCargoService(final CargoService cargoService) {
     this.cargoService = cargoService;
   }
-  
+
 }
