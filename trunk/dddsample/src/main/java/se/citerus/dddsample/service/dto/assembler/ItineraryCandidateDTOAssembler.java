@@ -24,10 +24,10 @@ public class ItineraryCandidateDTOAssembler {
   }
 
   protected LegDTO toLegDTO(final Leg leg) {
-    final CarrierMovementId id = leg.carrierMovement().carrierMovementId();
+    final CarrierMovementId carrierMovementId = leg.carrierMovement().carrierMovementId();
     final UnLocode from = leg.from().unLocode();
     final UnLocode to = leg.to().unLocode();
-    return new LegDTO(id.idString(), from.idString(), to.idString());
+    return new LegDTO(carrierMovementId.idString(), from.idString(), to.idString());
   }
 
 }

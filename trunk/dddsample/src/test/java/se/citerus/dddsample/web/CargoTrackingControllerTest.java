@@ -15,7 +15,6 @@ import static se.citerus.dddsample.domain.SampleLocations.TOKYO;
 import se.citerus.dddsample.service.CargoService;
 import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.HandlingEventDTO;
 import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
@@ -57,12 +56,11 @@ public class CargoTrackingControllerTest extends TestCase {
           "AAAAA",
           "BALO",
           false);
-        cargoDTO.addEvent(new HandlingEventDTO(
-          event.location().unLocode().idString(),
+        cargoDTO.addEvent(event.location().unLocode().idString(),
           event.type().toString(),
           null,
           event.completionTime(),
-          true));
+          true);
         return cargoDTO;
       }
     };

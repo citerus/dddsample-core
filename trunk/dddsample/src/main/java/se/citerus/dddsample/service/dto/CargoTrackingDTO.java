@@ -5,6 +5,7 @@ import se.citerus.dddsample.domain.StatusCode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,8 +47,9 @@ public final class CargoTrackingDTO implements Serializable {
     this.events = new ArrayList<HandlingEventDTO>();
   }
 
-  public void addEvent(final HandlingEventDTO handlingEvent) {
-    events.add(handlingEvent);
+  public void addEvent(final String location, final String type, final String carrier, final Date time,
+                       final boolean expected) {
+    events.add(new HandlingEventDTO(location, type, carrier, time, expected));
   }
 
   /**
