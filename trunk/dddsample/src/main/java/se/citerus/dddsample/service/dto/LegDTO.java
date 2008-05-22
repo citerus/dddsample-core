@@ -9,6 +9,13 @@ public final class LegDTO {
   private final String from;
   private final String to;
 
+  /**
+   * Constructor.
+   *
+   * @param carrierMovementId
+   * @param from
+   * @param to
+   */
   public LegDTO(final String carrierMovementId, final String from, final String to) {
     this.carrierMovementId = carrierMovementId;
     this.from = from;

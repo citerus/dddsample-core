@@ -9,6 +9,8 @@ import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.LocationRepository;
 import se.citerus.dddsample.service.dto.*;
+import se.citerus.dddsample.service.dto.assembler.CargoRoutingDTOAssembler;
+import se.citerus.dddsample.service.dto.assembler.CargoTrackingDTOAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,35 +59,7 @@ public final class CargoServiceImpl implements CargoService {
       return null;
     }
 
-    final DeliveryHistory deliveryHistory = cargo.deliveryHistory();
-
-    // TODO: use DTO assemblers
-    final Location currentLocation = deliveryHistory.currentLocation();
-    final CarrierMovement currentCarrierMovement = deliveryHistory.currentCarrierMovement();
-    final CargoTrackingDTO dto = new CargoTrackingDTO(
-      cargo.trackingId().idString(),
-      cargo.origin().toString(),
-      cargo.finalDestination().toString(),
-      deliveryHistory.status(),
-      currentLocation == null ? null : currentLocation.unLocode().idString(),
-      currentCarrierMovement == null ? null : currentCarrierMovement.carrierMovementId().idString(),
-      cargo.isMisdirected()
-    );
-
-    final List<HandlingEvent> events = deliveryHistory.eventsOrderedByCompletionTime();
-    for (HandlingEvent event : events) {
-      final CarrierMovement cm = event.carrierMovement();
-      final String carrierIdString = (cm == null) ? "" : cm.carrierMovementId().idString();
-      dto.addEvent(new HandlingEventDTO(
-        event.location().toString(),
-        event.type().toString(),
-        carrierIdString,
-        event.completionTime(),
-        cargo.itinerary().isExpected(event)
-      ));
-    }
-    return dto;
-
+    return new CargoTrackingDTOAssembler().toDTO(cargo);
   }
 
   // TODO: move this to another class?
@@ -114,22 +88,11 @@ public final class CargoServiceImpl implements CargoService {
   public List<CargoRoutingDTO> loadAllForRouting() {
     final List<Cargo> allCargos = cargoRepository.findAll();
 
-    // TODO: use DTO assembler
+    final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(allCargos.size());
+
     for (Cargo cargo : allCargos) {
-      final CargoRoutingDTO dto = new CargoRoutingDTO(
-        cargo.trackingId().idString(),
-        cargo.origin().toString(),
-        cargo.finalDestination().toString()
-      );
-      for (Leg leg : cargo.itinerary().legs()) {
-        dto.addLeg(
-          leg.carrierMovement().carrierMovementId().idString(),
-          leg.from().unLocode().idString(),
-          leg.to().unLocode().idString()
-        );
-      }
-      dtoList.add(dto);
+      dtoList.add(assembler.toDTO(cargo));
     }
 
     return dtoList;
@@ -143,20 +106,7 @@ public final class CargoServiceImpl implements CargoService {
       return null;
     }
 
-    // TODO: use DTO assembler
-    final CargoRoutingDTO dto = new CargoRoutingDTO(
-      cargo.trackingId().idString(),
-      cargo.origin().toString(),
-      cargo.finalDestination().toString()
-    );
-    for (Leg leg : cargo.itinerary().legs()) {
-      dto.addLeg(
-        leg.carrierMovement().carrierMovementId().idString(),
-        leg.from().toString(),
-        leg.to().toString()
-      );
-    }
-    return dto;
+    return new CargoRoutingDTOAssembler().toDTO(cargo);
   }
 
   @Transactional(readOnly = false)

@@ -14,6 +14,15 @@ public final class HandlingEventDTO implements Serializable {
   private final Date time;
   private boolean expected;
 
+  /**
+   * Constructor.
+   *
+   * @param location
+   * @param type
+   * @param carrier
+   * @param time
+   * @param expected
+   */
   public HandlingEventDTO(final String location, final String type, final String carrier, final Date time,
                           final boolean expected) {
     this.location = location;

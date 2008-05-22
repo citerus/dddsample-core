@@ -35,7 +35,7 @@ public class CargoTrackingControllerTest extends TestCase {
     response = new MockHttpServletResponse();
     session = new MockHttpSession(servletContext);
     request.setSession(session);
-    
+
     controller = new CargoTrackingController();
     controller.setFormView("test-form");
     controller.setSuccessView("test-success");
@@ -46,18 +46,17 @@ public class CargoTrackingControllerTest extends TestCase {
     return new EmptyStubCargoService() {
 
       public CargoTrackingDTO track(TrackingId trackingId) {
-        Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
-        HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
+        final Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
+        final HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
 
-        // TODO: use DTO assemblers
-        CargoTrackingDTO cargoDTO = new CargoTrackingDTO(
-                cargo.trackingId().idString(),
-                cargo.origin().unLocode().idString(),
-                cargo.finalDestination().unLocode().idString(),
-                StatusCode.CLAIMED,
-                "AAAAA",
-                "BALO",
-                false);
+        final CargoTrackingDTO cargoDTO = new CargoTrackingDTO(
+          cargo.trackingId().idString(),
+          cargo.origin().unLocode().idString(),
+          cargo.finalDestination().unLocode().idString(),
+          StatusCode.CLAIMED,
+          "AAAAA",
+          "BALO",
+          false);
         cargoDTO.addEvent(new HandlingEventDTO(
           event.location().unLocode().idString(),
           event.type().toString(),
@@ -68,7 +67,7 @@ public class CargoTrackingControllerTest extends TestCase {
       }
     };
   }
-  
+
   private CargoService getCargoServiceNullMock() {
     return new EmptyStubCargoService();
   }
@@ -86,7 +85,7 @@ public class CargoTrackingControllerTest extends TestCase {
 
   public void testHandlePost() throws Exception {
     controller.setCargoService(getCargoServiceMock());
-    request.addParameter("trackingId","JKL456");
+    request.addParameter("trackingId", "JKL456");
     request.setMethod("POST");
 
     ModelAndView mav = controller.handleRequest(request, response);
@@ -102,7 +101,7 @@ public class CargoTrackingControllerTest extends TestCase {
     controller.setCargoService(getCargoServiceNullMock());
     request.setMethod("POST");
     request.setParameter("trackingId", "unknown-id");
-    
+
     ModelAndView mav = controller.handleRequest(request, response);
 
     assertEquals("test-form", mav.getViewName());
