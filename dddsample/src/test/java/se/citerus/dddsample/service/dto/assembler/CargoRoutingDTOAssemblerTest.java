@@ -5,7 +5,6 @@ import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.LegDTO;
-import se.citerus.dddsample.service.dto.assembler.CargoRoutingDTOAssembler;
 
 public class CargoRoutingDTOAssemblerTest extends TestCase {
 
