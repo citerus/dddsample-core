@@ -10,6 +10,11 @@ public final class ItineraryCandidateDTO {
 
   private final List<LegDTO> legs;
 
+  /**
+   * Constructor.
+   *
+   * @param legs The legs for this itinerary.
+   */
   public ItineraryCandidateDTO(final List<LegDTO> legs) {
     this.legs = legs;
   }

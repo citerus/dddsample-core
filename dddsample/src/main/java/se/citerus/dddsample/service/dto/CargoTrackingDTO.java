@@ -21,6 +21,17 @@ public final class CargoTrackingDTO implements Serializable {
   private final StatusCode statusCode;
   private final boolean misdirected;
 
+  /**
+   * Constructor.
+   *
+   * @param trackingId
+   * @param origin
+   * @param finalDestination
+   * @param statusCode
+   * @param currentLocationId
+   * @param carrierMovementId
+   * @param isMisdirected
+   */
   public CargoTrackingDTO(final String trackingId, final String origin, final String finalDestination,
                           final StatusCode statusCode, final String currentLocationId, final String carrierMovementId,
                           final boolean isMisdirected) {

@@ -14,6 +14,13 @@ public final class CargoRoutingDTO {
   private final String finalDestination;
   private final List<LegDTO> legs;
 
+  /**
+   * Constructor.
+   *
+   * @param trackingId
+   * @param origin
+   * @param finalDestination
+   */
   public CargoRoutingDTO(final String trackingId, final String origin, final String finalDestination) {
     this.trackingId = trackingId;
     this.origin = origin;
