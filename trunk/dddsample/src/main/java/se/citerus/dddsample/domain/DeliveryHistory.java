@@ -1,14 +1,13 @@
 package se.citerus.dddsample.domain;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import static se.citerus.dddsample.domain.StatusCode.*;
 
 import java.util.*;
 
 /**
  * The delivery history of a cargo.
- * <p/>
- * Is this an entiy or a value object?
+ *
+ * This is a value object.
  */
 public final class DeliveryHistory {
 
@@ -53,38 +52,31 @@ public final class DeliveryHistory {
     }
   }
 
-  @Override
-  public String toString() {
-    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
-  }
-
-  // Needed by Hibernate
-  DeliveryHistory() {
-  }
-
   public StatusCode status() {
     if (lastEvent() == null)
-      return StatusCode.NOT_RECEIVED;
+      return NOT_RECEIVED;
 
     final HandlingEvent.Type type = lastEvent().type();
-    if (type == HandlingEvent.Type.LOAD)
-      return StatusCode.ONBOARD_CARRIER;
+    
+    switch (type) {
+      case LOAD:
+        return ONBOARD_CARRIER;
 
-    if (type == HandlingEvent.Type.UNLOAD)
-      return StatusCode.IN_PORT;
+      case UNLOAD:
+      case RECEIVE:
+      case CUSTOMS:
+        return IN_PORT;
 
-    if (type == HandlingEvent.Type.RECEIVE)
-      return StatusCode.IN_PORT;
+      case CLAIM:
+        return CLAIMED;
 
-    if (type == HandlingEvent.Type.CLAIM)
-      return StatusCode.CLAIMED;
-
-    //TODO: What about Type.CUSTOMS?
-    return null;
+      default:
+        return null;
+    }
   }
 
   public Location currentLocation() {
-    if (status().equals(StatusCode.IN_PORT)) {
+    if (status().equals(IN_PORT)) {
       return lastEvent().location();
     } else {
       return null;
@@ -92,13 +84,34 @@ public final class DeliveryHistory {
   }
 
   public CarrierMovement currentCarrierMovement() {
-    if (status().equals(StatusCode.ONBOARD_CARRIER)) {
+    if (status().equals(ONBOARD_CARRIER)) {
       return lastEvent().carrierMovement();
     } else {
       return null;
     }
   }
 
-  // TODO: what about equals, hashCode, toString?
+  public boolean sameValueAs(DeliveryHistory other) {
+    return other != null && events.equals(other.events);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    final DeliveryHistory other = (DeliveryHistory) o;
+
+    return sameValueAs(other);
+  }
+
+  @Override
+  public int hashCode() {
+    return events.hashCode();
+  }
+
+  DeliveryHistory() {
+    // Needed by Hibernate
+  }
 
 }
