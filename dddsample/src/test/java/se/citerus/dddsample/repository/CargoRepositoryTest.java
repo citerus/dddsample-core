@@ -13,9 +13,14 @@ import java.util.Map;
 public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   CargoRepository cargoRepository;
+  LocationRepository locationRepository;
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
+  }
+
+  public void setLocationRepository(LocationRepository locationRepository) {
+    this.locationRepository = locationRepository;
   }
 
   public void testFindByCargoId() {
@@ -74,25 +79,70 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   }
 
   public void testSave() {
-    sessionFactory.getCurrentSession().saveOrUpdate(STOCKHOLM);
-    sessionFactory.getCurrentSession().saveOrUpdate(MELBOURNE);
+    TrackingId trackingId = new TrackingId("AAA");
+    Location origin = locationRepository.find(STOCKHOLM.unLocode());
+    Location destination = locationRepository.find(MELBOURNE.unLocode());
 
-
-    Cargo cargo = new Cargo(new TrackingId("AAA"), STOCKHOLM, MELBOURNE);
+    Cargo cargo = new Cargo(trackingId, origin, destination);
     cargoRepository.save(cargo);
 
     flush();
 
-    Map<String, Object> map = sjt.queryForMap("select * from Cargo where tracking_id = 'AAA'");
+    Map<String, Object> map = sjt.queryForMap(
+      "select * from Cargo where tracking_id = ?", trackingId.idString());
 
     assertEquals("AAA", map.get("TRACKING_ID"));
-    // TODO: check origin/finalDestination ids
+
+    Long originId = (Long) sessionFactory.getCurrentSession().getIdentifier(origin);
+    assertEquals(originId, map.get("ORIGIN_ID"));
+
+    Long destinationId = (Long) sessionFactory.getCurrentSession().getIdentifier(destination);
+    assertEquals(destinationId, map.get("DESTINATION_ID"));
+
+    assertNull(map.get("ITINERARY_ID"));
+  }
+
+  public void testSaveShouldNotCascadeToHandlingEvents() {
+    /* TODO:
+       this test indicates that the addEvent/addEvents methods on DeliveryHistory
+       are somewhat unintuitive, since added events are not cascade-savded with the cargo.
+       Also, it's not really needed except when loading a cargo, so perhaps something like
+       Cargo.attachDeliveryHistory() would be better? */
+
+    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
+    int eventCount = cargo.deliveryHistory().eventsOrderedByCompletionTime().size();
+
+    Location origin = locationRepository.find(STOCKHOLM.unLocode());
+
+    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin, null);
+    assertFalse(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
+
+    cargo.deliveryHistory().addEvent(event);
+    assertTrue(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
+
+    // Save cargo, evict from session and then re-load it - should not pick up the added event,
+    // as it was never cascade-saved
+    cargoRepository.save(cargo);
+    sessionFactory.getCurrentSession().evict(cargo);
+
+    cargo = cargoRepository.find(cargo.trackingId());
+    assertFalse(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
+    assertEquals(eventCount, cargo.deliveryHistory().eventsOrderedByCompletionTime().size());
   }
 
   public void testFindAll() {
     List<Cargo> all = cargoRepository.findAll();
     assertNotNull(all);
     assertEquals(6, all.size());
+  }
+
+  public void testNextTrackingId() {
+    TrackingId trackingId = cargoRepository.nextTrackingId();
+    assertNotNull(trackingId);
+
+    TrackingId trackingId2 = cargoRepository.nextTrackingId();
+    assertNotNull(trackingId2);
+    assertFalse(trackingId.equals(trackingId2));
   }
 
 }
