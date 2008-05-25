@@ -1,9 +1,8 @@
 package se.citerus.dddsample.service.dto.assembler;
 
-import se.citerus.dddsample.domain.CarrierMovementId;
-import se.citerus.dddsample.domain.Itinerary;
-import se.citerus.dddsample.domain.Leg;
-import se.citerus.dddsample.domain.UnLocode;
+import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.repository.CarrierMovementRepository;
+import se.citerus.dddsample.repository.LocationRepository;
 import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.service.dto.LegDTO;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * Assembler class for the ItineraryCandidateDTO.
  */
 public class ItineraryCandidateDTOAssembler {
-
+  
   public ItineraryCandidateDTO toDTO(final Itinerary itinerary) {
     final List<LegDTO> legDTOs = new ArrayList<LegDTO>(itinerary.legs().size());
     for (Leg leg : itinerary.legs()) {
@@ -30,4 +29,15 @@ public class ItineraryCandidateDTOAssembler {
     return new LegDTO(carrierMovementId.idString(), from.idString(), to.idString());
   }
 
+  public Itinerary fromDTO(ItineraryCandidateDTO itineraryCandidateDTO, CarrierMovementRepository carrierMovementRepository, LocationRepository locationRepository) {
+    final List<Leg> legs = new ArrayList<Leg>(itineraryCandidateDTO.getLegs().size());
+    for (LegDTO legDTO : itineraryCandidateDTO.getLegs()) {
+      final CarrierMovementId carrierMovementId = new CarrierMovementId(legDTO.getCarrierMovementId());
+      final CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
+      final Location from = locationRepository.find(new UnLocode(legDTO.getFrom()));
+      final Location to = locationRepository.find(new UnLocode(legDTO.getTo()));
+      legs.add(new Leg(carrierMovement, from, to));
+    }
+    return new Itinerary(legs);
+  }
 }

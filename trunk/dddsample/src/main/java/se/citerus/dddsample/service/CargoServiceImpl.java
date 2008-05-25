@@ -8,9 +8,12 @@ import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.LocationRepository;
-import se.citerus.dddsample.service.dto.*;
+import se.citerus.dddsample.service.dto.CargoRoutingDTO;
+import se.citerus.dddsample.service.dto.CargoTrackingDTO;
+import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.service.dto.assembler.CargoRoutingDTOAssembler;
 import se.citerus.dddsample.service.dto.assembler.CargoTrackingDTOAssembler;
+import se.citerus.dddsample.service.dto.assembler.ItineraryCandidateDTOAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,28 +113,26 @@ public final class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = false)
-  public void assignItinerary(final TrackingId trackingId, final ItineraryCandidateDTO itinerary) {
+  public void assignItinerary(final TrackingId trackingId, final ItineraryCandidateDTO dto) {
     Validate.notNull(trackingId);
-    Validate.notNull(itinerary);
+    Validate.notNull(dto);
 
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
     }
 
-    final List<Leg> legs = new ArrayList<Leg>(itinerary.getLegs().size());
-    for (LegDTO legDTO : itinerary.getLegs()) {
-      final CarrierMovementId carrierMovementId = new CarrierMovementId(legDTO.getCarrierMovementId());
-      final CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
-      final Location from = locationRepository.find(new UnLocode(legDTO.getFrom()));
-      final Location to = locationRepository.find(new UnLocode(legDTO.getTo()));
-      legs.add(new Leg(carrierMovement, from, to));
-    }
-    // TODO: delete orphaned itineraries.
-    // Can't cascade delete-orphan for many-to-one using mapping directives.
-    cargo.setItinerary(new Itinerary(legs));
+    final ItineraryCandidateDTOAssembler itineraryCandidateDTOAssembler = new ItineraryCandidateDTOAssembler();
+    final Itinerary newItinerary = itineraryCandidateDTOAssembler.fromDTO(dto, carrierMovementRepository, locationRepository);
+
+    /* TODO: delete orphaned itinerary
+    final Itinerary oldItinerary = cargo.itinerary();
+    cargoRepository.deleteItinerary(oldItinerary);
+    */
+    cargo.setItinerary(newItinerary);
     cargoRepository.save(cargo);
   }
+
 
   public void setCargoRepository(final CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
