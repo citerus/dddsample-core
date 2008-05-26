@@ -117,6 +117,7 @@ public final class CargoServiceImpl implements CargoService {
     Validate.notNull(trackingId);
     Validate.notNull(dto);
 
+    // TODO: findAndLock, to illustrate locking problem vs. HandlingEvent?
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
@@ -125,10 +126,12 @@ public final class CargoServiceImpl implements CargoService {
     final ItineraryCandidateDTOAssembler itineraryCandidateDTOAssembler = new ItineraryCandidateDTOAssembler();
     final Itinerary newItinerary = itineraryCandidateDTOAssembler.fromDTO(dto, carrierMovementRepository, locationRepository);
 
-    /* TODO: delete orphaned itinerary
+    // Delete orphaned itinerary
     final Itinerary oldItinerary = cargo.itinerary();
     cargoRepository.deleteItinerary(oldItinerary);
-    */
+    cargo.removeItinerary();
+
+    // Assign the new itinerary to the cargo
     cargo.setItinerary(newItinerary);
     cargoRepository.save(cargo);
   }

@@ -24,7 +24,7 @@ public final class Cargo {
   private Location destination;
 
   @Transient
-  private final DeliveryHistory deliveryHistory = new DeliveryHistory();
+  private DeliveryHistory deliveryHistory = DeliveryHistory.EMPTY_DELIVERY_HISTORY;
 
   @ManyToOne(cascade = CascadeType.ALL)
   private Itinerary itinerary;
@@ -121,6 +121,18 @@ public final class Cargo {
     this.itinerary = itinerary;
   }
 
+  public void removeItinerary() {
+    this.itinerary = null;
+  }
+
+  /**
+   * @param deliveryHistory Cargo delivery history
+   */
+  public void setDeliveryHistory(final DeliveryHistory deliveryHistory) {
+    Validate.notNull(deliveryHistory);
+    this.deliveryHistory = deliveryHistory;
+  }
+
   /**
    * Check if cargo is misdirected.
    * <p/>
@@ -201,5 +213,4 @@ public final class Cargo {
   Cargo() {
     // Needed by Hibernate
   }
-
 }

@@ -11,25 +11,32 @@ import java.util.*;
  */
 public final class DeliveryHistory {
 
-  private final Set<HandlingEvent> events = new HashSet<HandlingEvent>();
+  private final Set<HandlingEvent> events;
+
+  public static final DeliveryHistory EMPTY_DELIVERY_HISTORY = new DeliveryHistory(Collections.EMPTY_SET);
+
+
+  public DeliveryHistory(final Collection<HandlingEvent> events) {
+    this.events = new HashSet<HandlingEvent>(events);
+  }
 
   /**
    * Adds all HandlingEvent to the delivery history.
    *
    * @param events events to add
-   */
   public void addAllEvents(final Collection<HandlingEvent> events) {
     this.events.addAll(events);
   }
+   */
 
   /**
    * Adds a HandlingEvent to the delivery history.
    *
    * @param event event to add.
-   */
   public void addEvent(final HandlingEvent event) {
     this.events.add(event);
   }
+   */
 
   /**
    * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
@@ -110,8 +117,10 @@ public final class DeliveryHistory {
     return events.hashCode();
   }
 
+  /*
   DeliveryHistory() {
     // Needed by Hibernate
   }
+  */
 
 }

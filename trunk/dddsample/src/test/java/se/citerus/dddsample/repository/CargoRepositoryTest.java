@@ -6,6 +6,7 @@ import static se.citerus.dddsample.domain.HandlingEvent.Type.RECEIVE;
 import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.util.SampleDataGenerator;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -93,10 +94,10 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     assertEquals("AAA", map.get("TRACKING_ID"));
 
-    Long originId = (Long) sessionFactory.getCurrentSession().getIdentifier(origin);
+    Long originId = getLongId(origin);
     assertEquals(originId, map.get("ORIGIN_ID"));
 
-    Long destinationId = (Long) sessionFactory.getCurrentSession().getIdentifier(destination);
+    Long destinationId = getLongId(destination);
     assertEquals(destinationId, map.get("DESTINATION_ID"));
 
     assertNull(map.get("ITINERARY_ID"));
@@ -117,13 +118,13 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin, null);
     assertFalse(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
 
-    cargo.deliveryHistory().addEvent(event);
+    cargo.setDeliveryHistory(new DeliveryHistory(Arrays.asList(event)));
     assertTrue(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
 
     // Save cargo, evict from session and then re-load it - should not pick up the added event,
     // as it was never cascade-saved
     cargoRepository.save(cargo);
-    sessionFactory.getCurrentSession().evict(cargo);
+    getSession().evict(cargo);
 
     cargo = cargoRepository.find(cargo.trackingId());
     assertFalse(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
@@ -143,6 +144,21 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     TrackingId trackingId2 = cargoRepository.nextTrackingId();
     assertNotNull(trackingId2);
     assertFalse(trackingId.equals(trackingId2));
+  }
+
+  public void testDeleteItinerary() {
+    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
+    Itinerary itinerary = cargo.itinerary();
+
+    cargoRepository.deleteItinerary(itinerary);
+    cargo.removeItinerary();
+
+    flush();
+    
+    Long itineraryId = getLongId(itinerary);
+    assertEquals(0, sjt.queryForInt("select count(*) from Itinerary where id = ?", itineraryId));
+    assertEquals(0, sjt.queryForInt("select count(*) from Leg where itinerary_id = ?", itineraryId));
+    assertNull(sjt.queryForMap("select * from Cargo where tracking_id = 'FGH'").get("ITINERARY_ID"));
   }
 
 }

@@ -21,7 +21,7 @@ public final class Itinerary {
   @JoinColumn(name = "itinerary_id")
   private List<Leg> legs = Collections.emptyList();
 
-  public static final Itinerary EMPTY_ITINERARY = new Itinerary();
+  static final Itinerary EMPTY_ITINERARY = new Itinerary();
 
   /**
    * Constructor.

@@ -38,7 +38,8 @@ public class CargoServiceTest extends TestCase {
     HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, STOCKHOLM, carrierMovement);
     HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, CHICAGO, carrierMovement);
     // Add out of order to verify ordering in DTO
-    cargo.deliveryHistory().addAllEvents(Arrays.asList(loaded, unloaded, claimed));
+    List<HandlingEvent> eventList = Arrays.asList(loaded, unloaded, claimed);
+    cargo.setDeliveryHistory(new DeliveryHistory(eventList));
 
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargo);
 
