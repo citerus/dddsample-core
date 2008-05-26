@@ -6,18 +6,10 @@ import static se.citerus.dddsample.domain.SampleLocations.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 public class CargoTest extends TestCase {
-
-  // TODO:
-  // it seems that events are not added to the system by cargo.deliveryHistory().addEvent(),
-  // but rather new HandlingEvents are stored and associated with its cargo. This test should
-  // work against the repositories or the service layer. The delivery history of a cargo should be
-  // read-only from the cargo end. // PeBa
-
+  private Set<HandlingEvent> events;
 
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
@@ -73,6 +65,10 @@ public class CargoTest extends TestCase {
     assertFalse("Cargos are not equal when TrackingID differ", c1.equals(c2));
   }
 
+  protected void setUp() throws Exception {
+    events = new HashSet<HandlingEvent>();
+  }
+
   public void testIsUnloadedAtFinalDestination() throws Exception {
     assertFalse(new Cargo().isUnloadedAtDestination());
 
@@ -80,25 +76,29 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isUnloadedAtDestination());
 
     // Adding an event unrelated to unloading at final destination
-    cargo.deliveryHistory().addEvent(
+    events.add(
       new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU, null));
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
     CarrierMovement cm1 = new CarrierMovement(new CarrierMovementId("CM1"), HANGZOU, NEWYORK);
 
     // Adding an unload event, but not at the final destination
-    cargo.deliveryHistory().addEvent(
+    events.add(
       new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, TOKYO, cm1));
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
     // Adding an event in the final destination, but not unload
-    cargo.deliveryHistory().addEvent(
+    events.add(
       new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, NEWYORK, null));
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
     // Finally, cargo is unloaded at final destination
-    cargo.deliveryHistory().addEvent(
+    events.add(
       new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, NEWYORK, cm1));
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertTrue(cargo.isUnloadedAtDestination());
   }
 
@@ -129,7 +129,8 @@ public class CargoTest extends TestCase {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
 
     HandlingEvent he = new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.RECEIVE, STOCKHOLM, null);
-    cargo.deliveryHistory().addEvent(he);
+    events.add(he);
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
 
     return cargo;
   }
@@ -137,7 +138,8 @@ public class CargoTest extends TestCase {
   private Cargo populateCargoClaimedMelbourne() throws Exception {
     final Cargo cargo = populateCargoOffMelbourne();
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-09"), new Date(), HandlingEvent.Type.CLAIM, MELBOURNE, null));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-09"), new Date(), HandlingEvent.Type.CLAIM, MELBOURNE, null));
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
 
     return cargo;
   }
@@ -148,15 +150,16 @@ public class CargoTest extends TestCase {
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
        new CarrierMovementId("CAR_001"), STOCKHOLM, HAMBURG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
        new CarrierMovementId("CAR_001"), HAMBURG, HONGKONG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong));
 
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     return cargo;
   }
 
@@ -166,14 +169,15 @@ public class CargoTest extends TestCase {
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
        new CarrierMovementId("CAR_001"), STOCKHOLM, HAMBURG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
        new CarrierMovementId("CAR_001"), HAMBURG, HONGKONG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
 
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     return cargo;
   }
 
@@ -183,21 +187,22 @@ public class CargoTest extends TestCase {
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
        new CarrierMovementId("CAR_001"), STOCKHOLM, HAMBURG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
        new CarrierMovementId("CAR_001"), HAMBURG, HONGKONG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong));
 
     final CarrierMovement hongKongToMelbourne = new CarrierMovement(
        new CarrierMovementId("CAR_001"), HONGKONG, MELBOURNE);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.LOAD, HONGKONG, hongKongToMelbourne));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-07"), new Date(), HandlingEvent.Type.UNLOAD, MELBOURNE, hongKongToMelbourne));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.LOAD, HONGKONG, hongKongToMelbourne));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-07"), new Date(), HandlingEvent.Type.UNLOAD, MELBOURNE, hongKongToMelbourne));
 
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     return cargo;
   }
 
@@ -207,20 +212,21 @@ public class CargoTest extends TestCase {
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
        new CarrierMovementId("CAR_001"), STOCKHOLM, HAMBURG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg));
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
        new CarrierMovementId("CAR_001"), HAMBURG, HONGKONG);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong));
 
     final CarrierMovement hongKongToMelbourne = new CarrierMovement(
        new CarrierMovementId("CAR_001"), HONGKONG, MELBOURNE);
 
-    cargo.deliveryHistory().addEvent(new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.LOAD, HONGKONG, hongKongToMelbourne));
+    events.add(new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.LOAD, HONGKONG, hongKongToMelbourne));
 
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     return cargo;
   }
 
@@ -249,7 +255,8 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(110), new Date(120), HandlingEvent.Type.CLAIM, GOTHENBURG, null));
     handlingEvents.add(new HandlingEvent(cargo, new Date(130), new Date(140), HandlingEvent.Type.CUSTOMS, GOTHENBURG, null));
 
-    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    events.addAll(handlingEvents);
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertFalse(cargo.isMisdirected());
 
     //Try a couple of failing ones
@@ -258,7 +265,8 @@ public class CargoTest extends TestCase {
     handlingEvents = new ArrayList<HandlingEvent>();
 
     handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU, null));
-    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    events.addAll(handlingEvents);
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertTrue(cargo.isMisdirected());
 
 
@@ -270,7 +278,8 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(50), new Date(60), HandlingEvent.Type.UNLOAD, ROTTERDAM, abc));
     handlingEvents.add(new HandlingEvent(cargo, new Date(70), new Date(80), HandlingEvent.Type.LOAD, ROTTERDAM, ghi));
 
-    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    events.addAll(handlingEvents);
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertTrue(cargo.isMisdirected());
 
 
@@ -282,7 +291,8 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(50), new Date(60), HandlingEvent.Type.UNLOAD, ROTTERDAM, abc));
     handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM, null));
 
-    cargo.deliveryHistory().addAllEvents(handlingEvents);
+    events.addAll(handlingEvents);
+    cargo.setDeliveryHistory(new DeliveryHistory(events));
     assertTrue(cargo.isMisdirected());
   }
 

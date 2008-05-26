@@ -2,6 +2,7 @@ package se.citerus.dddsample.repository;
 
 import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.Itinerary;
 import se.citerus.dddsample.domain.TrackingId;
 
 import java.util.HashMap;
@@ -44,6 +45,9 @@ public class CargoRepositoryInMem implements CargoRepository {
 
   public TrackingId nextTrackingId() {
     return new TrackingId(UUID.randomUUID().toString());
+  }
+
+  public void deleteItinerary(Itinerary itinerary) {
   }
 
   public List<Cargo> findAll() {

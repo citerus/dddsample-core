@@ -35,8 +35,7 @@ public class TrackingScenarioTest extends TestCase {
 
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
             new CarrierMovementId("CAR_002"), HAMBURG, HONGKONG);
-    DeliveryHistory dh = new DeliveryHistory();
-    dh.addAllEvents(Arrays.asList(
+    DeliveryHistory dh = new DeliveryHistory(Arrays.asList(
             new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg),
             new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg),
             new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong),
