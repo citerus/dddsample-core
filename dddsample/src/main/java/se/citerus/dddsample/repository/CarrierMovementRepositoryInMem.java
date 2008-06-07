@@ -2,6 +2,7 @@ package se.citerus.dddsample.repository;
 
 import se.citerus.dddsample.domain.CarrierMovement;
 import se.citerus.dddsample.domain.CarrierMovementId;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,33 +11,27 @@ public final class CarrierMovementRepositoryInMem implements CarrierMovementRepo
 
   private Map<CarrierMovementId, CarrierMovement> carriers;
 
-  /**
-   * Constructor.
-   */
   public CarrierMovementRepositoryInMem() {
     carriers = new HashMap<CarrierMovementId, CarrierMovement>();
-    setup();
   }
 
   private void setup() {
-/*
     final CarrierMovement stockholmToHamburg = new CarrierMovement(
-            new CarrierMovementId("CAR_001"), new Location("SESTO"), new Location("DEHAM"));
+            new CarrierMovementId("CAR_001"), STOCKHOLM, HAMBURG);
     final CarrierMovement hamburgToHongKong = new CarrierMovement(
-            new CarrierMovementId("CAR_002"), new Location("DEHAM"), new Location("CNHKG"));
+            new CarrierMovementId("CAR_002"), HAMBURG, HONGKONG);
     final CarrierMovement melbourneToTokyo = new CarrierMovement(
-            new CarrierMovementId("CAR_003"), new Location("AUMEL"), new Location("JPTOK"));
-    final CarrierMovement tokyoToLosAngeles = new CarrierMovement(
-            new CarrierMovementId("CAR_004"), new Location("JPTOK"), new Location("USLA"));
+            new CarrierMovementId("CAR_003"), MELBOURNE, TOKYO);
+    final CarrierMovement tokyoToChicago = new CarrierMovement(
+            new CarrierMovementId("CAR_004"), TOKYO, CHICAGO);
     final CarrierMovement stockholmToHelsinki = new CarrierMovement(
-            new CarrierMovementId("CAR_005"), new Location("SESTO"), new Location("FIHEL"));
+            new CarrierMovementId("CAR_005"), STOCKHOLM, HELSINKI);
     
     carriers.put(new CarrierMovementId("SESTO_DEHAM"), stockholmToHamburg);
     carriers.put(new CarrierMovementId("DEHAM_CNHKG"), hamburgToHongKong);
     carriers.put(new CarrierMovementId("AUMEL_JPTOK"), melbourneToTokyo);
-    carriers.put(new CarrierMovementId("JPTOK_USLA"), tokyoToLosAngeles);
+    carriers.put(new CarrierMovementId("JPTOK_USCHI"), tokyoToChicago);
     carriers.put(new CarrierMovementId("SESTO_FIHEL"), stockholmToHelsinki);
-*/
   }
 
   public CarrierMovement find(final CarrierMovementId carrierMovementId) {

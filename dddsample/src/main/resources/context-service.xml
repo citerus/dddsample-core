@@ -7,10 +7,6 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
   <bean id="cargoService" class="se.citerus.dddsample.service.CargoServiceImpl">
@@ -27,21 +23,10 @@
     <property name="eventService" ref="eventService"/>
   </bean>
 
-  <bean id="eventService" class="se.citerus.dddsample.service.JmsEventServiceImpl">
-    <property name="jmsOperations" ref="jmsOperations"/>
-    <property name="destination" ref="handlingEventTopic"/>
-  </bean>
-
   <bean id="routingService" class="se.citerus.dddsample.service.RoutingServiceImpl">
     <property name="locationRepository" ref="locationRepository"/>
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
   </bean>
-
-  <!--
-  <bean id="eventService" class="se.citerus.dddsample.service.ThreadBasedEventServiceImpl">
-    <property name="cargoService" ref="cargoService"/>
-  </bean>
-  -->
 
 </beans>
