@@ -2,13 +2,12 @@ package se.citerus.dddsample.repository;
 
 import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.DeliveryHistory;
 import se.citerus.dddsample.domain.Itinerary;
+import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.domain.TrackingId;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
@@ -44,45 +43,40 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public TrackingId nextTrackingId() {
-    return new TrackingId(UUID.randomUUID().toString());
+    String random = UUID.randomUUID().toString().toUpperCase();
+    return new TrackingId(
+      random.substring(0, random.indexOf("-"))
+    );
   }
 
   public void deleteItinerary(Itinerary itinerary) {
   }
 
   public List<Cargo> findAll() {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    return new ArrayList(cargoDb.values());
   }
 
-  /**
-   * @throws Exception
-   */
   public void init() throws Exception {
-/*
     String trackIdXYZ = "XYZ";
-    final Cargo cargoXYZ = new Cargo(new TrackingId(trackIdXYZ), new Location("SESTO"), new Location("AUMEL"));
+    final Cargo cargoXYZ = new Cargo(new TrackingId(trackIdXYZ), STOCKHOLM, MELBOURNE);
     cargoDb.put(trackIdXYZ, cargoXYZ);
     
     String trackIdZYX = "ZYX";
-    final Cargo cargoZYX = new Cargo(new TrackingId(trackIdZYX), new Location("AUMEL"), new Location("SESTO"));
+    final Cargo cargoZYX = new Cargo(new TrackingId(trackIdZYX), MELBOURNE, STOCKHOLM);
     cargoDb.put(trackIdZYX, cargoZYX);
     
     String trackIdABC = "ABC";
-    final Cargo cargoABC = new Cargo(new TrackingId(trackIdABC), new Location("SESTO"), new Location("FIHEL"));
+    final Cargo cargoABC = new Cargo(new TrackingId(trackIdABC), STOCKHOLM, HELSINKI);
     cargoDb.put(trackIdABC, cargoABC);
     
     String trackIdCBA = "CBA";
-    final Cargo cargoCBA = new Cargo(new TrackingId(trackIdCBA), new Location("FIHEL"), new Location("SESTO"));
+    final Cargo cargoCBA = new Cargo(new TrackingId(trackIdCBA), HELSINKI, STOCKHOLM);
     cargoDb.put(trackIdCBA, cargoCBA);
-*/
 
-    /*
     for (Cargo cargo : cargoDb.values()) {
-      for (HandlingEvent event : handlingEventRepository.findByTrackingId(cargo.trackingId())) {
-        cargo.handle(event);
-      }   
+      DeliveryHistory dh = new DeliveryHistory(handlingEventRepository.findEventsForCargo(cargo.trackingId()));
+      cargo.setDeliveryHistory(dh);
     }
-    */
   }
 
   public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {
