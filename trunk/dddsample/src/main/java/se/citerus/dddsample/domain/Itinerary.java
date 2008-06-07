@@ -2,23 +2,15 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 
-import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * An itinerary.
+ * 
  */
-@Entity
-public final class Itinerary {
+public final class Itinerary implements ValueObject<Itinerary> {
 
-  @Id
-  @GeneratedValue
-  private Long id;
-
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "itinerary_id")
   private List<Leg> legs = Collections.emptyList();
 
   static final Itinerary EMPTY_ITINERARY = new Itinerary();
@@ -31,13 +23,13 @@ public final class Itinerary {
   public Itinerary(final List<Leg> legs) {
     Validate.notEmpty(legs);
     Validate.noNullElements(legs);
-    this.legs = legs;
+    
+    this.legs = Collections.unmodifiableList(legs);
   }
 
-  public Itinerary(final Leg... legs) {
-    this(Arrays.asList(legs));
-  }
-
+  /**
+   * @return the legs of this itinerary
+   */
   public List<Leg> legs() {
     return legs;
   }
@@ -93,6 +85,7 @@ public final class Itinerary {
    * @param other itinerary to compare
    * @return <code>true</code> if the legs in this and the other itinerary are all equal.
    */
+  @Override
   public boolean sameValueAs(final Itinerary other) {
     return other != null && legs.equals(other.legs);
   }
@@ -115,4 +108,8 @@ public final class Itinerary {
   Itinerary() {
     // Needed by Hibernate
   }
+
+  // Auto-generated surrogate key
+  private Long id;
+
 }

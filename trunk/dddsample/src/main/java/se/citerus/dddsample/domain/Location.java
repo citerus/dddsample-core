@@ -2,21 +2,9 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+public final class Location implements Entity<Location> {
 
-@Entity
-public final class Location {
-
-  @Id
-  @GeneratedValue
-  private Long id;
-
-  @Embedded
   private UnLocode unLocode;
-
   private String name;
 
   /**
@@ -32,9 +20,9 @@ public final class Location {
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
   Location(final UnLocode unLocode, final String name) {
-    Validate.noNullElements(new Object[]{unLocode, name});
     Validate.notNull(unLocode);
     Validate.notNull(name);
+    
     this.unLocode = unLocode;
     this.name = name;
   }
@@ -72,16 +60,7 @@ public final class Location {
     return sameIdentityAs(other);
   }
 
-  /**
-   * Entities compare by identity, therefore the unLocode field is the only basis of comparison. For persistence we
-   * have an id field, but it is not used for identiy comparison.
-   * <p/>
-   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
-   *
-   * @param other The other location.
-   * @return <code>true</code> if the given location's and this locations's unLocode is the same, regardles of other
-   *         attributes.
-   */
+  @Override
   public boolean sameIdentityAs(final Location other) {
     return this.unLocode.equals(other.unLocode);
   }
@@ -99,7 +78,7 @@ public final class Location {
    */
   @Override
   public String toString() {
-    // TODO: this is presentation logic and very inconsistent, move to DTO assembler
+    // TODO: this feels like presentation logic and is very inconsistent, move to DTO assembler
     return unLocode.idString() + " (" + name + ")";
   }
 
@@ -107,5 +86,7 @@ public final class Location {
   Location() {
     // Needed by Hibernate
   }
+
+  private Long id;
 
 }

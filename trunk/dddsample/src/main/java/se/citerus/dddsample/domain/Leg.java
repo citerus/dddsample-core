@@ -3,29 +3,14 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 /**
  * An itinerary consists of one or more legs.
  */
-@Entity
-public final class Leg {
-  @Id
-  @GeneratedValue
-  private Long id;
+public final class Leg implements ValueObject<Leg> {
 
-  @ManyToOne
   private CarrierMovement carrierMovement;
-
-  @ManyToOne
   private Location from;
-  @ManyToOne
   private Location to;
 
   /**
@@ -55,15 +40,7 @@ public final class Leg {
   }
 
 
-  /**
-   * Value objects compare by value, therefore the id field which must be part of the class in order to support
-   * persistence is ignored in the comparison.
-   * <p/>
-   * Compare this behavior to the entity {@link se.citerus.dddsample.domain.Cargo#sameIdentityAs(Cargo)}
-   *
-   * @param other The other leg.
-   * @return <code>true</code> if the given leg's and this leg's attributes are the same.
-   */
+  @Override
   public boolean sameValueAs(final Leg other) {
     return other != null && new EqualsBuilder().
       append(this.carrierMovement, other.carrierMovement).
@@ -91,12 +68,11 @@ public final class Leg {
       toHashCode();
   }
 
-  @Override
-  public String toString() {
-    return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
-  }
-
   Leg() {
     // Needed by Hibernate
   }
+
+  // Auto-generated surrogate key
+  private Long id;
+
 }

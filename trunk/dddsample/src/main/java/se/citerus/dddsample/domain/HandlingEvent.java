@@ -4,7 +4,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -16,8 +15,7 @@ import java.util.Date;
  * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type#LOAD} or
  * {@link Type#UNLOAD}. All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
-@Entity
-public final class HandlingEvent {
+public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   /**
    * Comparator used to be able to sort HandlingEvents according to their completion time
@@ -28,25 +26,11 @@ public final class HandlingEvent {
     }
   };
 
-  @Id
-  @GeneratedValue
-  private Long id;
-
-  @Enumerated(EnumType.STRING)
   private Type type;
-
-  @ManyToOne
   private CarrierMovement carrierMovement;
-
-  @ManyToOne
   private Location location;
-
   private Date completionTime;
-
   private Date registrationTime;
-
-  @ManyToOne
-  @JoinColumn(name = "cargo_id")
   private Cargo cargo;
 
   public enum Type {
@@ -103,10 +87,6 @@ public final class HandlingEvent {
     validateType();
   }
 
-  public Long id() {
-    return this.id;
-  }
-
   public Type type() {
     return this.type;
   }
@@ -141,16 +121,7 @@ public final class HandlingEvent {
     return sameEventAs(event);
   }
 
-  /**
-   * Events compare by the attributes that identify the underlying event as opposed to the report of the event.
-   * Therefore the completion time is part of the comparison but not the registration time.
-   * <p/>
-   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
-   * Compare this behavior to the entity {@link se.citerus.dddsample.domain.Cargo#sameIdentityAs(Cargo)}
-   *
-   * @param other The other hanling event.
-   * @return <code>true</code> if the given handling event and this event are regarded as the same.
-   */
+  @Override
   public boolean sameEventAs(final HandlingEvent other) {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
@@ -189,5 +160,9 @@ public final class HandlingEvent {
   // Needed by Hibernate
   HandlingEvent() {
   }
+
+
+  // Auto-generated surrogate key
+  private Long id;
 
 }

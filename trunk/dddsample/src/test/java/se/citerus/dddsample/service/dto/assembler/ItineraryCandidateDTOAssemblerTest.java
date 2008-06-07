@@ -10,6 +10,7 @@ import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.service.dto.LegDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItineraryCandidateDTOAssemblerTest extends TestCase {
@@ -24,8 +25,10 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
       new CarrierMovementId("ABC"), origin, destination);
 
     final Itinerary itinerary = new Itinerary(
-      new Leg(cm, origin, SHANGHAI),
-      new Leg(cm, ROTTERDAM, destination)
+      Arrays.asList(
+        new Leg(cm, origin, SHANGHAI),
+        new Leg(cm, ROTTERDAM, destination)
+      )
     );
 
     final ItineraryCandidateDTO dto = assembler.toDTO(itinerary);

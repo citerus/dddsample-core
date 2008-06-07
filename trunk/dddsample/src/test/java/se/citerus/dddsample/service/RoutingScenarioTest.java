@@ -19,21 +19,21 @@ public class RoutingScenarioTest extends TestCase {
 
     TrackingId trackingId = new TrackingId("XYZ123");
     Cargo cargo = cargoRepository.find(trackingId);
-    Specification specification = null;
+    RouteSpecification routeSpecification = null;
 
     /*
       The routing service calculates a number of possible routes that
       satisfy the given specification (must arrive in three days, must not
       cost more than $10,000 etc).
      */
-    List<ItineraryCandidateDTO> itineraryCandidates = routingService.calculatePossibleRoutes(trackingId, specification);
+    List<ItineraryCandidateDTO> itineraryCandidates = routingService.calculatePossibleRoutes(trackingId, routeSpecification);
 
     /*
       Someone, or something, selects the most appropriate itinerary and
       assigns that itinerary to the cargo.
      */
     Itinerary itinerary = stubbedItinerarySelection(itineraryCandidates);
-    cargo.setItinerary(itinerary);
+    cargo.attachItinerary(itinerary);
 
     /*
       A number of events occur, all of which are according to plan

@@ -25,7 +25,7 @@ public final class CargoServiceImpl implements CargoService {
   private CarrierMovementRepository carrierMovementRepository;
 
   private final Log logger = LogFactory.getLog(getClass());
-
+               
   @Transactional(readOnly = false)
   public TrackingId registerNew(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
@@ -34,13 +34,12 @@ public final class CargoServiceImpl implements CargoService {
     final TrackingId trackingId = cargoRepository.nextTrackingId();
     final Location origin = locationRepository.find(originUnLocode);
     final Location destination = locationRepository.find(destinationUnLocode);
-
-    final Cargo cargo = new Cargo(trackingId, origin, destination);
+    Cargo cargo = new Cargo(trackingId, origin, destination);
 
     cargoRepository.save(cargo);
-    logger.info("Registered new cargo with tracking id " + trackingId.idString());
+    logger.info("Registered new cargo with tracking id " + cargo.trackingId().idString());
 
-    return trackingId;
+    return cargo.trackingId();
   }
 
   @Transactional(readOnly = true)
@@ -53,6 +52,8 @@ public final class CargoServiceImpl implements CargoService {
     return unlocodes;
   }
 
+  // TODO: move to TrackingService, rename this class BookingService, to match course
+  // TODO: remove all DTOs from BookingService, only keep DTOs in TrackingService
   @Transactional(readOnly = true)
   public CargoTrackingDTO track(final TrackingId trackingId) {
     Validate.notNull(trackingId);
@@ -83,7 +84,7 @@ public final class CargoServiceImpl implements CargoService {
     }
     if (cargo.isUnloadedAtDestination()) {
       logger.info("Cargo " + trackingId + " has been unloaded " +
-        "at its final destination " + cargo.finalDestination());
+        "at its final destination " + cargo.destination());
     }
   }
 
@@ -104,6 +105,8 @@ public final class CargoServiceImpl implements CargoService {
   @Transactional(readOnly = true)
   public CargoRoutingDTO loadForRouting(final TrackingId trackingId) {
     Validate.notNull(trackingId);
+
+    // TODO obtain offline lock
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       return null;
@@ -117,7 +120,6 @@ public final class CargoServiceImpl implements CargoService {
     Validate.notNull(trackingId);
     Validate.notNull(dto);
 
-    // TODO: findAndLock, to illustrate locking problem vs. HandlingEvent?
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
@@ -126,14 +128,16 @@ public final class CargoServiceImpl implements CargoService {
     final ItineraryCandidateDTOAssembler itineraryCandidateDTOAssembler = new ItineraryCandidateDTOAssembler();
     final Itinerary newItinerary = itineraryCandidateDTOAssembler.fromDTO(dto, carrierMovementRepository, locationRepository);
 
-    // Delete orphaned itinerary
+    // Delete orphaned itinerary - it's just a value object
     final Itinerary oldItinerary = cargo.itinerary();
     cargoRepository.deleteItinerary(oldItinerary);
-    cargo.removeItinerary();
+    cargo.detachItinerary();
 
     // Assign the new itinerary to the cargo
-    cargo.setItinerary(newItinerary);
+    cargo.attachItinerary(newItinerary);
     cargoRepository.save(cargo);
+
+    // TODO release offline lock
   }
 
 
@@ -145,7 +149,8 @@ public final class CargoServiceImpl implements CargoService {
     this.locationRepository = locationRepository;
   }
 
-  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
+  public void setCarrierMovementRepository(final CarrierMovementRepository carrierMovementRepository) {
     this.carrierMovementRepository = carrierMovementRepository;
   }
+
 }

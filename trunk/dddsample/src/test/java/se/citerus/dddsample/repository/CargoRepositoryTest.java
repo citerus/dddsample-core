@@ -27,7 +27,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   public void testFindByCargoId() {
     Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
     assertEquals(HONGKONG, cargo.origin());
-    assertEquals(HELSINKI, cargo.finalDestination());
+    assertEquals(HELSINKI, cargo.destination());
 
     DeliveryHistory dh = cargo.deliveryHistory();
     assertNotNull(dh);
@@ -151,7 +151,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Itinerary itinerary = cargo.itinerary();
 
     cargoRepository.deleteItinerary(itinerary);
-    cargo.removeItinerary();
+    cargo.detachItinerary();
 
     flush();
     
