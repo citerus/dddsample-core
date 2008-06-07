@@ -2,26 +2,14 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 
-import javax.persistence.*;
-
 
 /**
  * A carrier movement is a vessel voyage from one location to another.
  */
-@Entity
-public final class CarrierMovement {
+public final class CarrierMovement implements Entity<CarrierMovement> {
 
-  @Id
-  @GeneratedValue
-  private Long id;
-
-  @Embedded
   private CarrierMovementId carrierMovementId;
-
-  @ManyToOne
   private Location from;
-
-  @ManyToOne
   private Location to;
 
   /**
@@ -50,21 +38,7 @@ public final class CarrierMovement {
     return to;
   }
 
-  // Needed by Hibernate
-  CarrierMovement() {
-  }
-
-
-  /**
-   * Entities compare by identity, therefore the carrierMovementId field is the only basis of comparison. For
-   * persistence we have an id field, but it is not used for identiy comparison.
-   * <p/>
-   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
-   *
-   * @param other The other cargo.
-   * @return <code>true</code> if the given carrier movement's and this carrier movement's carrier id are the same,
-   *         regardles of other attributes.
-   */
+  @Override
   public boolean sameIdentityAs(final CarrierMovement other) {
     return carrierMovementId.equals(other.carrierMovementId);
   }
@@ -86,4 +60,12 @@ public final class CarrierMovement {
   public int hashCode() {
     return carrierMovementId.hashCode();
   }
+
+  CarrierMovement() {
+    // Needed by Hibernate
+  }
+
+  // Auto-generated surrogate key
+  private Long id;
+
 }

@@ -6,6 +6,8 @@ import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.LegDTO;
 
+import java.util.Arrays;
+
 public class CargoRoutingDTOAssemblerTest extends TestCase {
 
   public void testToDTO() throws Exception {
@@ -19,11 +21,13 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
       new CarrierMovementId("ABC"), origin, destination);
 
     final Itinerary itinerary = new Itinerary(
-      new Leg(cm, origin, SHANGHAI),
-      new Leg(cm, ROTTERDAM, destination)
+      Arrays.asList(
+        new Leg(cm, origin, SHANGHAI),
+        new Leg(cm, ROTTERDAM, destination)
+      )
     );
 
-    cargo.setItinerary(itinerary);
+    cargo.attachItinerary(itinerary);
 
     final CargoRoutingDTO dto = assembler.toDTO(cargo);
 

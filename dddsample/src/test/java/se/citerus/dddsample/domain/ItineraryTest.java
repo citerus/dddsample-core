@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import static se.citerus.dddsample.domain.SampleLocations.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +19,10 @@ public class ItineraryTest extends TestCase {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), SHANGHAI, GOTHENBURG);
 
     Itinerary itinerary = new Itinerary(
-       new Leg(new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM), SHANGHAI, ROTTERDAM),
-       new Leg(new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG), ROTTERDAM, GOTHENBURG)
+      Arrays.asList(
+        new Leg(new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM), SHANGHAI, ROTTERDAM),
+        new Leg(new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG), ROTTERDAM, GOTHENBURG)
+      )
     );
 
     //Happy path

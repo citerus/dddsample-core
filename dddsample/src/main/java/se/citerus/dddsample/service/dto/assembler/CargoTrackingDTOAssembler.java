@@ -17,7 +17,7 @@ public class CargoTrackingDTOAssembler {
     final CargoTrackingDTO dto = new CargoTrackingDTO(
       cargo.trackingId().idString(),
       cargo.origin().toString(),
-      cargo.finalDestination().toString(),
+      cargo.destination().toString(),
       deliveryHistory.status(),
       currentLocation == null ? null : currentLocation.unLocode().idString(),
       currentCarrierMovement == null ? null : currentCarrierMovement.carrierMovementId().idString(),

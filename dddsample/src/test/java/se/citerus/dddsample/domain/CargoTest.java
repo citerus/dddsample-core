@@ -303,11 +303,13 @@ public class CargoTest extends TestCase {
       new CarrierMovementId("ABC"), origin, destination);
     
     Itinerary itinerary = new Itinerary(
-       new Leg(cm, origin, midpoint),
-       new Leg(cm, midpoint, destination)
+      Arrays.asList(
+        new Leg(cm, origin, midpoint),
+        new Leg(cm, midpoint, destination)
+      )
     );
 
-    cargo.setItinerary(itinerary);
+    cargo.attachItinerary(itinerary);
     return cargo;
   }
 

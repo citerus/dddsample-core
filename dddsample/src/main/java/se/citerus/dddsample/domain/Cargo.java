@@ -2,48 +2,33 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 
-import javax.persistence.*;
-
 /**
  * A Cargo.
  */
-@Entity
-public final class Cargo {
+public final class Cargo implements Entity<Cargo> {
 
-  @Id
-  @GeneratedValue
-  private Long id;
-
-  @Embedded
   private TrackingId trackingId;
-
-  @ManyToOne
   private Location origin;
-
-  @ManyToOne
   private Location destination;
-
-  @Transient
+  private Itinerary itinerary;
   private DeliveryHistory deliveryHistory = DeliveryHistory.EMPTY_DELIVERY_HISTORY;
 
-  @ManyToOne(cascade = CascadeType.ALL)
-  private Itinerary itinerary;
-
   /**
-   * Constructor.
-   *
-   * @param trackingId
-   * @param origin
-   * @param destination
+   * @param trackingId tracking id
+   * @param origin origin location
+   * @param destination destination location
    */
   public Cargo(final TrackingId trackingId, final Location origin, final Location destination) {
-    Validate.noNullElements(new Object[]{trackingId, origin, destination});
+    Validate.noNullElements(new Object[] {trackingId, origin, destination});
+
     this.trackingId = trackingId;
     this.origin = origin;
     this.destination = destination;
   }
 
   /**
+   * The tracking id is the identity of this entity, and is unique.
+   * 
    * @return Tracking id.
    */
   public TrackingId trackingId() {
@@ -57,20 +42,19 @@ public final class Cargo {
     return this.origin;
   }
 
-  public void setOrigin(final Location origin) {
-    Validate.notNull(origin);
-    this.origin = origin;
-  }
-
+  /**
+   * @param destination the new destination. May not be null.
+   */
   public void setDestination(final Location destination) {
     Validate.notNull(destination);
+
     this.destination = destination;
   }
 
   /**
    * @return Final destination.
    */
-  public Location finalDestination() {
+  public Location destination() {
     return this.destination;
   }
 
@@ -112,16 +96,19 @@ public final class Cargo {
   }
 
   /**
-   * Assigns an itinerary to this cargo.
+   * Assigns a new itinerary to this cargo.
    *
-   * @param itinerary an itinerary
+   * @param itinerary an itinerary. Mat not be null.
    */
-  public void setItinerary(final Itinerary itinerary) {
+  public void attachItinerary(final Itinerary itinerary) {
     Validate.notNull(itinerary);
     this.itinerary = itinerary;
   }
 
-  public void removeItinerary() {
+  /**
+   * Detaches the current itinerary from the cargo.
+   */
+  public void detachItinerary() {
     this.itinerary = null;
   }
 
@@ -161,10 +148,6 @@ public final class Cargo {
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
-    final Location destination = finalDestination();
-    if (destination == null) {
-      return false;
-    }
     for (HandlingEvent event : deliveryHistory.eventsOrderedByCompletionTime()) {
       if (HandlingEvent.Type.UNLOAD.equals(event.type())
         && destination.equals(event.location())) {
@@ -174,17 +157,8 @@ public final class Cargo {
     return false;
   }
 
-  /**
-   * Entities compare by identity, therefore the trackingId field is the only basis of comparison. For persistence we
-   * have an id field, but it is not used for identiy comparison.
-   * <p/>
-   * Compare this behavior to the value object {@link se.citerus.dddsample.domain.Leg#sameValueAs(Leg)}
-   *
-   * @param other The other cargo.
-   * @return <code>true</code> if the given cargo's and this cargos's trackingId is the same, regardles of other
-   *         attributes.
-   */
-  private boolean sameIdentityAs(final Cargo other) {
+  @Override
+  public boolean sameIdentityAs(final Cargo other) {
     return other != null && trackingId.equals(other.trackingId);
   }
 
@@ -213,4 +187,8 @@ public final class Cargo {
   Cargo() {
     // Needed by Hibernate
   }
+
+  // Auto-generated surrogate key
+  private Long id;
+
 }

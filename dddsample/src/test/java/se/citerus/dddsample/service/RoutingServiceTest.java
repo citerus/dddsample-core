@@ -57,7 +57,7 @@ public class RoutingServiceTest extends TestCase {
 
       // Cargo final destination and last leg stop should match
       String lastLegStop = legs.get(legs.size() - 1).getTo();
-      assertEquals(cargo.finalDestination().unLocode().idString(), lastLegStop);
+      assertEquals(cargo.destination().unLocode().idString(), lastLegStop);
 
       for (int i = 0; i < legs.size() - 1; i++) {
         // Assert that all legs are conencted

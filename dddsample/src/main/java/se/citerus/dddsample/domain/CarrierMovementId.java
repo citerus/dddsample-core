@@ -1,19 +1,14 @@
 package se.citerus.dddsample.domain;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.Validate;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 
 /**
  * Identifies a particular carrier movement, such as a flight number.
  */
-@Embeddable
 public final class CarrierMovementId {
 
-  @Column(name = "carrier_movement_id")
   private String id;
 
   /**
