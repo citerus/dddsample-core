@@ -8,7 +8,6 @@ import se.citerus.dddsample.service.RoutingService;
 import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.service.dto.LegDTO;
 import se.citerus.dddsample.web.command.RegistrationCommand;
-import se.citerus.dddsample.web.command.RoutingCommand;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,25 +64,8 @@ public final class CargoAdminController extends MultiActionController {
     final Map<String, Object> map = new HashMap<String, Object>();
     final TrackingId trackingId = new TrackingId(request.getParameter("trackingId"));
     final List<ItineraryCandidateDTO> itineraries = routingService.calculatePossibleRoutes(trackingId, null);
-    final List<RoutingCommand.ItineraryCandidateCommand> itineraryCandidates =
-      new ArrayList<RoutingCommand.ItineraryCandidateCommand>();
 
-    // TODO: eliminate the routing command altogether, use the DTOs in the view
-    for (ItineraryCandidateDTO itinerary : itineraries) {
-      final RoutingCommand.ItineraryCandidateCommand itineraryCandidateCommand =
-        new RoutingCommand.ItineraryCandidateCommand();
-      itineraryCandidateCommand.setTrackingId(trackingId.idString());
-      itineraryCandidates.add(itineraryCandidateCommand);
-      for (LegDTO leg : itinerary.getLegs()) {
-        final RoutingCommand.LegCommand legCommand = new RoutingCommand.LegCommand();
-        legCommand.setCarrierMovementId(leg.getCarrierMovementId());
-        legCommand.setFromUnlocode(leg.getFrom());
-        legCommand.setToUnlocode(leg.getTo());
-        itineraryCandidateCommand.getLegs().add(legCommand);
-      }
-    }
-
-    map.put("itineraryCandidates", itineraryCandidates);
+    map.put("itineraryCandidates", itineraries);
     map.put("trackingId", trackingId.idString());
     return map;
   }

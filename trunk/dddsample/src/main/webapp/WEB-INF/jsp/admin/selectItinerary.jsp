@@ -11,7 +11,7 @@
       <form action="${postUrl}" method="post">
         <input type="hidden" name="trackingId" value="${trackingId}"/>
         <table>
-          <caption>Itinerary ${status.index + 1}</caption>
+          <caption>Itinerary ${itStatus.index + 1}</caption>
           <thead>
             <tr>
               <td>Carrier</td>
@@ -22,12 +22,12 @@
           <tbody>
             <c:forEach items="${it.legs}" var="leg" varStatus="legStatus">
               <input type="hidden" name="legs.carrierMovementId" value="${leg.carrierMovementId}"/>
-              <input type="hidden" name="legs.fromUnlocode" value="${leg.fromUnlocode}"/>
-              <input type="hidden" name="legs.toUnlocode" value="${leg.toUnlocode}"/>
+              <input type="hidden" name="legs.fromUnlocode" value="${leg.from}"/>
+              <input type="hidden" name="legs.toUnlocode" value="${leg.to}"/>
               <tr>
                 <td>${leg.carrierMovementId}</td>
-                <td>${leg.fromUnlocode}</td>
-                <td>${leg.toUnlocode}</td>
+                <td>${leg.from}</td>
+                <td>${leg.to}</td>
               </tr>
             </c:forEach>
           </tbody>
