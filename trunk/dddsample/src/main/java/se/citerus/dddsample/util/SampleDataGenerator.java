@@ -158,18 +158,18 @@ public class SampleDataGenerator implements ServletContextListener {
     executeUpdate(jdbcTemplate, itinerarySql, itineraryArgs);
 
     String legSql =
-      "insert into Leg (id, itinerary_id, carrierMovement_id, from_id, to_id) " +
-      "values (?,?,?,?,?)";
+      "insert into Leg (id, itinerary_id, carrierMovement_id, from_id, to_id, leg_index) " +
+      "values (?,?,?,?,?,?)";
 
     Object [][] legArgs = {
       // Cargo 5: Hongkong - Melbourne - Stockholm - Helsinki
-      {1,1,10,3,2},
-      {2,1,11,2,1},
-      {3,1,11,1,5},
+      {1,1,10,3,2,0},
+      {2,1,11,2,1,1},
+      {3,1,11,1,5,2},
       // Cargo 6: Hamburg - Stockholm - Chicago - Tokyo
-      {4,2,12,6,1},
-      {5,2,13,1,7},
-      {6,2,14,7,4}
+      {4,2,12,6,1,0},
+      {5,2,13,1,7,1},
+      {6,2,14,7,4,2}
     };
     executeUpdate(jdbcTemplate, legSql, legArgs);
   }

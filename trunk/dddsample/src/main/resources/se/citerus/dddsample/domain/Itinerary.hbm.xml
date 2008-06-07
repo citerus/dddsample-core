@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field">
+  <class name="se.citerus.dddsample.domain.Itinerary" table="Itinerary">
+    <id name="id" column="id">
+      <generator class="org.hibernate.id.IdentityGenerator"/>
+    </id>
+    <list name="legs" cascade="all">
+      <key column="itinerary_id"/>
+      <index column="leg_index"/>
+      <one-to-many class="se.citerus.dddsample.domain.Leg"/>
+    </list>
+  </class>
+</hibernate-mapping>
