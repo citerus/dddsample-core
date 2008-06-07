@@ -26,7 +26,7 @@ public class RoutingServiceImpl implements RoutingService {
   Random random = new Random();
 
   @Transactional(readOnly = true)
-  public List<ItineraryCandidateDTO> calculatePossibleRoutes(TrackingId trackingId, Specification specification) {
+  public List<ItineraryCandidateDTO> calculatePossibleRoutes(TrackingId trackingId, RouteSpecification routeSpecification) {
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       return Collections.emptyList();
@@ -35,7 +35,7 @@ public class RoutingServiceImpl implements RoutingService {
     List<Location> allLocations = locationRepository.findAll();
 
     allLocations.remove(cargo.origin());
-    allLocations.remove(cargo.finalDestination());
+    allLocations.remove(cargo.destination());
 
     final int candidateCount = getRandomNumberOfCandidates();
     final List<ItineraryCandidateDTO> candidates = new ArrayList<ItineraryCandidateDTO>(candidateCount);
@@ -54,7 +54,7 @@ public class RoutingServiceImpl implements RoutingService {
       }
 
       final Location lastLegFrom = allLocations.get(allLocations.size() - 1);
-      legs.add(new Leg(getRandomCarrierMovement(), lastLegFrom, cargo.finalDestination()));
+      legs.add(new Leg(getRandomCarrierMovement(), lastLegFrom, cargo.destination()));
 
       final Itinerary itinerary = new Itinerary(legs);
       candidates.add(assembler.toDTO(itinerary));
