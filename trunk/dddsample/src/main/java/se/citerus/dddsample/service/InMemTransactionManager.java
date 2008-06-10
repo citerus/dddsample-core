@@ -7,7 +7,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.SimpleTransactionStatus;
 
 /**
- * 
+ * Simple no-op transaction manager to allow for in-memory "persistence"
+ * implementation to be plugged in transparently.
  */
 public class InMemTransactionManager implements PlatformTransactionManager {
 

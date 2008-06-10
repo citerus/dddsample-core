@@ -2,7 +2,9 @@ package se.citerus.dddsample.domain;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A few locations for easy testing.
@@ -22,13 +24,14 @@ public class SampleLocations {
   public static final Location HANGZOU = new Location(new UnLocode("CNHGH"), "Hangzhou");
   public static final Location NEWYORK = new Location(new UnLocode("USNYC"), "New York");
 
-  public static final List<Location> ALL = new ArrayList<Location>();
+  public static final Map<UnLocode, Location> ALL = new HashMap();
 
   static {
     for (Field field : SampleLocations.class.getDeclaredFields()) {
       if (field.getType().equals(Location.class)) {
         try {
-          ALL.add((Location) field.get(null));
+          Location location = (Location) field.get(null);
+          ALL.put(location.unLocode(), location);
         } catch (IllegalAccessException e) {
           throw new RuntimeException(e);
         }
@@ -37,7 +40,11 @@ public class SampleLocations {
   }
 
   public static List<Location> getAll() {
-    return ALL;
+    return new ArrayList(ALL.values());
+  }
+
+  public static Location lookup(UnLocode unLocode) {
+    return ALL.get(unLocode);
   }
 
 }

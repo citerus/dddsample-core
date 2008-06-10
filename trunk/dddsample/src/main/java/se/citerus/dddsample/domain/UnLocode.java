@@ -51,6 +51,11 @@ public final class UnLocode {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
+  @Override
+  public String toString() {
+    return idString();
+  }
+
   UnLocode() {
     // Needed by Hibernate
   }

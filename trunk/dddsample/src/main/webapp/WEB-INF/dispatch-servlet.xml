@@ -3,6 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+  <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+    <property name="interceptors">
+      <list>
+        <ref bean="openSessionInViewInterceptor"/>
+      </list>
+    </property>
+  </bean>
+
   <bean name="/cargo/track.html" class="se.citerus.dddsample.web.CargoTrackingController">
     <property name="sessionForm" value="true"/>
     <property name="commandName" value="trackCommand"/>
@@ -17,6 +25,8 @@
   <bean name="/admin/*" class="se.citerus.dddsample.web.CargoAdminController">
     <property name="cargoService" ref="cargoService"/>
     <property name="routingService" ref="routingService"/>
+    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
+    <property name="locationRepository" ref="locationRepository"/>
   </bean>
 
 </beans>

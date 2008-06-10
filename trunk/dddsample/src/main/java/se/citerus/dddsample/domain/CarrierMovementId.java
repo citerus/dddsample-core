@@ -7,7 +7,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Identifies a particular carrier movement, such as a flight number.
  */
-public final class CarrierMovementId {
+public final class CarrierMovementId implements ValueObject<CarrierMovementId> {
 
   private String id;
 
@@ -38,8 +38,13 @@ public final class CarrierMovementId {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
+  @Override
+  public boolean sameValueAs(CarrierMovementId other) {
+    return other != null && this.id.equals(other.id);
+  }
+
   // Needed by hibernate
   CarrierMovementId() {
   }
-
+  
 }
