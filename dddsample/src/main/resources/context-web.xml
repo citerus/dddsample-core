@@ -33,5 +33,9 @@
   <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
     <property name="defaultLocale" value="en"/>
   </bean>
-  
+
+  <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+    <property name="sessionFactory" ref="sessionFactory"/>  
+  </bean>
+
 </beans>

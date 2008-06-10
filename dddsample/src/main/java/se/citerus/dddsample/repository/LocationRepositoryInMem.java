@@ -9,7 +9,7 @@ import java.util.List;
 public class LocationRepositoryInMem implements LocationRepository {
 
   public Location find(UnLocode unLocode) {
-    for (Location location : SampleLocations.ALL) {
+    for (Location location : SampleLocations.getAll()) {
       if (location.unLocode().equals(unLocode)) {
         return location;
       }
@@ -18,7 +18,7 @@ public class LocationRepositoryInMem implements LocationRepository {
   }
 
   public List<Location> findAll() {
-    return SampleLocations.ALL;
+    return SampleLocations.getAll();
   }
   
 }

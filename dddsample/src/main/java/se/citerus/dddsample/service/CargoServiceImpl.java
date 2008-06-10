@@ -6,14 +6,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.CarrierMovementRepository;
 import se.citerus.dddsample.repository.LocationRepository;
-import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.service.dto.assembler.CargoRoutingDTOAssembler;
 import se.citerus.dddsample.service.dto.assembler.CargoTrackingDTOAssembler;
-import se.citerus.dddsample.service.dto.assembler.ItineraryCandidateDTOAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +17,11 @@ public final class CargoServiceImpl implements CargoService {
 
   private CargoRepository cargoRepository;
   private LocationRepository locationRepository;
-  private CarrierMovementRepository carrierMovementRepository;
 
   private final Log logger = LogFactory.getLog(getClass());
-               
+
   @Transactional(readOnly = false)
-  public TrackingId registerNew(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
+  public TrackingId registerNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
 
@@ -43,7 +37,7 @@ public final class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = true)
-  public List<UnLocode> shippingLocations() {
+  public List<UnLocode> listShippingLocations() {
     final List<Location> allLocations = locationRepository.findAll();
     final List<UnLocode> unlocodes = new ArrayList<UnLocode>(allLocations.size());
     for (Location location : allLocations) {
@@ -52,8 +46,7 @@ public final class CargoServiceImpl implements CargoService {
     return unlocodes;
   }
 
-  // TODO: move to TrackingService, rename this class BookingService, to match course
-  // TODO: remove all DTOs from BookingService, only keep DTOs in TrackingService
+  // TODO: move track() and notify() to TrackingService, rename this class BookingService
   @Transactional(readOnly = true)
   public CargoTrackingDTO track(final TrackingId trackingId) {
     Validate.notNull(trackingId);
@@ -66,7 +59,6 @@ public final class CargoServiceImpl implements CargoService {
     return new CargoTrackingDTOAssembler().toDTO(cargo);
   }
 
-  // TODO: move this to another class?
   @Transactional(readOnly = true)
   public void notify(final TrackingId trackingId) {
     Validate.notNull(trackingId);
@@ -89,45 +81,34 @@ public final class CargoServiceImpl implements CargoService {
   }
 
   @Transactional(readOnly = true)
-  public List<CargoRoutingDTO> loadAllForRouting() {
+  public List<Cargo> listAllCargos() {
     final List<Cargo> allCargos = cargoRepository.findAll();
-
-    final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
-    final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(allCargos.size());
-
-    for (Cargo cargo : allCargos) {
-      dtoList.add(assembler.toDTO(cargo));
-    }
-
-    return dtoList;
+    // TODO: specification pattern might be useful here, too
+    return allCargos;
   }
 
   @Transactional(readOnly = true)
-  public CargoRoutingDTO loadForRouting(final TrackingId trackingId) {
+  public Cargo loadCargoForRouting(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
     // TODO obtain offline lock
     final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      return null;
-    }
 
-    return new CargoRoutingDTOAssembler().toDTO(cargo);
+    return cargo;
   }
 
   @Transactional(readOnly = false)
-  public void assignItinerary(final TrackingId trackingId, final ItineraryCandidateDTO dto) {
+  public void assignCargoToRoute(final TrackingId trackingId, final Itinerary newItinerary) {
     Validate.notNull(trackingId);
-    Validate.notNull(dto);
+    Validate.notNull(newItinerary);
 
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
     }
 
-    final ItineraryCandidateDTOAssembler itineraryCandidateDTOAssembler = new ItineraryCandidateDTOAssembler();
-    final Itinerary newItinerary = itineraryCandidateDTOAssembler.fromDTO(dto, carrierMovementRepository, locationRepository);
-
+    // TODO try to leave as much of orphan deletion as possible to the OR mapper - rethink mapping, or implement transparent callback
+    
     // Delete orphaned itinerary - it's just a value object
     final Itinerary oldItinerary = cargo.itinerary();
     cargoRepository.deleteItinerary(oldItinerary);
@@ -137,9 +118,10 @@ public final class CargoServiceImpl implements CargoService {
     cargo.attachItinerary(newItinerary);
     cargoRepository.save(cargo);
 
+    logger.info("Assigned cargo " + trackingId + " to new route");
+
     // TODO release offline lock
   }
-
 
   public void setCargoRepository(final CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
@@ -147,10 +129,6 @@ public final class CargoServiceImpl implements CargoService {
 
   public void setLocationRepository(final LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
-  }
-
-  public void setCarrierMovementRepository(final CarrierMovementRepository carrierMovementRepository) {
-    this.carrierMovementRepository = carrierMovementRepository;
   }
 
 }

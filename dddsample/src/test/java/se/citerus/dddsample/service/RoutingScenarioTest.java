@@ -3,7 +3,6 @@ package se.citerus.dddsample.service;
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -19,14 +18,17 @@ public class RoutingScenarioTest extends TestCase {
 
     TrackingId trackingId = new TrackingId("XYZ123");
     Cargo cargo = cargoRepository.find(trackingId);
-    RouteSpecification routeSpecification = null;
+
+    Date twoWeeksFromNow = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 14);
+
+    RouteSpecification routeSpecification = RouteSpecification.forCargo(cargo, twoWeeksFromNow);
 
     /*
       The routing service calculates a number of possible routes that
       satisfy the given specification (must arrive in three days, must not
       cost more than $10,000 etc).
      */
-    List<ItineraryCandidateDTO> itineraryCandidates = routingService.calculatePossibleRoutes(trackingId, routeSpecification);
+    List<Itinerary> itineraryCandidates = routingService.requestPossibleRoutes(routeSpecification);
 
     /*
       Someone, or something, selects the most appropriate itinerary and
@@ -64,8 +66,8 @@ public class RoutingScenarioTest extends TestCase {
   }
 
 
-  private Itinerary stubbedItinerarySelection(List<ItineraryCandidateDTO> itineraryCandidates) {
-    return null;
+  private Itinerary stubbedItinerarySelection(List<Itinerary> itineraryCandidates) {
+    return itineraryCandidates.get(0);
   }
 
 }

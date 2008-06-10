@@ -12,7 +12,6 @@
   <bean id="cargoService" class="se.citerus.dddsample.service.CargoServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
-    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
   </bean>
 
   <bean id="handlingEventService" class="se.citerus.dddsample.service.HandlingEventServiceImpl">
@@ -25,8 +24,8 @@
 
   <bean id="routingService" class="se.citerus.dddsample.service.RoutingServiceImpl">
     <property name="locationRepository" ref="locationRepository"/>
-    <property name="cargoRepository" ref="cargoRepository"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
+    <property name="graphTraversalService" ref="graphTraversalService"/>
   </bean>
 
 </beans>

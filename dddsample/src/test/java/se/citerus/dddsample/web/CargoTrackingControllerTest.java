@@ -13,9 +13,7 @@ import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.SampleLocations.TOKYO;
 import se.citerus.dddsample.service.CargoService;
-import se.citerus.dddsample.service.dto.CargoRoutingDTO;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
 import java.util.Date;
@@ -116,11 +114,11 @@ public class CargoTrackingControllerTest extends TestCase {
   }
 
   private class EmptyStubCargoService implements CargoService {
-    public TrackingId registerNew(UnLocode origin, UnLocode destination) {
+    public TrackingId registerNewCargo(UnLocode origin, UnLocode destination) {
       return null;
     }
 
-    public List<UnLocode> shippingLocations() {
+    public List<UnLocode> listShippingLocations() {
       return null;
     }
 
@@ -131,15 +129,15 @@ public class CargoTrackingControllerTest extends TestCase {
     public void notify(TrackingId trackingId) {
     }
 
-    public CargoRoutingDTO loadForRouting(TrackingId trackingId) {
+    public Cargo loadCargoForRouting(TrackingId trackingId) {
       return null;
     }
 
-    public List<CargoRoutingDTO> loadAllForRouting() {
+    public List<Cargo> listAllCargos() {
       return null;
     }
 
-    public void assignItinerary(TrackingId trackingId, ItineraryCandidateDTO itinerary) {
+    public void assignCargoToRoute(TrackingId trackingId, Itinerary itinerary) {
     }
 
   }

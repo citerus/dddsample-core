@@ -28,6 +28,7 @@
       classpath:context-messaging-jms.xml
 
       classpath:context-service.xml
+      classpath:context-routing.xml
       classpath:context-remote.xml
       classpath:context-web.xml
     </param-value>
