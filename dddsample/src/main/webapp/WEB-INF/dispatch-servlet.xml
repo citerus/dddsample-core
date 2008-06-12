@@ -16,15 +16,15 @@
     <property name="commandName" value="trackCommand"/>
     <property name="formView" value="cargo/track"/>
     <property name="successView" value="start"/>
-    <property name="cargoService" ref="cargoService"/>
+    <property name="trackingService" ref="trackingService"/>
     <property name="validator" ref="trackCommandValidator"/>
   </bean>
 
   <bean id="trackCommandValidator" class="se.citerus.dddsample.web.command.TrackCommandValidator"/>
 
   <bean name="/admin/*" class="se.citerus.dddsample.web.CargoAdminController">
-    <property name="cargoService" ref="cargoService"/>
     <property name="routingService" ref="routingService"/>
+    <property name="bookingService" ref="bookingService"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
   </bean>

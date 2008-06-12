@@ -4,7 +4,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.service.CargoService;
+import se.citerus.dddsample.service.TrackingService;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
@@ -21,7 +21,7 @@ public final class CargoTrackingController extends SimpleFormController {
   /**
    * Service instance.
    */
-  private CargoService cargoService;
+  private TrackingService trackingService;
 
   public CargoTrackingController() {
     setCommandClass(TrackCommand.class);
@@ -33,7 +33,7 @@ public final class CargoTrackingController extends SimpleFormController {
 
     final TrackCommand trackCommand = (TrackCommand) command;
     final String tidStr = trackCommand.getTrackingId();
-    final CargoTrackingDTO cargo = cargoService.track(new TrackingId(tidStr));
+    final CargoTrackingDTO cargo = trackingService.track(new TrackingId(tidStr));
 
     final Map<String, CargoTrackingDTO> model = new HashMap<String, CargoTrackingDTO>();
     if (cargo != null) {
@@ -45,14 +45,7 @@ public final class CargoTrackingController extends SimpleFormController {
     return showForm(request, response, errors, model);
   }
 
-
-  /**
-   * Sets the cargo service instance.
-   *
-   * @param cargoService The service.
-   */
-  public void setCargoService(final CargoService cargoService) {
-    this.cargoService = cargoService;
+  public void setTrackingService(TrackingService trackingService) {
+    this.trackingService = trackingService;
   }
-
 }

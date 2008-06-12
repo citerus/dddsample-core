@@ -20,7 +20,7 @@
   <amq:topic id="handlingEventTopic" name="HandlingEventTopic" physicalName="HandlingEventTopic"/>
 
   <bean id="handlingEventMessageDelegate" class="se.citerus.dddsample.service.HandlingEventMessageDelegate">
-    <property name="cargoService" ref="cargoService"/>
+    <property name="trackingService" ref="trackingService"/>
   </bean>
 
   <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">

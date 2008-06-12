@@ -9,9 +9,13 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="cargoService" class="se.citerus.dddsample.service.CargoServiceImpl">
+  <bean id="bookingService" class="se.citerus.dddsample.service.BookingServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
+  </bean>
+
+  <bean id="trackingService" class="se.citerus.dddsample.service.TrackingServiceImpl">
+    <property name="cargoRepository" ref="cargoRepository"/>
   </bean>
 
   <bean id="handlingEventService" class="se.citerus.dddsample.service.HandlingEventServiceImpl">
