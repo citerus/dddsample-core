@@ -6,8 +6,6 @@ import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -43,37 +41,24 @@ public class TrackingServiceTest extends TestCase {
 
 
     // Tested call
-    CargoTrackingDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
+    Cargo trackedCargo = cargoService.track(new TrackingId("XYZ"));
 
+    assertEquals(cargo, trackedCargo);
 
-    assertEquals("XYZ", cargoDTO.getTrackingId());
-    assertEquals("SESTO (Stockholm)", cargoDTO.getOrigin());
-    assertEquals("USCHI (Chicago)", cargoDTO.getFinalDestination());
-    assertEquals("USCHI", cargoDTO.getCurrentLocationId());
-
-    List<HandlingEventDTO> events = cargoDTO.getEvents();
+    List<HandlingEvent> events = trackedCargo.deliveryHistory().eventsOrderedByCompletionTime();
     assertEquals(3, events.size());
 
     // Claim happened first
-    HandlingEventDTO eventDTO = events.get(0);
-    assertEquals("SESTO (Stockholm)", eventDTO.getLocation());
-    assertEquals("CLAIM", eventDTO.getType());
-    assertEquals("", eventDTO.getCarrier());
-    assertEquals(new Date(10), eventDTO.getTime());
+    HandlingEvent handlingEvent = events.get(0);
+    assertEquals(claimed, handlingEvent);
 
     // Then load
-    eventDTO = events.get(1);
-    assertEquals("SESTO (Stockholm)", eventDTO.getLocation());
-    assertEquals("LOAD", eventDTO.getType());
-    assertEquals("CAR_001", eventDTO.getCarrier());
-    assertEquals(new Date(12), eventDTO.getTime());
+    handlingEvent = events.get(1);
+    assertEquals(loaded, handlingEvent);
 
     // Finally unload
-    eventDTO = events.get(2);
-    assertEquals("USCHI (Chicago)", eventDTO.getLocation());
-    assertEquals("UNLOAD", eventDTO.getType());
-    assertEquals("CAR_001", eventDTO.getCarrier());
-    assertEquals(new Date(100), eventDTO.getTime());
+    handlingEvent = events.get(2);
+    assertEquals(unloaded, handlingEvent);
   }
 
   public void testTrackNullResult() {
@@ -81,9 +66,9 @@ public class TrackingServiceTest extends TestCase {
     replay(cargoRepository);
 
     // Tested call
-    CargoTrackingDTO cargoDTO = cargoService.track(new TrackingId("XYZ"));
+    Cargo cargo = cargoService.track(new TrackingId("XYZ"));
     
-    assertNull(cargoDTO);
+    assertNull(cargo);
   }
 
   protected void onTearDown() throws Exception {

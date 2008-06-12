@@ -1,7 +1,7 @@
 package se.citerus.dddsample.service;
 
+import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.TrackingId;
-import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 
 /**
  * Cargo tracking service.
@@ -10,10 +10,12 @@ import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 public interface TrackingService {
 
   /**
-   * @param trackingId tracking id
+   * Track a particular cargo.
+   *
+   * @param trackingId cargo tracking id
    * @return A cargo and its delivery history, or null if no cargo with given tracking id is found.
    */
-  CargoTrackingDTO track(TrackingId trackingId);
+  Cargo track(TrackingId trackingId);
 
   /**
    * Send relevant notifications to interested parties,

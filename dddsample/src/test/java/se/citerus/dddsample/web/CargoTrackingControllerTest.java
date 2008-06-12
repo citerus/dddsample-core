@@ -10,15 +10,16 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
 import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.DeliveryHistory;
 import se.citerus.dddsample.domain.HandlingEvent;
 import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.SampleLocations.TOKYO;
-import se.citerus.dddsample.domain.StatusCode;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.service.TrackingService;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class CargoTrackingControllerTest extends TestCase {
@@ -44,24 +45,12 @@ public class CargoTrackingControllerTest extends TestCase {
   private TrackingService getCargoServiceMock() {
     return new EmptyStubTrackingService() {
 
-      public CargoTrackingDTO track(TrackingId trackingId) {
+      public Cargo track(TrackingId trackingId) {
         final Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
         final HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
-
-        final CargoTrackingDTO cargoDTO = new CargoTrackingDTO(
-          cargo.trackingId().idString(),
-          cargo.origin().unLocode().idString(),
-          cargo.destination().unLocode().idString(),
-          StatusCode.CLAIMED,
-          "AAAAA",
-          "BALO",
-          false);
-        cargoDTO.addEvent(event.location().unLocode().idString(),
-          event.type().toString(),
-          null,
-          event.completionTime(),
-          true);
-        return cargoDTO;
+        cargo.setDeliveryHistory(new DeliveryHistory(Arrays.asList(event)));
+        
+        return cargo;
       }
     };
   }
@@ -92,7 +81,7 @@ public class CargoTrackingControllerTest extends TestCase {
     // Errors, command are two standard map attributes, the third should be the cargo object
     assertEquals(3, mav.getModel().size());
     CargoTrackingDTO cargo = (CargoTrackingDTO) mav.getModel().get("cargo");
-    assertEquals("AAAAA", cargo.getCurrentLocationId());
+    assertEquals("CNHKG", cargo.getCurrentLocationId());
   }
 
   public void testUnknownCargo() throws Exception {
@@ -116,7 +105,7 @@ public class CargoTrackingControllerTest extends TestCase {
   }
 
   private class EmptyStubTrackingService implements TrackingService {
-    public CargoTrackingDTO track(TrackingId trackingId) {
+    public Cargo track(TrackingId trackingId) {
       return null;
     }
     public void notify(TrackingId trackingId) {

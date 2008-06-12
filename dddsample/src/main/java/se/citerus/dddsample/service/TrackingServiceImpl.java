@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.Cargo;
 import se.citerus.dddsample.domain.TrackingId;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.assembler.CargoTrackingDTOAssembler;
 
 public class TrackingServiceImpl implements TrackingService {
 
@@ -17,15 +15,10 @@ public class TrackingServiceImpl implements TrackingService {
   private final Log logger = LogFactory.getLog(getClass());
 
   @Transactional(readOnly = true)
-  public CargoTrackingDTO track(final TrackingId trackingId) {
+  public Cargo track(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
-    final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      return null;
-    }
-
-    return new CargoTrackingDTOAssembler().toDTO(cargo);
+    return cargoRepository.find(trackingId);
   }
 
   @Transactional(readOnly = true)
