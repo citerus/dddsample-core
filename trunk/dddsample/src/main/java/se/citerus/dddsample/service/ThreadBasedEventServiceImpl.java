@@ -7,17 +7,17 @@ import se.citerus.dddsample.domain.HandlingEvent;
  */
 public class ThreadBasedEventServiceImpl implements EventService {
 
-  private CargoService cargoService;
+  private TrackingService trackingService;
 
   public void fireHandlingEventRegistered(final HandlingEvent event) {
     new Thread(new Runnable() {
       public void run() {
-        cargoService.notify(event.cargo().trackingId());
+        trackingService.notify(event.cargo().trackingId());
       }
     }).start();
   }
 
-  public void setCargoService(CargoService cargoService) {
-    this.cargoService = cargoService;
+  public void setTrackingService(TrackingService trackingService) {
+    this.trackingService = trackingService;
   }
 }

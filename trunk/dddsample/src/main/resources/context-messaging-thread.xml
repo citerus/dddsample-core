@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean id="eventService" class="se.citerus.dddsample.service.ThreadBasedEventServiceImpl">
-    <property name="cargoService" ref="cargoService"/>
+    <property name="bookingService" ref="bookingService"/>
   </bean>
 
 </beans>

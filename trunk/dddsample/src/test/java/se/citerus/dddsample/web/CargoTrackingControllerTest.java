@@ -9,15 +9,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.domain.*;
+import se.citerus.dddsample.domain.Cargo;
+import se.citerus.dddsample.domain.HandlingEvent;
 import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.SampleLocations.TOKYO;
-import se.citerus.dddsample.service.CargoService;
+import se.citerus.dddsample.domain.StatusCode;
+import se.citerus.dddsample.domain.TrackingId;
+import se.citerus.dddsample.service.TrackingService;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.web.command.TrackCommand;
 
 import java.util.Date;
-import java.util.List;
 
 public class CargoTrackingControllerTest extends TestCase {
   CargoTrackingController controller;
@@ -39,8 +41,8 @@ public class CargoTrackingControllerTest extends TestCase {
     controller.setCommandName("test-command-name");
   }
 
-  private CargoService getCargoServiceMock() {
-    return new EmptyStubCargoService() {
+  private TrackingService getCargoServiceMock() {
+    return new EmptyStubTrackingService() {
 
       public CargoTrackingDTO track(TrackingId trackingId) {
         final Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
@@ -64,12 +66,12 @@ public class CargoTrackingControllerTest extends TestCase {
     };
   }
 
-  private CargoService getCargoServiceNullMock() {
-    return new EmptyStubCargoService();
+  private TrackingService getTrackingServiceNullMock() {
+    return new EmptyStubTrackingService();
   }
 
   public void testHandleGet() throws Exception {
-    controller.setCargoService(getCargoServiceMock());
+    controller.setTrackingService(getCargoServiceMock());
     request.setMethod("GET");
 
     ModelAndView mav = controller.handleRequest(request, response);
@@ -80,7 +82,7 @@ public class CargoTrackingControllerTest extends TestCase {
   }
 
   public void testHandlePost() throws Exception {
-    controller.setCargoService(getCargoServiceMock());
+    controller.setTrackingService(getCargoServiceMock());
     request.addParameter("trackingId", "JKL456");
     request.setMethod("POST");
 
@@ -94,7 +96,7 @@ public class CargoTrackingControllerTest extends TestCase {
   }
 
   public void testUnknownCargo() throws Exception {
-    controller.setCargoService(getCargoServiceNullMock());
+    controller.setTrackingService(getTrackingServiceNullMock());
     request.setMethod("POST");
     request.setParameter("trackingId", "unknown-id");
 
@@ -113,32 +115,11 @@ public class CargoTrackingControllerTest extends TestCase {
     assertEquals(command.getTrackingId(), fe.getArguments()[0]);
   }
 
-  private class EmptyStubCargoService implements CargoService {
-    public TrackingId registerNewCargo(UnLocode origin, UnLocode destination) {
-      return null;
-    }
-
-    public List<UnLocode> listShippingLocations() {
-      return null;
-    }
-
+  private class EmptyStubTrackingService implements TrackingService {
     public CargoTrackingDTO track(TrackingId trackingId) {
       return null;
     }
-
     public void notify(TrackingId trackingId) {
     }
-
-    public Cargo loadCargoForRouting(TrackingId trackingId) {
-      return null;
-    }
-
-    public List<Cargo> listAllCargos() {
-      return null;
-    }
-
-    public void assignCargoToRoute(TrackingId trackingId, Itinerary itinerary) {
-    }
-
   }
 }

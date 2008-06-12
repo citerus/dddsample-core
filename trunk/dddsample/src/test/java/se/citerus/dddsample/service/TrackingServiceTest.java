@@ -6,7 +6,6 @@ import se.citerus.dddsample.domain.*;
 import static se.citerus.dddsample.domain.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.repository.CargoRepository;
-import se.citerus.dddsample.repository.LocationRepository;
 import se.citerus.dddsample.service.dto.CargoTrackingDTO;
 import se.citerus.dddsample.service.dto.HandlingEventDTO;
 
@@ -15,19 +14,16 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CargoServiceTest extends TestCase {
+public class TrackingServiceTest extends TestCase {
 
-  CargoServiceImpl cargoService;
+  TrackingServiceImpl cargoService;
   CargoRepository cargoRepository;
-  LocationRepository locationRepository;
 
   protected void setUp() throws Exception {
-    cargoService = new CargoServiceImpl();
+    cargoService = new TrackingServiceImpl();
     cargoRepository = createMock(CargoRepository.class);
-    locationRepository = createMock(LocationRepository.class);
 
     cargoService.setCargoRepository(cargoRepository);
-    cargoService.setLocationRepository(locationRepository);
   }
 
   public void testTrackingScenario() {
@@ -90,32 +86,8 @@ public class CargoServiceTest extends TestCase {
     assertNull(cargoDTO);
   }
 
-  public void testRegisterNew() {
-    TrackingId expectedTrackingId = new TrackingId("TRK1");
-    UnLocode fromUnlocode = new UnLocode("USCHI");
-    UnLocode toUnlocode = new UnLocode("SESTO");
-
-    expect(cargoRepository.nextTrackingId()).andReturn(expectedTrackingId);
-    expect(locationRepository.find(fromUnlocode)).andReturn(CHICAGO);
-    expect(locationRepository.find(toUnlocode)).andReturn(STOCKHOLM);
-
-    cargoRepository.save(isA(Cargo.class));
-
-    replay(cargoRepository, locationRepository);
-    
-    TrackingId trackingId = cargoService.registerNewCargo(fromUnlocode, toUnlocode);
-    assertEquals(expectedTrackingId, trackingId);
-  }
-
-  public void testRegisterNewNullArguments() {
-    try {
-      cargoService.registerNewCargo(null, null);
-      fail("Null arguments should not be allowed");
-    } catch (IllegalArgumentException expected) {}
-  }
-
   protected void onTearDown() throws Exception {
-    verify(cargoRepository, locationRepository);
+    verify(cargoRepository);
   }
 
 }

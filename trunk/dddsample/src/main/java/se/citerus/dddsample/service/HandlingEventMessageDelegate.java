@@ -18,7 +18,7 @@ import javax.jms.MessageListener;
  */
 public class HandlingEventMessageDelegate implements MessageListener {
 
-  private CargoService cargoService;
+  private TrackingService trackingService;
   private final Log logger = LogFactory.getLog(getClass());
 
   public void onMessage(final Message message) {
@@ -27,13 +27,13 @@ public class HandlingEventMessageDelegate implements MessageListener {
     }
     try {
       String tidString = message.getStringProperty(JmsEventServiceImpl.TRACKING_ID_KEY);
-      cargoService.notify(new TrackingId(tidString));
+      trackingService.notify(new TrackingId(tidString));
     } catch (JMSException e) {
       logger.error(e, e);
     }
   }
 
-  public void setCargoService(CargoService cargoService) {
-    this.cargoService = cargoService;
+  public void setTrackingService(TrackingService trackingService) {
+    this.trackingService = trackingService;
   }
 }

@@ -7,13 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.LocationRepository;
-import se.citerus.dddsample.service.dto.CargoTrackingDTO;
-import se.citerus.dddsample.service.dto.assembler.CargoTrackingDTOAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CargoServiceImpl implements CargoService {
+public final class BookingServiceImpl implements BookingService {
 
   private CargoRepository cargoRepository;
   private LocationRepository locationRepository;
@@ -44,40 +42,6 @@ public final class CargoServiceImpl implements CargoService {
       unlocodes.add(location.unLocode());
     }
     return unlocodes;
-  }
-
-  // TODO: move track() and notify() to TrackingService, rename this class BookingService
-  @Transactional(readOnly = true)
-  public CargoTrackingDTO track(final TrackingId trackingId) {
-    Validate.notNull(trackingId);
-
-    final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      return null;
-    }
-
-    return new CargoTrackingDTOAssembler().toDTO(cargo);
-  }
-
-  @Transactional(readOnly = true)
-  public void notify(final TrackingId trackingId) {
-    Validate.notNull(trackingId);
-
-    final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      logger.warn("Can't notify listeners for non-existing cargo " + trackingId);
-      return;
-    }
-
-    // TODO: more elaborate notifications, such as email to affected customer
-    if (cargo.isMisdirected()) {
-      logger.info("Cargo " + trackingId + " has been misdirected. " +
-        "Last event was " + cargo.deliveryHistory().lastEvent());
-    }
-    if (cargo.isUnloadedAtDestination()) {
-      logger.info("Cargo " + trackingId + " has been unloaded " +
-        "at its final destination " + cargo.destination());
-    }
   }
 
   @Transactional(readOnly = true)
