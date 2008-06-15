@@ -1,7 +1,6 @@
 package se.citerus.dddsample.repository;
 
 import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.Itinerary;
 import se.citerus.dddsample.domain.TrackingId;
 
 import java.util.List;
@@ -35,10 +34,4 @@ public interface CargoRepository {
    */
   TrackingId nextTrackingId();
 
-  /**
-   * Deletes an itinerary.
-   *
-   * @param itinerary itinerary to delete
-   */
-  void deleteItinerary(Itinerary itinerary);
 }
