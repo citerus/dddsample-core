@@ -8,13 +8,14 @@ import se.citerus.dddsample.domain.*;
 import se.citerus.dddsample.repository.CargoRepository;
 import se.citerus.dddsample.repository.LocationRepository;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public final class BookingServiceImpl implements BookingService {
 
   private CargoRepository cargoRepository;
   private LocationRepository locationRepository;
+  private RoutingService routingService;
 
   private final Log logger = LogFactory.getLog(getClass());
 
@@ -35,23 +36,6 @@ public final class BookingServiceImpl implements BookingService {
   }
 
   @Transactional(readOnly = true)
-  public List<UnLocode> listShippingLocations() {
-    final List<Location> allLocations = locationRepository.findAll();
-    final List<UnLocode> unlocodes = new ArrayList<UnLocode>(allLocations.size());
-    for (Location location : allLocations) {
-      unlocodes.add(location.unLocode());
-    }
-    return unlocodes;
-  }
-
-  @Transactional(readOnly = true)
-  public List<Cargo> listAllCargos() {
-    final List<Cargo> allCargos = cargoRepository.findAll();
-    // TODO: specification pattern might be useful here, too
-    return allCargos;
-  }
-
-  @Transactional(readOnly = true)
   public Cargo loadCargoForRouting(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
@@ -59,6 +43,14 @@ public final class BookingServiceImpl implements BookingService {
     final Cargo cargo = cargoRepository.find(trackingId);
 
     return cargo;
+  }
+
+  @Transactional(readOnly = true)
+  public List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId) {
+    final Cargo cargo = loadCargoForRouting(trackingId);
+    final RouteSpecification routeSpecification = RouteSpecification.forCargo(cargo, new Date());
+
+    return routingService.fetchRoutesForSpecification(routeSpecification);
   }
 
   @Transactional(readOnly = false)
@@ -71,7 +63,6 @@ public final class BookingServiceImpl implements BookingService {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
     }
 
-    // Assign the new itinerary to the cargo
     cargo.attachItinerary(newItinerary);
     cargoRepository.save(cargo);
 
@@ -88,4 +79,7 @@ public final class BookingServiceImpl implements BookingService {
     this.locationRepository = locationRepository;
   }
 
+  public void setRoutingService(RoutingService routingService) {
+    this.routingService = routingService;
+  }
 }

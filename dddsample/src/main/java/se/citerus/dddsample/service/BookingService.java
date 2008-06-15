@@ -13,11 +13,6 @@ import java.util.List;
 public interface BookingService {
 
   /**
-   * @return A list of all locations where the company ships cargo to.
-   */
-  List<UnLocode> listShippingLocations();
-
-  /**
    * Registers a new cargo in the tracking system, not yet routed.
    *
    * @param origin      cargo origin
@@ -35,18 +30,19 @@ public interface BookingService {
   Cargo loadCargoForRouting(TrackingId trackingId);
 
   /**
+   * Requests a list of itineraries describing possible routes for this cargo.
+   * 
+   * @param trackingId cargo tracking id
+   * @return A list of possible itineraries for this cargo 
+   */
+  List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId);
+
+  /**
    * Assigns a cargo to route.
    *
    * @param trackingId cargo tracking id
    * @param itinerary  the new itinerary describing the route
    */
   void assignCargoToRoute(TrackingId trackingId, Itinerary itinerary);
-
-  /**
-   * Lists all cargos.
-   *
-   * @return All cargos.
-   */
-  List<Cargo> listAllCargos();
 
 }
