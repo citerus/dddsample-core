@@ -33,9 +33,16 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
         it might be cumbersome to map the relation between cargo and handling event,
         since we want to be able to insert handling events regardless of locking status on cargo.
 
+
         If this extra database call were a problem, you might want to use a different model.
         For example, you could calculate the effect/status of the cargo and store it separate from the
         handling events. */
+
+    /*
+        TODO:
+        the decision whether or not to include the delivery history when loading cargo
+        seems to belong in the service layer, which defines use cases.
+     */
     DeliveryHistory deliveryHistory = new DeliveryHistory(handlingEventRepository.findEventsForCargo(tid));
     cargo.setDeliveryHistory(deliveryHistory);
 
@@ -55,21 +62,10 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
   }
 
   public TrackingId nextTrackingId() {
-    // TODO:
-    // Could be an opportunity to maybe illustrate how to handle pessimistic locking
-    // and aggregate boundaries, and maybe problems with a distributed application
-    // sharing a database. For now it's simply random though.
-    String random = UUID.randomUUID().toString().toUpperCase();
+    final String random = UUID.randomUUID().toString().toUpperCase();
     return new TrackingId(
       random.substring(0, random.indexOf("-"))
     );
-  }
-
-  public void deleteItinerary(Itinerary itinerary) {
-    // Itinerary should be mapped to cascade deletes to all its legs
-    if (itinerary != null) {
-      getSession().delete(itinerary);
-    }
   }
 
   public List<Cargo> findAll() {
