@@ -12,8 +12,8 @@
     <component name="trackingId" unique="true" update="false">
       <property name="id" column="tracking_id"/>
     </component>
-    <many-to-one name="origin" column="origin_id" cascade="none" fetch="join" update="false"/>
-    <many-to-one name="destination" column="destination_id" cascade="none" fetch="join"/>
-    <many-to-one name="itinerary" column="itinerary_id" cascade="all" fetch="join"/>
+    <many-to-one name="origin" column="origin_id" cascade="none" fetch="join" update="false" foreign-key="origin_fk"/>
+    <many-to-one name="destination" column="destination_id" cascade="none" fetch="join" foreign-key="destination_fk"/>
+    <one-to-one name="itinerary" property-ref="cargo" cascade="all" fetch="join"/>
   </class>
 </hibernate-mapping>

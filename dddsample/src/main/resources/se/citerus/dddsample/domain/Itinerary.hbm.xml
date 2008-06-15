@@ -10,9 +10,10 @@
       <generator class="org.hibernate.id.IdentityGenerator"/>
     </id>
     <list name="legs" cascade="all">
-      <key column="itinerary_id"/>
+      <key column="itinerary_id" foreign-key="itinerary_fk"/>
       <index column="leg_index"/>
       <one-to-many class="se.citerus.dddsample.domain.Leg"/>
     </list>
+    <many-to-one name="cargo" column="cargo_id" cascade="none" foreign-key="cargo_fk" not-null="false"/>
   </class>
 </hibernate-mapping>

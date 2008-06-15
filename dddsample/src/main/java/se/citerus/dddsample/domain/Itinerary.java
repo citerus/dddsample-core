@@ -11,6 +11,7 @@ import java.util.List;
  */
 public final class Itinerary implements ValueObject<Itinerary> {
 
+  private Cargo cargo;
   private List<Leg> legs = Collections.emptyList();
 
   static final Itinerary EMPTY_ITINERARY = new Itinerary();
@@ -28,7 +29,20 @@ public final class Itinerary implements ValueObject<Itinerary> {
   }
 
   /**
-   * @return the legs of this itinerary
+   * For maintaing referential integrity inside the Cargo aggregate,
+   * with package level visibility. 
+   *
+   * @see Cargo#attachItinerary(Itinerary)
+   * @see Cargo#detachItinerary()
+   *  
+   * @param cargo the cargo that this itinerary is for
+   */
+  void setCargo(Cargo cargo) {
+    this.cargo = cargo;
+  }
+  
+  /**
+   * @return the legs of this itinerary, as an <b>immutable</b> list.
    */
   public List<Leg> legs() {
     return legs;
