@@ -1,9 +1,11 @@
 package se.citerus.dddsample.service.dto;
 
+import java.io.Serializable;
+
 /**
  * DTO for a leg in an itinerary.
  */
-public final class LegDTO {
+public final class LegDTO implements Serializable {
 
   private final String carrierMovementId;
   private final String from;

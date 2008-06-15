@@ -1,5 +1,6 @@
 package se.citerus.dddsample.service.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * DTO for registering and routing a cargo.
  */
-public final class CargoRoutingDTO {
+public final class CargoRoutingDTO implements Serializable {
 
   private final String trackingId;
   private final String origin;

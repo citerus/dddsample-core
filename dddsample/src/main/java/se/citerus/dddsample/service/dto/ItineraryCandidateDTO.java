@@ -1,12 +1,13 @@
 package se.citerus.dddsample.service.dto;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * DTO for presenting and selecting an itinerary from a collection of candidates.
  */
-public final class ItineraryCandidateDTO {
+public final class ItineraryCandidateDTO implements Serializable {
 
   private final List<LegDTO> legs;
 
