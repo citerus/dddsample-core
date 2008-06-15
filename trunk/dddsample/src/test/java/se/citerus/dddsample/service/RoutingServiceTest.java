@@ -40,7 +40,7 @@ public class RoutingServiceTest extends TestCase {
     
     replay(carrierMovementRepository);
 
-    List<Itinerary> candidates = routingService.requestPossibleRoutes(routeSpecification);
+    List<Itinerary> candidates = routingService.fetchRoutesForSpecification(routeSpecification);
     assertNotNull(candidates);
     
     for (Itinerary itinerary : candidates) {

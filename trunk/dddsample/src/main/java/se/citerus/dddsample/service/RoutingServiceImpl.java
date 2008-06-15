@@ -23,7 +23,7 @@ public class RoutingServiceImpl implements RoutingService {
   private CarrierMovementRepository carrierMovementRepository;
 
   @Transactional(readOnly = true)
-  public List<Itinerary> requestPossibleRoutes(RouteSpecification routeSpecification) {
+  public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
     final Location origin = routeSpecification.origin();
     final Location destination = routeSpecification.destination();
 
