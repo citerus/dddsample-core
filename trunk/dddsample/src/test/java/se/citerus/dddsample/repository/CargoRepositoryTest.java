@@ -183,19 +183,4 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertFalse(trackingId.equals(trackingId2));
   }
 
-  public void testDeleteItinerary() {
-    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
-    Itinerary itinerary = cargo.itinerary();
-
-    cargoRepository.deleteItinerary(itinerary);
-    cargo.detachItinerary();
-
-    flush();
-    
-    Long itineraryId = getLongId(itinerary);
-    assertEquals(0, sjt.queryForInt("select count(*) from Itinerary where id = ?", itineraryId));
-    assertEquals(0, sjt.queryForInt("select count(*) from Leg where itinerary_id = ?", itineraryId));
-    assertNull(sjt.queryForMap("select * from Cargo where tracking_id = 'FGH'").get("ITINERARY_ID"));
-  }
-
 }
