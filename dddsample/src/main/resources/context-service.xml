@@ -12,6 +12,7 @@
   <bean id="bookingService" class="se.citerus.dddsample.service.BookingServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
+    <property name="routingService" ref="routingService"/>
   </bean>
 
   <bean id="trackingService" class="se.citerus.dddsample.service.TrackingServiceImpl">
