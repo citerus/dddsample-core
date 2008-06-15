@@ -43,7 +43,15 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
   }
 
   public void save(Cargo cargo) {
-    getSession().saveOrUpdate(cargo);
+    getSession().persist(cargo);
+
+    // Delete orphaned itineraries
+    final List<Itinerary> orphans = getSession().
+      createQuery("from Itinerary where cargo = null").
+      list();
+    for (Itinerary orphan : orphans) {
+      getSession().delete(orphan);
+    }
   }
 
   public TrackingId nextTrackingId() {

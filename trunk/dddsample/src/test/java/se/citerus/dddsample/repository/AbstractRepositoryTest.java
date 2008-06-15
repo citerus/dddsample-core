@@ -48,6 +48,7 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
     return sessionFactory.getCurrentSession();
   }
 
+  // Instead of exposing a getId() on persistent classes
   protected Long getLongId(Object o) {
     if (getSession().contains(o)) {
       return (Long) getSession().getIdentifier(o);

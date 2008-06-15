@@ -96,19 +96,25 @@ public final class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * Assigns a new itinerary to this cargo.
+   * Attach a new itinerary to this cargo.
    *
-   * @param itinerary an itinerary. Mat not be null.
+   * @param itinerary an itinerary. May not be null.
    */
   public void attachItinerary(final Itinerary itinerary) {
     Validate.notNull(itinerary);
+
+    // Decouple the old itinerary from this cargo 
+    itinerary().setCargo(null);
+    // Couple this cargo and the new itinerary
     this.itinerary = itinerary;
+    itinerary().setCargo(this);
   }
 
   /**
    * Detaches the current itinerary from the cargo.
    */
   public void detachItinerary() {
+    itinerary().setCargo(null);
     this.itinerary = null;
   }
 

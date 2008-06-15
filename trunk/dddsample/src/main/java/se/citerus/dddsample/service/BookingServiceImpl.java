@@ -71,13 +71,6 @@ public final class BookingServiceImpl implements BookingService {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
     }
 
-    // TODO try to leave as much of orphan deletion as possible to the OR mapper - rethink mapping, or implement transparent callback
-    
-    // Delete orphaned itinerary - it's just a value object
-    final Itinerary oldItinerary = cargo.itinerary();
-    cargoRepository.deleteItinerary(oldItinerary);
-    cargo.detachItinerary();
-
     // Assign the new itinerary to the cargo
     cargo.attachItinerary(newItinerary);
     cargoRepository.save(cargo);

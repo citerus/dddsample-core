@@ -15,6 +15,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
+  CarrierMovementRepository carrierMovementRepository;
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
@@ -22,6 +23,10 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   public void setLocationRepository(LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
+  }
+
+  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
+    this.carrierMovementRepository = carrierMovementRepository;
   }
 
   public void testFindByCargoId() {
@@ -103,13 +108,45 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertNull(map.get("ITINERARY_ID"));
   }
 
-  public void testSaveShouldNotCascadeToHandlingEvents() {
-    /* TODO:
-       this test indicates that the addEvent/addEvents methods on DeliveryHistory
-       are somewhat unintuitive, since added events are not cascade-savded with the cargo.
-       Also, it's not really needed except when loading a cargo, so perhaps something like
-       Cargo.attachDeliveryHistory() would be better? */
+  public void testDeleteOrphanedItinerary() {
+    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
+    Long itineraryId = getLongId(cargo.itinerary());
 
+    assertEquals(1, sjt.queryForInt("select count(*) from Itinerary where id = ?", itineraryId));
+
+    cargo.detachItinerary();
+    cargoRepository.save(cargo);
+    flush();
+
+    // Repository is responsible for deleting orphaned, detached itineraries
+    assertEquals(0, sjt.queryForInt("select count(*) from Itinerary where id = ?", itineraryId));
+  }
+
+  public void testReplaceItinerary() {
+    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
+    Long oldItineraryId = getLongId(cargo.itinerary());
+    assertEquals(1, sjt.queryForInt("select count(*) from Itinerary where id = ?", oldItineraryId));
+
+    CarrierMovement cm = carrierMovementRepository.find(new CarrierMovementId("CAR_006"));
+    Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
+    Location legTo = locationRepository.find(new UnLocode("DEHAM"));
+    Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(cm, legFrom, legTo)));
+
+    cargo.attachItinerary(newItinerary);
+
+    cargoRepository.save(cargo);
+    flush();
+
+    // Old itinerary should be deleted
+    assertEquals(0, sjt.queryForInt("select count(*) from Itinerary where id = ?", oldItineraryId));
+
+    // New itinerary should be cascade-saved
+    Long newItineraryId = getLongId(cargo.itinerary());
+    assertEquals(1, sjt.queryForInt("select count(*) from Itinerary where id = ?", newItineraryId));
+  }
+
+
+  public void testSaveShouldNotCascadeToHandlingEvents() {
     Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
     int eventCount = cargo.deliveryHistory().eventsOrderedByCompletionTime().size();
 

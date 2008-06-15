@@ -117,16 +117,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, origin_id, destination_id, itinerary_id) " +
-      "values (?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, origin_id, destination_id) " +
+      "values (?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 2, null},
-      {2, "ABC", 1, 5, null},
-      {3, "ZYX", 2, 1, null},
-      {4, "CBA", 5, 1, null},
-      {5, "FGH", 3, 5, 1},
-      {6, "JKL", 6, 4, 2}
+      {1, "XYZ", 1, 2},
+      {2, "ABC", 1, 5},
+      {3, "ZYX", 2, 1},
+      {4, "CBA", 5, 1},
+      {5, "FGH", 3, 5},
+      {6, "JKL", 6, 4}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }
@@ -149,11 +149,11 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   private static void loadItineraryData(JdbcTemplate jdbcTemplate) {
-    String itinerarySql = "insert into Itinerary (id) values (?)";
+    String itinerarySql = "insert into Itinerary (id, cargo_id) values (?,?)";
 
     Object[][] itineraryArgs = {
-      {1},
-      {2}
+      {1, 5},
+      {2, 6}
     };
     executeUpdate(jdbcTemplate, itinerarySql, itineraryArgs);
 
@@ -188,8 +188,8 @@ public class SampleDataGenerator implements ServletContextListener {
       protected void doInTransactionWithoutResult(TransactionStatus status) {
         loadLocationData(jdbcTemplate);
         loadCarrierMovementData(jdbcTemplate);
-        loadItineraryData(jdbcTemplate);
         loadCargoData(jdbcTemplate);
+        loadItineraryData(jdbcTemplate);
         loadHandlingEventData(jdbcTemplate);
       }
     });

@@ -9,8 +9,8 @@
     <id name="id" column="id">
       <generator class="org.hibernate.id.IdentityGenerator"/>
     </id>
-    <many-to-one name="carrierMovement" column="carrierMovement_id" fetch="join" cascade="none"/>
-    <many-to-one name="from" column="from_id" fetch="join" cascade="none"/>
-    <many-to-one name="to" column="to_id" fetch="join" cascade="none"/>
+    <many-to-one name="carrierMovement" column="carrierMovement_id" fetch="join" cascade="none" foreign-key="carrier_movement_fk"/>
+    <many-to-one name="from" column="from_id" fetch="join" cascade="none" foreign-key="from_location_fk"/>
+    <many-to-one name="to" column="to_id" fetch="join" cascade="none" foreign-key="to_location_fk"/>
   </class>
 </hibernate-mapping>
