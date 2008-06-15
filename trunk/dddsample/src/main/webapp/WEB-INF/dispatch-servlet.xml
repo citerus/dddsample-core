@@ -23,10 +23,7 @@
   <bean id="trackCommandValidator" class="se.citerus.dddsample.web.command.TrackCommandValidator"/>
 
   <bean name="/admin/*" class="se.citerus.dddsample.web.CargoAdminController">
-    <property name="routingService" ref="routingService"/>
-    <property name="bookingService" ref="bookingService"/>
-    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
-    <property name="locationRepository" ref="locationRepository"/>
+    <property name="bookingServiceFacade" ref="bookingServiceFacade"/>
   </bean>
 
 </beans>
