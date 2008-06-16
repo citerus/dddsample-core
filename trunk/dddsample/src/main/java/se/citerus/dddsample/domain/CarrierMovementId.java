@@ -38,7 +38,6 @@ public final class CarrierMovementId implements ValueObject<CarrierMovementId> {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
-  @Override
   public boolean sameValueAs(CarrierMovementId other) {
     return other != null && this.id.equals(other.id);
   }

@@ -40,7 +40,6 @@ public final class Leg implements ValueObject<Leg> {
   }
 
 
-  @Override
   public boolean sameValueAs(final Leg other) {
     return other != null && new EqualsBuilder().
       append(this.carrierMovement, other.carrierMovement).
