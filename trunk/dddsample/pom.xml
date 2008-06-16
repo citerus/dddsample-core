@@ -274,6 +274,10 @@
           <groupId>org.apache.activemq</groupId>
           <artifactId>activeio-core</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>javax.xml</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
