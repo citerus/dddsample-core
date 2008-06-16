@@ -99,7 +99,6 @@ public final class Itinerary implements ValueObject<Itinerary> {
    * @param other itinerary to compare
    * @return <code>true</code> if the legs in this and the other itinerary are all equal.
    */
-  @Override
   public boolean sameValueAs(final Itinerary other) {
     return other != null && legs.equals(other.legs);
   }

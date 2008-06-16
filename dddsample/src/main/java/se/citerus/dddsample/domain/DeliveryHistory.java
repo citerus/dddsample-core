@@ -79,7 +79,6 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     }
   }
 
-  @Override
   public boolean sameValueAs(DeliveryHistory other) {
     return other != null && events.equals(other.events);
   }

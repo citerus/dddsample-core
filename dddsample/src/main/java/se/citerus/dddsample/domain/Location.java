@@ -60,7 +60,6 @@ public final class Location implements Entity<Location> {
     return sameIdentityAs(other);
   }
 
-  @Override
   public boolean sameIdentityAs(final Location other) {
     return this.unLocode.equals(other.unLocode);
   }

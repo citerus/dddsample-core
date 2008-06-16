@@ -163,7 +163,6 @@ public final class Cargo implements Entity<Cargo> {
     return false;
   }
 
-  @Override
   public boolean sameIdentityAs(final Cargo other) {
     return other != null && trackingId.equals(other.trackingId);
   }

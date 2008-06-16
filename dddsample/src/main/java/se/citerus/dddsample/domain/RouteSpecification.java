@@ -44,13 +44,11 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
     return destination;
   }
 
-  @Override
   public boolean isSatisfiedBy(Itinerary itinerary) {
     // TODO implement
     return true;
   }
 
-  @Override
   public boolean sameValueAs(RouteSpecification other) {
     return other != null && new EqualsBuilder().
       append(this.origin, other.origin).

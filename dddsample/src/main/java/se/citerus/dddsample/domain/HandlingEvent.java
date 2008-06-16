@@ -121,7 +121,6 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return sameEventAs(event);
   }
 
-  @Override
   public boolean sameEventAs(final HandlingEvent other) {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
