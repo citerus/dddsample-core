@@ -9,17 +9,17 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="bookingService" class="se.citerus.dddsample.service.BookingServiceImpl">
+  <bean id="bookingService" class="se.citerus.dddsample.domain.service.BookingServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
     <property name="routingService" ref="routingService"/>
   </bean>
 
-  <bean id="trackingService" class="se.citerus.dddsample.service.TrackingServiceImpl">
+  <bean id="trackingService" class="se.citerus.dddsample.domain.service.TrackingServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
   </bean>
 
-  <bean id="handlingEventService" class="se.citerus.dddsample.service.HandlingEventServiceImpl">
+  <bean id="handlingEventService" class="se.citerus.dddsample.domain.service.HandlingEventServiceImpl">
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="handlingEventRepository" ref="handlingEventRepository"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
@@ -27,7 +27,7 @@
     <property name="eventService" ref="eventService"/>
   </bean>
 
-  <bean id="routingService" class="se.citerus.dddsample.service.RoutingServiceImpl">
+  <bean id="routingService" class="se.citerus.dddsample.domain.service.RoutingServiceImpl">
     <property name="locationRepository" ref="locationRepository"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
     <property name="graphTraversalService" ref="graphTraversalService"/>

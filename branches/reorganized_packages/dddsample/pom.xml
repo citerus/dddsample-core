@@ -123,7 +123,7 @@
           </execution>
         </executions>
         <configuration>
-          <sei>se.citerus.dddsample.ws.HandlingEventServiceEndpointImpl</sei>
+          <sei>se.citerus.dddsample.application.service.HandlingEventServiceEndpointImpl</sei>
           <genWsdl>true</genWsdl>
         </configuration>
       </plugin>
@@ -138,9 +138,9 @@
               <goal>jar</goal>
             </goals>
             <configuration>
-              <classifier>ws-client</classifier>
+              <classifier>remote-api</classifier>
               <includes>
-                <include>**/se/citerus/dddsample/ws/**</include>
+                <include>**/se/citerus/dddsample/service/api/**</include>
               </includes>
             </configuration>
           </execution>
