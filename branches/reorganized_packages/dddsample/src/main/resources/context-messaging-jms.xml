@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:amq="http://activemq.org/config/1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://activemq.org/config/1.0 http://activemq.apache.org/schema/core/activemq-core-5.0.0.xsd
+        http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+  <amq:broker useJmx="false" persistent="false">
+    <amq:transportConnectors>
+      <amq:transportConnector uri="tcp://localhost:0"/>
+    </amq:transportConnectors>
+  </amq:broker>
+
+  <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost"/>
+
+  <amq:topic id="handlingEventTopic" name="HandlingEventTopic" physicalName="HandlingEventTopic"/>
+
+  <bean id="handlingEventMessageDelegate" class="se.citerus.dddsample.service.HandlingEventMessageDelegate">
+    <property name="trackingService" ref="trackingService"/>
+  </bean>
+
+  <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="jmsConnectionFactory"/>
+    <property name="destination" ref="handlingEventTopic"/>
+    <property name="messageListener" ref="handlingEventMessageDelegate"/>
+  </bean>
+
+  <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
+    <property name="connectionFactory" ref="jmsConnectionFactory"/>
+  </bean>
+
+  <bean id="eventService" class="se.citerus.dddsample.service.JmsEventServiceImpl">
+    <property name="jmsOperations" ref="jmsOperations"/>
+    <property name="destination" ref="handlingEventTopic"/>
+  </bean>
+  
+</beans>

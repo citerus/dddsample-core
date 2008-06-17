@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>DDDSample</display-name>
+
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>se.citerus.dddsample.util.SampleDataGenerator</listener-class>
+  </listener>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      <!--
+      classpath:context-persistence-in-mem.xml
+      -->
+      classpath:context-persistence-hibernate.xml
+
+      <!--
+      classpath:context-messaging-thread.xml
+      -->
+      classpath:context-messaging-jms.xml
+
+      classpath:context-service.xml
+      classpath:context-routing.xml
+      classpath:context-remote.xml
+      classpath:context-web.xml
+    </param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>dispatch</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>dispatch</servlet-name>
+    <url-pattern>*.html</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>jaxws-servlet</servlet-name>
+    <servlet-class>com.sun.xml.ws.transport.http.servlet.WSSpringServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>jaxws-servlet</servlet-name>
+    <url-pattern>/ws/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>sitemesh</filter-name>
+    <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <servlet-name>dispatch</servlet-name>
+  </filter-mapping>
+
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <include-prelude>/WEB-INF/jspf/include.jspf</include-prelude>
+      <trim-directive-whitespaces>true</trim-directive-whitespaces>
+    </jsp-property-group>
+  </jsp-config>
+
+</web-app>

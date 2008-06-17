@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+  <session-factory>
+    <!-- Properties defined here are shared between test and production -->
+    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+    
+    <mapping resource="se/citerus/dddsample/domain/Cargo.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/domain/Itinerary.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/domain/Leg.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/domain/Location.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/domain/CarrierMovement.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/domain/HandlingEvent.hbm.xml" />
+  </session-factory>
+
+</hibernate-configuration>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+
+  <bean id="bookingService" class="se.citerus.dddsample.service.BookingServiceImpl">
+    <property name="cargoRepository" ref="cargoRepository"/>
+    <property name="locationRepository" ref="locationRepository"/>
+    <property name="routingService" ref="routingService"/>
+  </bean>
+
+  <bean id="trackingService" class="se.citerus.dddsample.service.TrackingServiceImpl">
+    <property name="cargoRepository" ref="cargoRepository"/>
+  </bean>
+
+  <bean id="handlingEventService" class="se.citerus.dddsample.service.HandlingEventServiceImpl">
+    <property name="cargoRepository" ref="cargoRepository"/>
+    <property name="handlingEventRepository" ref="handlingEventRepository"/>
+    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
+    <property name="locationRepository" ref="locationRepository"/>
+    <property name="eventService" ref="eventService"/>
+  </bean>
+
+  <bean id="routingService" class="se.citerus.dddsample.service.RoutingServiceImpl">
+    <property name="locationRepository" ref="locationRepository"/>
+    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
+    <property name="graphTraversalService" ref="graphTraversalService"/>
+  </bean>
+
+</beans>
