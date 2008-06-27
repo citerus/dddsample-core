@@ -16,11 +16,13 @@ public final class BookingServiceImpl implements BookingService {
   private CargoRepository cargoRepository;
   private LocationRepository locationRepository;
   private RoutingService routingService;
+  // TODO
+  //private LockManager lockManager;
 
   private final Log logger = LogFactory.getLog(getClass());
 
   @Transactional(readOnly = false)
-  public TrackingId registerNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
+  public TrackingId bookNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
 
@@ -39,7 +41,9 @@ public final class BookingServiceImpl implements BookingService {
   public Cargo loadCargoForRouting(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
-    // TODO obtain offline lock
+    // TODO
+    //CargoLock cargoLock = lockManager.lockCargo(trackingId);
+
     final Cargo cargo = cargoRepository.find(trackingId);
 
     return cargo;
@@ -68,7 +72,8 @@ public final class BookingServiceImpl implements BookingService {
 
     logger.info("Assigned cargo " + trackingId + " to new route");
 
-    // TODO release offline lock
+    // TODO
+    //lockManager.unlockCargo(cargoLock, trackingId);
   }
 
   public void setCargoRepository(final CargoRepository cargoRepository) {

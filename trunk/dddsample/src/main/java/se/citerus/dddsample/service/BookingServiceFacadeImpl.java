@@ -37,7 +37,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   }
 
   public String registerNewCargo(String origin, String destination) {
-    TrackingId trackingId = bookingService.registerNewCargo(new UnLocode(origin), new UnLocode(destination));
+    TrackingId trackingId = bookingService.bookNewCargo(new UnLocode(origin), new UnLocode(destination));
     return trackingId.idString();
   }
 
