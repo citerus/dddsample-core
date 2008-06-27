@@ -19,7 +19,7 @@ public interface BookingService {
    * @param destination cargo destination
    * @return Cargo tracking id
    */
-  TrackingId registerNewCargo(UnLocode origin, UnLocode destination);
+  TrackingId bookNewCargo(UnLocode origin, UnLocode destination);
 
   /**
    * Loads a cargo for routing operations.

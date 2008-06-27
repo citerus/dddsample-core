@@ -37,14 +37,14 @@ public class BookingServiceTest extends TestCase {
 
     replay(cargoRepository, locationRepository);
 
-    TrackingId trackingId = cargoService.registerNewCargo(fromUnlocode, toUnlocode);
+    TrackingId trackingId = cargoService.bookNewCargo(fromUnlocode, toUnlocode);
     assertEquals(expectedTrackingId, trackingId);
   }
 
   public void testRegisterNewNullArguments() {
     replay(cargoRepository, locationRepository);
     try {
-      cargoService.registerNewCargo(null, null);
+      cargoService.bookNewCargo(null, null);
       fail("Null arguments should not be allowed");
     } catch (IllegalArgumentException expected) {}
   }
