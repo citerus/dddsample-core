@@ -28,6 +28,10 @@ public final class CarrierMovementId implements ValueObject<CarrierMovementId> {
     return id;
   }
 
+  public boolean sameValueAs(CarrierMovementId other) {
+    return other != null && this.id.equals(other.id);
+  }
+
   @Override
   public boolean equals(final Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
@@ -38,12 +42,13 @@ public final class CarrierMovementId implements ValueObject<CarrierMovementId> {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
-  public boolean sameValueAs(CarrierMovementId other) {
-    return other != null && this.id.equals(other.id);
+  @Override
+  public String toString() {
+    return idString();
   }
 
-  // Needed by hibernate
   CarrierMovementId() {
-  }
+    // Needed by hibernate
+   }
   
 }
