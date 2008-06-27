@@ -3,7 +3,32 @@ package se.citerus.dddsample.domain;
 import org.apache.commons.lang.Validate;
 
 /**
- * A Cargo.
+ * A Cargo. This is the central class in the domain model,
+ * and it is the root of the Cargo-Itinerary-Leg-DeliveryHistory aggregate.
+ *
+ * A cargo is identified by a unique tracking id, and it always has an origin
+ * and a destination. The life cycle of a cargo begins with the booking procedure,
+ * when the tracking id is assigned. During a (short) period of time, between booking
+ * and initial routing, the cargo has no itinerary.
+ *
+ * The booking clerk requests a list of possible routes, matching a route specification,
+ * and assigns the cargo to one route. An itinerary listing the legs of the route
+ * is attached to the cargo.
+ *
+ * A cargo can be re-routed during transport, on demand of the customer, in which case
+ * the destination is changed and a new route is requested. The old itinerary,
+ * being a value object, is discarded and a new one is attached.
+ *
+ * It may also happen that a cargo is accidentally misrouted, which should notify the proper
+ * personnel and also trigger a re-routing procedure.
+ *
+ * The life cycle of a cargo ends when the cargo is claimed by the customer.
+ *
+ * The cargo aggregate, and the entre domain model, is built to solve the problem
+ * of booking and tracking cargo. All important buisness rules for determining whether
+ * or not a cargo is misrouted, what the current status of the cargo is (on board carrier,
+ * in port etc), are captured in this aggregate.
+ *
  */
 public final class Cargo implements Entity<Cargo> {
 
