@@ -11,11 +11,11 @@ import java.util.*;
  */
 public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
 
-  private final Set<HandlingEvent> events;
+  private Set<HandlingEvent> events;
 
   public static final DeliveryHistory EMPTY_DELIVERY_HISTORY = new DeliveryHistory(Collections.EMPTY_SET);
 
-  public DeliveryHistory(final Collection<HandlingEvent> events) {
+  DeliveryHistory(final Collection<HandlingEvent> events) {
     this.events = new HashSet<HandlingEvent>(events);
   }
 
@@ -96,6 +96,10 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
   @Override
   public int hashCode() {
     return events.hashCode();
+  }
+
+  DeliveryHistory() {
+    // Needed by Hibernate
   }
 
 }

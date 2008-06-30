@@ -36,7 +36,7 @@ public final class Cargo implements Entity<Cargo> {
   private Location origin;
   private Location destination;
   private Itinerary itinerary;
-  private DeliveryHistory deliveryHistory = DeliveryHistory.EMPTY_DELIVERY_HISTORY;
+  private DeliveryHistory deliveryHistory;
 
   /**
    * @param trackingId tracking id
@@ -44,7 +44,9 @@ public final class Cargo implements Entity<Cargo> {
    * @param destination destination location
    */
   public Cargo(final TrackingId trackingId, final Location origin, final Location destination) {
-    Validate.noNullElements(new Object[] {trackingId, origin, destination});
+    Validate.notNull(trackingId);
+    Validate.notNull(origin);
+    Validate.notNull(destination);
 
     this.trackingId = trackingId;
     this.origin = origin;
@@ -77,35 +79,31 @@ public final class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * @return Final destination.
+   * @return Destination of the cargo.
    */
   public Location destination() {
     return this.destination;
   }
 
   /**
-   * @return Delivery history.
+   * @return The delivery history. Never null.
    */
   public DeliveryHistory deliveryHistory() {
-    return this.deliveryHistory;
+    return nullSafe(this.deliveryHistory, DeliveryHistory.EMPTY_DELIVERY_HISTORY);
   }
 
   /**
-   * @return The itinerary.
+   * @return The itinerary. Never null.
    */
   public Itinerary itinerary() {
-    if (this.itinerary == null) {
-      return Itinerary.EMPTY_ITINERARY;
-    } else {
-      return this.itinerary;
-    }
+    return nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
   }
 
   /**
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {
-    final HandlingEvent lastEvent = deliveryHistory.lastEvent();
+    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
     if (lastEvent != null) {
       return lastEvent.location();
     } else {
@@ -128,11 +126,11 @@ public final class Cargo implements Entity<Cargo> {
   public void attachItinerary(final Itinerary itinerary) {
     Validate.notNull(itinerary);
 
-    // Decouple the old itinerary from this cargo 
+    // Decouple the old itinerary from this cargo
     itinerary().setCargo(null);
     // Couple this cargo and the new itinerary
     this.itinerary = itinerary;
-    itinerary().setCargo(this);
+    this.itinerary.setCargo(this);
   }
 
   /**
@@ -146,7 +144,7 @@ public final class Cargo implements Entity<Cargo> {
   /**
    * @param deliveryHistory Cargo delivery history
    */
-  public void setDeliveryHistory(final DeliveryHistory deliveryHistory) {
+  void setDeliveryHistory(final DeliveryHistory deliveryHistory) {
     Validate.notNull(deliveryHistory);
     this.deliveryHistory = deliveryHistory;
   }
@@ -163,23 +161,23 @@ public final class Cargo implements Entity<Cargo> {
    * @return <code>true</code> if the cargo has been misdirected,
    */
   public boolean isMisdirected() {
-    final HandlingEvent lastEvent = deliveryHistory.lastEvent();
-    if (itinerary == null || lastEvent == null) {
+    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
+    if (lastEvent == null) {
       return false;
     } else {
-      return !itinerary.isExpected(lastEvent);
+      return !itinerary().isExpected(lastEvent);
     }
   }
 
   /**
-   * Does not take into account the possibility of the cargo havin been
+   * Does not take into account the possibility of the cargo having been
    * (errouneously) loaded onto another carrier after it has been unloaded
    * at the final destination.
    *
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
-    for (HandlingEvent event : deliveryHistory.eventsOrderedByCompletionTime()) {
+    for (HandlingEvent event : deliveryHistory().eventsOrderedByCompletionTime()) {
       if (HandlingEvent.Type.UNLOAD.equals(event.type())
         && destination.equals(event.location())) {
         return true;
@@ -212,6 +210,11 @@ public final class Cargo implements Entity<Cargo> {
   @Override
   public int hashCode() {
     return trackingId.hashCode();
+  }
+
+  // Utility for Null Object Pattern - should be moved out of this class
+  private <T> T nullSafe(T actual, T safe) {
+    return actual == null ? safe : actual;
   }
 
   Cargo() {
