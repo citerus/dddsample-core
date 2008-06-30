@@ -2,6 +2,13 @@ package se.citerus.dddsample.domain;
 
 import org.apache.commons.lang.Validate;
 
+/**
+ * A location is our model is stops on a journey, such as cargo
+ * origin or destination, or carrier movement endpoints.
+ *
+ * It is uniquely identified by a UN Locode.
+ *
+ */
 public final class Location implements Entity<Location> {
 
   private UnLocode unLocode;

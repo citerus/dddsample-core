@@ -8,12 +8,20 @@ import java.util.Comparator;
 import java.util.Date;
 
 /**
- * A HandlingEvent is used to register the event when, for instance, a cargo is unloaded from a carrier at a some loacation at a given time. The
- * HandlingEvent's are sent from different Incident Logging Applications some time after the event occured and contain information about the
- * {@link TrackingId}, {@link Location}, timestamp of the completion of the event, and possibly, if applicable a {@link CarrierMovement}.
- * <br><br>
- * HandlingEvent's could contain information about a {@link CarrierMovement} and if so, the event type must be either {@link Type#LOAD} or
- * {@link Type#UNLOAD}. All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
+ * A HandlingEvent is used to register the event when, for instance,
+ * a cargo is unloaded from a carrier at a some loacation at a given time.
+ * <p/>
+ * The HandlingEvent's are sent from different Incident Logging Applications
+ * some time after the event occured and contain information about the
+ * {@link TrackingId}, {@link Location}, timestamp of the completion of the event,
+ * and possibly, if applicable a {@link CarrierMovement}.
+ * <p/>
+ * This class is the only member, and consequently the root, of the HandlingEvent aggregate. 
+ * <p/>
+ * HandlingEvent's could contain information about a {@link CarrierMovement} and if so,
+ * the event type must be either {@link Type#LOAD} or {@link Type#UNLOAD}.
+ * <p/>
+ * All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
@@ -33,6 +41,10 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   private Date registrationTime;
   private Cargo cargo;
 
+  /**
+   * Handling event type. Either requires or prohibits a carrier movement
+   * association, it's never optional.
+   */
   public enum Type {
     LOAD(true),
     UNLOAD(true),
@@ -45,7 +57,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     /**
      * Private enum constructor.
      *
-     * @param carrierMovementRequired Required status.
+     * @param carrierMovementRequired whether or not a carrier movement is associated with this event type
      */
     private Type(final boolean carrierMovementRequired) {
       this.carrierMovementRequired = carrierMovementRequired;
