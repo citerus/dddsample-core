@@ -33,7 +33,8 @@ public class TrackingServiceTest extends TestCase {
     HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, CHICAGO, carrierMovement);
     // Add out of order to verify ordering in DTO
     List<HandlingEvent> eventList = Arrays.asList(loaded, unloaded, claimed);
-    cargo.setDeliveryHistory(new DeliveryHistory(eventList));
+
+    CargoTestHelper.setDeliveryHistory(cargo, eventList);
 
     expect(cargoRepository.find(new TrackingId("XYZ"))).andReturn(cargo);
 

@@ -10,7 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
 import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.DeliveryHistory;
+import se.citerus.dddsample.domain.CargoTestHelper;
 import se.citerus.dddsample.domain.HandlingEvent;
 import static se.citerus.dddsample.domain.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.SampleLocations.TOKYO;
@@ -48,7 +48,7 @@ public class CargoTrackingControllerTest extends TestCase {
       public Cargo track(TrackingId trackingId) {
         final Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
         final HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
-        cargo.setDeliveryHistory(new DeliveryHistory(Arrays.asList(event)));
+        CargoTestHelper.setDeliveryHistory(cargo, Arrays.asList(event));
         
         return cargo;
       }
