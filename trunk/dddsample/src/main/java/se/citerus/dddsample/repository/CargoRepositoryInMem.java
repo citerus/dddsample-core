@@ -2,8 +2,7 @@ package se.citerus.dddsample.repository;
 
 import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.Cargo;
-import se.citerus.dddsample.domain.DeliveryHistory;
-import se.citerus.dddsample.domain.Itinerary;
+import se.citerus.dddsample.domain.CargoTestHelper;
 import static se.citerus.dddsample.domain.SampleLocations.*;
 import se.citerus.dddsample.domain.TrackingId;
 
@@ -49,34 +48,30 @@ public class CargoRepositoryInMem implements CargoRepository {
     );
   }
 
-  public void deleteItinerary(Itinerary itinerary) {
-  }
-
   public List<Cargo> findAll() {
     return new ArrayList(cargoDb.values());
   }
 
   public void init() throws Exception {
-    String trackIdXYZ = "XYZ";
-    final Cargo cargoXYZ = new Cargo(new TrackingId(trackIdXYZ), STOCKHOLM, MELBOURNE);
-    cargoDb.put(trackIdXYZ, cargoXYZ);
-    
-    String trackIdZYX = "ZYX";
-    final Cargo cargoZYX = new Cargo(new TrackingId(trackIdZYX), MELBOURNE, STOCKHOLM);
-    cargoDb.put(trackIdZYX, cargoZYX);
-    
-    String trackIdABC = "ABC";
-    final Cargo cargoABC = new Cargo(new TrackingId(trackIdABC), STOCKHOLM, HELSINKI);
-    cargoDb.put(trackIdABC, cargoABC);
-    
-    String trackIdCBA = "CBA";
-    final Cargo cargoCBA = new Cargo(new TrackingId(trackIdCBA), HELSINKI, STOCKHOLM);
-    cargoDb.put(trackIdCBA, cargoCBA);
+    final TrackingId xyz = new TrackingId("XYZ");
+    final Cargo cargoXYZ = CargoTestHelper.createCargoWithDeliveryHistory(
+      xyz, STOCKHOLM, MELBOURNE, handlingEventRepository.findEventsForCargo(xyz));
+    cargoDb.put(xyz.idString(), cargoXYZ);
 
-    for (Cargo cargo : cargoDb.values()) {
-      DeliveryHistory dh = new DeliveryHistory(handlingEventRepository.findEventsForCargo(cargo.trackingId()));
-      cargo.setDeliveryHistory(dh);
-    }
+    final TrackingId zyx = new TrackingId("ZYX");
+    final Cargo cargoZYX = CargoTestHelper.createCargoWithDeliveryHistory(
+      zyx, MELBOURNE, STOCKHOLM, handlingEventRepository.findEventsForCargo(zyx));
+    cargoDb.put(zyx.idString(), cargoZYX);
+
+    final TrackingId abc = new TrackingId("ABC");
+    final Cargo cargoABC = CargoTestHelper.createCargoWithDeliveryHistory(
+      abc, STOCKHOLM, HELSINKI, handlingEventRepository.findEventsForCargo(abc));
+    cargoDb.put(abc.idString(), cargoABC);
+
+    final TrackingId cba = new TrackingId("CBA");
+    final Cargo cargoCBA = CargoTestHelper.createCargoWithDeliveryHistory(
+      cba, HELSINKI, STOCKHOLM, handlingEventRepository.findEventsForCargo(cba));
+    cargoDb.put(cba.idString(), cargoCBA);
   }
 
   public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {

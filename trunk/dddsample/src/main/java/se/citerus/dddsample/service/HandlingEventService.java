@@ -25,6 +25,6 @@ public interface HandlingEventService {
    * @throws UnknownLocationException   if there's no location with this UN Locode
    */
   void register(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type)
-    throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException;
+  throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException;
 
 }

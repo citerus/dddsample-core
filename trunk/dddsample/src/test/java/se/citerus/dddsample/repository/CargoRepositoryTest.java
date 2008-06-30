@@ -155,7 +155,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin, null);
     assertFalse(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
 
-    cargo.setDeliveryHistory(new DeliveryHistory(Arrays.asList(event)));
+    CargoTestHelper.setDeliveryHistory(cargo, Arrays.asList(event));
     assertTrue(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
 
     // Save cargo, evict from session and then re-load it - should not pick up the added event,
