@@ -25,7 +25,7 @@
     </wss:bindings>
   </wss:bindings>
 
-  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.ws.HandlingEventServiceEndpointImpl">
+  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.application.ws.HandlingEventServiceEndpointImpl">
     <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
 
@@ -46,7 +46,7 @@
       </list>
     </property>
     <property name="target">
-      <bean class="se.citerus.dddsample.service.BookingServiceFacadeImpl">
+      <bean class="se.citerus.dddsample.application.service.BookingServiceFacadeImpl">
         <property name="bookingService" ref="bookingService"/>
         <property name="cargoRepository" ref="cargoRepository"/>
         <property name="locationRepository" ref="locationRepository"/>
@@ -58,7 +58,7 @@
   <!-- Wrap all methods with Hibernate interceptor
   TODO: add necessary aspectj deps and replace config above with this
   
-  <bean id="bookingServiceFacade" class="se.citerus.dddsample.service.BookingServiceFacadeImpl">
+  <bean id="bookingServiceFacade" class="se.citerus.dddsample.application.service.BookingServiceFacadeImpl">
     <property name="bookingService" ref="bookingService"/>
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
@@ -67,13 +67,13 @@
 
   <aop:config>
     <aop:advisor advice-ref="hibernateInterceptor"
-                 pointcut="execution (* se.citerus.dddsample.service.BookingServiceFacadeImpl(..))"/>
+                 pointcut="execution (* se.citerus.dddsample.application.service.BookingServiceFacadeImpl(..))"/>
   </aop:config>
   -->
 
   <!-- RMI exposure -->
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
-    <property name="serviceInterface" value="se.citerus.dddsample.service.BookingServiceFacade"/>
+    <property name="serviceInterface" value="se.citerus.dddsample.application.service.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
     <property name="serviceName" value="BookingService"/>
   </bean>

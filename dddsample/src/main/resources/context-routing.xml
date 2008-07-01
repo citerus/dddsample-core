@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <!-- TODO start an RMI server on boot and wire this across the network -->
-  <bean id="graphTraversalService" class="se.citerus.dddsample.service.GraphTraversalService">
+  <bean id="graphTraversalService" class="se.citerus.dddsample.application.service.GraphTraversalService">
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
   </bean>

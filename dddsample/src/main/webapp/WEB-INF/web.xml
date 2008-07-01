@@ -11,7 +11,7 @@
   </listener>
 
   <listener>
-    <listener-class>se.citerus.dddsample.util.SampleDataGenerator</listener-class>
+    <listener-class>se.citerus.dddsample.application.util.SampleDataGenerator</listener-class>
   </listener>
 
   <context-param>
