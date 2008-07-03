@@ -1,0 +1,13 @@
+<project name="DDD Sample Application">
+  <body>
+    <links>
+      <item name="Domain Language" href="http://www.domainlanguage.org/" />
+      <item name="Citerus" href="http://www.citerus.se/"/>
+    </links>
+    <menu name="About the application">
+      <item name="Introduction" href="introduction.html"/>
+      <item name="Road Map" href="roadmap.html" />
+    </menu>
+    <menu ref="reports"/>
+  </body>
+</project>
