@@ -6,7 +6,7 @@
     </links>
     <menu name="About the application">
       <item name="Introduction" href="introduction.html"/>
-      <item name="Road Map" href="roadmap.html" />
+      <item name="Roadmap" href="roadmap.html" />
     </menu>
     <menu ref="reports"/>
   </body>
