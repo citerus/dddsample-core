@@ -2,7 +2,6 @@ package se.citerus.dddsample.domain.service;
 
 import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Transactional;
-import se.citerus.dddsample.application.service.EventService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;

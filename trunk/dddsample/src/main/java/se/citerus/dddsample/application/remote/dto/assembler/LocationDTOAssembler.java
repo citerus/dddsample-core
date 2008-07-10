@@ -1,6 +1,6 @@
-package se.citerus.dddsample.application.service.dto.assembler;
+package se.citerus.dddsample.application.remote.dto.assembler;
 
-import se.citerus.dddsample.application.service.dto.LocationDTO;
+import se.citerus.dddsample.application.remote.dto.LocationDTO;
 import se.citerus.dddsample.domain.model.location.Location;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.service;
+package se.citerus.dddsample.application.ws;
 
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 

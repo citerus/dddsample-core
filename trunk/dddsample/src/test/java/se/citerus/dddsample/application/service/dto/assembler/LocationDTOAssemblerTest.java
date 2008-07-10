@@ -1,7 +1,8 @@
 package se.citerus.dddsample.application.service.dto.assembler;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.application.service.dto.LocationDTO;
+import se.citerus.dddsample.application.remote.dto.LocationDTO;
+import se.citerus.dddsample.application.remote.dto.assembler.LocationDTOAssembler;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;

@@ -3,7 +3,6 @@ package se.citerus.dddsample.domain.service;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
-import se.citerus.dddsample.application.service.GraphTraversalService;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
@@ -11,7 +10,11 @@ import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.routingteam.GraphDAO;
+import se.citerus.routingteam.GraphTraversalService;
 
+import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +31,14 @@ public class RoutingServiceTest extends TestCase {
     carrierMovementRepository = createMock(CarrierMovementRepository.class);
     routingService.setCarrierMovementRepository(carrierMovementRepository);
 
-    GraphTraversalService graphTraversalService = new GraphTraversalService();
-    graphTraversalService.setCarrierMovementRepository(carrierMovementRepository);
-    graphTraversalService.setLocationRepository(locationRepository);
+    GraphTraversalService graphTraversalService = new GraphTraversalService(new GraphDAO(createMock(DataSource.class)) {
+      public List<String> listLocations() {
+        return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
+      }
+
+      public void storeCarrierMovementId(String cmId, String from, String to) {
+      }
+    });
     routingService.setGraphTraversalService(graphTraversalService);
   }
 
