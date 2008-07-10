@@ -2,9 +2,9 @@ package se.citerus.dddsample.application.service.dto.assembler;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.remote.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.remote.dto.LegDTO;
-import se.citerus.dddsample.application.remote.dto.assembler.ItineraryCandidateDTOAssembler;
+import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.application.remoting.dto.LegDTO;
+import se.citerus.dddsample.application.remoting.dto.assembler.ItineraryCandidateDTOAssembler;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;

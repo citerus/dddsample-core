@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.application.remote.dto.CargoTrackingDTO;
+import se.citerus.dddsample.application.remoting.dto.CargoTrackingDTO;
 import se.citerus.dddsample.application.web.command.TrackCommand;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
