@@ -1,8 +1,8 @@
-package se.citerus.dddsample.application.service;
+package se.citerus.dddsample.application.remote;
 
-import se.citerus.dddsample.application.service.dto.CargoRoutingDTO;
-import se.citerus.dddsample.application.service.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.service.dto.LocationDTO;
+import se.citerus.dddsample.application.remote.dto.CargoRoutingDTO;
+import se.citerus.dddsample.application.remote.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.application.remote.dto.LocationDTO;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

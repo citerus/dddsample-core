@@ -1,11 +1,11 @@
-package se.citerus.dddsample.application.service;
+package se.citerus.dddsample.application.remote;
 
-import se.citerus.dddsample.application.service.dto.CargoRoutingDTO;
-import se.citerus.dddsample.application.service.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.service.dto.LocationDTO;
-import se.citerus.dddsample.application.service.dto.assembler.CargoRoutingDTOAssembler;
-import se.citerus.dddsample.application.service.dto.assembler.ItineraryCandidateDTOAssembler;
-import se.citerus.dddsample.application.service.dto.assembler.LocationDTOAssembler;
+import se.citerus.dddsample.application.remote.dto.CargoRoutingDTO;
+import se.citerus.dddsample.application.remote.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.application.remote.dto.LocationDTO;
+import se.citerus.dddsample.application.remote.dto.assembler.CargoRoutingDTOAssembler;
+import se.citerus.dddsample.application.remote.dto.assembler.ItineraryCandidateDTOAssembler;
+import se.citerus.dddsample.application.remote.dto.assembler.LocationDTOAssembler;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;

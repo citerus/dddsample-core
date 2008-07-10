@@ -20,7 +20,7 @@
 
   <amq:topic id="handlingEventTopic" name="HandlingEventTopic" physicalName="HandlingEventTopic"/>
 
-  <bean id="handlingEventMessageDelegate" class="se.citerus.dddsample.application.service.HandlingEventMessageDelegate">
+  <bean id="handlingEventMessageDelegate" class="se.citerus.dddsample.application.messaging.HandlingEventMessageDelegate">
     <property name="trackingService" ref="trackingService"/>
   </bean>
 
@@ -34,7 +34,7 @@
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
-  <bean id="eventService" class="se.citerus.dddsample.application.service.JmsEventServiceImpl">
+  <bean id="eventService" class="se.citerus.dddsample.application.messaging.JmsEventServiceImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="destination" ref="handlingEventTopic"/>
   </bean>

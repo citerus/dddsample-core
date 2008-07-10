@@ -1,6 +1,6 @@
-package se.citerus.dddsample.application.service.dto.assembler;
+package se.citerus.dddsample.application.remote.dto.assembler;
 
-import se.citerus.dddsample.application.service.dto.CargoTrackingDTO;
+import se.citerus.dddsample.application.remote.dto.CargoTrackingDTO;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.DeliveryHistory;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;

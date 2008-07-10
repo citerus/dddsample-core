@@ -1,6 +1,7 @@
-package se.citerus.dddsample.application.service;
+package se.citerus.dddsample.application.messaging;
 
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.service.EventService;
 import se.citerus.dddsample.domain.service.TrackingService;
 
 /**
