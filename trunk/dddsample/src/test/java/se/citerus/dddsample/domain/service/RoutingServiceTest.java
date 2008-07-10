@@ -3,6 +3,7 @@ package se.citerus.dddsample.domain.service;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
+import se.citerus.dddsample.application.routing.ExternalRoutingService;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
@@ -20,11 +21,11 @@ import java.util.List;
 
 public class RoutingServiceTest extends TestCase {
 
-  private RoutingServiceImpl routingService;
+  private ExternalRoutingService routingService;
   private CarrierMovementRepository carrierMovementRepository;
 
   protected void setUp() throws Exception {
-    routingService = new RoutingServiceImpl();
+    routingService = new ExternalRoutingService();
     LocationRepository locationRepository = new LocationRepositoryInMem();
     routingService.setLocationRepository(locationRepository);
 
