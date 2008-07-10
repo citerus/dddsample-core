@@ -1,11 +1,11 @@
 package se.citerus.dddsample.application.web;
 
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-import se.citerus.dddsample.application.remote.BookingServiceFacade;
-import se.citerus.dddsample.application.remote.dto.CargoRoutingDTO;
-import se.citerus.dddsample.application.remote.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.remote.dto.LegDTO;
-import se.citerus.dddsample.application.remote.dto.LocationDTO;
+import se.citerus.dddsample.application.remoting.BookingServiceFacade;
+import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
+import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.application.remoting.dto.LegDTO;
+import se.citerus.dddsample.application.remoting.dto.LocationDTO;
 import se.citerus.dddsample.application.web.command.RegistrationCommand;
 
 import javax.servlet.http.HttpServletRequest;
