@@ -31,15 +31,23 @@ public class TrackingServiceImpl implements TrackingService {
       return;
     }
 
-    // TODO: more elaborate notifications, such as email to affected customer
     if (cargo.isMisdirected()) {
-      logger.info("Cargo " + trackingId + " has been misdirected. " +
-        "Last event was " + cargo.deliveryHistory().lastEvent());
+      handleMisdirectedCargo(cargo);
     }
     if (cargo.isUnloadedAtDestination()) {
-      logger.info("Cargo " + trackingId + " has been unloaded " +
-        "at its final destination " + cargo.destination());
+      notifyCustomerOfAvailability(cargo);
     }
+  }
+
+  private void notifyCustomerOfAvailability(Cargo cargo) {
+    // TODO: more elaborate notifications
+    logger.info("Cargo " + cargo.trackingId() + " has been unloaded " +
+      "at its final destination " + cargo.destination());
+  }
+
+  private void handleMisdirectedCargo(Cargo cargo) {
+    logger.info("Cargo " + cargo.trackingId() + " has been misdirected. " +
+      "Last event was " + cargo.deliveryHistory().lastEvent());
   }
 
   public void setCargoRepository(CargoRepository cargoRepository) {
