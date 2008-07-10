@@ -27,7 +27,7 @@
     <property name="eventService" ref="eventService"/>
   </bean>
 
-  <bean id="routingService" class="se.citerus.dddsample.domain.service.RoutingServiceImpl">
+  <bean id="routingService" class="se.citerus.dddsample.application.routing.ExternalRoutingService">
     <property name="locationRepository" ref="locationRepository"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
     <property name="graphTraversalService" ref="graphTraversalService"/>

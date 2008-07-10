@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.remote.dto;
+package se.citerus.dddsample.application.remoting.dto;
 
 import se.citerus.dddsample.domain.model.cargo.StatusCode;
 

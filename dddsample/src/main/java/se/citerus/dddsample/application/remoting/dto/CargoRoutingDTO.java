@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.remote.dto;
+package se.citerus.dddsample.application.remoting.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;

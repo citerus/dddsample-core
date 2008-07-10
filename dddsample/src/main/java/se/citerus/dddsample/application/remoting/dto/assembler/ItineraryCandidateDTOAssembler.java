@@ -1,7 +1,7 @@
-package se.citerus.dddsample.application.remote.dto.assembler;
+package se.citerus.dddsample.application.remoting.dto.assembler;
 
-import se.citerus.dddsample.application.remote.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.remote.dto.LegDTO;
+import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ItineraryCandidateDTOAssembler {
   
   public ItineraryCandidateDTO toDTO(final Itinerary itinerary) {
-    final List<LegDTO> legDTOs = new ArrayList<se.citerus.dddsample.application.remote.dto.LegDTO>(itinerary.legs().size());
+    final List<LegDTO> legDTOs = new ArrayList<se.citerus.dddsample.application.remoting.dto.LegDTO>(itinerary.legs().size());
     for (Leg leg : itinerary.legs()) {
       legDTOs.add(toLegDTO(leg));
     }

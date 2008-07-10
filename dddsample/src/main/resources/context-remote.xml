@@ -46,7 +46,7 @@
       </list>
     </property>
     <property name="target">
-      <bean class="se.citerus.dddsample.application.remote.BookingServiceFacadeImpl">
+      <bean class="se.citerus.dddsample.application.remoting.BookingServiceFacadeImpl">
         <property name="bookingService" ref="bookingService"/>
         <property name="cargoRepository" ref="cargoRepository"/>
         <property name="locationRepository" ref="locationRepository"/>
@@ -73,7 +73,7 @@
 
   <!-- RMI exposure -->
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
-    <property name="serviceInterface" value="se.citerus.dddsample.application.remote.BookingServiceFacade"/>
+    <property name="serviceInterface" value="se.citerus.dddsample.application.remoting.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
     <property name="serviceName" value="BookingService"/>
   </bean>
