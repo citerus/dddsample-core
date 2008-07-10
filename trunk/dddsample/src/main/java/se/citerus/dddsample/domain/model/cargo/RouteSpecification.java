@@ -10,7 +10,8 @@ import se.citerus.dddsample.domain.model.location.Location;
 import java.util.Date;
 
 /**
- * Route specification
+ * Route specification.
+ * 
  */
 public class RouteSpecification implements ValueObject<RouteSpecification>, Specification<Itinerary> {
   private Location origin;
@@ -18,10 +19,9 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
   private Date arrivalDeadline;
 
   /**
-   * Factory method.
+   * Factory for creatig a route specification for a cargo, from cargo
+   * origin to cargo destination. Use for initial routing.
    *
-   * TODO just a suggestion - could be useful with RouteSpecification.witinOneWeek(cargo) etc
-   * 
    * @param cargo cargo
    * @param arrivalDeadline arrival deadline
    * @return A route specification for this cargo and arrival deadline
@@ -31,6 +31,23 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
     Validate.notNull(arrivalDeadline);
 
     return new RouteSpecification(cargo.origin(), cargo.destination(), arrivalDeadline);
+  }
+
+  /**
+   * Factory for creating a route specfication from an explicit destination,
+   * for rerouting a cargo.
+   *
+   * @param origin
+   * @param cargo
+   * @param arrivalDeadline
+   * @return
+   */
+  public static RouteSpecification fromLocation(Location origin, Cargo cargo, Date arrivalDeadline) {
+    Validate.notNull(origin);
+    Validate.notNull(cargo);
+    Validate.notNull(arrivalDeadline);
+
+    return new RouteSpecification(origin, cargo.destination(), arrivalDeadline);
   }
 
   private RouteSpecification(Location origin, Location destination, Date arrivalDeadline) {
