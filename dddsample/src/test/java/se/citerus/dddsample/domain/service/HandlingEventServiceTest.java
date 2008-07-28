@@ -43,7 +43,7 @@ public class HandlingEventServiceTest extends TestCase {
     service.setCarrierMovementRepository(carrierMovementRepository);
     service.setHandlingEventRepository(handlingEventRepository);
     service.setLocationRepository(locationRepository);
-    service.setEventService(domainEventNotifier);
+    service.setDomainEventNotifier(domainEventNotifier);
   }
 
   protected void tearDown() throws Exception {
