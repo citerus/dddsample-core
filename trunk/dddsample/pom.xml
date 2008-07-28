@@ -42,6 +42,14 @@
   </pluginRepositories>
   <developers>
     <developer>
+      <id>eric_evans</id>
+      <name>Eric Evans</name>
+      <email>eric at domainlanguage dot com</email>
+      <organization>Domain Language, Inc.</organization>
+      <organizationUrl>http://www.domainlanguage.com</organizationUrl>
+      <timezone>-8</timezone>
+    </developer>
+    <developer>
       <id>peba</id>
       <name>Peter Backlund</name>
       <email>peter.backlund@citerus.se</email>
