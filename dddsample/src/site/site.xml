@@ -1,11 +1,22 @@
 <project name="DDD Sample Application">
+  <bannerLeft>
+    <name>DDDSample</name>
+    <src>images/banner-left.png</src>
+    <href>http://dddsample.sf.net</href>
+  </bannerLeft>
+  <poweredBy>
+    <logo name="Sourceforge" href="http://sourceforge.net/"
+          img="http://sflogo.sourceforge.net/sflogo.php?group_id=210606&amp;type=2"/>
+  </poweredBy>
   <body>
     <links>
       <item name="Domain Language" href="http://www.domainlanguage.org/" />
       <item name="Citerus" href="http://www.citerus.se/"/>
+      <item name="DomainDrivenDesign.org" href="http://www.domaindrivendesign.org/"/>
     </links>
     <menu name="About the application">
-      <item name="Introduction" href="introduction.html"/>
+      <item name="Introduction" href="index.html"/>
+      <item name="Download" href="download.html"/>
       <item name="Roadmap" href="roadmap.html" />
     </menu>
     <menu ref="reports"/>
