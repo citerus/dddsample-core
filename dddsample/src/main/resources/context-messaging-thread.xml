@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="eventService" class="se.citerus.dddsample.application.messaging.ThreadBasedEventServiceImpl">
+  <bean id="domainEventNotifier" class="se.citerus.dddsample.application.messaging.ThreadBasedDomainEventNotifierImpl">
     <property name="bookingService" ref="bookingService"/>
   </bean>
 

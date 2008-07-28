@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
-  private EventService eventService;
+  private DomainEventNotifier domainEventNotifier;
   private CargoRepository cargoRepository;
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
@@ -37,17 +37,17 @@ public class HandlingEventServiceTest extends TestCase {
     carrierMovementRepository = createMock(CarrierMovementRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     locationRepository = createMock(LocationRepository.class);
-    eventService = createMock(EventService.class);
+    domainEventNotifier = createMock(DomainEventNotifier.class);
 
     service.setCargoRepository(cargoRepository);
     service.setCarrierMovementRepository(carrierMovementRepository);
     service.setHandlingEventRepository(handlingEventRepository);
     service.setLocationRepository(locationRepository);
-    service.setEventService(eventService);
+    service.setEventService(domainEventNotifier);
   }
 
   protected void tearDown() throws Exception {
-    verify(cargoRepository, carrierMovementRepository, handlingEventRepository, eventService);
+    verify(cargoRepository, carrierMovementRepository, handlingEventRepository, domainEventNotifier);
   }
 
   public void testRegisterEvent() throws Exception {
@@ -64,9 +64,9 @@ public class HandlingEventServiceTest extends TestCase {
 
     // TODO: does not inspect the handling event instance in a sufficient way
     handlingEventRepository.save(isA(HandlingEvent.class));
-    eventService.fireHandlingEventRegistered(isA(HandlingEvent.class));
+    domainEventNotifier.cargoWasHandled(isA(HandlingEvent.class));
 
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     service.register(date, trackingId, carrierMovementId, unLocode, HandlingEvent.Type.LOAD);
   }
@@ -78,11 +78,11 @@ public class HandlingEventServiceTest extends TestCase {
     expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
 
     handlingEventRepository.save(isA(HandlingEvent.class));
-    eventService.fireHandlingEventRegistered(isA(HandlingEvent.class));
+    domainEventNotifier.cargoWasHandled(isA(HandlingEvent.class));
 
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
 
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
 
     service.register(date, trackingId, null, STOCKHOLM.unLocode(), HandlingEvent.Type.CLAIM);
   }
@@ -99,7 +99,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(MELBOURNE.unLocode())).andReturn(MELBOURNE);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     try {
       service.register(date, trackingId, carrierMovementId, MELBOURNE.unLocode(), HandlingEvent.Type.UNLOAD);
@@ -115,7 +115,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(HONGKONG.unLocode())).andReturn(HONGKONG);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     try {
       service.register(date, trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.CLAIM);
@@ -131,7 +131,7 @@ public class HandlingEventServiceTest extends TestCase {
     UnLocode wayOff = new UnLocode("XXYYY");
     expect(locationRepository.find(wayOff)).andReturn(null);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, eventService);
+    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     try {
       service.register(date, trackingId, null, wayOff, HandlingEvent.Type.CLAIM);

@@ -13,7 +13,7 @@ import javax.jms.MessageListener;
  * Consumes JMS messages and delegates notification of misdirected
  * cargo to the cargo service.
  * <p/>
- * This point of this is to decouple the cargo service from JMS,
+ * This point of this is to decouple the tracking service from JMS,
  * and to allow a thread-based messaging implementation to live in
  * parallell.
  */
@@ -27,7 +27,7 @@ public class HandlingEventMessageDelegate implements MessageListener {
       logger.debug("Received message " + message);
     }
     try {
-      String tidString = message.getStringProperty(JmsEventServiceImpl.TRACKING_ID_KEY);
+      String tidString = message.getStringProperty(JmsDomainEventNotifierImpl.TRACKING_ID_KEY);
       trackingService.notify(new TrackingId(tidString));
     } catch (JMSException e) {
       logger.error(e, e);

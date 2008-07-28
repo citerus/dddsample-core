@@ -4,19 +4,19 @@ import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.service.EventService;
+import se.citerus.dddsample.domain.service.DomainEventNotifier;
 
 import javax.jms.*;
 
 /**
  * JMS based implementation.
  */
-public final class JmsEventServiceImpl implements EventService {
+public final class JmsDomainEventNotifierImpl implements DomainEventNotifier {
   private JmsOperations jmsOperations;
   private Destination destination;
   public static final String TRACKING_ID_KEY = TrackingId.class.getName() + ".KEY";
 
-  public void fireHandlingEventRegistered(final HandlingEvent event) {
+  public void cargoWasHandled(final HandlingEvent event) {
     jmsOperations.send(destination, new MessageCreator() {
       // TODO: richer message type
       public Message createMessage(final Session session) throws JMSException {

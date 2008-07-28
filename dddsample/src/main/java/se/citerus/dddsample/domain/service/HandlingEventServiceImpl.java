@@ -21,7 +21,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   private CarrierMovementRepository carrierMovementRepository;
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
-  private EventService eventService;
+  private DomainEventNotifier domainEventNotifier;
 
   @Transactional(readOnly = false)
   public void register(final Date completionTime, final TrackingId trackingId, final CarrierMovementId carrierMovementId,
@@ -53,7 +53,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
      */
     handlingEventRepository.save(event);
 
-    eventService.fireHandlingEventRegistered(event);
+    domainEventNotifier.cargoWasHandled(event);
   }
 
   private CarrierMovement findCarrierMovement(final CarrierMovementId carrierMovementId)
@@ -99,7 +99,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     this.locationRepository = locationRepository;
   }
 
-  public void setEventService(final EventService eventService) {
-    this.eventService = eventService;
+  public void setEventService(final DomainEventNotifier domainEventNotifier) {
+    this.domainEventNotifier = domainEventNotifier;
   }
 }
