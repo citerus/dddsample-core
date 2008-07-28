@@ -24,7 +24,7 @@
     <property name="handlingEventRepository" ref="handlingEventRepository"/>
     <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
     <property name="locationRepository" ref="locationRepository"/>
-    <property name="eventService" ref="eventService"/>
+    <property name="domainEventNotifier" ref="domainEventNotifier"/>
   </bean>
 
   <bean id="routingService" class="se.citerus.dddsample.application.routing.ExternalRoutingService">

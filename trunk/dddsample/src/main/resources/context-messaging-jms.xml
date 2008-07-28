@@ -34,7 +34,7 @@
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
-  <bean id="eventService" class="se.citerus.dddsample.application.messaging.JmsEventServiceImpl">
+  <bean id="domainEventNotifier" class="se.citerus.dddsample.application.messaging.JmsDomainEventNotifierImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="destination" ref="handlingEventTopic"/>
   </bean>
