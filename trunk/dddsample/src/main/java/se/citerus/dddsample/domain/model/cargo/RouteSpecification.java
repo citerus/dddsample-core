@@ -37,17 +37,17 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
    * Factory for creating a route specfication from an explicit destination,
    * for rerouting a cargo.
    *
-   * @param origin
+   * @param from
    * @param cargo
    * @param arrivalDeadline
    * @return
    */
-  public static RouteSpecification fromLocation(Location origin, Cargo cargo, Date arrivalDeadline) {
-    Validate.notNull(origin);
+  public static RouteSpecification forReroutedCargo(Location from, Cargo cargo, Date arrivalDeadline) {
+    Validate.notNull(from);
     Validate.notNull(cargo);
     Validate.notNull(arrivalDeadline);
 
-    return new RouteSpecification(origin, cargo.destination(), arrivalDeadline);
+    return new RouteSpecification(from, cargo.destination(), arrivalDeadline);
   }
 
   private RouteSpecification(Location origin, Location destination, Date arrivalDeadline) {
