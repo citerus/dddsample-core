@@ -9,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.application.remoting.dto.CargoTrackingDTO;
 import se.citerus.dddsample.application.web.command.TrackCommand;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
@@ -80,8 +79,8 @@ public class CargoTrackingControllerTest extends TestCase {
     assertEquals("test-form", mav.getViewName());
     // Errors, command are two standard map attributes, the third should be the cargo object
     assertEquals(3, mav.getModel().size());
-    CargoTrackingDTO cargo = (CargoTrackingDTO) mav.getModel().get("cargo");
-    assertEquals("CNHKG", cargo.getCurrentLocationId());
+    Cargo cargo = (Cargo) mav.getModel().get("cargo");
+    assertEquals(HONGKONG, cargo.deliveryHistory().currentLocation());
   }
 
   public void testUnknownCargo() throws Exception {

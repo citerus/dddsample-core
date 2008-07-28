@@ -1,3 +1,6 @@
+<%@ page import="se.citerus.dddsample.domain.model.cargo.Cargo" %>
+<%@ page import="se.citerus.dddsample.domain.model.cargo.DeliveryHistory" %>
+<%@ page import="se.citerus.dddsample.domain.model.handling.HandlingEvent" %>
 <html>
 <head>
   <title>Cargo search</title>
@@ -30,12 +33,24 @@
   </form:form>
   </div>
 
-  <c:if test="${cargo ne null}">
-    <div id="result">	
-    <h2>Status: <spring:message code="cargo.status.${cargo.statusCode}"/>&nbsp;${cargo.currentLocationId}&nbsp;${cargo.carrierMovementId}</h2>
-    <c:if test="${cargo.misdirected}">
+  <% final Cargo cargo = (Cargo) request.getAttribute("cargo"); %>
+
+  <% if (cargo != null) { %>
+    <% final DeliveryHistory dh = cargo.deliveryHistory(); %>
+    <div id="result">
+    <h2>
+      <c:set var="statusMessageCode"><%="cargo.status." + dh.status()%></c:set>
+      Status: <spring:message code="${statusMessageCode}"/>
+      &nbsp;
+      <%= dh.currentLocation() != null ?
+          dh.currentLocation().name() : "" %>
+      &nbsp;
+      <%= dh.currentCarrierMovement() != null ?
+          dh.currentCarrierMovement().carrierMovementId().idString() : "" %>
+    </h2>
+    <% if (cargo.isMisdirected()) { %>
       <p class="notify"><img src="${rc.contextPath}/images/error.png" alt="" />Cargo is misdirected</p>
-    </c:if>  
+    <% } %>
     <h3>Tracking History</h3>
     <table cellspacing="4">
       <thead>
@@ -47,18 +62,19 @@
         </tr>
       </thead>
       <tbody>
-        <c:forEach var="event" items="${cargo.events}">
-          <tr class="event-type-${event.type}">
-            <td>${event.type}</td>
-            <td>${event.location}</td>
-            <td>${event.time}</td>
-            <td><img src="${rc.contextPath}/images/${event.expected ? "tick" : "cross"}.png" alt=""/></td>
+        <% for (HandlingEvent event : dh.eventsOrderedByCompletionTime()) { %>
+          <tr class="event-type-<%=event.type()%>">
+            <td><%=event.type()%></td>
+            <td><%=event.location().name()%></td>
+            <td><%=event.completionTime()%></td>
+            <td><img src="${rc.contextPath}/images/<%=cargo.itinerary().isExpected(event) ? "tick" : "cross"%>.png" alt=""/></td>
           </tr>
-        </c:forEach>
+        <% } %>
       </tbody>
     </table>
   </div>
-  </c:if>
+  <% } %>
+
 </div>
 <script type="text/javascript" charset="UTF-8">
   try {

@@ -3,8 +3,6 @@ package se.citerus.dddsample.application.web;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-import se.citerus.dddsample.application.remoting.dto.CargoTrackingDTO;
-import se.citerus.dddsample.application.remoting.dto.assembler.CargoTrackingDTOAssembler;
 import se.citerus.dddsample.application.web.command.TrackCommand;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -37,10 +35,9 @@ public final class CargoTrackingController extends SimpleFormController {
     final String tidStr = trackCommand.getTrackingId();
     final Cargo cargo = trackingService.track(new TrackingId(tidStr));
 
-    final Map<String, CargoTrackingDTO> model = new HashMap<String, CargoTrackingDTO>();
+    final Map<String, Cargo> model = new HashMap<String, Cargo>();
     if (cargo != null) {
-      final CargoTrackingDTO dto = new CargoTrackingDTOAssembler().toDTO(cargo);
-      model.put("cargo", dto);
+      model.put("cargo", cargo);
     } else {
       errors.rejectValue("trackingId", "cargo.unknown_id", new Object[]{trackCommand.getTrackingId()},
         "Unknown tracking id");
