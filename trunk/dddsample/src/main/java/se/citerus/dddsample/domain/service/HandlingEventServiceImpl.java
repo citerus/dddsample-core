@@ -99,7 +99,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     this.locationRepository = locationRepository;
   }
 
-  public void setEventService(final DomainEventNotifier domainEventNotifier) {
+  public void setDomainEventNotifier(DomainEventNotifier domainEventNotifier) {
     this.domainEventNotifier = domainEventNotifier;
   }
 }
