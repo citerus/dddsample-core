@@ -4,7 +4,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
 /**
@@ -13,7 +12,6 @@ import java.util.regex.Pattern;
  * http://www.unece.org/cefact/locode/
  * http://www.unece.org/cefact/locode/DocColumnDescription.htm#LOCODE
  */
-@Embeddable
 public final class UnLocode {
 
   private String unlocode;
