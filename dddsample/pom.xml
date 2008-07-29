@@ -155,6 +155,15 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>src</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
   <dependencies>

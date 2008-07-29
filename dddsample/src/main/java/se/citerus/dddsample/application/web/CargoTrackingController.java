@@ -14,13 +14,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller for tracking cargo.
+ * Controller for tracking cargo. This interface sits immediately on top of the
+ * domain layer, unlike the booking interface which has a a remote facade and supporting
+ * DTOs in between.
+ * <p/>
+ * This approach represents the least amount of transfer object overhead, but is
+ * also somewhat awkward when working with domain model classes in the view layer,
+ * since those classes do not follow the JavaBean conventions for example.
+ * <p/>
+ * Note that DDD strongly urges you to keep your domain model free from user interface
+ * interference and demands, so this approach should be used with caution.
+ *
+ * @see se.citerus.dddsample.application.web.CargoAdminController
  */
 public final class CargoTrackingController extends SimpleFormController {
 
-  /**
-   * Service instance.
-   */
   private TrackingService trackingService;
 
   public CargoTrackingController() {
