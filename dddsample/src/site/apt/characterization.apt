@@ -1,0 +1,55 @@
+  ------------------------------------
+  Characterization of building blocks.
+  ------------------------------------
+  Patrik Fredriksson
+  ------------------------------------
+  July 29 2008
+  ------------------------------------
+
+  Careful characterization of the classes is an important activity when doing Domain-Driven Design. Sometimes it is fairly obvious in what category a particular class belongs, other times it is not as easy to sort out the different <Building Blocks of a Model-Driven Design>.
+
+  The trickiest ones to classify are typically <Entities>, <Aggregates>, <Value Objects> and <Domain Events>. When possible, we tend to favor <Value Objects> over <Entities> or <Domain Events>, because they require less attention during implementation. <Value Objects> can be created and thrown away at will, and since they are immutable we can pass them around as we wish. We must be much less cavalier with <Entities> as identity and life-cycle have to be carefully managed. Below is a short walkthrough of key classes in the application and the motivation behind their implementation choice. All but <Domain Event> are thoroughly described in {{{http://www.domaindrivendesign.org/books/index.html#DDD}Eric Evans' book}}. A short introduction to Domain Events can be found here: {{http://martinfowler.com/eaaDev/DomainEvent.html}}
+
+Entities
+
+    <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/cargo/Cargo.java&revision=HEAD&name=dddsample}Cargo}}>>>: <<<Cargo>>> has both a clear identity and a life-cycle with state transitions that we care about, so it's an entity. Many cargo instances will exist in the system simultaneously. The different instances have the same origin and destination, they may even contain the same kind of things, but it is important for us to be able to track individual cargo instances. In our case the cargo's identity is its tracking number. The tracking number is assigned upon creation and is never changed.
+
+    The cargo's state will change during it's lifetime. It will start out as <<<RECEIVED>>> and in the normal case end its life as <<<CLAIMED>>> (note that this is a derived property of the cargo, calculated from its <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/cargo/DeliveryHistory.java&revision=HEAD&name=dddsample}DeliveryHistory}}>>>). During a cargo's lifetime it may be assigned new destinations, its itinerary may be changed many times and it's <<<DeliveryHistory>>> will be recalculated as new <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/handling/HandlingEvent.java&revision=HEAD&name=dddsample}HandlingEvent}}}>>>s arrive.
+
+    <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/carrier/CarrierMovement.java&revision=HEAD&name=dddsample}CarrierMovement}}>>>: <<<CarrierMovement>>> is a vessel voyage from one location to another. In the sample app <<<CarrierMovment>>> is actually immutable, but it has a very clear notion of identity, <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/carrier/CarrierMovementId.java&revision=HEAD&name=dddsample}CarrierMovementId}}>>>, This id could be something like a flight number for air shipments or a vessel voyage number for a ship, it is not the name or the identification of the actual vessel. To see this domain concept in a different context, try searching the current vessel schedule for {{{http://en.wikipedia.org/wiki/Emma_Maersk}Emma Maersk}} at {{http://www.maerskline.com/}} (please note that we are not associated with Maersk in any way).
+
+Value Objects
+
+    <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/cargo/Leg.java&revision=HEAD&name=dddsample}Leg}}>>>: Leg consists of a starting point and an ending point (to <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/location/Location.java&revision=HEAD&name=dddsample}Location}}>>> and from <<<Location>>>), and a reference to a carrier movement. A leg has no sense of identity; two legs with the same from Location, end Location and <<<CarrierMovment>>> are in our model completely interchangeable. We implement <<<Leg>>> as an immutable <Value Object>.
+
+    <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/cargo/Itinerary.java&revision=HEAD&name=dddsample}Itinerary}}>>>: An Itinerary consists of a list of <<<Leg>>>s, with the from <<<Location>>> of the first <<<Leg>>> in the list as the starting point of the <<<Itinerary>>> and the to <<<Location>>> of the last <<<Leg>>> as the final destination. The same reasoning applies to <<<Itinerarie>>>s as to <<<Leg>>>s, they do not have identity and are implemented as <Value Objects>. Now, a <<<Cargo>>> can certainly have its <<<Itinerary>>> updated. One way to accomplish this would be to keep the original <<<Itinerary>>> instance and update the legs in the <<<Itinerary>>>'s list, in this case the <<<Itinerary>>> must be mutable and has to be implemented as an <Entity>. With the <<<Itinerary>>> as a <Value Object>, as in the case of the sample application model and implementation, updating it is a simple operation of acquiring a complete new <<<Itinerary>>> from the <<<RoutingService>>> and replacing the old one. Implementation of a <<<Cargo>>>'s <<<Itinerary>>> management is much simplified by having the <<<Itinerary>>> as a <Value Object>.
+
+Domain Event
+
+    Some things clearly have identity but no life-cycle, or an extremely limited life-cycle with just one state. We call these things <Domain Events> and they can be viewed as hybrid of <Entities> and <Value Objects>. In the sample application <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/handling/HandlingEvent.java&revision=HEAD&name=dddsample}HandlingEvent}}>>> is a <Domain Event> that represent real-life event such as a <<<Cargo>>> being loaded or unloaded, customs cleared etc. They carry both a completion time and a registration time and a completion time. The completion time is the time when the event occurred and the registration time is the time when the event was received. The <<<HandlingEvent>>> id is composed of the cargo, carrier movement, completion time, location and type (<<<LOAD>>> or <<<UNLOAD>>>).
+
+Aggregates
+
+    <<pending Which are our aggregates?>>
+
+Repositories
+
+    With the aggregates and their roots defined its typically trivial to define the <Repositories>. The <Repositories> work on aggregate roots and in the sample application there is one <Repository> per aggregate root, the <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/model/cargo/CargoRepository.java&revision=HEAD&name=dddsample}CargoRepository}}>>> is responsible for finding and storing <<<Cargo>>> aggregates. The finders return <<<Cargo>>> instances or lists of <<<Cargo>>> instances.
+
+Services
+
+    There are two basic kinds of services in the sample application:
+
+    * Domain services encapsulate domain concepts that just are not naturally modeled as things.
+
+    * Application services constitute the application, or {{{http://martinfowler.com/eaaCatalog/serviceLayer.html}service}}, layer.
+
+*Domain services
+
+    Domain services are a natural part of the domain and provide services such as message forwarding etc. In the sample application the <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/service/RoutingService.java&revision=HEAD&name=dddsample}RoutingService}}>>> provides access to the routing system and is used to find possible routes for a give specification.
+
+*Application services
+
+    The application services in the sample application are responsible for driving workflow and coordinating transaction management (by use of the declarative transaction management support in Spring). They also provide a high-level abstraction for clients to use when interacting with the domain. These services are typically designed to support specific use cases or stories. The <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/service/TrackingService.java&revision=HEAD&name=dddsample}TrackingService}}>>> is used by the public web application for tracking cargo and the <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/domain/service/BookingService.java&revision=HEAD&name=dddsample}BookingService}}>>> is used by the internal administration application for booking new cargo.
+
+    The services are all defined in types of the domain, i.e. the method arguments and the return values are proper domain classes. In some situation, e.g. when dealing with graphs of lazy-loaded domain objects or when passing services' return values over network boundaries, the services are wrapped in facades. The facades handle ORM session management issues and/or convert the domain objects to more portable {{{http://martinfowler.com/eaaCatalog/dataTransferObject.html}Data Transfer Objects}}) that can be tailored to specific use cases. See <<<{{{http://ddd.sventon.org/showfile.svn?path=/trunk/dddsample/src/main/java/se/citerus/dddsample/application/remoting/BookingServiceFacadeImpl.java&revision=HEAD&name=dddsample}BookingServiceFacadeImpl}}>>> for an example.

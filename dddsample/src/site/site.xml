@@ -16,6 +16,7 @@
     </links>
     <menu name="About the application">
       <item name="Introduction" href="index.html"/>
+      <item name="Characterization" href="characterization.html"/>
       <item name="Download" href="download.html"/>
       <item name="Roadmap" href="roadmap.html" />
     </menu>
