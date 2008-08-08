@@ -4,7 +4,6 @@
   Patrik Fredriksson
   ------------------------------------
   July 29 2008
-  ------------------------------------
 
   Careful characterization of the classes is an important activity when doing Domain-Driven Design. Sometimes it is fairly obvious in what category a particular class belongs, other times it is not as easy to sort out the different <Building Blocks of a Model-Driven Design>.
 
@@ -31,6 +30,8 @@ Domain Event
 Aggregates
 
     In real life most things are connected, directly or indirectly. Mimicking this approach when building large software systems tend to bring unnecessary complexity and poor performance. DDD provides tactics to help you sort these things out, aggregates being one of the most important ones. Aggregates help with decoupling of large structures by setting rules for relations between entities. Aggregates can also have properties, methods, and invariants that doesn't fit within one single class. Java and other OO-languages typically miss specific language constructs to handle aggregates and in the sample application responsibilities that belong to an aggregate is most often implemented in the aggregate root.    <<<{{{xref/se/citerus/dddsample/domain/model/cargo/package-summary.html}cargo}}>>>: cargo is the central aggregate in the sample application. <<<Cargo>>> is the aggregate root and the aggregate also contains the <Value Objects> <<<DeliveryHistory>>>, <<<Itinereray>>>, <<<Leg>>> and a few more classes.     <<<{{{xref/se/citerus/dddsample/domain/model/handling/package-summary.html}handling}}>>>: handling is another important aggregate. It contains the HandlingEvents that are registered throughout a cargo's progress from <<<RECEIVED>>> to <<<CLAIMED>>>. The <<<HandlingEvent>>>s have a relation to the <<<Cargo>>> for which the event belongs, this is allowed since <<<HandlingEvent>>> is an aggregate root and so is <<<Cargo>>>.     The main reason for not making <<<HandlingEvent>>> part of the cargo aggregate is performance. <<<HandlingEvent>>>s are received from external parties and systems, e.g. warehouse management systems, port handling systems, that call our <<<{{{xref/se/citerus/dddsample/domain/service/HandlingEventService.html}HandlingEventService}}>>> webservice. The number of events can be very high and it is important that our webservice can dispatch the remote calls quickly. To be able to support this use case we need to handle the remote webservice calls asynchronously, i.e. we do not want to load the big cargo structure for each received <<<HandlingEvent>>>. Since all relationships in an aggregate must be handled synchronously we put the <<<HandlingEvent>>> in an aggregate of its own and we are able processes the events quickly and at the same time eliminate dead-locking situations in the system.    <Editors note: We are aware that this example may need a little more work to drive the full benefits of aggregates home. This is one of the problems with a small sample app, real-world complexity is hard to simulate.>
+    
+[images/aggregates.gif]
 
 Repositories
 
