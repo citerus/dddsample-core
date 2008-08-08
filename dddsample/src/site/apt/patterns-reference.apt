@@ -1,0 +1,15 @@
+  ------------------------------------
+  Patterns reference
+  ------------------------------------
+  Patrik Fredriksson
+  ------------------------------------
+  August 8, 2008
+  
+  In {{{http://www.domaindrivendesign.org/books/index.html#DDD}Eric Evans' book}} a number of patterns on Domain-Driven Design are presented. Many of these patterns are implemented in the sample application. Use this patterns reference to find out which patterns are implemented where!Tactical Design Patterns*Building Blocks of a Model-Driven Design  Aggregate  
+  Entity  
+  Value Object  
+  Repository  
+  Service  
+  Specification  Layered Architecture
+  
+  Service LayerStrategic Design Patterns  Anti-corruption Layer
