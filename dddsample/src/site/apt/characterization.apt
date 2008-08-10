@@ -9,7 +9,7 @@
 
   The trickiest ones to classify are typically <Entities>, <Aggregates>, <Value Objects> and <Domain Events>. When possible, we tend to favor <Value Objects> over <Entities> or <Domain Events>, because they require less attention during implementation. <Value Objects> can be created and thrown away at will, and since they are immutable we can pass them around as we wish. We must be much less cavalier with <Entities> as identity and life-cycle have to be carefully managed. Below is a short walkthrough of key classes in the application and the motivation behind their implementation choice. All but <Domain Event> are thoroughly described in {{{http://www.domaindrivendesign.org/books/index.html#DDD}Eric Evans' book}}. A short introduction to Domain Events can be found here: {{http://martinfowler.com/eaaDev/DomainEvent.html}}
 
-Entities
+{Entities}
 
     <<<{{{xref/se/citerus/dddsample/domain/model/cargo/Cargo.html}Cargo}}>>>: <<<Cargo>>> has both a clear identity and a life-cycle with state transitions that we care about, so it's an entity. Many cargo instances will exist in the system simultaneously. The different instances have the same origin and destination, they may even contain the same kind of things, but it is important for us to be able to track individual cargo instances. In our case the cargo's identity is its tracking number. The tracking number is assigned upon creation and is never changed.
 
@@ -17,27 +17,27 @@ Entities
 
     <<<{{{xref/se/citerus/dddsample/domain/model/carrier/CarrierMovement.html}CarrierMovement}}>>>: <<<CarrierMovement>>> is a vessel voyage from one location to another. In the sample app <<<CarrierMovment>>> is actually immutable, but it has a very clear notion of identity, <<<{{{xref/se/citerus/dddsample/domain/model/carrier/CarrierMovementId.html}CarrierMovementId}}>>>, This id could be something like a flight number for air shipments or a vessel voyage number for a ship, it is not the name or the identification of the actual vessel. To see this domain concept in a different context, try searching the current vessel schedule for {{{http://en.wikipedia.org/wiki/Emma_Maersk}Emma Maersk}} at {{http://www.maerskline.com/}} (please note that we are not associated with Maersk in any way).
 
-Value Objects
+{Value Objects}
 
     <<<{{{xref/se/citerus/dddsample/domain/model/cargo/Leg.html}Leg}}>>>: Leg consists of a starting point and an ending point (to <<<{{{xref/se/citerus/dddsample/domain/model/location/Location.html}Location}}>>> and from <<<Location>>>), and a reference to a carrier movement. A leg has no sense of identity; two legs with the same from Location, end Location and <<<CarrierMovment>>> are in our model completely interchangeable. We implement <<<Leg>>> as an immutable <Value Object>.
 
     <<<{{{xref/se/citerus/dddsample/domain/model/cargo/Itinerary.html}Itinerary}}>>>: An Itinerary consists of a list of <<<Leg>>>s, with the from <<<Location>>> of the first <<<Leg>>> in the list as the starting point of the <<<Itinerary>>> and the to <<<Location>>> of the last <<<Leg>>> as the final destination. The same reasoning applies to <<<Itinerarie>>>s as to <<<Leg>>>s, they do not have identity and are implemented as <Value Objects>. Now, a <<<Cargo>>> can certainly have its <<<Itinerary>>> updated. One way to accomplish this would be to keep the original <<<Itinerary>>> instance and update the legs in the <<<Itinerary>>>'s list, in this case the <<<Itinerary>>> must be mutable and has to be implemented as an <Entity>. With the <<<Itinerary>>> as a <Value Object>, as in the case of the sample application model and implementation, updating it is a simple operation of acquiring a complete new <<<Itinerary>>> from the <<<RoutingService>>> and replacing the old one. Implementation of a <<<Cargo>>>'s <<<Itinerary>>> management is much simplified by having the <<<Itinerary>>> as a <Value Object>.
 
-Domain Event
+{Domain Event}
 
     Some things clearly have identity but no life-cycle, or an extremely limited life-cycle with just one state. We call these things <Domain Events> and they can be viewed as hybrid of <Entities> and <Value Objects>. In the sample application <<<{{{xref/se/citerus/dddsample/domain/model/handling/HandlingEvent.html}HandlingEvent}}>>> is a <Domain Event> that represent real-life event such as a <<<Cargo>>> being loaded or unloaded, customs cleared etc. They carry both a completion time and a registration time and a completion time. The completion time is the time when the event occurred and the registration time is the time when the event was received. The <<<HandlingEvent>>> id is composed of the cargo, carrier movement, completion time, location and type (<<<LOAD>>> or <<<UNLOAD>>>).
 
-Aggregates
+{Aggregates}
 
     In real life most things are connected, directly or indirectly. Mimicking this approach when building large software systems tend to bring unnecessary complexity and poor performance. DDD provides tactics to help you sort these things out, aggregates being one of the most important ones. Aggregates help with decoupling of large structures by setting rules for relations between entities. Aggregates can also have properties, methods, and invariants that doesn't fit within one single class. Java and other OO-languages typically miss specific language constructs to handle aggregates and in the sample application responsibilities that belong to an aggregate is most often implemented in the aggregate root.    <<<{{{xref/se/citerus/dddsample/domain/model/cargo/package-summary.html}cargo}}>>>: cargo is the central aggregate in the sample application. <<<Cargo>>> is the aggregate root and the aggregate also contains the <Value Objects> <<<DeliveryHistory>>>, <<<Itinereray>>>, <<<Leg>>> and a few more classes.     <<<{{{xref/se/citerus/dddsample/domain/model/handling/package-summary.html}handling}}>>>: handling is another important aggregate. It contains the HandlingEvents that are registered throughout a cargo's progress from <<<RECEIVED>>> to <<<CLAIMED>>>. The <<<HandlingEvent>>>s have a relation to the <<<Cargo>>> for which the event belongs, this is allowed since <<<HandlingEvent>>> is an aggregate root and so is <<<Cargo>>>.     The main reason for not making <<<HandlingEvent>>> part of the cargo aggregate is performance. <<<HandlingEvent>>>s are received from external parties and systems, e.g. warehouse management systems, port handling systems, that call our <<<{{{xref/se/citerus/dddsample/domain/service/HandlingEventService.html}HandlingEventService}}>>> webservice. The number of events can be very high and it is important that our webservice can dispatch the remote calls quickly. To be able to support this use case we need to handle the remote webservice calls asynchronously, i.e. we do not want to load the big cargo structure for each received <<<HandlingEvent>>>. Since all relationships in an aggregate must be handled synchronously we put the <<<HandlingEvent>>> in an aggregate of its own and we are able processes the events quickly and at the same time eliminate dead-locking situations in the system.    <Editors note: We are aware that this example may need a little more work to drive the full benefits of aggregates home. This is one of the problems with a small sample app, real-world complexity is hard to simulate.>
     
 [images/aggregates.gif]
 
-Repositories
+{Repositories}
 
     With the aggregates and their roots defined its typically trivial to define the <Repositories>. The <Repositories> work on aggregate roots and in the sample application there is one <Repository> per aggregate root, the <<<{{{xref/se/citerus/dddsample/domain/model/cargo/CargoRepository.html}CargoRepository}}>>> is responsible for finding and storing <<<Cargo>>> aggregates. The finders return <<<Cargo>>> instances or lists of <<<Cargo>>> instances.
 
-Services
+{Services}
 
     There are two basic kinds of services in the sample application:
 
