@@ -11,8 +11,9 @@ import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import se.citerus.routingteam.GraphDAO;
 import se.citerus.routingteam.GraphTraversalService;
+import se.citerus.routingteam.internal.GraphDAO;
+import se.citerus.routingteam.internal.GraphTraversalServiceImpl;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -32,7 +33,7 @@ public class RoutingServiceTest extends TestCase {
     carrierMovementRepository = createMock(CarrierMovementRepository.class);
     routingService.setCarrierMovementRepository(carrierMovementRepository);
 
-    GraphTraversalService graphTraversalService = new GraphTraversalService(new GraphDAO(createMock(DataSource.class)) {
+    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO(createMock(DataSource.class)) {
       public List<String> listLocations() {
         return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
       }
