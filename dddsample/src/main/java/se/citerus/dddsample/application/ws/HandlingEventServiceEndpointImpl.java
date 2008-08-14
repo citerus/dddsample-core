@@ -29,7 +29,7 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       Date date = parseIso8601Date(completionTime);
       TrackingId tid = new TrackingId(trackingId);
       CarrierMovementId cid;
-      if (StringUtils.isNotBlank(carrierMovementId)) {
+      if (StringUtils.isNotEmpty(carrierMovementId)) {
         cid = new CarrierMovementId(carrierMovementId);
       } else {
         cid = null;
@@ -39,18 +39,41 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       UnLocode ul = new UnLocode(unlocode);
 
       handlingEventService.register(date, tid, cid, ul, type);
+
+    } catch (IllegalArgumentException iae) {
+      handleIllegalArgument(iae);
+
     } catch (ParseException pe) {
-      logger.error("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
+      handleInvalidDateFormat(completionTime);
+
     } catch (UnknownTrackingIdException utid) {
-      handleRetry(utid);
+      handleUnknownTrackingId(utid);
+
     } catch (UnknownCarrierMovementIdException ucmi) {
-      handleRetry(ucmi);
+      handleUnknownCarrierMovementId(ucmi);
+
     } catch (InvalidEventTypeException iete) {
-      logger.error(iete, iete);
+      handleInvalidEventType(iete);
+
     } catch (Exception e) {
-      logger.error(e, e);
+      handleOtherError(e);
     }
-    // TODO: possibly handle "Duplicate event" exceptions due to unique constraint violations
+  }
+
+  private void handleIllegalArgument(IllegalArgumentException iae) {
+    logger.error(iae, iae);
+  }
+
+  private void handleOtherError(Exception e) {
+    logger.error(e, e);
+  }
+
+  private void handleInvalidEventType(InvalidEventTypeException iete) {
+    logger.error(iete, iete);
+  }
+
+  private void handleInvalidDateFormat(String completionTime) {
+    logger.error("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
   }
 
   private HandlingEvent.Type parseEventType(final String eventType) throws InvalidEventTypeException {
@@ -61,9 +84,12 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     }
   }
 
-  private void handleRetry(Exception e) {
+  private void handleUnknownCarrierMovementId(UnknownCarrierMovementIdException e) {
     logger.info("Placing event in retry queue due to: " + e.getMessage());
-    // TODO: actually place in a retry queue
+  }
+
+  private void handleUnknownTrackingId(Exception e) {
+    logger.info("Placing event in retry queue due to: " + e.getMessage());
   }
 
   private Date parseIso8601Date(final String completionTime) throws ParseException {
