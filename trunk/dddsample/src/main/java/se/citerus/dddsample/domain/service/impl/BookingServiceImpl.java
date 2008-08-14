@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.service;
+package se.citerus.dddsample.domain.service.impl;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -8,6 +8,8 @@ import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.domain.service.BookingService;
+import se.citerus.dddsample.domain.service.RoutingService;
 
 import java.util.Date;
 import java.util.List;
