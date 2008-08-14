@@ -11,6 +11,7 @@ import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import se.citerus.dddsample.domain.service.impl.TrackingServiceImpl;
 
 import java.util.Arrays;
 import java.util.Date;

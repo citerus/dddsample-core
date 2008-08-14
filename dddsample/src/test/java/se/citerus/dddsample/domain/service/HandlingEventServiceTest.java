@@ -13,6 +13,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.domain.service.impl.HandlingEventServiceImpl;
 
 import java.util.Date;
 

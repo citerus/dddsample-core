@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.service;
+package se.citerus.dddsample.domain.service.impl;
 
 import org.apache.commons.lang.Validate;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +13,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.domain.service.*;
 
 import java.util.Date;
 
