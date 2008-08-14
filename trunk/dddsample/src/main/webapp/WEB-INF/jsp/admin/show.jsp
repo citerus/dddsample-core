@@ -12,7 +12,7 @@
         <td>${cargo.origin}</td>
       </tr>
       <tr>
-        <td>Final destination</td>
+        <td>Destination</td>
         <td>${cargo.finalDestination}</td>
       </tr>
     </tbody>

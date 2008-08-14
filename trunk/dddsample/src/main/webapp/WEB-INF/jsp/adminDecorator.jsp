@@ -12,7 +12,8 @@
 </head>
 <body>
   <div id="outer">
-    <h1>Cargo administration</h1>
+    <img id="logotype" src="<c:url value="/images/dddsample_logotype_small.png"/>" alt=""/>
+    <h1>Cargo Booking and Routing</h1>
     <ul id="menu">
       <li>
         <a href="${rc.contextPath}/admin/list.html">
@@ -21,7 +22,7 @@
       </li>
       <li>
         <a href="${rc.contextPath}/admin/registrationForm.html">
-          Register cargo
+          Book new cargo
         </a>
       </li>
     </ul>
