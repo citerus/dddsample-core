@@ -1,8 +1,8 @@
 package se.citerus.dddsample.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import se.citerus.dddsample.domain.model.ValueObject;
 
 import java.util.regex.Pattern;
 
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * http://www.unece.org/cefact/locode/
  * http://www.unece.org/cefact/locode/DocColumnDescription.htm#LOCODE
  */
-public final class UnLocode {
+public final class UnLocode implements ValueObject<UnLocode> {
 
   private String unlocode;
 
@@ -26,22 +26,32 @@ public final class UnLocode {
    * @param countryAndLocation Location string.
    */
   public UnLocode(final String countryAndLocation) {
-    Validate.notNull(countryAndLocation);
-    Validate.isTrue(VALID_PATTERN.matcher(countryAndLocation).matches());
+    Validate.notNull(countryAndLocation, "Country and location may not be null");
+    Validate.isTrue(VALID_PATTERN.matcher(countryAndLocation).matches(),
+      countryAndLocation + " is not a valid UN/LOCODE (does not match pattern)");
 
     this.unlocode = countryAndLocation.toUpperCase();
   }
 
   /**
-   * @return country code and location code concatenated.
+   * @return country code and location code concatenated, always upper case.
    */
   public String idString() {
     return unlocode;
   }
 
   @Override
-  public boolean equals(final Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    UnLocode other = (UnLocode) o;
+
+    return sameValueAs(other);
+  }
+
+  public boolean sameValueAs(UnLocode other) {
+    return other != null && this.idString().equals(other.idString());
   }
 
   @Override
@@ -57,4 +67,5 @@ public final class UnLocode {
   UnLocode() {
     // Needed by Hibernate
   }
+
 }
