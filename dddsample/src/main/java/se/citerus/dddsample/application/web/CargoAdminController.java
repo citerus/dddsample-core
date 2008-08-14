@@ -75,7 +75,13 @@ public final class CargoAdminController extends MultiActionController {
     final String trackingId = request.getParameter("trackingId");
     final List<ItineraryCandidateDTO> itineraryCandidates = bookingServiceFacade.requestPossibleRoutesForCargo(trackingId);
 
-    map.put("itineraryCandidates", itineraryCandidates);
+    if (request.getParameter("spec") != null) {
+      map.put("itineraryCandidates", itineraryCandidates);
+    }
+
+    final CargoRoutingDTO cargoDTO = bookingServiceFacade.loadCargoForRouting(trackingId);
+    map.put("origin", cargoDTO.getOrigin());
+    map.put("destination", cargoDTO.getFinalDestination());
     map.put("trackingId", trackingId);
     return map;
   }

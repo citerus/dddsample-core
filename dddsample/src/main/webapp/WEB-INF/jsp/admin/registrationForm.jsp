@@ -11,7 +11,7 @@
 <div id="container">
   <form action="<c:url value="/admin/register.html"/>" method="post">
   <table>
-    <caption>Register cargo</caption>
+    <caption>Book new cargo</caption>
     <tbody>
       <tr>
         <td>Origin</td>
@@ -24,7 +24,7 @@
         </td>
       </tr>
       <tr>
-        <td>Final destination</td>
+        <td>Destination</td>
         <td>
           <select name="destinationUnlocode">
             <c:forEach items="${unlocodes}" var="u">
@@ -38,7 +38,7 @@
       <tr>
         <td> </td>
         <td>
-          <input type="submit" value="Register"/>
+          <input type="submit" value="Book"/>
         </td>
       </tr>
     </tfoot>

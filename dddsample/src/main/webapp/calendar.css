@@ -1,0 +1,87 @@
+html, body {
+	background-color: white;
+	color: black;
+}
+
+.calendarTrigger {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	vertical-align: top;
+	margin-top: 1px;
+}
+
+.calendar {
+	position: absolute;
+	display: inherit;
+	
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	border: 1px solid blue;
+	background-color: white;
+}
+
+
+.calendar table {
+	border: 4px solid lightblue;
+	margin: 0px;
+	padding: 0px;
+	border-spacing: 2px;
+	border-collapse: separate;
+}
+
+.calendar table .goPrevious,
+.calendar table .goNext {
+	width: 12px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+.calendar table .goPrevious {
+	background-image: url( 'navigate_left.gif' );
+	background-position: left center;
+}
+
+.calendar table .goNext {
+	background-image: url( 'navigate_right.gif' );
+	background-position: right center;
+}
+
+.calendar table thead tr:first-child td {
+	font-weight: bold;
+}
+
+.calendar table td {
+	width: 15px;
+	height: 15px;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 8pt;
+	text-align: center;
+	padding: 0px 0px 0px 1px;
+	border: 0px;
+	vertical-align: middle;
+}
+.calendar table tbody td {
+	border: 1px solid gray;
+	cursor: pointer;
+}
+.calendar .disabled {
+	background-color: #BBBBBB;
+	color: #555555;
+}
+.calendar .past {
+	color: #AAAAAA;
+}
+.calendar .future {
+}
+.calendar .today {
+	background-color: pink;
+}
+.calendar .active {
+	background-color: #FFAA00;
+	border: 1px solid black;
+}
+
+.calendar table tbody td:hover {
+	border: 1px solid blue;
+	background-color: lightblue;
+}
