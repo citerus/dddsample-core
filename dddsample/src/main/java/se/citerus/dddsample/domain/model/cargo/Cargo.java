@@ -73,12 +73,12 @@ public final class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * @param destination the new destination. May not be null.
+   * @param newDestination the new destination. May not be null.
    */
-  public void setDestination(final Location destination) {
-    Validate.notNull(destination);
+  public void changeDestination(final Location newDestination) {
+    Validate.notNull(newDestination);
 
-    this.destination = destination;
+    this.destination = newDestination;
   }
 
   /**
@@ -167,7 +167,7 @@ public final class Cargo implements Entity<Cargo> {
     final HandlingEvent lastEvent = deliveryHistory().lastEvent();
     if (lastEvent == null) {
       return false;
-    } else {
+    } else {                                          
       return !itinerary().isExpected(lastEvent);
     }
   }
