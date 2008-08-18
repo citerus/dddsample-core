@@ -8,7 +8,7 @@ public interface CargoRepository {
    * Finds a cargo using given id.
    *
    * @param trackingId Id
-   * @return Cargo
+   * @return Cargo if found, else {@code null}
    */
   Cargo find(TrackingId trackingId);
 
