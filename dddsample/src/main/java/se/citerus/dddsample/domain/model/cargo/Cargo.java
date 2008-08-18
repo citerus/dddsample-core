@@ -28,7 +28,7 @@ import se.citerus.dddsample.domain.model.location.Location;
  * The life cycle of a cargo ends when the cargo is claimed by the customer.
  *
  * The cargo aggregate, and the entre domain model, is built to solve the problem
- * of booking and tracking cargo. All important buisness rules for determining whether
+ * of booking and tracking cargo. All important business rules for determining whether
  * or not a cargo is misrouted, what the current status of the cargo is (on board carrier,
  * in port etc), are captured in this aggregate.
  *
