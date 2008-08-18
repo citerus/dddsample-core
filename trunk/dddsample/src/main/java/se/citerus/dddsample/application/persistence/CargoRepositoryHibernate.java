@@ -22,11 +22,17 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
     // Query for id and then perform a standard load()
     // to use metadata-defined query and lazy proxy access
     Long id = (Long) getSession().
-            createQuery("select id from Cargo where trackingId = :tid").
-            setParameter("tid", tid).
-            uniqueResult();
+       createQuery("select id from Cargo where trackingId = :tid").
+       setParameter("tid", tid).
+       uniqueResult();
 
-    return (Cargo) getSession().load(Cargo.class, id);
+    if (id != null) {
+      return (Cargo) getSession().get(Cargo.class, id);
+    } else {
+      return null;
+    }
+
+
   }
 
   public void save(Cargo cargo) {
@@ -35,8 +41,8 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
     // Delete orphaned itineraries - conceptually the responsibility
     // of the Cargo aggregate
     final List<Itinerary> orphans = getSession().
-      createQuery("from Itinerary where cargo = null").
-      list();
+       createQuery("from Itinerary where cargo = null").
+       list();
     for (Itinerary orphan : orphans) {
       getSession().delete(orphan);
     }
@@ -45,7 +51,7 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
   public TrackingId nextTrackingId() {
     final String random = UUID.randomUUID().toString().toUpperCase();
     return new TrackingId(
-      random.substring(0, random.indexOf("-"))
+       random.substring(0, random.indexOf("-"))
     );
   }
 

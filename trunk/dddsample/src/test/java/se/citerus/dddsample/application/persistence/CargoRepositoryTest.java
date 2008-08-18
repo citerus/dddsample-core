@@ -85,6 +85,10 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals(cargo, event.cargo());
   }
 
+  public void testFindByCargoIdUnknownId() {
+    assertNull(cargoRepository.find(new TrackingId("UNKNOWN")));
+  }
+
   private void assertLeg(Leg firstLeg, String cmId, Location expectedFrom, Location expectedTo) {
     assertEquals(new CarrierMovementId(cmId), firstLeg.carrierMovement().carrierMovementId());
     assertEquals(expectedFrom, firstLeg.from());
