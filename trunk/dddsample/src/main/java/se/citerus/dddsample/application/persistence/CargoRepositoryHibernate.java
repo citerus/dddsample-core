@@ -5,7 +5,6 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,11 +15,12 @@ import java.util.UUID;
 @Repository
 public class CargoRepositoryHibernate extends HibernateRepository implements CargoRepository {
 
-  HandlingEventRepository handlingEventRepository;
-
   public Cargo find(TrackingId tid) {
-    // Query for id and then perform a standard load()
-    // to use metadata-defined query and lazy proxy access
+    // Query for id and then perform a standard load().
+    // This way we use the metadata-defined way of loading the aggregate
+    // in an efficient way (generally a complete aggregate at a time),
+    // and we can benefi from the identifier-keyed second level cache
+    // without havng to cache individual queries.
     Long id = (Long) getSession().
        createQuery("select id from Cargo where trackingId = :tid").
        setParameter("tid", tid).
@@ -59,7 +59,4 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
     return getSession().createQuery("from Cargo").list();
   }
 
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
-  }
 }
