@@ -51,7 +51,7 @@
     <% if (cargo.isMisdirected()) { %>
       <p class="notify"><img src="${rc.contextPath}/images/error.png" alt="" />Cargo is misdirected</p>
     <% } %>
-    <h3>Tracking History</h3>
+    <h3>Delivery History</h3>
     <table cellspacing="4">
       <thead>
         <tr>
