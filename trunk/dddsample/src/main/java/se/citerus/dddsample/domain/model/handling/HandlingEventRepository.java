@@ -16,6 +16,8 @@ public interface HandlingEventRepository {
    */
   void save(final HandlingEvent event);
 
+
+  // TODO: remove this in 1.0 branch, it's not used anywhere
   /**
    * @param trackingId cargo tracking id
    * @return All handling events for this cargo, ordered by completion time.

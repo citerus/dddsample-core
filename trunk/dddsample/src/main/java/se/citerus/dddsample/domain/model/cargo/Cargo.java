@@ -190,7 +190,7 @@ public final class Cargo implements Entity<Cargo> {
   }
 
   public boolean sameIdentityAs(final Cargo other) {
-    return other != null && trackingId.equals(other.trackingId);
+    return other != null && trackingId.sameValueAs(other.trackingId);
   }
 
   /**
