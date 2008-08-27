@@ -28,7 +28,7 @@ public class HandlingEventMessageDelegate implements MessageListener {
     }
     try {
       String tidString = message.getStringProperty(JmsDomainEventNotifierImpl.TRACKING_ID_KEY);
-      trackingService.notify(new TrackingId(tidString));
+      trackingService.inspectCargo(new TrackingId(tidString));
     } catch (JMSException e) {
       logger.error(e, e);
     }

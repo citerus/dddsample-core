@@ -14,7 +14,7 @@ public class ThreadBasedDomainEventNotifierImpl implements DomainEventNotifier {
   public void cargoWasHandled(final HandlingEvent event) {
     new Thread(new Runnable() {
       public void run() {
-        trackingService.notify(event.cargo().trackingId());
+        trackingService.inspectCargo(event.cargo().trackingId());
       }
     }).start();
   }
