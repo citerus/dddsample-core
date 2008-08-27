@@ -7,6 +7,7 @@ import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.application.remoting.dto.LocationDTO;
 import se.citerus.dddsample.application.web.command.RegistrationCommand;
+import se.citerus.dddsample.application.web.command.RouteAssignmentCommand;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,23 +87,15 @@ public final class CargoAdminController extends MultiActionController {
     return map;
   }
 
-  public void assignItinerary(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-    final String trackingId = request.getParameter("trackingId");
-
-    // TODO:  gah, stuck on indexoutofbounds (legs[0].fromUnlocode etc) when trying to bind...
-    // Revisit and fix this with a proper command object, this is just hideous
-    final String[] cmIds = (String[]) request.getParameterMap().get("legs.carrierMovementId");
-    final String[] fromUnlocodes = (String[]) request.getParameterMap().get("legs.fromUnlocode");
-    final String[] toUnlocodes = (String[]) request.getParameterMap().get("legs.toUnlocode");
-
-    final List<LegDTO> legDTOs = new ArrayList<LegDTO>(cmIds.length);
-    for (int i = 0; i < cmIds.length; i++) {
-      legDTOs.add(new LegDTO(cmIds[i], fromUnlocodes[i], toUnlocodes[i]));
+  public void assignItinerary(final HttpServletRequest request, final HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
+    final List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
+    for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
+      legDTOs.add(new LegDTO(leg.getCarrierMovementId(), leg.getFromUnLocode(), leg.getToUnLocode()));
     }
 
     final ItineraryCandidateDTO selectedItinerary = new ItineraryCandidateDTO(legDTOs);
 
-    bookingServiceFacade.assignCargoToRoute(trackingId, selectedItinerary);
+    bookingServiceFacade.assignCargoToRoute(command.getTrackingId(), selectedItinerary);
 
     response.sendRedirect("list.html");
   }
