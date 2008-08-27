@@ -51,9 +51,9 @@
           </thead>
           <tbody>
             <c:forEach items="${it.legs}" var="leg" varStatus="legStatus">
-              <input type="hidden" name="legs.carrierMovementId" value="${leg.carrierMovementId}"/>
-              <input type="hidden" name="legs.fromUnlocode" value="${leg.from}"/>
-              <input type="hidden" name="legs.toUnlocode" value="${leg.to}"/>
+              <input type="hidden" name="legs[${legStatus.index}].carrierMovementId" value="${leg.carrierMovementId}"/>
+              <input type="hidden" name="legs[${legStatus.index}].fromUnLocode" value="${leg.from}"/>
+              <input type="hidden" name="legs[${legStatus.index}].toUnLocode" value="${leg.to}"/>
               <tr>
                 <td>${leg.carrierMovementId}</td>
                 <td>${leg.from}</td>

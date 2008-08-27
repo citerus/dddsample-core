@@ -107,7 +107,7 @@ public class CargoTrackingControllerTest extends TestCase {
     public Cargo track(TrackingId trackingId) {
       return null;
     }
-    public void notify(TrackingId trackingId) {
+    public void inspectCargo(TrackingId trackingId) {
     }
   }
 }
