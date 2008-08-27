@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface GraphTraversalService {
 
-  List<TransitPath> performHeavyCalculations(String originUnLocode, String destinationUnLocode);
+  List<TransitPath> findShortestPath(String originUnLocode, String destinationUnLocode);
 
 }
