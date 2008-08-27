@@ -27,6 +27,10 @@ public interface CargoRepository {
   void save(Cargo cargo);
 
   /**
+   * TODO
+   * this is too complex a procedure to belong in the repository -
+   * introduce a TrackingIdFactory (or perhaps a CargoFactory).
+   *
    * @return A new generated tracking Id.
    */
   TrackingId nextTrackingId();

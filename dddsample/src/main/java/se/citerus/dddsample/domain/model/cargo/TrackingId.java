@@ -1,8 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
 
 /**
@@ -42,11 +40,11 @@ public final class TrackingId implements ValueObject<TrackingId> {
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+    return id.hashCode();
   }
 
   public boolean sameValueAs(TrackingId other) {
-    return other != null && EqualsBuilder.reflectionEquals(this, other);
+    return other != null && this.id.equals(other.id);
   }
 
   TrackingId() {

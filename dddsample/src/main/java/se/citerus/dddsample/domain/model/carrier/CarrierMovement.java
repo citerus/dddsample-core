@@ -41,7 +41,7 @@ public final class CarrierMovement implements Entity<CarrierMovement> {
   }
 
   public boolean sameIdentityAs(final CarrierMovement other) {
-    return carrierMovementId.equals(other.carrierMovementId);
+    return carrierMovementId.sameValueAs(other.carrierMovementId);
   }
 
   @Override

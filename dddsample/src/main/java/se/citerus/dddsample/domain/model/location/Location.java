@@ -69,7 +69,7 @@ public final class Location implements Entity<Location> {
   }
 
   public boolean sameIdentityAs(final Location other) {
-    return this.unLocode.equals(other.unLocode);
+    return this.unLocode.sameValueAs(other.unLocode);
   }
 
   /**
