@@ -1,6 +1,5 @@
 package se.citerus.dddsample.domain.service;
 
-import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -20,14 +19,6 @@ public interface BookingService {
    * @return Cargo tracking id
    */
   TrackingId bookNewCargo(UnLocode origin, UnLocode destination);
-
-  /**
-   * Loads a cargo for routing operations.
-   *
-   * @param trackingId cargo tracking id
-   * @return A cargo with it's itinerary, or null if none found.
-   */
-  Cargo loadCargoForRouting(TrackingId trackingId);
 
   /**
    * Requests a list of itineraries describing possible routes for this cargo.
