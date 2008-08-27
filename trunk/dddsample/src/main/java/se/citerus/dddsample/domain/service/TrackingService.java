@@ -18,12 +18,12 @@ public interface TrackingService {
   Cargo track(TrackingId trackingId);
 
   /**
-   * Send relevant notifications to interested parties,
+   * Inspect cargo and send relevant notifications to interested parties,
    * for example if a cargo has been misdirected, or unloaded
    * at the final destination.
    *
    * @param trackingId cargo tracking id
    */
-  void notify(TrackingId trackingId);
+  void inspectCargo(TrackingId trackingId);
 
 }

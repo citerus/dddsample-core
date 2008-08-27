@@ -23,7 +23,7 @@ public class TrackingServiceImpl implements TrackingService {
   }
 
   @Transactional(readOnly = true)
-  public void notify(final TrackingId trackingId) {
+  public void inspectCargo(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
     final Cargo cargo = cargoRepository.find(trackingId);
