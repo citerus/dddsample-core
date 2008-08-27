@@ -16,7 +16,7 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     this.random = new Random();
   }
 
-  public List<TransitPath> performHeavyCalculations(String originUnLocode, String destinationUnLocode) {
+  public List<TransitPath> findShortestPath(String originUnLocode, String destinationUnLocode) {
     List<String> allVertices = dao.listLocations();
     allVertices.remove(originUnLocode);
     allVertices.remove(destinationUnLocode);

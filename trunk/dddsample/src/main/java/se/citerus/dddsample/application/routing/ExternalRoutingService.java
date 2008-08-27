@@ -34,7 +34,7 @@ public class ExternalRoutingService implements RoutingService {
     final Location origin = routeSpecification.origin();
     final Location destination = routeSpecification.destination();
 
-    final List<TransitPath> transitPaths = graphTraversalService.performHeavyCalculations(
+    final List<TransitPath> transitPaths = graphTraversalService.findShortestPath(
       origin.unLocode().idString(),
       destination.unLocode().idString()
     );
