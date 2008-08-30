@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
-       xmlns:context="http://www.springframework.org/schema/context">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations" value="file:app.properties"/>
+    <property name="order" value="1"/>
+    <property name="ignoreResourceNotFound" value="true"/>
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+  </bean>
 
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations" value="classpath:app.properties"/>
+    <property name="order" value="2"/>
   </bean>
 
   <bean id="registerApp" class="se.citerus.registerapp.RegisterApp">
@@ -22,10 +26,11 @@
   </bean>
 
   <bean id="handlingEventWebServiceEndPoint" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-    <property name="serviceInterface" value="se.citerus.dddsample.ws.HandlingEventServiceEndpoint" />
+    <property name="serviceInterface" value="se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint" />
     <property name="wsdlDocumentUrl" value="${wsdl.url}" />
-    <property name="namespaceUri" value="http://ws.dddsample.citerus.se/" />
+    <property name="namespaceUri" value="http://ws.application.dddsample.citerus.se/" />
     <property name="serviceName" value="HandlingEventServiceEndpointImplService" />
     <property name="portName" value="HandlingEventServiceEndpointImplPort" />
   </bean>
+
 </beans>
