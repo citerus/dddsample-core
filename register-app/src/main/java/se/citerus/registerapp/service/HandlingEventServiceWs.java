@@ -1,6 +1,6 @@
 package se.citerus.registerapp.service;
 
-import se.citerus.dddsample.ws.HandlingEventServiceEndpoint;
+import se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint;
 
 
 public class HandlingEventServiceWs implements HandlingEventService {
