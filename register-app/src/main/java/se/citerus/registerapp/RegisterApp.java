@@ -8,12 +8,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
@@ -33,13 +28,14 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RegisterApp {
   private static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
   private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS.SSS");
-  private static final String TITLE = "Handling Event Registration";
+  private static final String TITLE = "Incident Logging Application";
   private JFrame frame;
   private JFormattedTextField completionTimeField;
   private JFormattedTextField trackingIdField;
   private JFormattedTextField carrierMovementField;
   private JFormattedTextField locationField;
-  private JFormattedTextField eventTypeField;
+  //private JFormattedTextField eventTypeField;
+  private JComboBox eventTypeField;
   private JButton registerButton;
   
   private HandlingEventService handlingEventService;
@@ -53,14 +49,24 @@ public class RegisterApp {
   /////////////////////////////////////////////////////////////////////////////
   protected void onRegister(){
     assert handlingEventService != null : "No HandlingEventService available";
-    
-    handlingEventService.register(ISO8601_DATE_FORMAT.format(completionTimeField.getValue()), 
-                                  getStringValue(trackingIdField), 
-                                  getStringValue(carrierMovementField), 
-                                  getStringValue(locationField), 
-                                  getStringValue(eventTypeField));
+
+      handlingEventService.register(ISO8601_DATE_FORMAT.format(completionTimeField.getValue()),
+                                  getStringValue(trackingIdField),
+                                  getStringValue(carrierMovementField),
+                                  getStringValue(locationField),
+                                  getStringValue(eventTypeField).toUpperCase());
     
     clearForm();
+  }
+
+  private String getStringValue(JComboBox comboBox) {
+      Object value = comboBox.getSelectedItem();
+      
+      if (value != null) {
+        return value.toString();
+      } else {
+        return null;
+      }
   }
 
 
@@ -117,7 +123,7 @@ public class RegisterApp {
     trackingIdField.setText("");
     carrierMovementField.setText("");
     locationField.setText("");
-    eventTypeField.setText("");
+    eventTypeField.setSelectedIndex(0);
   }
 
   public static Border getMandatoryBorder() {
@@ -129,7 +135,7 @@ public class RegisterApp {
     trackingIdField = new JFormattedTextField(DEFAULT_FORMATTER);
     carrierMovementField = new JFormattedTextField(DEFAULT_FORMATTER);
     locationField = new JFormattedTextField(DEFAULT_FORMATTER);
-    eventTypeField = new JFormattedTextField(DEFAULT_FORMATTER);
+    eventTypeField = new JComboBox(new String[] {"-- Select --","Receive","Load","Unload","Customs","Claim"});
     
     registerButton = new JButton("Register");
     registerButton.addActionListener(new ActionListener(){
@@ -149,7 +155,6 @@ public class RegisterApp {
   private void initValidation(JFrame frame){
     validator = new FormValidationSwingDecorator(frame);
     
-    validator.add(eventTypeField, new MandatoryTextFieldValidator("Event type can't be empty"));
     validator.add(trackingIdField, new MandatoryTextFieldValidator("Tracking id can't be empty"));
     validator.add(locationField, new MandatoryTextFieldValidator("Location can't be empty"));
   }
@@ -201,14 +206,14 @@ public class RegisterApp {
     DefaultFormBuilder builder = createBuilder("right:pref, 3dlu, 100dlu");
     
     builder.appendSeparator("Completion");
-    builder.append("Completion Time", completionTimeField); builder.nextLine();
+    builder.append("Time", completionTimeField); builder.nextLine();
     
     builder.appendSeparator("Cargo");
     builder.append("Tracking Id", trackingIdField); builder.nextLine();
     
     builder.appendSeparator("Event");
     builder.append("Carrier Movement", carrierMovementField); builder.nextLine();
-    builder.append("Location", locationField); builder.nextLine();
+    builder.append("Location UN/Locode", locationField); builder.nextLine();
     builder.append("Event Type", eventTypeField); builder.nextLine();
     
     builder.appendSeparator("");
