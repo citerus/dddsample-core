@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.citerus</groupId>
   <artifactId>register-app</artifactId>
@@ -21,6 +25,8 @@
           <archive>
             <manifest>
               <mainClass>se.citerus.App</mainClass>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib</classpathPrefix>
             </manifest>
           </archive>
         </configuration>
@@ -28,14 +34,10 @@
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <archive>
-            <manifest>
-              <mainClass>se.citerus.App</mainClass>
-            </manifest>
-          </archive>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+          <finalName>IncidentLoggingApplication</finalName>
         </configuration>
       </plugin>
     </plugins>
@@ -63,8 +65,18 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring</artifactId>
-      <version>2.5</version>
+      <artifactId>spring-context</artifactId>
+      <version>2.5.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>2.5.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>2.5.5</version>
     </dependency>
     <dependency>
       <groupId>com.jgoodies</groupId>
@@ -96,7 +108,7 @@
           <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>spring-hibernate3</artifactId>
+          <artifactId>spring-orm</artifactId>
           <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
@@ -108,11 +120,11 @@
           <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>spring-mock</artifactId>
+          <artifactId>spring-context</artifactId>
           <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>spring-context</artifactId>
+          <artifactId>spring-jms</artifactId>
           <groupId>org.springframework</groupId>
         </exclusion>
         <exclusion>
