@@ -1,6 +1,7 @@
 package se.citerus.dddsample.application.web;
 
 import junit.framework.TestCase;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
@@ -36,6 +37,8 @@ public class CargoTrackingControllerTest extends TestCase {
     request.setSession(session);
 
     controller = new CargoTrackingController();
+    StaticApplicationContext applicationContext = new StaticApplicationContext();
+    controller.setApplicationContext(applicationContext);
     controller.setFormView("test-form");
     controller.setSuccessView("test-success");
     controller.setCommandName("test-command-name");
@@ -79,8 +82,8 @@ public class CargoTrackingControllerTest extends TestCase {
     assertEquals("test-form", mav.getViewName());
     // Errors, command are two standard map attributes, the third should be the cargo object
     assertEquals(3, mav.getModel().size());
-    Cargo cargo = (Cargo) mav.getModel().get("cargo");
-    assertEquals(HONGKONG, cargo.deliveryHistory().currentLocation());
+    CargoTrackingViewAdapter cargo = (CargoTrackingViewAdapter) mav.getModel().get("cargo");
+    assertEquals("JKL456", cargo.getTrackingId());
   }
 
   public void testUnknownCargo() throws Exception {
