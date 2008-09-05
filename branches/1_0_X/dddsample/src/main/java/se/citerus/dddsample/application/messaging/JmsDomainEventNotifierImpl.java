@@ -18,7 +18,6 @@ public final class JmsDomainEventNotifierImpl implements DomainEventNotifier {
 
   public void cargoWasHandled(final HandlingEvent event) {
     jmsOperations.send(destination, new MessageCreator() {
-      // TODO: richer message type
       public Message createMessage(final Session session) throws JMSException {
         final MapMessage message = session.createMapMessage();
         message.setStringProperty(TRACKING_ID_KEY, event.cargo().trackingId().idString());

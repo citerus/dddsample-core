@@ -63,7 +63,6 @@ public class HandlingEventServiceTest extends TestCase {
     final UnLocode unLocode = new UnLocode("SESTO");
     expect(locationRepository.find(unLocode)).andReturn(STOCKHOLM);
 
-    // TODO: does not inspect the handling event instance in a sufficient way
     handlingEventRepository.save(isA(HandlingEvent.class));
     domainEventNotifier.cargoWasHandled(isA(HandlingEvent.class));
 

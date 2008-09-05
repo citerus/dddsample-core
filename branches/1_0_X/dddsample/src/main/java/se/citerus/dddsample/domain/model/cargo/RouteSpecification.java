@@ -33,23 +33,6 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
     return new RouteSpecification(cargo.origin(), cargo.destination(), arrivalDeadline);
   }
 
-  /**
-   * Factory for creating a route specfication from an explicit destination,
-   * for rerouting a cargo.
-   *
-   * @param from
-   * @param cargo
-   * @param arrivalDeadline
-   * @return
-   */
-  public static RouteSpecification forReroutedCargo(Location from, Cargo cargo, Date arrivalDeadline) {
-    Validate.notNull(from);
-    Validate.notNull(cargo);
-    Validate.notNull(arrivalDeadline);
-
-    return new RouteSpecification(from, cargo.destination(), arrivalDeadline);
-  }
-
   private RouteSpecification(Location origin, Location destination, Date arrivalDeadline) {
     this.origin = origin;
     this.destination = destination;
@@ -65,7 +48,7 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
   }
 
   public boolean isSatisfiedBy(Itinerary itinerary) {
-    // TODO implement
+    // Stub implementation for now
     return true;
   }
 

@@ -13,7 +13,6 @@
 
 
   <!-- Handling event registration web service -->
-
   
   <wss:bindings id="jax-ws.http">
     <wss:bindings>
@@ -54,22 +53,6 @@
       </bean>
     </property>
   </bean>
-
-  <!-- Wrap all methods with Hibernate interceptor
-  TODO: add necessary aspectj deps and replace config above with this
-  
-  <bean id="bookingServiceFacade" class="se.citerus.dddsample.application.remote.BookingServiceFacadeImpl">
-    <property name="bookingService" ref="bookingService"/>
-    <property name="cargoRepository" ref="cargoRepository"/>
-    <property name="locationRepository" ref="locationRepository"/>
-    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
-  </bean>
-
-  <aop:config>
-    <aop:advisor advice-ref="hibernateInterceptor"
-                 pointcut="execution (* se.citerus.dddsample.application.remote.BookingServiceFacadeImpl(..))"/>
-  </aop:config>
-  -->
 
   <!-- RMI exposure -->
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">

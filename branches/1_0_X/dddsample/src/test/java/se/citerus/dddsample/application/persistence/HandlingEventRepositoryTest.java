@@ -48,7 +48,6 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     assertEquals(new Date(10), result.get("COMPLETIONTIME"));
     assertEquals(new Date(20), result.get("REGISTRATIONTIME"));
     assertEquals("CLAIM", result.get("TYPE"));
-    // TODO: the rest of the columns
   }
 
   public void testFindEventsForCargo() throws Exception {

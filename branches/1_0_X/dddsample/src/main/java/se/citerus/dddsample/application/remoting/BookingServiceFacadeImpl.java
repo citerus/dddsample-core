@@ -47,7 +47,6 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   }
 
   public CargoRoutingDTO loadCargoForRouting(String trackingId) {
-    // TODO lock
     final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
     final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     return assembler.toDTO(cargo);
@@ -56,7 +55,6 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   public void assignCargoToRoute(String trackingId, ItineraryCandidateDTO itineraryCandidateDTO) {
     final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, carrierMovementRepository, locationRepository);
     bookingService.assignCargoToRoute(new TrackingId(trackingId), itinerary);
-    // TODO unlock
   }
 
   public List<CargoRoutingDTO> listAllCargos() {
