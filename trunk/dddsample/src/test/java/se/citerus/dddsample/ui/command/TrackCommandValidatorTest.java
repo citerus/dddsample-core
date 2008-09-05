@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.web.command;
+package se.citerus.dddsample.ui.command;
 
 import junit.framework.TestCase;
 import org.springframework.validation.BeanPropertyBindingResult;

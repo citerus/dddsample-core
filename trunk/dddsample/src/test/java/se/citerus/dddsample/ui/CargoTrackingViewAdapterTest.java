@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.web;
+package se.citerus.dddsample.ui;
 
 import junit.framework.TestCase;
 import org.springframework.context.support.StaticApplicationContext;

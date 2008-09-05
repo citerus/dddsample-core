@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.web;
+package se.citerus.dddsample.ui;
 
 import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;

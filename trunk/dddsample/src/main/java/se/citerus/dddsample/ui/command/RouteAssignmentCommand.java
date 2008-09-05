@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.web.command;
+package se.citerus.dddsample.ui.command;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;

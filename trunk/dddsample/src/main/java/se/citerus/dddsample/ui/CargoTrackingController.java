@@ -1,14 +1,14 @@
-package se.citerus.dddsample.application.web;
+package se.citerus.dddsample.ui;
 
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.support.RequestContextUtils;
-import se.citerus.dddsample.application.web.command.TrackCommand;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.service.TrackingService;
+import se.citerus.dddsample.ui.command.TrackCommand;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +28,7 @@ import java.util.Map;
  * <p/>
  *
  * @eee se.citerus.dddsample.application.web.CargoTrackingViewAdapter
- * @see se.citerus.dddsample.application.web.CargoAdminController
+ * @see CargoAdminController
  *
  */
 public final class CargoTrackingController extends SimpleFormController {

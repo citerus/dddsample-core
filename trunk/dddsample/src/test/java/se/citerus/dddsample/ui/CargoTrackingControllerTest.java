@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.web;
+package se.citerus.dddsample.ui;
 
 import junit.framework.TestCase;
 import org.springframework.context.support.StaticApplicationContext;
@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.application.web.command.TrackCommand;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -18,6 +17,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
 import se.citerus.dddsample.domain.service.TrackingService;
+import se.citerus.dddsample.ui.command.TrackCommand;
 
 import java.util.Arrays;
 import java.util.Date;
