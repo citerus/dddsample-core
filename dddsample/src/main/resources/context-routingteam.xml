@@ -4,7 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <!-- TODO start an RMI server on boot and wire this across the network -->
   <bean id="graphTraversalService" class="se.citerus.routingteam.internal.GraphTraversalServiceImpl">
     <constructor-arg ref="graphDAO"/>
   </bean>

@@ -106,29 +106,6 @@ public class CargoTest extends TestCase {
     assertTrue(cargo.isUnloadedAtDestination());
   }
 
-  /* TODO implement nextExpectedEvent
-  public void testNextExpectedEvent() {
-    Cargo cargo = setUpCargoWithItinerary(HANGZOU, TOKYO, NEWYORK);
-    CarrierMovementId cmid = new CarrierMovementId("CM1");
-    CarrierMovement cm1 = new CarrierMovement(cmid, HANGZOU, TOKYO);
-    CarrierMovement cm2 = new CarrierMovement(cmid, TOKYO, NEWYORK);
-
-    HandlingEvent event1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU, null);
-
-    assertEquals(event1, cargo.nextExpectedEvent());
-
-    cargo.deliveryHistory().addEvent(event1);
-
-    HandlingEvent event2 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, HANGZOU, cm1);
-
-    assertEquals(event2, cargo.nextExpectedEvent());
-
-    cargo.deliveryHistory().addEvent(event2);
-  }
-  */
-
-
-  // TODO: Generate test data some better way
   private Cargo populateCargoReceivedStockholm() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
 
