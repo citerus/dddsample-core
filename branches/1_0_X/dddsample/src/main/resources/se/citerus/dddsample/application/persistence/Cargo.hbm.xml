@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field">
+  <class name="se.citerus.dddsample.domain.model.cargo.Cargo" table="Cargo">
+    <id name="id" column="id">
+      <generator class="org.hibernate.id.IdentityGenerator"/>
+    </id>
+    <component name="trackingId" unique="true" update="false">
+      <property name="id" column="tracking_id"/>
+    </component>
+    <component name="deliveryHistory" lazy="true" update="false">
+      <set name="events" lazy="true" cascade="none">
+        <key column="cargo_id"/>
+        <one-to-many class="se.citerus.dddsample.domain.model.handling.HandlingEvent"/>
+      </set>
+    </component>
+    <many-to-one name="origin" column="origin_id" cascade="none" fetch="join" update="false" foreign-key="origin_fk"/>
+    <many-to-one name="destination" column="destination_id" cascade="none" fetch="join" foreign-key="destination_fk"/>
+    <one-to-one name="itinerary" property-ref="cargo" cascade="all" fetch="join"/>
+  </class>
+</hibernate-mapping>

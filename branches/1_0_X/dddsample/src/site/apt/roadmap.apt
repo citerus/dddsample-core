@@ -1,0 +1,34 @@
+  -------
+  Roadmap
+  -------
+
+Roadmap
+
+  This application is a work of progress.
+
+* 1.1
+
+  * Next expected event, for tracking
+
+  * Timezones for locations and handling events
+
+  * Departure/arrival time for carrier movements, ETA for itineraries
+
+  * Make handling event registration asynchronous
+
+  * Improve web service interface
+
+* 2.0
+
+  * Remodel Cargo-HandlingEvent aggregates to make boundaries
+    and asynchronous updates more explicit
+
+  * Diversify interfaces
+
+  * More ways to register handing events (FTP CSV file upload etc)
+
+  * Port to C#
+
+  * Port to TimeAndMoney
+
+  * Notify on delay
