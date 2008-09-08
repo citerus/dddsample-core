@@ -8,7 +8,10 @@
   <artifactId>register-app</artifactId>
   <name>register-app</name>
   <version>1.0-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <url>http://dddsample.sf.net</url>
+  <scm>
+    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
+  </scm>
   <build>
     <plugins>
       <plugin>
