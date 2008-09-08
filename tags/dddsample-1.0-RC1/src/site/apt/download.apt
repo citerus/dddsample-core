@@ -1,0 +1,18 @@
+  --------
+  Download
+  --------
+
+Deployable WAR archive of main application
+
+  <<COMING SOON>> - for now, use source archive and run <<<mvn package>>> to build
+
+Source code for main application
+
+  {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-SNAPSHOT-src.zip?use_mirror=osdn} Download from Sourceforge}}
+
+  Also, you can {{{source-repository.html}track Subversion}} directly.
+
+Incident logging application
+
+  <<COMING SOON>>
+
