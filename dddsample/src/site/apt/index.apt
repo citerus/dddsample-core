@@ -31,8 +31,13 @@
 
     There's a lot of interest in new tools or frameworks for DDD.
 
-  Reimplementing the sample app using a new platform will give a side-by-side comparison
-  with the "conventional" implementation, which can demonstrate the value of the new platform
-  and provide validation or other feedback to the developers of the platform.
+    Reimplementing the sample app using a new platform will give a side-by-side comparison
+    with the "conventional" implementation, which can demonstrate the value of the new platform
+    and provide validation or other feedback to the developers of the platform.
+
+  []
+  
+  <This project is a joint effort by {{{http://www.domainlanguage.org}Domain Language}}
+  and {{{http://www.citerus.se}Citerus}}.>
 
 
