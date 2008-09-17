@@ -4,11 +4,9 @@
        xmlns:ws="http://jax-ws.dev.java.net/spring/core"
        xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
         http://jax-ws.dev.java.net/spring/core https://jax-ws.dev.java.net/spring/core.xsd
         http://jax-ws.dev.java.net/spring/servlet https://jax-ws.dev.java.net/spring/servlet.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
@@ -26,35 +24,11 @@
 
   <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.application.ws.HandlingEventServiceEndpointImpl">
     <property name="handlingEventService" ref="handlingEventService"/>
+    <property name="transactionManager" ref="transactionManager"/>
   </bean>
 
 
-  <!-- Booking service facade -->
-
-  
-  <!-- Hibernate interceptor -->
-  <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <!-- Facade wrapped with Hibernate interceptor -->
-  <bean id="bookingServiceFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
-    <property name="interceptorNames">
-      <list>
-        <value>hibernateInterceptor</value>
-      </list>
-    </property>
-    <property name="target">
-      <bean class="se.citerus.dddsample.application.remoting.BookingServiceFacadeImpl">
-        <property name="bookingService" ref="bookingService"/>
-        <property name="cargoRepository" ref="cargoRepository"/>
-        <property name="locationRepository" ref="locationRepository"/>
-        <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
-      </bean>
-    </property>
-  </bean>
-
-  <!-- RMI exposure -->
+  <!-- RMI exposed booking service facade -->
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
     <property name="serviceInterface" value="se.citerus.dddsample.application.remoting.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>

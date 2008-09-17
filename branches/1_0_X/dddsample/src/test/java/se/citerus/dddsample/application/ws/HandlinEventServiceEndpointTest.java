@@ -2,6 +2,7 @@ package se.citerus.dddsample.application.ws;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
+import se.citerus.dddsample.application.service.InMemTransactionManager;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -24,6 +25,7 @@ public class HandlinEventServiceEndpointTest extends TestCase {
     handlingEventService = createMock(HandlingEventService.class);
     endpoint.setHandlingEventService(handlingEventService);
     sdf = new SimpleDateFormat(HandlingEventServiceEndpointImpl.ISO_8601_FORMAT);
+    endpoint.setTransactionManager(new InMemTransactionManager());
   }
 
   public void testRegisterValidEvent() throws Exception {
