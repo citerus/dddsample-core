@@ -29,7 +29,15 @@
 
 {Aggregates}
 
-    In real life most things are connected, directly or indirectly. Mimicking this approach when building large software systems tend to bring unnecessary complexity and poor performance. DDD provides tactics to help you sort these things out, aggregates being one of the most important ones. Aggregates help with decoupling of large structures by setting rules for relations between entities. Aggregates can also have properties, methods, and invariants that doesn't fit within one single class. Java and other OO-languages typically miss specific language constructs to handle aggregates and in the sample application responsibilities that belong to an aggregate is most often implemented in the aggregate root.    <<<{{{xref/se/citerus/dddsample/domain/model/cargo/package-summary.html}cargo}}>>>: cargo is the central aggregate in the sample application. <<<Cargo>>> is the aggregate root and the aggregate also contains the <Value Objects> <<<DeliveryHistory>>>, <<<Itinereray>>>, <<<Leg>>> and a few more classes.     <<<{{{xref/se/citerus/dddsample/domain/model/handling/package-summary.html}handling}}>>>: handling is another important aggregate. It contains the HandlingEvents that are registered throughout a cargo's progress from <<<RECEIVED>>> to <<<CLAIMED>>>. The <<<HandlingEvent>>>s have a relation to the <<<Cargo>>> for which the event belongs, this is allowed since <<<HandlingEvent>>> is an aggregate root and so is <<<Cargo>>>.     The main reason for not making <<<HandlingEvent>>> part of the cargo aggregate is performance. <<<HandlingEvent>>>s are received from external parties and systems, e.g. warehouse management systems, port handling systems, that call our <<<{{{xref/se/citerus/dddsample/domain/service/HandlingEventService.html}HandlingEventService}}>>> webservice. The number of events can be very high and it is important that our webservice can dispatch the remote calls quickly. To be able to support this use case we need to handle the remote webservice calls asynchronously, i.e. we do not want to load the big cargo structure for each received <<<HandlingEvent>>>. Since all relationships in an aggregate must be handled synchronously we put the <<<HandlingEvent>>> in an aggregate of its own and we are able processes the events quickly and at the same time eliminate dead-locking situations in the system.    <Editors note: We are aware that this example may need a little more work to drive the full benefits of aggregates home. This is one of the problems with a small sample app, real-world complexity is hard to simulate.>
+    In real life most things are connected, directly or indirectly. Mimicking this approach when building large software systems tend to bring unnecessary complexity and poor performance. DDD provides tactics to help you sort these things out, aggregates being one of the most important ones. Aggregates help with decoupling of large structures by setting rules for relations between entities. Aggregates can also have properties, methods, and invariants that doesn't fit within one single class. Java and other OO-languages typically miss specific language constructs to handle aggregates and in the sample application responsibilities that belong to an aggregate is most often implemented in the aggregate root.
+
+    <<<{{{xref/se/citerus/dddsample/domain/model/cargo/package-summary.html}cargo}}>>>: cargo is the central aggregate in the sample application. <<<Cargo>>> is the aggregate root and the aggregate also contains the <Value Objects> <<<DeliveryHistory>>>, <<<Itinereray>>>, <<<Leg>>> and a few more classes. 
+
+    <<<{{{xref/se/citerus/dddsample/domain/model/handling/package-summary.html}handling}}>>>: handling is another important aggregate. It contains the HandlingEvents that are registered throughout a cargo's progress from <<<RECEIVED>>> to <<<CLAIMED>>>. The <<<HandlingEvent>>>s have a relation to the <<<Cargo>>> for which the event belongs, this is allowed since <<<HandlingEvent>>> is an aggregate root and so is <<<Cargo>>>. 
+
+    The main reason for not making <<<HandlingEvent>>> part of the cargo aggregate is performance. <<<HandlingEvent>>>s are received from external parties and systems, e.g. warehouse management systems, port handling systems, that call our <<<{{{xref/se/citerus/dddsample/domain/service/HandlingEventService.html}HandlingEventService}}>>> webservice. The number of events can be very high and it is important that our webservice can dispatch the remote calls quickly. To be able to support this use case we need to handle the remote webservice calls asynchronously, i.e. we do not want to load the big cargo structure for each received <<<HandlingEvent>>>. Since all relationships in an aggregate must be handled synchronously we put the <<<HandlingEvent>>> in an aggregate of its own and we are able processes the events quickly and at the same time eliminate dead-locking situations in the system.
+
+    <Editors note: We are aware that this example may need a little more work to drive the full benefits of aggregates home. This is one of the problems with a small sample app, real-world complexity is hard to simulate.>
     
 [images/aggregates.gif]
 
@@ -47,10 +55,31 @@
 
 *Domain services
 
-    Domain services are a natural part of the domain and provide services such as message forwarding etc. In the sample application the <<<{{{xref/se/citerus/dddsample/domain/service/RoutingService.html}RoutingService}}>>> provides access to the routing system and is used to find possible routes for a give specification.
+    Domain services are expressed in terms of the ubiquitous language and the domain types, i.e.
+    the method arguments and the return values are proper domain classes. Sometimes, only the service
+    interface (<what> the service does) is part of the domain layer, but the implementation (<how> the service does it)
+    is part of the application layer. This is analogous to how repository interfaces are part of the domain layer, but the
+    Hibernate implementations are not.
+
+    A good example of that is the <<<{{{xref/se/citerus/dddsample/domain/service/RoutingService.html}RoutingService}}>>>,
+    which provides access to the routing system and is used to find possible routes for a give specification.
+    The {{{xref/se/citerus/dddsample/application/routing/ExternalRoutingService.html}implementation}} communicates with
+    another team's context and translates to and from an external API and data model.
+
+    On the other hand, if the service is possible to implement strictly using the domain layer,
+    both the interface and the implementation are part of the domain layer. That is the case for the
+    <<<{{{xref/se/citerus/dddsample/domain/service/impl/BookingServiceImpl.html}BookingService}}>>>, for example.
 
 *Application services
 
-    The application services in the sample application are responsible for driving workflow and coordinating transaction management (by use of the declarative transaction management support in Spring). They also provide a high-level abstraction for clients to use when interacting with the domain. These services are typically designed to support specific use cases or stories. The <<<{{{xref/se/citerus/dddsample/domain/service/TrackingService.html}TrackingService}}>>> is used by the public web application for tracking cargo and the <<<{{{xref/se/citerus/dddsample/domain/service/BookingService.html}BookingService}}>>> is used by the internal administration application for booking new cargo.
+    The application services in the sample application are responsible for driving workflow and coordinating
+    transaction management (by use of the declarative transaction management support in Spring).
+    They also provide a high-level abstraction for clients to use when interacting with the domain.
+    These services are typically designed to support specific use cases or fulfill technical requirements (web services, etc).
 
-    The services are all defined in types of the domain, i.e. the method arguments and the return values are proper domain classes. In some situation, e.g. when dealing with graphs of lazy-loaded domain objects or when passing services' return values over network boundaries, the services are wrapped in facades. The facades handle ORM session management issues and/or convert the domain objects to more portable {{{http://martinfowler.com/eaaCatalog/dataTransferObject.html}Data Transfer Objects}}) that can be tailored to specific use cases. See <<<{{{xref/se/citerus/dddsample/application/remoting/BookingServiceFacadeImpl.html}BookingServiceFacadeImpl}}>>> for an example.
+    In some situations, e.g. when dealing with graphs of lazy-loaded
+    domain objects or when passing services' return values over network boundaries, the services are wrapped in facades.
+    The facades handle ORM session management issues and/or convert the domain objects to more portable
+    {{{http://martinfowler.com/eaaCatalog/dataTransferObject.html}Data Transfer Objects}}) that can be tailored
+    to specific use cases.
+    See <<<{{{xref/se/citerus/dddsample/application/remoting/BookingServiceFacadeImpl.html}BookingServiceFacadeImpl}}>>> for an example.
