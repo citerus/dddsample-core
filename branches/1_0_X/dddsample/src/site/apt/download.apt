@@ -41,11 +41,15 @@ mvn clean package
 mvn jetty:run
 -------------
 
-    <<NOTE>>: If you have an IDE with Maven support (see below), you don't need standalone Maven, and both of the two commands above
-    can be run from inside the IDE.
+    The public tracking interface is available at {{http://localhost:8080/dddsample}} (try tracking cargos XYZ and JKL, for example)
+    and the booking and routing administration interface can be found at {{http://localhost:8080/dddsample/admin/list.html}}.
+    The administration interface is used for booking and routing cargo.
 
-    <<NOTE>>: running Jetty does not work in IntelliJ with the embedded Maven runner. Workaround: either run Maven from command line,
-    or swich to external Maven runner in IntelliJ.
+    An RMI registry will be started on port <<<1099>>>, in addition to the Jetty container on port <<<8080>>>, so those ports
+    need to be available or you have to reconfigure the application.
+
+    <<NOTE>>: running some Maven targets (<<<jetty:run>>> for example) currently do not work in IntelliJ with the embedded Maven runner.
+    Workaround: either run Maven from command line, or swich to external Maven runner in IntelliJ.
 
     <<NOTE>>: the application currently can't be run offline, due to an unresolved problem with XSD validation.
     Workaround: run application online.
@@ -81,9 +85,7 @@ java -jar IncidentLoggingApplication.jar
     environment. Developers who are interested in how DDD is applied in the application should download the source
     archive instead.
 
-    <<NOTE>>: the application currently can't be run offline, due to an unresolved problem with XSD validation.
-    Workaround: run application with a working network connection.
-
+    The same caveats for running the application that are listed in the source package section above apply to this package as well.
 
 IDE Setup
 
