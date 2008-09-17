@@ -3,7 +3,6 @@ package se.citerus.dddsample.domain.service.impl;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -15,14 +14,12 @@ public class TrackingServiceImpl implements TrackingService {
 
   private final Log logger = LogFactory.getLog(getClass());
 
-  @Transactional(readOnly = true)
   public Cargo track(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
     return cargoRepository.find(trackingId);
   }
 
-  @Transactional(readOnly = true)
   public void inspectCargo(final TrackingId trackingId) {
     Validate.notNull(trackingId);
 
