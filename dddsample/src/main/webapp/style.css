@@ -130,9 +130,9 @@ textarea,
 select {
   padding: 1px;
   font: 400 1em verdana, sans-serif;
-  color: #999;
+  color: black;
   background: #EEE;
-  border: 1px solid #CCC;
+  border: 1px solid #555;
 }
 
 input:focus,

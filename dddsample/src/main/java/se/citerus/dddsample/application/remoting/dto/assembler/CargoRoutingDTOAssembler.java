@@ -12,14 +12,14 @@ public class CargoRoutingDTOAssembler {
   public CargoRoutingDTO toDTO(final Cargo cargo) {
     final CargoRoutingDTO dto = new CargoRoutingDTO(
       cargo.trackingId().idString(),
-      cargo.origin().toString(),
-      cargo.destination().toString()
+      cargo.origin().unLocode().idString(),
+      cargo.destination().unLocode().idString()
     );
     for (Leg leg : cargo.itinerary().legs()) {
       dto.addLeg(
         leg.carrierMovement().carrierMovementId().idString(),
-        leg.from().toString(),
-        leg.to().toString()
+        leg.from().unLocode().idString(),
+        leg.to().unLocode().idString()
       );
     }
     return dto;

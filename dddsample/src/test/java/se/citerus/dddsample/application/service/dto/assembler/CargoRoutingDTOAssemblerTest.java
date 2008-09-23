@@ -42,13 +42,13 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
 
     LegDTO legDTO = dto.getLegs().get(0);
     assertEquals("ABC", legDTO.getCarrierMovementId());
-    assertEquals("SESTO (Stockholm)", legDTO.getFrom());
-    assertEquals("CNSHA (Shanghai)", legDTO.getTo());
+    assertEquals("SESTO", legDTO.getFrom());
+    assertEquals("CNSHA", legDTO.getTo());
 
     legDTO = dto.getLegs().get(1);
     assertEquals("ABC", legDTO.getCarrierMovementId());
-    assertEquals("NLRTM (Rotterdam)", legDTO.getFrom());
-    assertEquals("AUMEL (Melbourne)", legDTO.getTo());
+    assertEquals("NLRTM", legDTO.getFrom());
+    assertEquals("AUMEL", legDTO.getTo());
   }
 
   public void testToDTO_NoItinerary() throws Exception {
@@ -58,8 +58,8 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
     final CargoRoutingDTO dto = assembler.toDTO(cargo);
 
     assertEquals("XYZ", dto.getTrackingId());
-    assertEquals("SESTO (Stockholm)", dto.getOrigin());
-    assertEquals("AUMEL (Melbourne)", dto.getFinalDestination());
+    assertEquals("SESTO", dto.getOrigin());
+    assertEquals("AUMEL", dto.getFinalDestination());
     assertTrue(dto.getLegs().isEmpty());
   }
 }

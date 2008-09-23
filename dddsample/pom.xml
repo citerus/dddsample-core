@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.citerus</groupId>
   <artifactId>dddsample</artifactId>
   <packaging>war</packaging>
   <name>DDDSample</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <description>This application shows a few key concepts of
     Domain Driven Design implemented in Enterprise Java.
   </description>
@@ -18,7 +15,7 @@
       <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs</url>
     </site>
   </distributionManagement>
-  <ciManagement/>
+  <ciManagement />
   <repositories>
     <repository>
       <id>maven2-repository.dev.java.net</id>

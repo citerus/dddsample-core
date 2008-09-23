@@ -80,16 +80,6 @@ public final class Location implements Entity<Location> {
     return unLocode.hashCode();
   }
 
-  /**
-   * @return Unlocode and name, on the format "SESTO (Stockholm)"
-   */
-  @Override
-  public String toString() {
-    // TODO: this feels like presentation logic and is very inconsistent, move to DTO assembler
-    return unLocode.idString() + " (" + name + ")";
-  }
-
-
   Location() {
     // Needed by Hibernate
   }

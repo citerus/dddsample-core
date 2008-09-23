@@ -1,7 +1,6 @@
 package se.citerus.dddsample.domain.service.impl;
 
 import org.apache.commons.lang.Validate;
-import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -24,7 +23,6 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   private LocationRepository locationRepository;
   private DomainEventNotifier domainEventNotifier;
 
-  @Transactional(readOnly = false)
   public void register(final Date completionTime, final TrackingId trackingId, final CarrierMovementId carrierMovementId,
                        final UnLocode unlocode, final HandlingEvent.Type type)
     throws UnknownCarrierMovementIdException, UnknownTrackingIdException, UnknownLocationException {

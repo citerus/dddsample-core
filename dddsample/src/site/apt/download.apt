@@ -2,17 +2,120 @@
   Download
   --------
 
-Deployable WAR archive of main application
+Prerequisites
 
-  <<COMING SOON>> - for now, use source archive and run <<<mvn package>>> to build
+  * Java 5 or later
 
-Source code for main application
+  []
 
-  {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-SNAPSHOT-src.zip?use_mirror=osdn} Download from Sourceforge}}
+  Optional:
 
-  Also, you can {{{source-repository.html}track Subversion}} directly.
+  * {{{http://maven.apache.org}Maven}} 2.0.9 or later (for development)
 
-Incident logging application
+  * A servlet container, such as {{{http://tomcat.apache.org}Tomcat}} (for deploying the web archive)
 
-  <<COMING SOON>>
+Downloads
 
+    There are three different {{{http://sourceforge.net/project/showfiles.php?group_id=210606}downloads}} available:
+    the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} source package}},
+    the {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} Incident Logging Application}}
+    and the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0.war?use_mirror=osdn} pre-built web archive}}.
+
+    The project uses Maven for build and management.
+
+* Source package
+
+    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} here}}.
+
+    This is a complete checkout of the core application source code.
+
+    To build a web archive from scratch (to be found in the target directory):
+
+-----------------
+mvn clean package
+-----------------
+
+    To build and run the application in an embedded Jetty:
+
+-------------
+mvn jetty:run
+-------------
+
+    The public tracking interface is available at {{http://localhost:8080/dddsample}} (try tracking cargos XYZ and JKL, for example)
+    and the booking and routing administration interface can be found at {{http://localhost:8080/dddsample/admin/list.html}}.
+    The administration interface is used for booking and routing cargo.
+
+    An RMI registry will be started on port <<<1099>>>, in addition to the Jetty container on port <<<8080>>>, so those ports
+    need to be available or you have to reconfigure the application.
+
+    <<NOTE>>: running some Maven targets (<<<jetty:run>>> for example) currently do not work in IntelliJ with the embedded Maven runner.
+    Workaround: either run Maven from command line, or swich to external Maven runner in IntelliJ.
+
+    <<NOTE>>: the application currently can't be run offline, due to an unresolved problem with XSD validation.
+    Workaround: run application online.
+
+    Also, you can {{{source-repository.html}track Subversion}} directly.
+    Use the {{{http://svnbook.red-bean.com/en/1.0/re27.html}<<<svn switch>>>}} command on the source package to start tracking trunk or a stable branch.
+
+* Incident Logging Application
+
+    Download {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} here}}.
+
+    This is a simple, standalone Swing client that's used for registering handling events. It communicates with the core
+    application via a Web Service interface. Unpack and run:
+
+----------------------------------------
+cd IncidentLoggingApplication
+
+java -jar IncidentLoggingApplication.jar
+----------------------------------------
+
+    <<NOTE>>: before you start the Incident Logging Application, the core application must be running on the
+    WSDL URL host in the file <<<app.properties>>>, which defaults to <<<localhost:8080>>>.
+    Edit this file to point at the host where the core application is running.
+
+    The source code for this application is currently only available {{{source-repository.html}in Subversion}}.
+
+* Pre-built web archive 
+
+    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0.war?use_mirror=osdn} here}}
+
+    This is a pre-built standard .war, ready to be deployed in a standard servlet container such as Tomcat. It is
+    offered as a convenience if you want a simple way to run the application without bothering with the build
+    environment. Developers who are interested in how DDD is applied in the application should download the source
+    archive instead.
+
+    The same caveats for running the application that are listed in the source package section above apply to this package as well.
+
+IDE Setup
+
+    * IntelliJ 7 or later:
+
+      Maven support is integrated - simply open project using the <<<pom.xml>>>.
+
+    * Netbeans 6 or later:
+
+      Install the Maven plugin (Tools -> Plugins -> Available Plugins), then open project.
+
+    * Eclipse
+
+      Either install a Maven integration plugin ({{{http://code.google.com/p/q4e/} q4e}} recommended), or
+      use standalone Maven to {{{http://maven.apache.org/plugins/maven-eclipse-plugin/}generate project descriptor files}}.
+
+    * Other
+
+      Use standalone Maven to generate project descriptor files for your IDE.
+
+About Maven
+
+    Maven downloads all external library dependencies and plugins separately, which can amount to quite a large number of
+    small files that are downloaded sequentially. These are all cached locally, but the first time you run it you should
+    be prepared to wait 5-10 minutes for the build to complete, depending on your network conditions.
+
+    A good way to get going is to execute the following command, and then go grab a cup of coffee:
+
+---------------------------
+mvn clean package jetty:run
+---------------------------
+
+    That will fill your local cache with most of what you need for development, in a one shot.

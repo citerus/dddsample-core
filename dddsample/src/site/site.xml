@@ -10,15 +10,15 @@
   </poweredBy>
   <body>
     <links>
-      <item name="Domain Language" href="http://www.domainlanguage.org/" />
+      <item name="Domain Language" href="http://www.domainlanguage.com/" />
       <item name="Citerus" href="http://www.citerus.se/"/>
       <item name="DomainDrivenDesign.org" href="http://www.domaindrivendesign.org/"/>
     </links>
     <menu name="About the application">
       <item name="Introduction" href="index.html"/>
+      <item name="Download" href="download.html"/>
       <item name="Characterization" href="characterization.html"/>
       <item name="Patterns Reference" href="patterns-reference.html"/>
-      <item name="Download" href="download.html"/>
       <item name="Roadmap" href="roadmap.html" />
     </menu>
     <menu ref="reports"/>
