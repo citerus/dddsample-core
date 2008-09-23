@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field">
+  <class name="se.citerus.dddsample.domain.model.carrier.CarrierMovement" table="CarrierMovement">
+    <id name="id" column="id">
+      <generator class="org.hibernate.id.IdentityGenerator"/>
+    </id>
+    <component name="carrierMovementId" update="false">
+      <property name="id" column="carrier_movement_id" not-null="true"/>
+    </component>
+    <many-to-one name="from" column="from_id" not-null="true" update="false" foreign-key="from_location_fk" fetch="join"/>
+    <many-to-one name="to" column="to_id" not-null="true" update="false" foreign-key="to_location_fk" fetch="join"/>
+  </class>
+</hibernate-mapping>

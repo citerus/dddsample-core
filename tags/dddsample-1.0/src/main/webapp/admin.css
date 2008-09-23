@@ -1,0 +1,54 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  font: Verdana, Arial, sans-serif;
+  color: black;
+  padding: 10px;
+}
+
+h1 {
+  font-weight: lighter;
+  font-variant: small-caps;
+}
+
+ul#menu {
+  border: 1px solid #ccc;
+  margin: 40px 0 20px 0;
+  padding: 10px 0;
+  background: #eee;
+}
+
+ul#menu li {
+  margin: 0 0 0 10px;
+  display: inline;
+}
+
+ul#menu a {
+  text-decoration: none;
+}
+
+ul#menu a:hover {
+  text-decoration: underline;
+}
+
+table {
+}
+
+table td {
+  padding: 4px 10px;
+}
+
+table thead {
+  font-weight: bold;
+}
+
+table caption {
+  text-align: left;
+  font-weight: bold;
+}
+
+img#logotype {
+  float: right;
+}
