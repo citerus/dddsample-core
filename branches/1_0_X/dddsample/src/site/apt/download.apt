@@ -17,15 +17,15 @@ Prerequisites
 Downloads
 
     There are three different {{{http://sourceforge.net/project/showfiles.php?group_id=210606}downloads}} available:
-    the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-RC1-src.zip?use_mirror=osdn} source package}},
+    the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} source package}},
     the {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} Incident Logging Application}}
-    and the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-RC1.war?use_mirror=osdn} pre-built web archive}}.
+    and the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0.war?use_mirror=osdn} pre-built web archive}}.
 
     The project uses Maven for build and management.
 
 * Source package
 
-    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-RC1-src.zip?use_mirror=osdn} here}}.
+    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} here}}.
 
     This is a complete checkout of the core application source code.
 
@@ -78,7 +78,7 @@ java -jar IncidentLoggingApplication.jar
 
 * Pre-built web archive 
 
-    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-RC1.war?use_mirror=osdn} here}}
+    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0.war?use_mirror=osdn} here}}
 
     This is a pre-built standard .war, ready to be deployed in a standard servlet container such as Tomcat. It is
     offered as a convenience if you want a simple way to run the application without bothering with the build
