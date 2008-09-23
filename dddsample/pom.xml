@@ -4,7 +4,7 @@
   <artifactId>dddsample</artifactId>
   <packaging>war</packaging>
   <name>DDDSample</name>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <description>This application shows a few key concepts of
     Domain Driven Design implemented in Enterprise Java.
   </description>
@@ -87,8 +87,8 @@
     </license>
   </licenses>
   <scm>
-    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample/tags/dddsample-1.0</developerConnection>
-    <url>http://ddd.sventon.org/tags/dddsample-1.0</url>
+    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
+    <url>http://ddd.sventon.org</url>
   </scm>
   <properties>
     <spring.version>2.5.1</spring.version>
