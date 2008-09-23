@@ -96,7 +96,7 @@
     <dependency>
       <groupId>se.citerus</groupId>
       <artifactId>dddsample</artifactId>
-      <version>1.0-RC1</version>
+      <version>1.0</version>
       <classifier>ws-client</classifier>
       <exclusions>
         <exclusion>
