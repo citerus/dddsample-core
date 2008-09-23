@@ -29,6 +29,9 @@
     </table>
   </form:form>
   </div>
+  <c:if test="${cargo == null}">
+    <p><em>Hint: try tracking "XYZ" or "JKL".</em></p>  
+  </c:if>
 
   <c:if test="${cargo != null}">
     <div id="result">

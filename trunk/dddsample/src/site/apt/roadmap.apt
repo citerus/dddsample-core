@@ -4,9 +4,12 @@
 
 Roadmap
 
-  This application is a work of progress.
+  This application is a work of progress, and these are some ideas for continued development:
 
-* 1.1
+  * Remodel Cargo-HandlingEvent aggregates to make boundaries
+    and asynchronous updates more explicit
+
+  * Make handling event registration completely asynchronous
 
   * Next expected event, for tracking
 
@@ -14,16 +17,9 @@ Roadmap
 
   * Departure/arrival time for carrier movements, ETA for itineraries
 
-  * Make handling event registration asynchronous
-
   * Improve web service interface
 
-* 2.0
-
-  * Remodel Cargo-HandlingEvent aggregates to make boundaries
-    and asynchronous updates more explicit
-
-  * Diversify interfaces
+  * Diversify user interfaces
 
   * More ways to register handing events (FTP CSV file upload etc)
 
@@ -31,4 +27,4 @@ Roadmap
 
   * Port to TimeAndMoney
 
-  * Notify on delay
+  * Notify on delayed delivery

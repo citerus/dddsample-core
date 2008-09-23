@@ -1,5 +1,6 @@
 package se.citerus.dddsample.application.remoting;
 
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.application.remoting.dto.LocationDTO;
@@ -35,30 +36,33 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private CargoRepository cargoRepository;
   private CarrierMovementRepository carrierMovementRepository;
 
+  @Transactional(readOnly = true)
   public List<LocationDTO> listShippingLocations() {
     final List<Location> allLocations = locationRepository.findAll();
     final LocationDTOAssembler assembler = new LocationDTOAssembler();
     return assembler.toDTOList(allLocations);
   }
 
+  @Transactional(readOnly = false)
   public String registerNewCargo(String origin, String destination) {
     TrackingId trackingId = bookingService.bookNewCargo(new UnLocode(origin), new UnLocode(destination));
     return trackingId.idString();
   }
 
+  @Transactional(readOnly = true)
   public CargoRoutingDTO loadCargoForRouting(String trackingId) {
-    // TODO lock
     final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
     final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     return assembler.toDTO(cargo);
   }
 
+  @Transactional(readOnly = false)
   public void assignCargoToRoute(String trackingId, ItineraryCandidateDTO itineraryCandidateDTO) {
     final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, carrierMovementRepository, locationRepository);
     bookingService.assignCargoToRoute(new TrackingId(trackingId), itinerary);
-    // TODO unlock
   }
 
+  @Transactional(readOnly = true)
   public List<CargoRoutingDTO> listAllCargos() {
     final List<Cargo> cargoList = cargoRepository.findAll();
     final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(cargoList.size());
@@ -69,6 +73,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     return dtoList;
   }
 
+  @Transactional(readOnly = true)
   public List<ItineraryCandidateDTO> requestPossibleRoutesForCargo(String trackingId) throws RemoteException {
     final List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
 
