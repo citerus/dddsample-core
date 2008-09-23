@@ -4,10 +4,10 @@
   <groupId>se.citerus</groupId>
   <artifactId>register-app</artifactId>
   <name>register-app</name>
-  <version>1.0-RC2-SNAPSHOT</version>
+  <version>1.0</version>
   <url>http://dddsample.sf.net</url>
   <scm>
-    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
+    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample/tags/register-app-1.0</developerConnection>
   </scm>
   <build>
     <plugins>
