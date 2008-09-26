@@ -20,7 +20,7 @@ import java.util.List;
 public class ItineraryCandidateDTOAssembler {
   
   public ItineraryCandidateDTO toDTO(final Itinerary itinerary) {
-    final List<LegDTO> legDTOs = new ArrayList<se.citerus.dddsample.application.remoting.dto.LegDTO>(itinerary.legs().size());
+    final List<LegDTO> legDTOs = new ArrayList<LegDTO>(itinerary.legs().size());
     for (Leg leg : itinerary.legs()) {
       legDTOs.add(toLegDTO(leg));
     }
