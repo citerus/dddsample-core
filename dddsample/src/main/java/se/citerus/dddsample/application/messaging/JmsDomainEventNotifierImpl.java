@@ -17,13 +17,13 @@ public final class JmsDomainEventNotifierImpl implements DomainEventNotifier {
   public static final String TRACKING_ID_KEY = TrackingId.class.getName() + ".KEY";
 
   public void cargoWasHandled(final HandlingEvent event) {
+    // TODO richer message type
     jmsOperations.send(destination, new MessageCreator() {
       public Message createMessage(final Session session) throws JMSException {
         final MapMessage message = session.createMapMessage();
         message.setStringProperty(TRACKING_ID_KEY, event.cargo().trackingId().idString());
         return message;
       }
-
     });
   }
 
