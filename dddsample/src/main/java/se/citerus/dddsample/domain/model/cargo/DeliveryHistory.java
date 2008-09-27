@@ -71,7 +71,7 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     if (status().equals(IN_PORT)) {
       return lastEvent().location();
     } else {
-      return null;
+      return Location.UNKNOWN;
     }
   }
 
@@ -79,7 +79,7 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     if (status().equals(ONBOARD_CARRIER)) {
       return lastEvent().carrierMovement();
     } else {
-      return null;
+      return CarrierMovement.NONE;
     }
   }
 
