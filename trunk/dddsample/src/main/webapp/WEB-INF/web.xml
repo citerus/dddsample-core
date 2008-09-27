@@ -17,16 +17,8 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      <!--
-      classpath:context-persistence-in-mem.xml
-      -->
       classpath:context-persistence-hibernate.xml
-
-      <!--
-      classpath:context-messaging-thread.xml
-      -->
       classpath:context-messaging-jms.xml
-
       classpath:context-service.xml
       classpath:context-routingteam.xml
       classpath:context-remote.xml
