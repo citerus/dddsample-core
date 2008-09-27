@@ -6,6 +6,7 @@ import se.citerus.dddsample.application.service.InMemTransactionManager;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.HandlingEventService;
 import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
@@ -18,9 +19,11 @@ public class HandlinEventServiceEndpointTest extends TestCase {
 
   private HandlingEventServiceEndpointImpl endpoint;
   private HandlingEventService handlingEventService;
+  private HandlingEventFactory handlingEventFactory;
   private SimpleDateFormat sdf;
 
   protected void setUp() throws Exception {
+    handlingEventFactory = new HandlingEventFactory();
     endpoint = new HandlingEventServiceEndpointImpl();
     handlingEventService = createMock(HandlingEventService.class);
     endpoint.setHandlingEventService(handlingEventService);
@@ -31,7 +34,8 @@ public class HandlinEventServiceEndpointTest extends TestCase {
   public void testRegisterValidEvent() throws Exception {
     Date date = new Date(100);
 
-    handlingEventService.register(date, new TrackingId("FOO"), new CarrierMovementId("CAR_456"), new UnLocode("CNHKG"), HandlingEvent.Type.LOAD);
+    final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, new TrackingId("FOO"), new CarrierMovementId("CAR_456"), new UnLocode("CNHKG"), HandlingEvent.Type.LOAD);
+    handlingEventService.register(event);
     replay(handlingEventService);
 
     // Tested call
@@ -45,7 +49,8 @@ public class HandlinEventServiceEndpointTest extends TestCase {
     TrackingId trackingId = new TrackingId("NOTFOUND");
     UnLocode unlocode = new UnLocode("SESTO");
 
-    handlingEventService.register(date, trackingId, null, unlocode, HandlingEvent.Type.CLAIM);
+    final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, null, unlocode, HandlingEvent.Type.CLAIM);
+    handlingEventService.register(event);
     expectLastCall().andThrow(new UnknownTrackingIdException(trackingId));
     replay(handlingEventService);
 
@@ -59,7 +64,8 @@ public class HandlinEventServiceEndpointTest extends TestCase {
     TrackingId trackingId = new TrackingId("XYZ");
     CarrierMovementId carrierMovementId = new CarrierMovementId("NOTFOUND");
 
-    handlingEventService.register(date, trackingId, carrierMovementId, new UnLocode("AUMEL"), HandlingEvent.Type.UNLOAD);
+    final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, carrierMovementId, new UnLocode("AUMEL"), HandlingEvent.Type.UNLOAD);
+    handlingEventService.register(event);
     expectLastCall().andThrow(new UnknownCarrierMovementIdException(carrierMovementId));
     replay(handlingEventService);
 
