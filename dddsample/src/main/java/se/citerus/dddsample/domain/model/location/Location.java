@@ -18,7 +18,9 @@ public final class Location implements Entity<Location> {
   /**
    * Special Location object that marks an unknown location.
    */
-  public static final Location UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location");
+  public static final Location UNKNOWN = new Location(
+    new UnLocode("XXXXX"), "Unknown location"
+  );
 
   /**
    * Package-level constructor, visible for test only.
@@ -58,8 +60,8 @@ public final class Location implements Entity<Location> {
     if (object == null) {
       return false;
     }
-    if (this == UNKNOWN || object == UNKNOWN) {
-      return this == object;
+    if (this == object) {
+      return true;
     }
     if (!(object instanceof Location)) {
       return false;
