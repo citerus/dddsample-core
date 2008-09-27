@@ -39,11 +39,14 @@ public class ExternalRoutingService implements RoutingService {
       destination.unLocode().idString()
     );
     
-    final List<Itinerary> itineraries = new ArrayList<Itinerary>(transitPaths.size());
+    final List<Itinerary> itineraries = new ArrayList<Itinerary>();
 
     for (TransitPath transitPath : transitPaths) {
       final Itinerary itinerary = toItinerary(transitPath);
-      itineraries.add(itinerary);
+      // Use the specification to safe-guard against invalid itineraries
+      if (routeSpecification.isSatisfiedBy(itinerary)) {
+        itineraries.add(itinerary);
+      }
     }
 
     return itineraries;
