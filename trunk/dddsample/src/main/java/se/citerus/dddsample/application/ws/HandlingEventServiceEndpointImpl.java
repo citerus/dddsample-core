@@ -10,6 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.HandlingEventService;
 import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
@@ -24,6 +25,7 @@ import java.util.Date;
 @WebService(endpointInterface = "se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint")
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {
 
+  private HandlingEventFactory handlingEventFactory;
   private HandlingEventService handlingEventService;
   private TransactionTemplate transactionTemplate;
   private final Log logger = LogFactory.getLog(getClass());
@@ -41,27 +43,9 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
         cid = null;
       }
       final HandlingEvent.Type type = parseEventType(eventType);
-
       final UnLocode ul = new UnLocode(unlocode);
 
-      // Using programmatic demarcation here due to weaving conflicts
-      // between jax-ws and Spring transaction annotations
-      transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-          protected void doInTransactionWithoutResult(TransactionStatus status) {
-              try {
-
-                  handlingEventService.register(date, tid, cid, ul, type);
-
-              } catch (UnknownCarrierMovementIdException e) {
-                  handleUnknownCarrierMovementId(e);
-              } catch (UnknownTrackingIdException e) {
-                  handleUnknownTrackingId(e);
-              } catch (UnknownLocationException e) {
-                  handleOtherError(e);
-              }
-          }
-      });
-
+      doRegister(date, tid, cid, type, ul);
     } catch (IllegalArgumentException iae) {
       handleIllegalArgument(iae);
     } catch (ParseException pe) {
@@ -72,6 +56,40 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       handleOtherError(e);
     }
   }
+
+  // TODO this entire step would be well suited to move to a consumer of asynchronous messages
+  private void doRegister(final Date date, final TrackingId tid, final CarrierMovementId cid, final HandlingEvent.Type type, final UnLocode ul) {
+    // Using programmatic demarcation here due to weaving conflicts
+    // between jax-ws and Spring transaction annotations
+    transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+        protected void doInTransactionWithoutResult(TransactionStatus status) {
+            try {
+                HandlingEvent event = handlingEventFactory.createHandlingEvent(date, tid, cid, ul, type);
+                handlingEventService.register(event);
+            } catch (UnknownCarrierMovementIdException e) {
+                handleUnknownCarrierMovementId(e);
+            } catch (UnknownTrackingIdException e) {
+                handleUnknownTrackingId(e);
+            } catch (UnknownLocationException e) {
+                handleUnknownLocation(e);
+            }
+        }
+    });
+  }
+
+  private HandlingEvent.Type parseEventType(final String eventType) throws InvalidEventTypeException {
+    try {
+      return HandlingEvent.Type.valueOf(eventType);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidEventTypeException(eventType);
+    }
+  }
+
+  private Date parseIso8601Date(final String completionTime) throws ParseException {
+    return new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
+  }
+
+  // Validation/translation errors
 
   private void handleIllegalArgument(IllegalArgumentException iae) {
     logger.error(iae, iae);
@@ -89,27 +107,23 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     logger.error("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
   }
 
-  private HandlingEvent.Type parseEventType(final String eventType) throws InvalidEventTypeException {
-    try {
-      return HandlingEvent.Type.valueOf(eventType);
-    } catch (IllegalArgumentException e) {
-      throw new InvalidEventTypeException(eventType);
-    }
+  // Domain errors, don't belong here really
+
+  private void handleUnknownLocation(UnknownLocationException e) {
+    logger.error(e, e);
   }
 
   private void handleUnknownCarrierMovementId(UnknownCarrierMovementIdException e) {
-    logger.info("Placing event in retry queue due to: " + e.getMessage());
+    logger.error(e, e);
   }
 
   private void handleUnknownTrackingId(Exception e) {
-    logger.info("Placing event in retry queue due to: " + e.getMessage());
+    logger.error(e, e);
   }
 
-  private Date parseIso8601Date(final String completionTime) throws ParseException {
-    return new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
-  }
+  // Setters
 
-  public void setHandlingEventService(final HandlingEventService handlingEventService) {
+  public void setHandlingEventService(HandlingEventService handlingEventService) {
     this.handlingEventService = handlingEventService;
   }
 
@@ -117,4 +131,7 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
       transactionTemplate = new TransactionTemplate(transactionManager);
   }
 
+  public void setHandlingEventFactory(HandlingEventFactory handlingEventFactory) {
+    this.handlingEventFactory = handlingEventFactory;
+  }
 }
