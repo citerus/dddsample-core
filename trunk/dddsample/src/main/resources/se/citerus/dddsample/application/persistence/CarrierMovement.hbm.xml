@@ -14,5 +14,7 @@
     </component>
     <many-to-one name="from" column="from_id" not-null="true" update="false" foreign-key="from_location_fk" fetch="join"/>
     <many-to-one name="to" column="to_id" not-null="true" update="false" foreign-key="to_location_fk" fetch="join"/>
+    <property name="departureTime" column="departure_time" not-null="true"/>
+    <property name="arrivalTime" column="arrival_time" not-null="true"/>
   </class>
 </hibernate-mapping>

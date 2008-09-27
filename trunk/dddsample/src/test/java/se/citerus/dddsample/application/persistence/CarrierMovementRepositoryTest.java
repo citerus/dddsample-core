@@ -1,5 +1,6 @@
 package se.citerus.dddsample.application.persistence;
 
+import se.citerus.dddsample.DateTestUtil;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
@@ -20,6 +21,8 @@ public class CarrierMovementRepositoryTest extends AbstractRepositoryTest {
     assertEquals("CAR_001", carrierMovement.carrierMovementId().idString());
     assertEquals(STOCKHOLM, carrierMovement.from());
     assertEquals(HELSINKI, carrierMovement.to());
+    assertEquals(DateTestUtil.toDate("2007-09-23", "02:00"), carrierMovement.departureTime());
+    assertEquals(DateTestUtil.toDate("2007-09-23", "03:00"), carrierMovement.arrivalTime());
   }
 
 }

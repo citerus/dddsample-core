@@ -18,9 +18,9 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), HANGZOU, HELSINKI);
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
-    events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU, null));
+    events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));
 
-    CarrierMovement cm001 = new CarrierMovement(new CarrierMovementId("CM001"), HANGZOU, GOTHENBURG);
+    CarrierMovement cm001 = new CarrierMovement(new CarrierMovementId("CM001"), HANGZOU, GOTHENBURG, new Date(), new Date());
     events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, cm001));
     events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, cm001));
 

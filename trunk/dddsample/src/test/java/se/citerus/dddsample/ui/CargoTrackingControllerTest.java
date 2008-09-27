@@ -49,7 +49,7 @@ public class CargoTrackingControllerTest extends TestCase {
 
       public Cargo track(TrackingId trackingId) {
         final Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
-        final HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG, null);
+        final HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG);
         CargoTestHelper.setDeliveryHistory(cargo, Arrays.asList(event));
         
         return cargo;

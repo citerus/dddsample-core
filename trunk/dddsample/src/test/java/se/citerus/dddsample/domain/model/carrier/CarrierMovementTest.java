@@ -4,28 +4,30 @@ import junit.framework.TestCase;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
+import java.util.Date;
+
 public class CarrierMovementTest extends TestCase {
 
   public void testConstructor() throws Exception {
     CarrierMovementId id = new CarrierMovementId("CAR001");
 
     try {
-      new CarrierMovement(null, null, null);
+      new CarrierMovement(null, null, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
     } catch (IllegalArgumentException expected) {}
 
     try {
-      new CarrierMovement(id, null, null);
+      new CarrierMovement(id, null, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
     } catch (IllegalArgumentException expected) {}
 
     try {
-      new CarrierMovement(id, STOCKHOLM, null);
+      new CarrierMovement(id, STOCKHOLM, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
     } catch (IllegalArgumentException expected) {}
 
     // Legal
-    new CarrierMovement(id, STOCKHOLM, HAMBURG);
+    new CarrierMovement(id, STOCKHOLM, HAMBURG, new Date(), new Date());
   }
 
   public void testSameValueAsEqualsHashCode() throws Exception {
@@ -33,10 +35,10 @@ public class CarrierMovementTest extends TestCase {
     CarrierMovementId id2a = new CarrierMovementId("CAR2");
     CarrierMovementId id2b = new CarrierMovementId("CAR2");
 
-    CarrierMovement cm1 = new CarrierMovement(id1, STOCKHOLM, HAMBURG);
-    CarrierMovement cm2 = new CarrierMovement(id1, STOCKHOLM, HAMBURG);
-    CarrierMovement cm3 = new CarrierMovement(id2a, HAMBURG, STOCKHOLM);
-    CarrierMovement cm4 = new CarrierMovement(id2b, HAMBURG, STOCKHOLM);
+    CarrierMovement cm1 = new CarrierMovement(id1, STOCKHOLM, HAMBURG, new Date(), new Date());
+    CarrierMovement cm2 = new CarrierMovement(id1, STOCKHOLM, HAMBURG, new Date(), new Date());
+    CarrierMovement cm3 = new CarrierMovement(id2a, HAMBURG, STOCKHOLM, new Date(), new Date());
+    CarrierMovement cm4 = new CarrierMovement(id2b, HAMBURG, STOCKHOLM, new Date(), new Date());
 
     assertTrue(cm1.sameIdentityAs(cm2));
     assertFalse(cm2.sameIdentityAs(cm3));

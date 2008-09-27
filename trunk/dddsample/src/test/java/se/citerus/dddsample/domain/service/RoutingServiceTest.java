@@ -50,7 +50,7 @@ public class RoutingServiceTest extends TestCase {
     RouteSpecification routeSpecification = RouteSpecification.forCargo(cargo, new Date());
 
     expect(carrierMovementRepository.find(isA(CarrierMovementId.class))).
-      andStubReturn(new CarrierMovement(new CarrierMovementId("CM"), CHICAGO, HAMBURG));
+      andStubReturn(new CarrierMovement(new CarrierMovementId("CM"), CHICAGO, HAMBURG, new Date(), new Date()));
     
     replay(carrierMovementRepository);
 

@@ -82,35 +82,35 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCarrierMovementData(JdbcTemplate jdbcTemplate) {
     String carrierMovementSql =
-      "insert into CarrierMovement (id, carrier_movement_id, from_id, to_id) " +
-      "values (?,?,?,?)";
+      "insert into CarrierMovement (id, carrier_movement_id, from_id, to_id, departure_time, arrival_time) " +
+      "values (?,?,?,?,?,?)";
 
     Object[][] carrierMovementArgs = {
      // SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL
-      {1, "CAR_001",1,5},
-      {2, "CAR_002",5,6},
-      {3, "CAR_003",6,3},
-      {4, "CAR_004",3,4},
-      {5, "CAR_005",4,2},
+      {1, "CAR_001",1,5,ts(1),ts(2)},
+      {2, "CAR_002",5,6,ts(1),ts(2)},
+      {3, "CAR_003",6,3,ts(1),ts(2)},
+      {4, "CAR_004",3,4,ts(1),ts(2)},
+      {5, "CAR_005",4,2,ts(1),ts(2)},
 
       // FIHEL - SESTO
-      {6, "CAR_006",5,1},
+      {6, "CAR_006",5,1,ts(1),ts(2)},
 
       // AUMEL - USCHI - DEHAM - SESTO
-      {7, "CAR_007",2,7},
-      {8, "CAR_008",7,6},
-      {9, "CAR_009",6,1},
+      {7, "CAR_007",2,7,ts(1),ts(2)},
+      {8, "CAR_008",7,6,ts(1),ts(2)},
+      {9, "CAR_009",6,1,ts(1),ts(2)},
 
       // CNHKG - AUMEL
-      {10,"CAR_010",3,2},
+      {10,"CAR_010",3,2,ts(1),ts(2)},
       // AUMEL - FIHEL
-      {11,"CAR_011",2,5},
+      {11,"CAR_011",2,5,ts(1),ts(2)},
       // DEHAM - SESTO
-      {12,"CAR_020",6,1},
+      {12,"CAR_020",6,1,ts(1),ts(2)},
       // SESTO - USCHI
-      {13,"CAR_021",1,7},
+      {13,"CAR_021",1,7,ts(1),ts(2)},
       // USCHI - JPTKO
-      {14,"CAR_022",7,4}
+      {14,"CAR_022",7,4,ts(1),ts(2)}
     };
     executeUpdate(jdbcTemplate, carrierMovementSql, carrierMovementArgs);
   }
