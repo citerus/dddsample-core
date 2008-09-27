@@ -3,9 +3,9 @@ package se.citerus.dddsample.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import se.citerus.dddsample.domain.model.Specification;
 import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.AbstractSpecification;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import java.util.Date;
  * Route specification.
  * 
  */
-public class RouteSpecification implements ValueObject<RouteSpecification>, Specification<Itinerary> {
+public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
   private Location origin;
   private Location destination;
   private Date arrivalDeadline;
@@ -95,5 +95,5 @@ public class RouteSpecification implements ValueObject<RouteSpecification>, Spec
       append(this.arrivalDeadline).
       toHashCode();
   }
-  
+
 }
