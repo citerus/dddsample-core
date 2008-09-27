@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A few locations for easy testing.
+ * Sample locations, for test purposes.
+ * 
  */
 public class SampleLocations {
 
