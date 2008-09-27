@@ -5,9 +5,9 @@ import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
+import se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -29,9 +29,6 @@ public class HandlingEventServiceTest extends TestCase {
 
   private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), HONGKONG, HELSINKI);
 
-  private final CarrierMovement cmAAA_BBB = new CarrierMovement(
-          new CarrierMovementId("CAR_001"), CHICAGO, STOCKHOLM);
-  
   protected void setUp() throws Exception{
     service = new HandlingEventServiceImpl();
     cargoRepository = createMock(CargoRepository.class);
@@ -58,7 +55,7 @@ public class HandlingEventServiceTest extends TestCase {
     expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
 
     final CarrierMovementId carrierMovementId = new CarrierMovementId("AAA_BBB");
-    expect(carrierMovementRepository.find(carrierMovementId)).andReturn(cmAAA_BBB);
+    expect(carrierMovementRepository.find(carrierMovementId)).andReturn(SampleCarrierMovements.CM001);
 
     final UnLocode unLocode = new UnLocode("SESTO");
     expect(locationRepository.find(unLocode)).andReturn(STOCKHOLM);
