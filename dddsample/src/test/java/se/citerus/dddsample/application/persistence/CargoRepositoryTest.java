@@ -51,7 +51,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, 100, 160, null);
 
     HandlingEvent secondEvent = events.get(1);
-    CarrierMovement expectedCm = new CarrierMovement(new CarrierMovementId("CAR_010"), HONGKONG, MELBOURNE);
+    CarrierMovement expectedCm = new CarrierMovement(new CarrierMovementId("CAR_010"), HONGKONG, MELBOURNE, new Date(), new Date());
     assertHandlingEvent(cargo,  secondEvent, LOAD, HONGKONG, 150, 110, expectedCm);
 
     List<Leg> legs = cargo.itinerary().legs();
@@ -163,7 +163,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     Location origin = locationRepository.find(STOCKHOLM.unLocode());
 
-    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin, null);
+    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin);
     assertFalse(cargo.deliveryHistory().eventsOrderedByCompletionTime().contains(event));
 
     CargoTestHelper.setDeliveryHistory(cargo, Arrays.asList(event));
