@@ -64,6 +64,10 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     return destination;
   }
 
+  public Date arrivalDeadline() {
+    return arrivalDeadline;
+  }
+
   public boolean isSatisfiedBy(Itinerary itinerary) {
     // TODO implement
     return true;
