@@ -81,7 +81,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       return !requiresCarrierMovement();
     }
   }
-
+  
   /**
    * @param cargo            cargo
    * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
@@ -92,15 +92,39 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    */
   public HandlingEvent(final Cargo cargo, final Date completionTime, final Date registrationTime, final Type type,
                        final Location location, final CarrierMovement carrierMovement) {
-    Validate.noNullElements(new Object[]{cargo, completionTime, registrationTime, type, location});
-    this.registrationTime = registrationTime;
-    this.completionTime = completionTime;
-    this.type = type;
-    this.cargo = cargo;
-    this.location = location;
-    this.carrierMovement = carrierMovement;
+    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location, carrierMovement});
+    if (type.prohibitsCarrierMovement()) {
+      throw new IllegalArgumentException("Carrier movement is not allowed with event type " + type);
+    }
 
-    validateType();
+    this.completionTime = completionTime;
+    this.registrationTime = registrationTime;
+    this.type = type;
+    this.location = location;
+    this.cargo = cargo;
+    this.carrierMovement = null;
+    this.carrierMovement = carrierMovement;
+  }
+
+  /**
+   * @param cargo            cargo
+   * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
+   * @param registrationTime registration time, the time the message is received
+   * @param type             type of event. Legal values are LOAD and UNLOAD
+   * @param location         where the event took place
+   */
+  public HandlingEvent(final Cargo cargo, final Date completionTime, final Date registrationTime, final Type type, final Location location) {
+    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location});
+    if (type.requiresCarrierMovement()) {
+      throw new IllegalArgumentException("Carrier movement is required for event type " + type);
+    }
+
+    this.completionTime = completionTime;
+    this.registrationTime = registrationTime;
+    this.type = type;
+    this.location = location;
+    this.cargo = cargo;
+    this.carrierMovement = null;
   }
 
   public Type type() {
@@ -156,20 +180,6 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       append(location).
       append(type).
       toHashCode();
-  }
-
-  /**
-   * Validate that the event type is compatible with the carrier movement value.
-   * <p/>
-   * Only certain types of events may be associated with a carrier movement.
-   */
-  private void validateType() {
-    if (type.requiresCarrierMovement() && carrierMovement == null) {
-      throw new IllegalArgumentException("Carrier movement is required for event type " + type);
-    }
-    if (type.prohibitsCarrierMovement() && carrierMovement != null) {
-      throw new IllegalArgumentException("Carrier movement is not allowed with event type " + type);
-    }
   }
 
   // Needed by Hibernate

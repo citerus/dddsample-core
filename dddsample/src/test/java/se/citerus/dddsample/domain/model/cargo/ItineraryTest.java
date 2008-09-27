@@ -12,10 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 public class ItineraryTest extends TestCase {
-  private final CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM);
-  private final CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG);
-  private final CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), ROTTERDAM, NEWYORK);
-  private final CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), SHANGHAI, HELSINKI);
+  private final CarrierMovement abc = new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM, new Date(), new Date());
+  private final CarrierMovement def = new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG, new Date(), new Date());
+  private final CarrierMovement ghi = new CarrierMovement(new CarrierMovementId("GHI"), ROTTERDAM, NEWYORK, new Date(), new Date());
+  private final CarrierMovement jkl = new CarrierMovement(new CarrierMovementId("JKL"), SHANGHAI, HELSINKI, new Date(), new Date());
 
   public void testCargoOnTrack() throws Exception {
 
@@ -23,13 +23,13 @@ public class ItineraryTest extends TestCase {
 
     Itinerary itinerary = new Itinerary(
       Arrays.asList(
-        new Leg(new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM), SHANGHAI, ROTTERDAM),
-        new Leg(new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG), ROTTERDAM, GOTHENBURG)
+        new Leg(new CarrierMovement(new CarrierMovementId("ABC"), SHANGHAI, ROTTERDAM, new Date(), new Date()), SHANGHAI, ROTTERDAM),
+        new Leg(new CarrierMovement(new CarrierMovementId("DEF"), ROTTERDAM, GOTHENBURG, new Date(), new Date()), ROTTERDAM, GOTHENBURG)
       )
     );
 
     //Happy path
-    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, SHANGHAI,null);
+    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, SHANGHAI);
     assertTrue(itinerary.isExpected(event));
 
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, SHANGHAI, abc);
@@ -44,15 +44,15 @@ public class ItineraryTest extends TestCase {
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, GOTHENBURG, def);
     assertTrue(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, GOTHENBURG, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, GOTHENBURG);
     assertTrue(itinerary.isExpected(event));
 
     //Customs event changes nothing
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, GOTHENBURG, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, GOTHENBURG);
     assertTrue(itinerary.isExpected(event));
 
     //Received at the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU);
     assertFalse(itinerary.isExpected(event));
 
     //Loaded to onto the wrong ship, correct location
@@ -63,7 +63,7 @@ public class ItineraryTest extends TestCase {
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, HELSINKI, jkl);
     assertFalse(itinerary.isExpected(event));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM, null);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM);
     assertFalse(itinerary.isExpected(event));
 
   }

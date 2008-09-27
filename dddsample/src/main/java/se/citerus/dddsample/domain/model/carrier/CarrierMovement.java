@@ -4,6 +4,8 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
 import se.citerus.dddsample.domain.model.location.Location;
 
+import java.util.Date;
+
 
 /**
  * A carrier movement is a vessel voyage from one location to another.
@@ -13,16 +15,31 @@ public final class CarrierMovement implements Entity<CarrierMovement> {
   private CarrierMovementId carrierMovementId;
   private Location from;
   private Location to;
+  private Date departureTime;
+  private Date arrivalTime;
+
+  // Null object pattern 
+  public static final CarrierMovement NONE = new CarrierMovement(
+    new CarrierMovementId("NONE"), Location.UNKNOWN, Location.UNKNOWN,
+    new Date(0), new Date(0));
 
   /**
    * Constructor.
    *
-   * @param carrierMovementId
-   * @param from
-   * @param to
+   * @param carrierMovementId carrier movement id
+   * @param from from location
+   * @param to to location
+   * @param departureTime time of departure
+   * @param arrivalTime time of arrival
    */
-  public CarrierMovement(final CarrierMovementId carrierMovementId, final Location from, final Location to) {
-    Validate.noNullElements(new Object[]{carrierMovementId, from, to});
+  public CarrierMovement(final CarrierMovementId carrierMovementId,
+                         final Location from,
+                         final Location to,
+                         final Date departureTime,
+                         final Date arrivalTime) {
+    Validate.noNullElements(new Object[]{carrierMovementId, from, to, departureTime, arrivalTime});
+    this.departureTime = departureTime;
+    this.arrivalTime = arrivalTime;
     this.carrierMovementId = carrierMovementId;
     this.from = from;
     this.to = to;
@@ -38,6 +55,14 @@ public final class CarrierMovement implements Entity<CarrierMovement> {
 
   public Location to() {
     return to;
+  }
+
+  public Date departureTime() {
+    return departureTime;
+  }
+
+  public Date arrivalTime() {
+    return arrivalTime;
   }
 
   public boolean sameIdentityAs(final CarrierMovement other) {

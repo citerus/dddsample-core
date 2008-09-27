@@ -5,9 +5,11 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
 import se.citerus.dddsample.domain.model.cargo.DeliveryHistory;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
+import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.CM001;
+import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.CM002;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 import java.text.DateFormat;
@@ -30,7 +32,7 @@ public class TrackingScenarioTest extends TestCase {
     assertEquals(4, handlingEvents.size());
     final HandlingEvent event = deliveryHistory.lastEvent();
 
-    assertSame(HandlingEvent.Type.UNLOAD, event.type());
+    assertSame(UNLOAD, event.type());
 //    assertFalse(cargo.atFinalDestiation());
 //    assertEquals("CNHKG", cargo.currentLocation().unlocode());
 
@@ -38,16 +40,12 @@ public class TrackingScenarioTest extends TestCase {
 
   private Cargo populateCargo() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
-    final CarrierMovement stockholmToHamburg = new CarrierMovement(
-            new CarrierMovementId("CAR_001"), STOCKHOLM, HAMBURG);
 
-    final CarrierMovement hamburgToHongKong = new CarrierMovement(
-            new CarrierMovementId("CAR_002"), HAMBURG, HONGKONG);
     final List<HandlingEvent> handlingEventList = Arrays.asList(
-      new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, stockholmToHamburg),
-      new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, stockholmToHamburg),
-      new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, hamburgToHongKong),
-      new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, hamburgToHongKong)
+      new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), LOAD, STOCKHOLM, CM001),
+      new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), UNLOAD, HAMBURG, CM001),
+      new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), LOAD, HAMBURG, CM002),
+      new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), UNLOAD, HONGKONG, CM002)
     );
     CargoTestHelper.setDeliveryHistory(cargo, handlingEventList);
 

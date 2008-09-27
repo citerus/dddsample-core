@@ -14,6 +14,7 @@ import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class CargoRoutingDTOAssemblerTest extends TestCase {
 
@@ -25,7 +26,7 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, destination);
 
     final CarrierMovement cm = new CarrierMovement(
-      new CarrierMovementId("ABC"), origin, destination);
+      new CarrierMovementId("ABC"), origin, destination, new Date(), new Date());
 
     final Itinerary itinerary = new Itinerary(
       Arrays.asList(

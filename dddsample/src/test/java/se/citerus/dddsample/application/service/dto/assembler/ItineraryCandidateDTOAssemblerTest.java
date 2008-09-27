@@ -17,6 +17,7 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class ItineraryCandidateDTOAssemblerTest extends TestCase {
@@ -28,7 +29,7 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     final Location destination = MELBOURNE;
 
     final CarrierMovement cm = new CarrierMovement(
-      new CarrierMovementId("ABC"), origin, destination);
+      new CarrierMovementId("ABC"), origin, destination, new Date(), new Date());
 
     final Itinerary itinerary = new Itinerary(
       Arrays.asList(
@@ -66,8 +67,8 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     final CarrierMovementRepository carrierMovementRepository = createMock(CarrierMovementRepository.class);
     final CarrierMovementId cmId1 = new CarrierMovementId("CM1");
     final CarrierMovementId cmId2 = new CarrierMovementId("CM2");
-    final CarrierMovement cm1 = new CarrierMovement(cmId1, HONGKONG, TOKYO);
-    final CarrierMovement cm2 = new CarrierMovement(cmId2, TOKYO, CHICAGO);
+    final CarrierMovement cm1 = new CarrierMovement(cmId1, HONGKONG, TOKYO, new Date(), new Date());
+    final CarrierMovement cm2 = new CarrierMovement(cmId2, TOKYO, CHICAGO, new Date(), new Date());
 
     expect(carrierMovementRepository.find(cmId1)).andReturn(cm1);
     expect(carrierMovementRepository.find(cmId2)).andReturn(cm2);
