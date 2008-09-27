@@ -8,7 +8,6 @@ import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
@@ -61,7 +60,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
     registerEvent(cargoABC, "2008-01-01", HandlingEvent.Type.RECEIVE, null);
     
     final CarrierMovement stockholmToHelsinki = new CarrierMovement(
-            new CarrierMovementId("CAR_001"), STOCKHOLM, HELSINKI);
+            new CarrierMovementId("CAR_001"), STOCKHOLM, HELSINKI, new Date(), new Date());
 
     registerEvent(cargoABC, "2008-01-02", HandlingEvent.Type.LOAD, stockholmToHelsinki);
     registerEvent(cargoABC, "2008-01-03", HandlingEvent.Type.UNLOAD, stockholmToHelsinki);
@@ -72,7 +71,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
     registerEvent(cargoCBA, "2008-01-10", HandlingEvent.Type.RECEIVE, null);
   }
 
-  private void registerEvent(Cargo cargo, String date, Type type, CarrierMovement carrierMovement) throws ParseException {
+  private void registerEvent(Cargo cargo, String date, HandlingEvent.Type type, CarrierMovement carrierMovement) throws ParseException {
     HandlingEvent event = new HandlingEvent(cargo, getDate(date), new Date(), type, null, carrierMovement);
     String id = cargo.trackingId() + "_" + type + "_" + date;
 

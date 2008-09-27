@@ -37,7 +37,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     Cargo cargo = cargoRepository.find(new TrackingId("XYZ"));
     Date completionTime = new Date(10);
     Date registrationTime = new Date(20);
-    HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, HandlingEvent.Type.CLAIM, location, null);
+    HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, HandlingEvent.Type.CLAIM, location);
 
     handlingEventRepository.save(event);
 
