@@ -9,6 +9,16 @@
           img="http://sflogo.sourceforge.net/sflogo.php?group_id=210606&amp;type=2"/>
   </poweredBy>
   <body>
+    <head>
+      <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+        var pageTracker = _gat._getTracker("UA-5770162-1");
+        pageTracker._trackPageview();
+      </script>
+    </head>
     <links>
       <item name="Domain Language" href="http://www.domainlanguage.com/" />
       <item name="Citerus" href="http://www.citerus.se/"/>
