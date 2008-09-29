@@ -20,7 +20,7 @@ public final class CarrierMovement implements Entity<CarrierMovement> {
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
-    new CarrierMovementId("NONE"), Location.UNKNOWN, Location.UNKNOWN,
+    new CarrierMovementId(""), Location.UNKNOWN, Location.UNKNOWN,
     new Date(0), new Date(0));
 
   /**
