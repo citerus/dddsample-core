@@ -154,7 +154,7 @@ public final class CargoTrackingViewAdapter {
      */
     public String getCarrierMovement() {
       final CarrierMovement cm = handlingEvent.carrierMovement();
-      return cm != null ? cm.carrierMovementId().toString() : "";
+      return cm.carrierMovementId().idString();
     }
 
     /**

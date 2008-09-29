@@ -48,7 +48,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals(2, events.size());
 
     HandlingEvent firstEvent = events.get(0);
-    assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, 100, 160, null);
+    assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, 100, 160, CarrierMovement.NONE);
 
     HandlingEvent secondEvent = events.get(1);
     CarrierMovement expectedCm = new CarrierMovement(new CarrierMovementId("CAR_010"), HONGKONG, MELBOURNE, new Date(), new Date());
@@ -77,11 +77,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Date expectedRegistrationTime = SampleDataGenerator.offset(registrationTimeMs);
     assertEquals(expectedRegistrationTime, event.registrationTime());
     
-    if (expectedCarrierMovement == null) {
-      assertNull(event.carrierMovement());
-    } else {
-      assertEquals(expectedCarrierMovement, event.carrierMovement());
-    }
+    assertEquals(expectedCarrierMovement, event.carrierMovement());
     assertEquals(cargo, event.cargo());
   }
 
