@@ -7,6 +7,7 @@ import se.citerus.dddsample.domain.model.DomainEvent;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -132,7 +133,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public CarrierMovement carrierMovement() {
-    return this.carrierMovement;
+    return DomainObjectUtils.nullSafe(this.carrierMovement, CarrierMovement.NONE);
   }
 
   public Date completionTime() {
