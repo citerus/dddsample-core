@@ -35,7 +35,7 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
       )
     );
 
-    cargo.attachItinerary(itinerary);
+    cargo.assignToRoute(itinerary);
 
     final CargoRoutingDTO dto = assembler.toDTO(cargo);
 

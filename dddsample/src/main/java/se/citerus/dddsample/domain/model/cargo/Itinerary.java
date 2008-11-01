@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,12 +12,16 @@ import java.util.List;
  * An itinerary.
  * 
  */
-public final class Itinerary implements ValueObject<Itinerary> {
+public class Itinerary implements ValueObject<Itinerary> {
 
   private Cargo cargo;
   private List<Leg> legs = Collections.emptyList();
 
-  static final Itinerary EMPTY_ITINERARY = new Itinerary();
+  static final Itinerary EMPTY_ITINERARY = new Itinerary() {
+    void setCargo(Cargo cargo) {
+      // Noop
+    }
+  };
 
   /**
    * Constructor.
@@ -34,15 +39,14 @@ public final class Itinerary implements ValueObject<Itinerary> {
    * For maintaing referential integrity inside the Cargo aggregate,
    * with package level visibility. 
    *
-   * @see Cargo#attachItinerary(Itinerary)
-   * @see Cargo#detachItinerary()
+   * @see Cargo#assignToRoute(Itinerary)
    *  
    * @param cargo the cargo that this itinerary is for
    */
   void setCargo(Cargo cargo) {
     this.cargo = cargo;
   }
-  
+
   /**
    * @return the legs of this itinerary, as an <b>immutable</b> list.
    */
@@ -101,8 +105,18 @@ public final class Itinerary implements ValueObject<Itinerary> {
    * @param other itinerary to compare
    * @return <code>true</code> if the legs in this and the other itinerary are all equal.
    */
+  @Override
   public boolean sameValueAs(final Itinerary other) {
     return other != null && legs.equals(other.legs);
+  }
+
+  @Override
+  public Itinerary copy() {
+    final List<Leg> legsCopy = new ArrayList<Leg>(legs.size());
+    for (Leg leg : legs) {
+      legsCopy.add(leg.copy());
+    }
+    return new Itinerary(legsCopy);
   }
 
   @Override

@@ -83,8 +83,16 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     }
   }
 
+  @Override
   public boolean sameValueAs(DeliveryHistory other) {
     return other != null && events.equals(other.events);
+  }
+
+  @Override
+  public DeliveryHistory copy() {
+    final Set<HandlingEvent> eventsCopy = new HashSet<HandlingEvent>(events);
+
+    return new DeliveryHistory(eventsCopy);
   }
 
   @Override

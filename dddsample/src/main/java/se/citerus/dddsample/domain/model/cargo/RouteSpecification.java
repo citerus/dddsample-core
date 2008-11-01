@@ -13,7 +13,7 @@ import java.util.Date;
  * Route specification.
  * 
  */
-public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
+public final class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
   private Location origin;
   private Location destination;
   private Date arrivalDeadline;
@@ -28,29 +28,13 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    */
   public static RouteSpecification forCargo(Cargo cargo, Date arrivalDeadline) {
     Validate.notNull(cargo);
-    Validate.notNull(arrivalDeadline);
 
     return new RouteSpecification(cargo.origin(), cargo.destination(), arrivalDeadline);
   }
 
-  /**
-   * Factory for creating a route specfication from an explicit destination,
-   * for rerouting a cargo.
-   *
-   * @param from
-   * @param cargo
-   * @param arrivalDeadline
-   * @return
-   */
-  public static RouteSpecification forReroutedCargo(Location from, Cargo cargo, Date arrivalDeadline) {
-    Validate.notNull(from);
-    Validate.notNull(cargo);
-    Validate.notNull(arrivalDeadline);
-
-    return new RouteSpecification(from, cargo.destination(), arrivalDeadline);
-  }
-
   private RouteSpecification(Location origin, Location destination, Date arrivalDeadline) {
+    Validate.noNullElements(new Object[] {origin, destination, arrivalDeadline});
+    
     this.origin = origin;
     this.destination = destination;
     this.arrivalDeadline = arrivalDeadline;
@@ -68,17 +52,24 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     return arrivalDeadline;
   }
 
+  @Override
   public boolean isSatisfiedBy(Itinerary itinerary) {
     // TODO implement
     return true;
   }
 
+  @Override
   public boolean sameValueAs(RouteSpecification other) {
     return other != null && new EqualsBuilder().
       append(this.origin, other.origin).
       append(this.destination, other.destination).
       append(this.arrivalDeadline, other.arrivalDeadline).
       isEquals();
+  }
+
+  @Override
+  public RouteSpecification copy() {
+    return new RouteSpecification(origin, destination, arrivalDeadline);
   }
 
   @Override

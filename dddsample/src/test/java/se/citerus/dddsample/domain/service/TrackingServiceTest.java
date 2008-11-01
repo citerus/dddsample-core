@@ -24,10 +24,8 @@ public class TrackingServiceTest extends TestCase {
   CargoRepository cargoRepository;
 
   protected void setUp() throws Exception {
-    cargoService = new TrackingServiceImpl();
     cargoRepository = createMock(CargoRepository.class);
-
-    cargoService.setCargoRepository(cargoRepository);
+    cargoService = new TrackingServiceImpl(cargoRepository);
   }
 
   public void testTrackingScenario() {

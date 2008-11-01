@@ -46,7 +46,7 @@ public class HandlinEventServiceEndpointTest extends TestCase {
       cargo, date, new Date(), HandlingEvent.Type.LOAD, HONGKONG, carrierMovement
     );
 
-    HandlingEventFactory handlingEventFactory = new HandlingEventFactory() {
+    HandlingEventFactory handlingEventFactory = new HandlingEventFactory(null,null,null) {
       public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownTrackingIdException, UnknownCarrierMovementIdException, UnknownLocationException {
         return event;
       }

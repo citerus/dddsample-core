@@ -32,19 +32,13 @@ public class HandlingEventServiceTest extends TestCase {
   private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), HONGKONG, HELSINKI);
 
   protected void setUp() throws Exception{
-    service = new HandlingEventServiceImpl();
     cargoRepository = createMock(CargoRepository.class);
     carrierMovementRepository = createMock(CarrierMovementRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     locationRepository = createMock(LocationRepository.class);
     domainEventNotifier = createMock(DomainEventNotifier.class);
-    handlingEventFactory = new HandlingEventFactory();
-
-    handlingEventFactory.setCargoRepository(cargoRepository);
-    handlingEventFactory.setCarrierMovementRepository(carrierMovementRepository);
-    handlingEventFactory.setLocationRepository(locationRepository);
-    service.setHandlingEventRepository(handlingEventRepository);
-    service.setDomainEventNotifier(domainEventNotifier);
+    service = new HandlingEventServiceImpl(handlingEventRepository, domainEventNotifier);
+    handlingEventFactory = new HandlingEventFactory(cargoRepository, carrierMovementRepository, locationRepository);
   }
 
   protected void tearDown() throws Exception {

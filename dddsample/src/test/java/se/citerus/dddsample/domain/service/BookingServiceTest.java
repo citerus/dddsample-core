@@ -16,13 +16,13 @@ public class BookingServiceTest extends TestCase {
   BookingServiceImpl cargoService;
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
+  RoutingService routingService;
 
   protected void setUp() throws Exception {
-    cargoService = new BookingServiceImpl();
     cargoRepository = createMock(CargoRepository.class);
     locationRepository = createMock(LocationRepository.class);
-    cargoService.setCargoRepository(cargoRepository);
-    cargoService.setLocationRepository(locationRepository);
+    routingService = createMock(RoutingService.class);
+    cargoService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
   }
 
   public void testRegisterNew() {

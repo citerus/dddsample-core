@@ -115,20 +115,6 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertNull(map.get("ITINERARY_ID"));
   }
 
-  public void testDeleteOrphanedItinerary() {
-    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
-    Long itineraryId = getLongId(cargo.itinerary());
-
-    assertEquals(1, sjt.queryForInt("select count(*) from Itinerary where id = ?", itineraryId));
-
-    cargo.detachItinerary();
-    cargoRepository.save(cargo);
-    flush();
-
-    // Repository is responsible for deleting orphaned, detached itineraries
-    assertEquals(0, sjt.queryForInt("select count(*) from Itinerary where id = ?", itineraryId));
-  }
-
   public void testReplaceItinerary() {
     Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
     Long oldItineraryId = getLongId(cargo.itinerary());
@@ -139,7 +125,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Location legTo = locationRepository.find(new UnLocode("DEHAM"));
     Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(cm, legFrom, legTo)));
 
-    cargo.attachItinerary(newItinerary);
+    cargo.assignToRoute(newItinerary);
 
     cargoRepository.save(cargo);
     flush();

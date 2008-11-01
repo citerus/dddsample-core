@@ -7,25 +7,30 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <tx:annotation-driven transaction-manager="transactionManager"/>
-
   <bean id="bookingService" class="se.citerus.dddsample.domain.service.impl.BookingServiceImpl">
-    <property name="cargoRepository" ref="cargoRepository"/>
-    <property name="locationRepository" ref="locationRepository"/>
-    <property name="routingService" ref="routingService"/>
+    <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="locationRepository"/>
+    <constructor-arg ref="routingService"/>
   </bean>
 
   <bean id="trackingService" class="se.citerus.dddsample.domain.service.impl.TrackingServiceImpl">
-    <property name="cargoRepository" ref="cargoRepository"/>
+    <constructor-arg ref="cargoRepository"/>
   </bean>
 
   <bean id="handlingEventService" class="se.citerus.dddsample.domain.service.impl.HandlingEventServiceImpl">
-    <property name="cargoRepository" ref="cargoRepository"/>
-    <property name="handlingEventRepository" ref="handlingEventRepository"/>
-    <property name="carrierMovementRepository" ref="carrierMovementRepository"/>
-    <property name="locationRepository" ref="locationRepository"/>
-    <property name="domainEventNotifier" ref="domainEventNotifier"/>
+    <constructor-arg ref="handlingEventRepository"/>
+    <constructor-arg ref="domainEventNotifier"/>
   </bean>
+
+  <bean id="handlingEventFactory" class="se.citerus.dddsample.domain.model.handling.HandlingEventFactory">
+    <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="carrierMovementRepository"/>
+    <constructor-arg ref="locationRepository"/>
+  </bean>
+
+  <!-- Aplication services below -->
+
+  <tx:annotation-driven transaction-manager="transactionManager"/>
 
   <bean id="routingService" class="se.citerus.dddsample.application.routing.ExternalRoutingService">
     <property name="locationRepository" ref="locationRepository"/>
