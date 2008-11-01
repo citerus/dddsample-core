@@ -42,13 +42,18 @@ public final class Leg implements ValueObject<Leg> {
     return carrierMovement;
   }
 
-
+  @Override
   public boolean sameValueAs(final Leg other) {
     return other != null && new EqualsBuilder().
       append(this.carrierMovement, other.carrierMovement).
       append(this.from, other.from).
       append(this.to, other.to).
       isEquals();
+  }
+
+  @Override
+  public Leg copy() {
+    return new Leg(carrierMovement, from, to);
   }
 
   @Override

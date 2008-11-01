@@ -15,16 +15,22 @@ import java.util.List;
 
 public final class BookingServiceImpl implements BookingService {
 
-  private CargoRepository cargoRepository;
-  private LocationRepository locationRepository;
-  private RoutingService routingService;
-
+  private final CargoRepository cargoRepository;
+  private final LocationRepository locationRepository;
+  private final RoutingService routingService;
   private final Log logger = LogFactory.getLog(getClass());
+
+  public BookingServiceImpl(CargoRepository cargoRepository, LocationRepository locationRepository, RoutingService routingService) {
+    this.cargoRepository = cargoRepository;
+    this.locationRepository = locationRepository;
+    this.routingService = routingService;
+  }
 
   public TrackingId bookNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
 
+    // TODO cargo factory? tracking id factory?
     final TrackingId trackingId = cargoRepository.nextTrackingId();
     final Location origin = locationRepository.find(originUnLocode);
     final Location destination = locationRepository.find(destinationUnLocode);
@@ -45,30 +51,4 @@ public final class BookingServiceImpl implements BookingService {
     return routingService.fetchRoutesForSpecification(routeSpecification);
   }
 
-  public void assignCargoToRoute(final TrackingId trackingId, final Itinerary newItinerary) {
-    Validate.notNull(trackingId);
-    Validate.notNull(newItinerary);
-
-    final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
-    }
-
-    cargo.attachItinerary(newItinerary);
-    cargoRepository.save(cargo);
-
-    logger.info("Assigned cargo " + trackingId + " to new route");
-  }
-
-  public void setCargoRepository(final CargoRepository cargoRepository) {
-    this.cargoRepository = cargoRepository;
-  }
-
-  public void setLocationRepository(final LocationRepository locationRepository) {
-    this.locationRepository = locationRepository;
-  }
-
-  public void setRoutingService(RoutingService routingService) {
-    this.routingService = routingService;
-  }
 }

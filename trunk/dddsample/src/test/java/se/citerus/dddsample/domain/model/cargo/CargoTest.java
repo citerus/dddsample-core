@@ -271,6 +271,8 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU));
     events.addAll(handlingEvents);
     cargo.setDeliveryHistory(new DeliveryHistory(events));
+
+    cargo.updateState();
     assertTrue(cargo.isMisdirected());
 
 
@@ -284,6 +286,8 @@ public class CargoTest extends TestCase {
 
     events.addAll(handlingEvents);
     cargo.setDeliveryHistory(new DeliveryHistory(events));
+
+    cargo.updateState();
     assertTrue(cargo.isMisdirected());
 
 
@@ -297,19 +301,10 @@ public class CargoTest extends TestCase {
 
     events.addAll(handlingEvents);
     cargo.setDeliveryHistory(new DeliveryHistory(events));
+
+    cargo.updateState();
     assertTrue(cargo.isMisdirected());
   }
-
-  /*
-  public void testStateOnCreation() {
-    final Cargo cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, CHICAGO);
-
-    final State state = cargo.state();
-    assertEquals(Location.UNKNOWN, state.currentLocation());
-    assertNull(state.currentCarrierMovement());
-    assertEquals(StatusCode.NOT_RECEIVED, state.statusCode());
-  }
-  */
 
   private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), origin, destination);
@@ -324,7 +319,7 @@ public class CargoTest extends TestCase {
       )
     );
 
-    cargo.attachItinerary(itinerary);
+    cargo.assignToRoute(itinerary);
     return cargo;
   }
 

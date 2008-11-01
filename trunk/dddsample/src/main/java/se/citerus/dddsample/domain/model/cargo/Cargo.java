@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -40,6 +41,7 @@ public final class Cargo implements Entity<Cargo> {
   private Location destination;
   private Itinerary itinerary;
   private DeliveryHistory deliveryHistory;
+  private boolean misdirected;
 
   /**
    * @param trackingId tracking id
@@ -54,6 +56,7 @@ public final class Cargo implements Entity<Cargo> {
     this.trackingId = trackingId;
     this.origin = origin;
     this.destination = destination;
+    updateState();
   }
 
   /**
@@ -92,14 +95,26 @@ public final class Cargo implements Entity<Cargo> {
    * @return The delivery history. Never null.
    */
   public DeliveryHistory deliveryHistory() {
-    return nullSafe(this.deliveryHistory, DeliveryHistory.EMPTY_DELIVERY_HISTORY);
+    return DomainObjectUtils.nullSafe(this.deliveryHistory, DeliveryHistory.EMPTY_DELIVERY_HISTORY);
   }
 
   /**
    * @return The itinerary. Never null.
    */
   public Itinerary itinerary() {
-    return nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+    return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+  }
+
+  /**
+   * Updates the state of the cargo.
+   */
+  public void updateState() {
+    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
+    if (lastEvent == null) {
+      this.misdirected = false;
+    } else {
+      this.misdirected = !itinerary().isExpected(lastEvent);
+    }
   }
 
   /**
@@ -126,22 +141,15 @@ public final class Cargo implements Entity<Cargo> {
    *
    * @param itinerary an itinerary. May not be null.
    */
-  public void attachItinerary(final Itinerary itinerary) {
+  public void assignToRoute(final Itinerary itinerary) {
     Validate.notNull(itinerary);
 
-    // Decouple the old itinerary from this cargo
+    // Decouple the old itinerary (which may or may not exist) from this cargo
     itinerary().setCargo(null);
+
     // Couple this cargo and the new itinerary
     this.itinerary = itinerary;
     this.itinerary.setCargo(this);
-  }
-
-  /**
-   * Detaches the current itinerary from the cargo.
-   */
-  public void detachItinerary() {
-    itinerary().setCargo(null);
-    this.itinerary = null;
   }
 
   /**
@@ -164,12 +172,7 @@ public final class Cargo implements Entity<Cargo> {
    * @return <code>true</code> if the cargo has been misdirected,
    */
   public boolean isMisdirected() {
-    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
-    if (lastEvent == null) {
-      return false;
-    } else {                                          
-      return !itinerary().isExpected(lastEvent);
-    }
+    return misdirected;
   }
 
   /**
@@ -213,11 +216,6 @@ public final class Cargo implements Entity<Cargo> {
   @Override
   public int hashCode() {
     return trackingId.hashCode();
-  }
-
-  // Utility for Null Object Pattern - should be moved out of this class
-  private <T> T nullSafe(T actual, T safe) {
-    return actual == null ? safe : actual;
   }
 
   Cargo() {

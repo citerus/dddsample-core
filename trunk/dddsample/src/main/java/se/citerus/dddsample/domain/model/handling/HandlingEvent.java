@@ -137,11 +137,11 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public Date completionTime() {
-    return this.completionTime;
+    return new Date(this.completionTime.getTime());
   }
 
   public Date registrationTime() {
-    return this.registrationTime;
+    return new Date(this.registrationTime.getTime());
   }
 
   public Location location() {

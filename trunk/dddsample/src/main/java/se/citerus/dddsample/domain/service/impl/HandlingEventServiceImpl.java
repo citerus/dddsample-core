@@ -7,8 +7,13 @@ import se.citerus.dddsample.domain.service.HandlingEventService;
 
 public final class HandlingEventServiceImpl implements HandlingEventService {
 
-  private HandlingEventRepository handlingEventRepository;
-  private DomainEventNotifier domainEventNotifier;
+  private final HandlingEventRepository handlingEventRepository;
+  private final DomainEventNotifier domainEventNotifier;
+
+  public HandlingEventServiceImpl(HandlingEventRepository handlingEventRepository, DomainEventNotifier domainEventNotifier) {
+    this.handlingEventRepository = handlingEventRepository;
+    this.domainEventNotifier = domainEventNotifier;
+  }
 
   public void register(final HandlingEvent event) {
     /*
@@ -27,11 +32,4 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     domainEventNotifier.cargoWasHandled(event);
   }
 
-  public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
-  }
-
-  public void setDomainEventNotifier(DomainEventNotifier domainEventNotifier) {
-    this.domainEventNotifier = domainEventNotifier;
-  }
 }

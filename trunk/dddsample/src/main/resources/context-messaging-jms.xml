@@ -10,26 +10,18 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-  <amq:broker useJmx="false" persistent="false">
-    <amq:transportConnectors>
-      <amq:transportConnector uri="tcp://localhost:0"/>
-    </amq:transportConnectors>
-  </amq:broker>
-
   <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost"/>
 
   <amq:topic id="handlingEventTopic" name="HandlingEventTopic" physicalName="HandlingEventTopic"/>
 
+  <jms:listener-container connection-factory="jmsConnectionFactory">
+    <jms:listener destination="handlingEventTopic" ref="handlingEventMessageDelegate" />
+  </jms:listener-container>
+
   <bean id="handlingEventMessageDelegate" class="se.citerus.dddsample.application.messaging.HandlingEventMessageDelegate">
     <property name="trackingService" ref="trackingService"/>
   </bean>
-
-  <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-    <property name="connectionFactory" ref="jmsConnectionFactory"/>
-    <property name="destination" ref="handlingEventTopic"/>
-    <property name="messageListener" ref="handlingEventMessageDelegate"/>
-  </bean>
-
+  
   <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>

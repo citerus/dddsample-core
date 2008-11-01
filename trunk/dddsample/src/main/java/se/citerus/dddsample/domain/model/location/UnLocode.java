@@ -50,13 +50,19 @@ public final class UnLocode implements ValueObject<UnLocode> {
     return sameValueAs(other);
   }
 
-  public boolean sameValueAs(UnLocode other) {
-    return other != null && this.idString().equals(other.idString());
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder().append(unlocode).toHashCode();
   }
 
   @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public boolean sameValueAs(UnLocode other) {
+    return other != null && this.unlocode.equals(other.unlocode);
+  }
+
+  @Override
+  public UnLocode copy() {
+    return new UnLocode(unlocode);
   }
 
   @Override

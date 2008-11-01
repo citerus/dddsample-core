@@ -32,7 +32,8 @@ public class TrackingScenarioTest extends TestCase {
     assertEquals(4, handlingEvents.size());
     final HandlingEvent event = deliveryHistory.lastEvent();
 
-    assertSame(UNLOAD, event.type());
+    assertEquals(UNLOAD, event.type());
+
 //    assertFalse(cargo.atFinalDestiation());
 //    assertEquals("CNHKG", cargo.currentLocation().unlocode());
 

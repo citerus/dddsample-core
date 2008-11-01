@@ -25,6 +25,7 @@
   <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.application.ws.HandlingEventServiceEndpointImpl">
     <property name="handlingEventService" ref="handlingEventService"/>
     <property name="transactionManager" ref="transactionManager"/>
+    <property name="handlingEventFactory" ref="handlingEventFactory"/>
   </bean>
 
 

@@ -58,13 +58,14 @@ public final class CarrierMovement implements Entity<CarrierMovement> {
   }
 
   public Date departureTime() {
-    return departureTime;
+    return new Date(departureTime.getTime());
   }
 
   public Date arrivalTime() {
-    return arrivalTime;
+    return new Date(arrivalTime.getTime());
   }
 
+  @Override
   public boolean sameIdentityAs(final CarrierMovement other) {
     return carrierMovementId.sameValueAs(other.carrierMovementId);
   }

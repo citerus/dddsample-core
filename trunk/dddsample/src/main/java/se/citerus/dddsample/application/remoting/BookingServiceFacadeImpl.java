@@ -1,5 +1,6 @@
 package se.citerus.dddsample.application.remoting;
 
+import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
@@ -35,6 +36,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private LocationRepository locationRepository;
   private CargoRepository cargoRepository;
   private CarrierMovementRepository carrierMovementRepository;
+  private final Logger logger = Logger.getLogger(BookingServiceFacadeImpl.class);
 
   @Transactional(readOnly = true)
   public List<LocationDTO> listShippingLocations() {
@@ -59,7 +61,16 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   @Transactional(readOnly = false)
   public void assignCargoToRoute(String trackingId, ItineraryCandidateDTO itineraryCandidateDTO) {
     final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, carrierMovementRepository, locationRepository);
-    bookingService.assignCargoToRoute(new TrackingId(trackingId), itinerary);
+
+    final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
+    if (cargo == null) {
+      throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
+    }
+
+    cargo.assignToRoute(itinerary);
+    cargoRepository.save(cargo);
+
+    logger.info("Assigned cargo " + trackingId + " to new route");
   }
 
   @Transactional(readOnly = true)

@@ -43,8 +43,14 @@ public final class TrackingId implements ValueObject<TrackingId> {
     return id.hashCode();
   }
 
+  @Override
   public boolean sameValueAs(TrackingId other) {
     return other != null && this.id.equals(other.id);
+  }
+
+  @Override
+  public TrackingId copy() {
+    return new TrackingId(id);
   }
 
   TrackingId() {

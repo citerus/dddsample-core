@@ -28,12 +28,4 @@ public interface BookingService {
    */
   List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId);
 
-  /**
-   * Assigns a cargo to route.
-   *
-   * @param trackingId cargo tracking id
-   * @param itinerary  the new itinerary describing the route
-   */
-  void assignCargoToRoute(TrackingId trackingId, Itinerary itinerary);
-
 }

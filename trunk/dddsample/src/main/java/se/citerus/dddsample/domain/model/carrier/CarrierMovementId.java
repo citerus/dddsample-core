@@ -29,8 +29,14 @@ public final class CarrierMovementId implements ValueObject<CarrierMovementId> {
     return id;
   }
 
+  @Override
   public boolean sameValueAs(CarrierMovementId other) {
     return other != null && this.id.equals(other.id);
+  }
+
+  @Override
+  public CarrierMovementId copy() {
+    return new CarrierMovementId(id);
   }
 
   @Override

@@ -21,9 +21,15 @@ import java.util.Date;
  */
 public class HandlingEventFactory {
 
-  private CargoRepository cargoRepository;
-  private CarrierMovementRepository carrierMovementRepository;
-  private LocationRepository locationRepository;
+  private final CargoRepository cargoRepository;
+  private final CarrierMovementRepository carrierMovementRepository;
+  private final LocationRepository locationRepository;
+
+  public HandlingEventFactory(CargoRepository cargoRepository, CarrierMovementRepository carrierMovementRepository, LocationRepository locationRepository) {
+    this.cargoRepository = cargoRepository;
+    this.carrierMovementRepository = carrierMovementRepository;
+    this.locationRepository = locationRepository;
+  }
 
   /**
    * @param completionTime    when the event was completed, for example finished loading
@@ -41,7 +47,7 @@ public class HandlingEventFactory {
     throws UnknownTrackingIdException, UnknownCarrierMovementIdException, UnknownLocationException {
 
     // Carrier movement may be null for certain event types
-    Validate.noNullElements(new Object[]{trackingId, unlocode, type});
+    Validate.noNullElements(new Object[]{completionTime, trackingId, unlocode, type});
 
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) throw new UnknownTrackingIdException(trackingId);
@@ -86,18 +92,5 @@ public class HandlingEventFactory {
 
     return location;
   }
-
-  public void setCargoRepository(final CargoRepository cargoRepository) {
-    this.cargoRepository = cargoRepository;
-  }
-
-  public void setCarrierMovementRepository(final CarrierMovementRepository carrierMovementRepository) {
-    this.carrierMovementRepository = carrierMovementRepository;
-  }
-
-  public void setLocationRepository(final LocationRepository locationRepository) {
-    this.locationRepository = locationRepository;
-  }
-
 
 }

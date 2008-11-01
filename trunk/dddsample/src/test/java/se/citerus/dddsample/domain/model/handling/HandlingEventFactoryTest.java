@@ -31,16 +31,14 @@ public class HandlingEventFactoryTest extends TestCase {
   Cargo cargo;
 
   protected void setUp() throws Exception {
-    factory = new HandlingEventFactory();
 
     cargoRepository = createMock(CargoRepository.class);
-    factory.setCargoRepository(cargoRepository);
-
     carrierMovementRepository = new CarrierMovementRepositoryInMem();
-    factory.setCarrierMovementRepository(carrierMovementRepository);
-
     locationRepository = new LocationRepositoryInMem();
-    factory.setLocationRepository(locationRepository);
+    factory = new HandlingEventFactory(cargoRepository, carrierMovementRepository, locationRepository);
+
+
+
     trackingId = new TrackingId("ABC");
     cargo = new Cargo(trackingId, TOKYO, HELSINKI);
   }
