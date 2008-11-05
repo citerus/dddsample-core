@@ -3,9 +3,9 @@ package se.citerus.dddsample.domain.model.handling;
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements;
-import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.CM003;
-import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.CM004;
+import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM003;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM004;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
@@ -89,8 +89,8 @@ public class HandlingEventTest extends TestCase {
     Date timeOccured = new Date();
     Date timeRegistered = new Date();
 
-    HandlingEvent ev1 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, SampleCarrierMovements.CM005);
-    HandlingEvent ev2 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, SampleCarrierMovements.CM005);
+    HandlingEvent ev1 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, SampleVoyages.CM005);
+    HandlingEvent ev2 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, SampleVoyages.CM005);
 
     // Two handling events are not equal() even if all non-uuid fields are identical
     assertTrue(ev1.equals(ev2));

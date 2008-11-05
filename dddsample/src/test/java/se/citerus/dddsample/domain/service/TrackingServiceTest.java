@@ -6,8 +6,7 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
+import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
@@ -22,19 +21,22 @@ public class TrackingServiceTest extends TestCase {
 
   TrackingServiceImpl cargoService;
   CargoRepository cargoRepository;
+  DomainEventNotifier domainEventNotifier;
 
   protected void setUp() throws Exception {
     cargoRepository = createMock(CargoRepository.class);
-    cargoService = new TrackingServiceImpl(cargoRepository);
+    domainEventNotifier = createMock(DomainEventNotifier.class);
+    cargoService = new TrackingServiceImpl(domainEventNotifier, cargoRepository);
   }
 
   public void testTrackingScenario() {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, CHICAGO);
 
     HandlingEvent claimed = new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.CLAIM, STOCKHOLM);
-    CarrierMovement carrierMovement = new CarrierMovement(new CarrierMovementId("CAR_001"), STOCKHOLM, CHICAGO, new Date(), new Date());
-    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, STOCKHOLM, carrierMovement);
-    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, CHICAGO, carrierMovement);
+
+    HandlingEvent loaded = new HandlingEvent(cargo, new Date(12), new Date(25), HandlingEvent.Type.LOAD, STOCKHOLM, SampleVoyages.CM001);
+    HandlingEvent unloaded = new HandlingEvent(cargo, new Date(100), new Date(110), HandlingEvent.Type.UNLOAD, CHICAGO, SampleVoyages.CM002);
+
     // Add out of order to verify ordering in DTO
     List<HandlingEvent> eventList = Arrays.asList(loaded, unloaded, claimed);
 
@@ -50,7 +52,7 @@ public class TrackingServiceTest extends TestCase {
 
     assertEquals(cargo, trackedCargo);
 
-    List<HandlingEvent> events = trackedCargo.deliveryHistory().eventsOrderedByCompletionTime();
+    List<HandlingEvent> events = trackedCargo.deliveryHistory().history();
     assertEquals(3, events.size());
 
     // Claim happened first

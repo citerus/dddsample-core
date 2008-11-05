@@ -22,7 +22,7 @@ public class CargoTestHelper {
   }
 
   public static void setDeliveryHistory(Cargo cargo, Collection<HandlingEvent> events) {
-    cargo.setDeliveryHistory(new DeliveryHistory(events));
+    cargo.setDeliveryHistory(new Delivery(events));
   }
   
 }

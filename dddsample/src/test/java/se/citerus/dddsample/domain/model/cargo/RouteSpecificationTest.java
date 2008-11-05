@@ -15,7 +15,6 @@ public class RouteSpecificationTest extends TestCase {
   }
 
   public void testIsSatisfiedBySuccess() {
-    // TODO
     RouteSpecification spec = RouteSpecification.forCargo(cargo, new Date());
     Itinerary itinerary = new Itinerary();
     assertTrue(spec.isSatisfiedBy(itinerary));

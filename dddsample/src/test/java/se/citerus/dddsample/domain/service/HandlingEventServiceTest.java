@@ -5,9 +5,9 @@ import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
-import se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements;
+import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
@@ -22,7 +22,7 @@ public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
   private DomainEventNotifier domainEventNotifier;
   private CargoRepository cargoRepository;
-  private CarrierMovementRepository carrierMovementRepository;
+  private VoyageRepository voyageRepository;
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
   private HandlingEventFactory handlingEventFactory;
@@ -33,16 +33,16 @@ public class HandlingEventServiceTest extends TestCase {
 
   protected void setUp() throws Exception{
     cargoRepository = createMock(CargoRepository.class);
-    carrierMovementRepository = createMock(CarrierMovementRepository.class);
+    voyageRepository = createMock(VoyageRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     locationRepository = createMock(LocationRepository.class);
     domainEventNotifier = createMock(DomainEventNotifier.class);
     service = new HandlingEventServiceImpl(handlingEventRepository, domainEventNotifier);
-    handlingEventFactory = new HandlingEventFactory(cargoRepository, carrierMovementRepository, locationRepository);
+    handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
   }
 
   protected void tearDown() throws Exception {
-    verify(cargoRepository, carrierMovementRepository, handlingEventRepository, domainEventNotifier);
+    verify(cargoRepository, voyageRepository, handlingEventRepository, domainEventNotifier);
   }
 
   public void testRegisterEvent() throws Exception {
@@ -51,8 +51,8 @@ public class HandlingEventServiceTest extends TestCase {
     final TrackingId trackingId = new TrackingId("ABC");
     expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
 
-    final CarrierMovementId carrierMovementId = new CarrierMovementId("AAA_BBB");
-    expect(carrierMovementRepository.find(carrierMovementId)).andReturn(SampleCarrierMovements.CM001);
+    final VoyageNumber voyageNumber = new VoyageNumber("AAA_BBB");
+    expect(voyageRepository.find(voyageNumber)).andReturn(SampleVoyages.CM001);
 
     final UnLocode unLocode = new UnLocode("SESTO");
     expect(locationRepository.find(unLocode)).andReturn(STOCKHOLM);
@@ -61,9 +61,9 @@ public class HandlingEventServiceTest extends TestCase {
     handlingEventRepository.save(isA(HandlingEvent.class));
     domainEventNotifier.cargoWasHandled(isA(HandlingEvent.class));
 
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, domainEventNotifier);
 
-    final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, carrierMovementId, unLocode, HandlingEvent.Type.LOAD);
+    final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, voyageNumber, unLocode, HandlingEvent.Type.LOAD);
     service.register(event);
   }
 
@@ -78,7 +78,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
 
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, domainEventNotifier);
 
     final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, null, STOCKHOLM.unLocode(), HandlingEvent.Type.CLAIM);
     service.register(event);
@@ -88,21 +88,21 @@ public class HandlingEventServiceTest extends TestCase {
   public void testRegisterEventInvalidCarrier() throws Exception {
     final Date date = new Date();
 
-    final CarrierMovementId carrierMovementId = new CarrierMovementId("AAA_BBB");
-    expect(carrierMovementRepository.find(carrierMovementId)).andReturn(null);
+    final VoyageNumber voyageNumber = new VoyageNumber("AAA_BBB");
+    expect(voyageRepository.find(voyageNumber)).andReturn(null);
 
     final TrackingId trackingId = new TrackingId("XYZ");
     expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, CHICAGO, STOCKHOLM));
 
     expect(locationRepository.find(MELBOURNE.unLocode())).andReturn(MELBOURNE);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     try {
-      final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, carrierMovementId, MELBOURNE.unLocode(), HandlingEvent.Type.UNLOAD);
+      final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, voyageNumber, MELBOURNE.unLocode(), HandlingEvent.Type.UNLOAD);
       service.register(event);
       fail("Should not be able to register an event with non-existing carrier movement");
-    } catch (UnknownCarrierMovementIdException expected) {}
+    } catch (UnknownVoyageException expected) {}
   }
   
   public void testRegisterEventInvalidCargo() throws Exception {
@@ -113,13 +113,13 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(HONGKONG.unLocode())).andReturn(HONGKONG);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     try {
       final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.CLAIM);
       service.register(event);
       fail("Should not be able to register an event with non-existing cargo");
-    } catch (UnknownTrackingIdException expected) {}
+    } catch (UnknownCargoException expected) {}
   }
   
   public void testRegisterEventInvalidLocation() throws Exception {
@@ -130,7 +130,7 @@ public class HandlingEventServiceTest extends TestCase {
     UnLocode wayOff = new UnLocode("XXYYY");
     expect(locationRepository.find(wayOff)).andReturn(null);
     
-    replay(cargoRepository, carrierMovementRepository, handlingEventRepository, locationRepository, domainEventNotifier);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, domainEventNotifier);
     
     try {
       final HandlingEvent event = handlingEventFactory.createHandlingEvent(date, trackingId, null, wayOff, HandlingEvent.Type.CLAIM);
