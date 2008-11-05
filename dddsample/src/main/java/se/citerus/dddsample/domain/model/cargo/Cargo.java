@@ -40,8 +40,7 @@ public final class Cargo implements Entity<Cargo> {
   private Location origin;
   private Location destination;
   private Itinerary itinerary;
-  private DeliveryHistory deliveryHistory;
-  private boolean misdirected;
+  private Delivery delivery;
 
   /**
    * @param trackingId tracking id
@@ -56,7 +55,6 @@ public final class Cargo implements Entity<Cargo> {
     this.trackingId = trackingId;
     this.origin = origin;
     this.destination = destination;
-    updateState();
   }
 
   /**
@@ -94,8 +92,8 @@ public final class Cargo implements Entity<Cargo> {
   /**
    * @return The delivery history. Never null.
    */
-  public DeliveryHistory deliveryHistory() {
-    return DomainObjectUtils.nullSafe(this.deliveryHistory, DeliveryHistory.EMPTY_DELIVERY_HISTORY);
+  public Delivery deliveryHistory() {
+    return DomainObjectUtils.nullSafe(this.delivery, Delivery.EMPTY_DELIVERY);
   }
 
   /**
@@ -103,18 +101,6 @@ public final class Cargo implements Entity<Cargo> {
    */
   public Itinerary itinerary() {
     return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
-  }
-
-  /**
-   * Updates the state of the cargo.
-   */
-  public void updateState() {
-    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
-    if (lastEvent == null) {
-      this.misdirected = false;
-    } else {
-      this.misdirected = !itinerary().isExpected(lastEvent);
-    }
   }
 
   /**
@@ -153,11 +139,11 @@ public final class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * @param deliveryHistory Cargo delivery history
+   * @param delivery Cargo delivery history
    */
-  void setDeliveryHistory(final DeliveryHistory deliveryHistory) {
-    Validate.notNull(deliveryHistory);
-    this.deliveryHistory = deliveryHistory;
+  void setDeliveryHistory(final Delivery delivery) {
+    Validate.notNull(delivery);
+    this.delivery = delivery;
   }
 
   /**
@@ -172,7 +158,12 @@ public final class Cargo implements Entity<Cargo> {
    * @return <code>true</code> if the cargo has been misdirected,
    */
   public boolean isMisdirected() {
-    return misdirected;
+    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
+    if (lastEvent == null) {
+      return false;
+    } else {
+      return !itinerary().isExpected(lastEvent);
+    }
   }
 
   /**
@@ -183,7 +174,7 @@ public final class Cargo implements Entity<Cargo> {
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
-    for (HandlingEvent event : deliveryHistory().eventsOrderedByCompletionTime()) {
+    for (HandlingEvent event : deliveryHistory().history()) {
       if (HandlingEvent.Type.UNLOAD.equals(event.type())
         && destination.equals(event.location())) {
         return true;

@@ -12,7 +12,7 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -35,7 +35,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private BookingService bookingService;
   private LocationRepository locationRepository;
   private CargoRepository cargoRepository;
-  private CarrierMovementRepository carrierMovementRepository;
+  private VoyageRepository voyageRepository;
   private final Logger logger = Logger.getLogger(BookingServiceFacadeImpl.class);
 
   @Transactional(readOnly = true)
@@ -60,7 +60,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
   @Transactional(readOnly = false)
   public void assignCargoToRoute(String trackingId, ItineraryCandidateDTO itineraryCandidateDTO) {
-    final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, carrierMovementRepository, locationRepository);
+    final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, voyageRepository, locationRepository);
 
     final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
     if (cargo == null) {
@@ -109,7 +109,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     this.cargoRepository = cargoRepository;
   }
 
-  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
-    this.carrierMovementRepository = carrierMovementRepository;
+  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+    this.voyageRepository = voyageRepository;
   }
 }

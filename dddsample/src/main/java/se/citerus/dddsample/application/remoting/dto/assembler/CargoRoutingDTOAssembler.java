@@ -17,9 +17,9 @@ public class CargoRoutingDTOAssembler {
     );
     for (Leg leg : cargo.itinerary().legs()) {
       dto.addLeg(
-        leg.carrierMovement().carrierMovementId().idString(),
-        leg.from().unLocode().idString(),
-        leg.to().unLocode().idString()
+        leg.voyage().voyageNumber().idString(),
+        leg.loadLocation().unLocode().idString(),
+        leg.unloadLocation().unLocode().idString()
       );
     }
     return dto;

@@ -7,25 +7,25 @@ import java.io.Serializable;
  */
 public final class LegDTO implements Serializable {
 
-  private final String carrierMovementId;
+  private final String voyageNumber;
   private final String from;
   private final String to;
 
   /**
    * Constructor.
    *
-   * @param carrierMovementId
+   * @param voyageNumber
    * @param from
    * @param to
    */
-  public LegDTO(final String carrierMovementId, final String from, final String to) {
-    this.carrierMovementId = carrierMovementId;
+  public LegDTO(final String voyageNumber, final String from, final String to) {
+    this.voyageNumber = voyageNumber;
     this.from = from;
     this.to = to;
   }
 
-  public String getCarrierMovementId() {
-    return carrierMovementId;
+  public String getVoyageNumber() {
+    return voyageNumber;
   }
 
   public String getFrom() {

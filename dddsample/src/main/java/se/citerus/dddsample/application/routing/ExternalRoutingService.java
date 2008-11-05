@@ -4,8 +4,8 @@ import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -15,6 +15,7 @@ import se.citerus.routingteam.TransitEdge;
 import se.citerus.routingteam.TransitPath;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class ExternalRoutingService implements RoutingService {
 
   private GraphTraversalService graphTraversalService;
   private LocationRepository locationRepository;
-  private CarrierMovementRepository carrierMovementRepository;
+  private VoyageRepository voyageRepository;
 
   @Transactional(readOnly = true)
   public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
@@ -62,9 +63,10 @@ public class ExternalRoutingService implements RoutingService {
 
   private Leg toLeg(TransitEdge edge) {
     return new Leg(
-      carrierMovementRepository.find(new CarrierMovementId(edge.getCarrierMovementId())),
+      voyageRepository.find(new VoyageNumber(edge.getCarrierMovementId())),
       locationRepository.find(new UnLocode(edge.getFromUnLocode())),
-      locationRepository.find(new UnLocode(edge.getToUnLocode()))
+      locationRepository.find(new UnLocode(edge.getToUnLocode())),
+      new Date(), new Date()  // TODO better dates
     );
   }
 
@@ -76,7 +78,7 @@ public class ExternalRoutingService implements RoutingService {
     this.locationRepository = locationRepository;
   }
 
-  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
-    this.carrierMovementRepository = carrierMovementRepository;
+  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+    this.voyageRepository = voyageRepository;
   }
 }

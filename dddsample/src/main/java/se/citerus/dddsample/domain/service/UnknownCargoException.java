@@ -5,11 +5,11 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 /**
  * Thrown when trying to register an event with an unknown tracking id.
  */
-public final class UnknownTrackingIdException extends Exception {
+public final class UnknownCargoException extends Exception {
 
   private final TrackingId trackingId;
 
-  public UnknownTrackingIdException(final TrackingId trackingId) {
+  public UnknownCargoException(final TrackingId trackingId) {
     this.trackingId = trackingId;
   }
 

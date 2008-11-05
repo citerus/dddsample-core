@@ -4,56 +4,66 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.location.Location;
+
+import java.util.Date;
 
 /**
  * An itinerary consists of one or more legs.
  */
 public final class Leg implements ValueObject<Leg> {
 
-  private CarrierMovement carrierMovement;
-  private Location from;
-  private Location to;
+  private Voyage voyage;
+  private Location loadLocation;
+  private Location unloadLocation;
+  private Date loadTime;
+  private Date unloadTime;
 
-  /**
-   * Constructor.
-   *
-   * @param carrierMovement
-   * @param from
-   * @param to
-   */
-  public Leg(final CarrierMovement carrierMovement, final Location from, final Location to) {
-    Validate.noNullElements(new Object[]{carrierMovement, from, to});
-    this.carrierMovement = carrierMovement;
-    this.from = from;
-    this.to = to;
+  public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
+    Validate.noNullElements(new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+    
+    this.voyage = voyage;
+    this.loadLocation = loadLocation;
+    this.unloadLocation = unloadLocation;
+    this.loadTime = loadTime;
+    this.unloadTime = unloadTime;
   }
 
-  public Location from() {
-    return from;
+  public Voyage voyage() {
+    return voyage;
   }
 
-  public Location to() {
-    return to;
+  public Location loadLocation() {
+    return loadLocation;
   }
 
-  public CarrierMovement carrierMovement() {
-    return carrierMovement;
+  public Location unloadLocation() {
+    return unloadLocation;
+  }
+
+  public Date loadTime() {
+    return new Date(loadTime.getTime());
+  }
+
+  public Date unloadTime() {
+    return new Date(unloadTime.getTime());
   }
 
   @Override
   public boolean sameValueAs(final Leg other) {
     return other != null && new EqualsBuilder().
-      append(this.carrierMovement, other.carrierMovement).
-      append(this.from, other.from).
-      append(this.to, other.to).
+      append(this.voyage, other.voyage).
+      append(this.loadLocation, other.loadLocation).
+      append(this.unloadLocation, other.unloadLocation).
+      append(this.loadTime, other.loadTime).
+      append(this.unloadTime, other.unloadTime).
       isEquals();
   }
 
   @Override
   public Leg copy() {
-    return new Leg(carrierMovement, from, to);
+    return new Leg(voyage(), loadLocation(), unloadLocation(), loadTime(), unloadTime());
   }
 
   @Override
@@ -69,9 +79,11 @@ public final class Leg implements ValueObject<Leg> {
   @Override
   public int hashCode() {
     return new HashCodeBuilder().
-      append(carrierMovement).
-      append(from).
-      append(to).
+      append(voyage).
+      append(loadLocation).
+      append(unloadLocation).
+      append(loadTime).
+      append(unloadTime).
       toHashCode();
   }
 

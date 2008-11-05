@@ -4,15 +4,15 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
+import se.citerus.dddsample.domain.service.UnknownCargoException;
 import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownTrackingIdException;
+import se.citerus.dddsample.domain.service.UnknownVoyageException;
 
 import java.util.Date;
 
@@ -22,69 +22,68 @@ import java.util.Date;
 public class HandlingEventFactory {
 
   private final CargoRepository cargoRepository;
-  private final CarrierMovementRepository carrierMovementRepository;
+  private final VoyageRepository voyageRepository;
   private final LocationRepository locationRepository;
 
-  public HandlingEventFactory(CargoRepository cargoRepository, CarrierMovementRepository carrierMovementRepository, LocationRepository locationRepository) {
+  public HandlingEventFactory(CargoRepository cargoRepository, VoyageRepository voyageRepository, LocationRepository locationRepository) {
     this.cargoRepository = cargoRepository;
-    this.carrierMovementRepository = carrierMovementRepository;
+    this.voyageRepository = voyageRepository;
     this.locationRepository = locationRepository;
   }
 
   /**
    * @param completionTime    when the event was completed, for example finished loading
    * @param trackingId        tracking id
-   * @param carrierMovementId carrier movement id, if applicable (may be null)
+   * @param voyageNumber      voyage number
    * @param unlocode          United Nations Location Code for the location of the event
    * @param type              type of event
-   * @throws UnknownCarrierMovementIdException
+   * @throws se.citerus.dddsample.domain.service.UnknownVoyageException
    *                                    if there's not carrier movement with this id
-   * @throws UnknownTrackingIdException if there's no cargo with this tracking id
+   * @throws se.citerus.dddsample.domain.service.UnknownCargoException if there's no cargo with this tracking id
    * @throws UnknownLocationException   if there's no location with this UN Locode
    * @return A handling event.
    */
-  public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type)
-    throws UnknownTrackingIdException, UnknownCarrierMovementIdException, UnknownLocationException {
+  public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
+    throws UnknownCargoException, UnknownVoyageException, UnknownLocationException {
 
-    // Carrier movement may be null for certain event types
+    // Voyage number may be null for certain event types
     Validate.noNullElements(new Object[]{completionTime, trackingId, unlocode, type});
 
-    final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) throw new UnknownTrackingIdException(trackingId);
-
-    final CarrierMovement carrierMovement = findCarrierMovement(carrierMovementId);
-
+    final Cargo cargo = findCargo(trackingId);
+    final Voyage voyage = findVoyage(voyageNumber);
     final Location location = findLocation(unlocode);
+    
     if (location == null) throw new UnknownLocationException(unlocode);
 
     final Date registrationTime = new Date();
 
-    if (carrierMovement == null) {
+    if (voyage == null) {
       return new HandlingEvent(cargo, completionTime, registrationTime, type, location);   
     } else {
-      return new HandlingEvent(cargo, completionTime, registrationTime, type, location, carrierMovement);
+      return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage);
     }
   }
 
-  private CarrierMovement findCarrierMovement(final CarrierMovementId carrierMovementId)
-    throws UnknownCarrierMovementIdException {
+  private Cargo findCargo(TrackingId trackingId) throws UnknownCargoException {
+    final Cargo cargo = cargoRepository.find(trackingId);
+    if (cargo == null) throw new UnknownCargoException(trackingId);
+    return cargo;
+  }
 
-    if (carrierMovementId == null) {
+  private Voyage findVoyage(VoyageNumber voyageNumber) throws UnknownVoyageException {
+    if (voyageNumber == null) {
       return null;
     }
-    final CarrierMovement carrierMovement = carrierMovementRepository.find(carrierMovementId);
-    if (carrierMovement == null) {
-      throw new UnknownCarrierMovementIdException(carrierMovementId);
+
+    final Voyage voyage = voyageRepository.find(voyageNumber);
+    if (voyage == null) {
+      throw new UnknownVoyageException(voyageNumber);
     }
 
-    return carrierMovement;
+    return voyage;
   }
-
+  
   private Location findLocation(final UnLocode unlocode) throws UnknownLocationException {
-    if (unlocode == null) {
-      return Location.UNKNOWN;
-    }
-
     final Location location = locationRepository.find(unlocode);
     if (location == null) {
       throw new UnknownLocationException(unlocode);

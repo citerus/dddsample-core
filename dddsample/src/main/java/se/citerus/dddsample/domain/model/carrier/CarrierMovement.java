@@ -1,7 +1,9 @@
 package se.citerus.dddsample.domain.model.carrier;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.Entity;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.location.Location;
 
 import java.util.Date;
@@ -10,64 +12,64 @@ import java.util.Date;
 /**
  * A carrier movement is a vessel voyage from one location to another.
  */
-public final class CarrierMovement implements Entity<CarrierMovement> {
+public final class CarrierMovement implements ValueObject<CarrierMovement> {
 
-  private CarrierMovementId carrierMovementId;
-  private Location from;
-  private Location to;
+  private Location departureLocation;
+  private Location arrivalLocation;
   private Date departureTime;
   private Date arrivalTime;
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
-    new CarrierMovementId(""), Location.UNKNOWN, Location.UNKNOWN,
-    new Date(0), new Date(0));
+    Location.UNKNOWN, Location.UNKNOWN,
+    new Date(0), new Date(0)
+  );
 
   /**
    * Constructor.
    *
-   * @param carrierMovementId carrier movement id
-   * @param from from location
-   * @param to to location
+   * @param departureLocation location of departure
+   * @param arrivalLocation location of arrival
    * @param departureTime time of departure
    * @param arrivalTime time of arrival
    */
-  public CarrierMovement(final CarrierMovementId carrierMovementId,
-                         final Location from,
-                         final Location to,
-                         final Date departureTime,
-                         final Date arrivalTime) {
-    Validate.noNullElements(new Object[]{carrierMovementId, from, to, departureTime, arrivalTime});
+  public CarrierMovement(Location departureLocation,
+                         Location arrivalLocation,
+                         Date departureTime,
+                         Date arrivalTime) {
+    Validate.noNullElements(new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
     this.departureTime = departureTime;
     this.arrivalTime = arrivalTime;
-    this.carrierMovementId = carrierMovementId;
-    this.from = from;
-    this.to = to;
+    this.departureLocation = departureLocation;
+    this.arrivalLocation = arrivalLocation;
   }
 
-  public CarrierMovementId carrierMovementId() {
-    return carrierMovementId;
+  /**
+   * @return Departure location.
+   */
+  public Location departureLocation() {
+    return departureLocation;
   }
 
-  public Location from() {
-    return from;
+  /**
+   * @return Arrival location.
+   */
+  public Location arrivalLocation() {
+    return arrivalLocation;
   }
 
-  public Location to() {
-    return to;
-  }
-
+  /**
+   * @return Time of departure.
+   */
   public Date departureTime() {
     return new Date(departureTime.getTime());
   }
 
+  /**
+   * @return Time of arrival.
+   */
   public Date arrivalTime() {
     return new Date(arrivalTime.getTime());
-  }
-
-  @Override
-  public boolean sameIdentityAs(final CarrierMovement other) {
-    return carrierMovementId.sameValueAs(other.carrierMovementId);
   }
 
   @Override
@@ -77,15 +79,37 @@ public final class CarrierMovement implements Entity<CarrierMovement> {
 
     final CarrierMovement that = (CarrierMovement) o;
 
-    return sameIdentityAs(that);
+    return sameValueAs(that);
   }
 
-  /**
-   * @return Hashcode of carrier movement id.
-   */
   @Override
   public int hashCode() {
-    return carrierMovementId.hashCode();
+    return new HashCodeBuilder().
+      append(this.departureLocation).
+      append(this.departureTime).
+      append(this.arrivalLocation).
+      append(this.arrivalTime).
+      toHashCode();
+  }
+
+  @Override
+  public boolean sameValueAs(CarrierMovement other) {
+    return other != null && new EqualsBuilder().
+      append(this.departureLocation, other.departureLocation).
+      append(this.departureTime, other.departureTime).
+      append(this.arrivalLocation, other.arrivalLocation).
+      append(this.arrivalTime, other.arrivalTime).
+      isEquals();
+  }
+
+  @Override
+  public CarrierMovement copy() {
+    return new CarrierMovement(
+      departureLocation(),
+      arrivalLocation(),
+      departureTime(),
+      arrivalTime()
+    );
   }
 
   CarrierMovement() {

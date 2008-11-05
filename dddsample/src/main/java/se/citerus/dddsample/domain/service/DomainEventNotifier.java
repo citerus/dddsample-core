@@ -19,4 +19,10 @@ public interface DomainEventNotifier {
    * @param event handling event
    */
   void cargoWasHandled(HandlingEvent event);
+
+  //void cargoWasMisdirected(Cargo cargo);
+
+  //void cargoHasArrived(Cargo cargo);
+
+  //void scheduleWasChanged(Voyage voyage);
 }

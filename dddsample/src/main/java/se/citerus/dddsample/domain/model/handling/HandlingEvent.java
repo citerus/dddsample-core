@@ -6,6 +6,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.DomainEvent;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
@@ -40,7 +41,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   };
 
   private Type type;
-  private CarrierMovement carrierMovement;
+  private Voyage voyage;
   private Location location;
   private Date completionTime;
   private Date registrationTime;
@@ -81,40 +82,40 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     public boolean prohibitsCarrierMovement() {
       return !requiresCarrierMovement();
     }
+
   }
-  
+
   /**
    * @param cargo            cargo
    * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
    * @param registrationTime registration time, the time the message is received
-   * @param type             type of event. Legal values are LOAD and UNLOAD
+   * @param type             type of event
    * @param location         where the event took place
-   * @param carrierMovement  carrier movement.
+   * @param voyage           the voyage
    */
-  public HandlingEvent(final Cargo cargo, final Date completionTime, final Date registrationTime, final Type type,
-                       final Location location, final CarrierMovement carrierMovement) {
-    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location, carrierMovement});
+  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type,
+                       Location location, Voyage voyage) {
+    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location, voyage});
     if (type.prohibitsCarrierMovement()) {
       throw new IllegalArgumentException("Carrier movement is not allowed with event type " + type);
     }
 
+    this.voyage = voyage;
     this.completionTime = completionTime;
     this.registrationTime = registrationTime;
     this.type = type;
     this.location = location;
     this.cargo = cargo;
-    this.carrierMovement = null;
-    this.carrierMovement = carrierMovement;
   }
 
   /**
    * @param cargo            cargo
    * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
    * @param registrationTime registration time, the time the message is received
-   * @param type             type of event. Legal values are LOAD and UNLOAD
+   * @param type             type of event
    * @param location         where the event took place
    */
-  public HandlingEvent(final Cargo cargo, final Date completionTime, final Date registrationTime, final Type type, final Location location) {
+  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
     Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location});
     if (type.requiresCarrierMovement()) {
       throw new IllegalArgumentException("Carrier movement is required for event type " + type);
@@ -125,15 +126,15 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     this.type = type;
     this.location = location;
     this.cargo = cargo;
-    this.carrierMovement = null;
+    this.voyage = null;
   }
 
   public Type type() {
     return this.type;
   }
 
-  public CarrierMovement carrierMovement() {
-    return DomainObjectUtils.nullSafe(this.carrierMovement, CarrierMovement.NONE);
+  public Voyage voyage() {
+    return DomainObjectUtils.nullSafe(this.voyage, Voyage.NONE);
   }
 
   public Date completionTime() {
@@ -165,7 +166,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public boolean sameEventAs(final HandlingEvent other) {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
-      append(this.carrierMovement, other.carrierMovement).
+      append(this.voyage, other.voyage).
       append(this.completionTime, other.completionTime).
       append(this.location, other.location).
       append(this.type, other.type).
@@ -176,7 +177,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public int hashCode() {
     return new HashCodeBuilder().
       append(cargo).
-      append(carrierMovement).
+      append(voyage).
       append(completionTime).
       append(location).
       append(type).

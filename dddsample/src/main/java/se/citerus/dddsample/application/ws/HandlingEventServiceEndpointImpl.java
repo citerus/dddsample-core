@@ -8,14 +8,14 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.HandlingEventService;
-import se.citerus.dddsample.domain.service.UnknownCarrierMovementIdException;
+import se.citerus.dddsample.domain.service.UnknownCargoException;
 import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownTrackingIdException;
+import se.citerus.dddsample.domain.service.UnknownVoyageException;
 
 import javax.jws.WebService;
 import java.text.ParseException;
@@ -31,21 +31,23 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
   private final Log logger = LogFactory.getLog(getClass());
   protected static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
 
-  public void register(final String completionTime, final String trackingId, final String carrierMovementId,
+  public void register(final String completionTime, final String trackingId, final String voyageNumberString,
                        final String unlocode, final String eventType) {
     try {
       final Date date = parseIso8601Date(completionTime);
       final TrackingId tid = new TrackingId(trackingId);
-      final CarrierMovementId cid;
-      if (StringUtils.isNotEmpty(carrierMovementId)) {
-        cid = new CarrierMovementId(carrierMovementId);
+
+      final VoyageNumber voyageNumber;
+      if (StringUtils.isNotEmpty(voyageNumberString)) {
+        voyageNumber = new VoyageNumber(voyageNumberString);
       } else {
-        cid = null;
+        voyageNumber = null;
       }
+
       final HandlingEvent.Type type = parseEventType(eventType);
       final UnLocode ul = new UnLocode(unlocode);
 
-      doRegister(date, tid, cid, type, ul);
+      doRegister(date, tid, voyageNumber, type, ul);
     } catch (IllegalArgumentException iae) {
       handleIllegalArgument(iae);
     } catch (ParseException pe) {
@@ -58,17 +60,17 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
   }
 
   // TODO this entire step would be well suited to move to a consumer of asynchronous messages
-  private void doRegister(final Date date, final TrackingId tid, final CarrierMovementId cid, final HandlingEvent.Type type, final UnLocode ul) {
+  private void doRegister(final Date date, final TrackingId tid, final VoyageNumber voyageNumber, final HandlingEvent.Type type, final UnLocode ul) {
     // Using programmatic demarcation here due to weaving conflicts
     // between jax-ws and Spring transaction annotations
     transactionTemplate.execute(new TransactionCallbackWithoutResult() {
         protected void doInTransactionWithoutResult(TransactionStatus status) {
             try {
-                HandlingEvent event = handlingEventFactory.createHandlingEvent(date, tid, cid, ul, type);
+                HandlingEvent event = handlingEventFactory.createHandlingEvent(date, tid, voyageNumber, ul, type);
                 handlingEventService.register(event);
-            } catch (UnknownCarrierMovementIdException e) {
+            } catch (UnknownVoyageException e) {
                 handleUnknownCarrierMovementId(e);
-            } catch (UnknownTrackingIdException e) {
+            } catch (UnknownCargoException e) {
                 handleUnknownTrackingId(e);
             } catch (UnknownLocationException e) {
                 handleUnknownLocation(e);
@@ -113,7 +115,7 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     logger.error(e, e);
   }
 
-  private void handleUnknownCarrierMovementId(UnknownCarrierMovementIdException e) {
+  private void handleUnknownCarrierMovementId(UnknownVoyageException e) {
     logger.error(e, e);
   }
 
