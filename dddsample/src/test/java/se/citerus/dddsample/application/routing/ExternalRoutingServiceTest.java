@@ -3,8 +3,8 @@ package se.citerus.dddsample.application.routing;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.DateTestUtil;
-import se.citerus.dddsample.application.persistence.CarrierMovementRepositoryInMem;
 import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
+import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -27,7 +27,7 @@ public class ExternalRoutingServiceTest extends TestCase {
   @Override
   public void setUp() {
     routingService = new ExternalRoutingService();
-    routingService.setCarrierMovementRepository(new CarrierMovementRepositoryInMem());
+    routingService.setCarrierMovementRepository(new VoyageRepositoryInMem());
     routingService.setLocationRepository(new LocationRepositoryInMem());
 
     graphTraversalService = createMock(GraphTraversalService.class);
