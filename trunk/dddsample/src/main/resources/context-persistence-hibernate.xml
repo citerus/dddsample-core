@@ -34,7 +34,7 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="carrierMovementRepository" class="se.citerus.dddsample.application.persistence.CarrierMovementRepositoryHibernate">
+  <bean id="voyageRepository" class="se.citerus.dddsample.application.persistence.VoyageRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
