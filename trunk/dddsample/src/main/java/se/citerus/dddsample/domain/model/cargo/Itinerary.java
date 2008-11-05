@@ -32,7 +32,7 @@ public class Itinerary implements ValueObject<Itinerary> {
     Validate.notEmpty(legs);
     Validate.noNullElements(legs);
     
-    this.legs = Collections.unmodifiableList(legs);
+    this.legs = legs;
   }
 
   /**
@@ -51,7 +51,7 @@ public class Itinerary implements ValueObject<Itinerary> {
    * @return the legs of this itinerary, as an <b>immutable</b> list.
    */
   public List<Leg> legs() {
-    return legs;
+    return Collections.unmodifiableList(legs);
   }
 
   /**
@@ -68,24 +68,24 @@ public class Itinerary implements ValueObject<Itinerary> {
     if (event.type() == HandlingEvent.Type.RECEIVE) {
       //Check that the first leg's origin is the event's location
       final Leg leg = legs.get(0);
-      return (leg.from().equals(event.location()));
+      return (leg.loadLocation().equals(event.location()));
     }
 
     if (event.type() == HandlingEvent.Type.LOAD) {
-      //Check that the there is one leg with same from location and carrier movement
+      //Check that the there is one leg with same load location and voyage
       for (Leg leg : legs) {
-        if (leg.from().equals(event.location())
-          && leg.carrierMovement().equals(event.carrierMovement()))
+        if (leg.loadLocation().sameIdentityAs(event.location()) &&
+            leg.voyage().sameIdentityAs(event.voyage()))
           return true;
       }
       return false;
     }
 
     if (event.type() == HandlingEvent.Type.UNLOAD) {
-      //Check that the there is one leg with same to loc and carrier movement
+      //Check that the there is one leg with same unload location and voyage
       for (Leg leg : legs) {
-        if (leg.to().equals(event.location())
-          && leg.carrierMovement().equals(event.carrierMovement()))
+        if (leg.unloadLocation().equals(event.location()) &&
+            leg.voyage().equals(event.voyage()))
           return true;
       }
       return false;
@@ -94,7 +94,7 @@ public class Itinerary implements ValueObject<Itinerary> {
     if (event.type() == HandlingEvent.Type.CLAIM) {
       //Check that the last leg's destination is from the event's location
       final Leg leg = legs.get(legs.size() - 1);
-      return (leg.to().equals(event.location()));
+      return (leg.unloadLocation().equals(event.location()));
     }
 
     //HandlingEvent.Type.CUSTOMS;

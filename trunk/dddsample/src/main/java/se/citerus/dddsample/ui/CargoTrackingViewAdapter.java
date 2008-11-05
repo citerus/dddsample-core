@@ -2,8 +2,8 @@ package se.citerus.dddsample.ui;
 
 import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.DeliveryHistory;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
+import se.citerus.dddsample.domain.model.cargo.Delivery;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 
@@ -35,7 +35,7 @@ public final class CargoTrackingViewAdapter {
     this.locale = locale;
     this.cargo = cargo;
 
-    final List<HandlingEvent> handlingEvents = cargo.deliveryHistory().eventsOrderedByCompletionTime();
+    final List<HandlingEvent> handlingEvents = cargo.deliveryHistory().history();
     this.events = new ArrayList<HandlingEventViewAdapter>(handlingEvents.size());
     for (HandlingEvent handlingEvent : handlingEvents) {
       events.add(new HandlingEventViewAdapter(handlingEvent));
@@ -61,16 +61,16 @@ public final class CargoTrackingViewAdapter {
    * @return A translated string describing the cargo status. 
    */
   public String getStatusText() {
-    final DeliveryHistory deliveryHistory = cargo.deliveryHistory();
-    final String code = "cargo.status." + deliveryHistory.status().name();
+    final Delivery delivery = cargo.deliveryHistory();
+    final String code = "cargo.status." + delivery.status().name();
 
     final Object[] args;
-    switch (deliveryHistory.status()) {
+    switch (delivery.status()) {
       case IN_PORT:
-        args = new Object[] {getDisplayText(deliveryHistory.currentLocation())};
+        args = new Object[] {getDisplayText(delivery.currentLocation())};
         break;
       case ONBOARD_CARRIER:
-        args = new Object[] {deliveryHistory.currentCarrierMovement().carrierMovementId().idString()};
+        args = new Object[] {delivery.currentVoyage().voyageNumber().idString()};
         break;
       case CLAIMED:
       case NOT_RECEIVED:
@@ -150,11 +150,11 @@ public final class CargoTrackingViewAdapter {
     }
 
     /**
-     * @return Carrier movement id, or empty string if not applicable.
+     * @return Voyage number, or empty string if not applicable.
      */
-    public String getCarrierMovement() {
-      final CarrierMovement cm = handlingEvent.carrierMovement();
-      return cm.carrierMovementId().idString();
+    public String getVoyageNumber() {
+      final Voyage voyage = handlingEvent.voyage();
+      return voyage.voyageNumber().idString();
     }
 
     /**
