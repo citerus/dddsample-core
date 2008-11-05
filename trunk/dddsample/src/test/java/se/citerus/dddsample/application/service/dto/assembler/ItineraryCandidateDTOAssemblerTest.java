@@ -2,14 +2,15 @@ package se.citerus.dddsample.application.service.dto.assembler;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
+import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.application.remoting.dto.assembler.ItineraryCandidateDTOAssembler;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -28,13 +29,10 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     final Location origin = STOCKHOLM;
     final Location destination = MELBOURNE;
 
-    final CarrierMovement cm = new CarrierMovement(
-      new CarrierMovementId("ABC"), origin, destination, new Date(), new Date());
-
     final Itinerary itinerary = new Itinerary(
       Arrays.asList(
-        new Leg(cm, origin, SHANGHAI),
-        new Leg(cm, ROTTERDAM, destination)
+        new Leg(CM001, origin, SHANGHAI, new Date(), new Date()),
+        new Leg(CM002, ROTTERDAM, destination, new Date(), new Date())
       )
     );
 
@@ -42,12 +40,12 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
 
     assertEquals(2, dto.getLegs().size());
     LegDTO legDTO = dto.getLegs().get(0);
-    assertEquals("ABC", legDTO.getCarrierMovementId());
+    assertEquals("ABC", legDTO.getVoyageNumber());
     assertEquals("SESTO", legDTO.getFrom());
     assertEquals("CNSHA", legDTO.getTo());
 
     legDTO = dto.getLegs().get(1);
-    assertEquals("ABC", legDTO.getCarrierMovementId());
+    assertEquals("ABC", legDTO.getVoyageNumber());
     assertEquals("NLRTM", legDTO.getFrom());
     assertEquals("AUMEL", legDTO.getTo());
   }
@@ -64,20 +62,13 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     expect(locationRepository.find(new UnLocode("BBBBB"))).andReturn(TOKYO).times(2);
     expect(locationRepository.find(new UnLocode("CCCCC"))).andReturn(CHICAGO);
 
-    final CarrierMovementRepository carrierMovementRepository = createMock(CarrierMovementRepository.class);
-    final CarrierMovementId cmId1 = new CarrierMovementId("CM1");
-    final CarrierMovementId cmId2 = new CarrierMovementId("CM2");
-    final CarrierMovement cm1 = new CarrierMovement(cmId1, HONGKONG, TOKYO, new Date(), new Date());
-    final CarrierMovement cm2 = new CarrierMovement(cmId2, TOKYO, CHICAGO, new Date(), new Date());
+    final VoyageRepository voyageRepository = new VoyageRepositoryInMem();
 
-    expect(carrierMovementRepository.find(cmId1)).andReturn(cm1);
-    expect(carrierMovementRepository.find(cmId2)).andReturn(cm2);
-
-    replay(locationRepository, carrierMovementRepository);
+    replay(locationRepository);
 
 
     // Tested call
-    final Itinerary itinerary = assembler.fromDTO(new ItineraryCandidateDTO(legs), carrierMovementRepository, locationRepository);
+    final Itinerary itinerary = assembler.fromDTO(new ItineraryCandidateDTO(legs), voyageRepository, locationRepository);
 
     
     assertNotNull(itinerary);
@@ -86,14 +77,12 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
 
     final Leg leg1 = itinerary.legs().get(0);
     assertNotNull(leg1);
-    assertEquals(HONGKONG, leg1.from());
-    assertEquals(TOKYO, leg1.to());
-    assertEquals(cm1, leg1.carrierMovement());
+    assertEquals(HONGKONG, leg1.loadLocation());
+    assertEquals(TOKYO, leg1.unloadLocation());
 
     final Leg leg2 = itinerary.legs().get(1);
     assertNotNull(leg2);
-    assertEquals(TOKYO, leg2.from());
-    assertEquals(CHICAGO, leg2.to());
-    assertEquals(cm2, leg2.carrierMovement());
+    assertEquals(TOKYO, leg2.loadLocation());
+    assertEquals(CHICAGO, leg2.unloadLocation());
   }
 }

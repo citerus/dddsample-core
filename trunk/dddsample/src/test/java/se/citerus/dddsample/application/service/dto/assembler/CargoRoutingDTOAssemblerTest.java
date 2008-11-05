@@ -9,7 +9,8 @@ import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
@@ -25,13 +26,12 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
     final Location destination = MELBOURNE;
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), origin, destination);
 
-    final CarrierMovement cm = new CarrierMovement(
-      new CarrierMovementId("ABC"), origin, destination, new Date(), new Date());
+    final CarrierMovement cm = new CarrierMovement(origin, destination, new Date(), new Date());
 
     final Itinerary itinerary = new Itinerary(
       Arrays.asList(
-        new Leg(cm, origin, SHANGHAI),
-        new Leg(cm, ROTTERDAM, destination)
+        new Leg(CM001, origin, SHANGHAI, new Date(), new Date()),
+        new Leg(CM002, ROTTERDAM, destination, new Date(), new Date())
       )
     );
 
@@ -42,12 +42,12 @@ public class CargoRoutingDTOAssemblerTest extends TestCase {
     assertEquals(2, dto.getLegs().size());
 
     LegDTO legDTO = dto.getLegs().get(0);
-    assertEquals("ABC", legDTO.getCarrierMovementId());
+    assertEquals("ABC", legDTO.getVoyageNumber());
     assertEquals("SESTO", legDTO.getFrom());
     assertEquals("CNSHA", legDTO.getTo());
 
     legDTO = dto.getLegs().get(1);
-    assertEquals("ABC", legDTO.getCarrierMovementId());
+    assertEquals("ABC", legDTO.getVoyageNumber());
     assertEquals("NLRTM", legDTO.getFrom());
     assertEquals("AUMEL", legDTO.getTo());
   }

@@ -1,28 +1,27 @@
 package se.citerus.dddsample.application.persistence;
 
-import se.citerus.dddsample.DateTestUtil;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 
 public class CarrierMovementRepositoryTest extends AbstractRepositoryTest {
 
-  CarrierMovementRepository carrierMovementRepository;
+  VoyageRepository voyageRepository;
 
-  public void setCarrierMovementRepository(CarrierMovementRepository carrierMovementRepository) {
-    this.carrierMovementRepository = carrierMovementRepository;
+  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+    this.voyageRepository = voyageRepository;
   }
 
   public void testFind() throws Exception {
-    CarrierMovement carrierMovement = carrierMovementRepository.find(new CarrierMovementId("CAR_001"));
-    assertNotNull(carrierMovement);
-    assertEquals("CAR_001", carrierMovement.carrierMovementId().idString());
-    assertEquals(STOCKHOLM, carrierMovement.from());
-    assertEquals(HELSINKI, carrierMovement.to());
+    Voyage voyage = voyageRepository.find(new VoyageNumber("0012"));
+    assertNotNull(voyage);
+    assertEquals("0012", voyage.voyageNumber().idString());
+    /* TODO adapt
+    assertEquals(STOCKHOLM, carrierMovement.departureLocation());
+    assertEquals(HELSINKI, carrierMovement.arrivalLocation());
     assertEquals(DateTestUtil.toDate("2007-09-23", "02:00"), carrierMovement.departureTime());
     assertEquals(DateTestUtil.toDate("2007-09-23", "03:00"), carrierMovement.arrivalTime());
+    */
   }
 
 }
