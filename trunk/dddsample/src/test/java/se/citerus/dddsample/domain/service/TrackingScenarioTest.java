@@ -3,10 +3,10 @@ package se.citerus.dddsample.domain.service;
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
-import se.citerus.dddsample.domain.model.cargo.DeliveryHistory;
+import se.citerus.dddsample.domain.model.cargo.Delivery;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.CM001;
-import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.CM002;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
@@ -25,12 +25,12 @@ public class TrackingScenarioTest extends TestCase {
 
     Cargo cargo = populateCargo();
 
-    DeliveryHistory deliveryHistory = cargo.deliveryHistory();
+    Delivery delivery = cargo.deliveryHistory();
 
-    List<HandlingEvent> handlingEvents = deliveryHistory.eventsOrderedByCompletionTime();
+    List<HandlingEvent> handlingEvents = delivery.history();
 
     assertEquals(4, handlingEvents.size());
-    final HandlingEvent event = deliveryHistory.lastEvent();
+    final HandlingEvent event = delivery.lastEvent();
 
     assertEquals(UNLOAD, event.type());
 
