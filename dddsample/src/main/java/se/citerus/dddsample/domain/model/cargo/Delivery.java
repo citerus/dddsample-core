@@ -2,31 +2,31 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import se.citerus.dddsample.domain.model.ValueObject;
 import static se.citerus.dddsample.domain.model.cargo.StatusCode.*;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 
 import java.util.*;
 
 /**
- * The delivery history of a cargo.
+ * The actual result of the cargo transportation, as opposed to
+ * the customer requirement (RouteSpecification) and the plan (Itinerary). 
  *
- * This is a value object.
  */
-public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
+public final class Delivery implements ValueObject<Delivery> {
 
   private Set<HandlingEvent> events;
 
-  public static final DeliveryHistory EMPTY_DELIVERY_HISTORY = new DeliveryHistory(Collections.EMPTY_SET);
+  public static final Delivery EMPTY_DELIVERY = new Delivery(Collections.EMPTY_SET);
 
-  DeliveryHistory(final Collection<HandlingEvent> events) {
+  Delivery(final Collection<HandlingEvent> events) {
     this.events = new HashSet<HandlingEvent>(events);
   }
 
   /**
    * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
    */
-  public List<HandlingEvent> eventsOrderedByCompletionTime() {
+  public List<HandlingEvent> history() {
     final List<HandlingEvent> eventList = new ArrayList<HandlingEvent>(events);
     Collections.sort(eventList, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
     return Collections.unmodifiableList(eventList);
@@ -39,11 +39,14 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     if (events.isEmpty()) {
       return null;
     } else {
-      final List<HandlingEvent> orderedEvents = eventsOrderedByCompletionTime();
+      final List<HandlingEvent> orderedEvents = history();
       return orderedEvents.get(orderedEvents.size() - 1);
     }
   }
 
+  /**
+   * @return
+   */
   public StatusCode status() {
     if (lastEvent() == null)
       return NOT_RECEIVED;
@@ -67,6 +70,9 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     }
   }
 
+  /**
+   * @return
+   */
   public Location currentLocation() {
     if (status().equals(IN_PORT)) {
       return lastEvent().location();
@@ -75,24 +81,27 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     }
   }
 
-  public CarrierMovement currentCarrierMovement() {
+  /**
+   * @return
+   */
+  public Voyage currentVoyage() {
     if (status().equals(ONBOARD_CARRIER)) {
-      return lastEvent().carrierMovement();
+      return lastEvent().voyage();
     } else {
-      return CarrierMovement.NONE;
+      return Voyage.NONE;
     }
   }
 
   @Override
-  public boolean sameValueAs(DeliveryHistory other) {
+  public boolean sameValueAs(Delivery other) {
     return other != null && events.equals(other.events);
   }
 
   @Override
-  public DeliveryHistory copy() {
+  public Delivery copy() {
     final Set<HandlingEvent> eventsCopy = new HashSet<HandlingEvent>(events);
 
-    return new DeliveryHistory(eventsCopy);
+    return new Delivery(eventsCopy);
   }
 
   @Override
@@ -100,7 +109,7 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    final DeliveryHistory other = (DeliveryHistory) o;
+    final Delivery other = (Delivery) o;
 
     return sameValueAs(other);
   }
@@ -110,7 +119,7 @@ public final class DeliveryHistory implements ValueObject<DeliveryHistory> {
     return events.hashCode();
   }
 
-  DeliveryHistory() {
+  Delivery() {
     // Needed by Hibernate
   }
 
