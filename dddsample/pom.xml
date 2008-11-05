@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>se.citerus</groupId>
   <artifactId>dddsample</artifactId>
@@ -15,7 +16,7 @@
       <url>sftp://web.sourceforge.net/htdocs</url>
     </site>
   </distributionManagement>
-  <ciManagement />
+  <ciManagement/>
   <repositories>
     <repository>
       <id>maven2-repository.dev.java.net</id>
@@ -90,6 +91,10 @@
     <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
     <url>http://ddd.sventon.org</url>
   </scm>
+  <issueManagement>
+    <system>SourceForge.net Tracker</system>
+    <url>http://sourceforge.net/tracker2/?group_id=210606</url>
+  </issueManagement>
   <properties>
     <spring.version>2.5.1</spring.version>
   </properties>
