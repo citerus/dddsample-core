@@ -5,10 +5,11 @@ import org.springframework.context.support.StaticApplicationContext;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
 
 import java.util.*;
 
@@ -20,9 +21,8 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));
 
-    CarrierMovement cm001 = new CarrierMovement(new CarrierMovementId("CM001"), HANGZOU, GOTHENBURG, new Date(), new Date());
-    events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, cm001));
-    events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, cm001));
+    events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, CM001));
+    events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM002));
 
     CargoTestHelper.setDeliveryHistory(cargo, events);
 
@@ -43,21 +43,21 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     assertEquals("RECEIVE", event.getType());
     assertEquals("CNHGH", event.getLocation());
     assertEquals("1970-01-01 01:00", event.getTime());
-    assertEquals("", event.getCarrierMovement());
+    assertEquals("", event.getVoyageNumber());
     assertTrue(event.isExpected());
 
     event = it.next();
     assertEquals("LOAD", event.getType());
     assertEquals("CNHGH", event.getLocation());
     assertEquals("1970-01-01 01:00", event.getTime());
-    assertEquals("CM001", event.getCarrierMovement());
+    assertEquals("CM001", event.getVoyageNumber());
     assertTrue(event.isExpected());
 
     event = it.next();
     assertEquals("UNLOAD", event.getType());
     assertEquals("FIHEL", event.getLocation());
     assertEquals("1970-01-01 01:00", event.getTime());
-    assertEquals("CM001", event.getCarrierMovement());
+    assertEquals("CM001", event.getVoyageNumber());
     assertTrue(event.isExpected());
   }
 

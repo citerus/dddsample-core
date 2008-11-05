@@ -1,12 +1,12 @@
 package se.citerus.dddsample;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.application.persistence.CarrierMovementRepositoryInMem;
 import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
+import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementRepository;
-import static se.citerus.dddsample.domain.model.carrier.SampleCarrierMovements.*;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.*;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
@@ -38,7 +38,7 @@ public class CargoHandlingScenarioTest extends TestCase {
   HandlingEventRepository handlingEventRepository;
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
-  CarrierMovementRepository carrierMovementRepository;
+  VoyageRepository voyageRepository;
 
   Cargo cargo;
 
@@ -66,12 +66,12 @@ public class CargoHandlingScenarioTest extends TestCase {
 
     // Loaded onto carrier movement CM003 in Hongkong
     HandlingEvent loadedInHongkong = handlingEventFactory.createHandlingEvent(
-      dateLoadingCompleted(), trackingId, CM003.carrierMovementId(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD);
+      dateLoadingCompleted(), trackingId, CM003.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD);
 
     handlingEventService.register(loadedInHongkong);
 
     // Check current state - should be ok
-    assertEquals(CM003, cargo. deliveryHistory().currentCarrierMovement());
+    assertEquals(CM003, cargo. deliveryHistory().currentVoyage());
     assertEquals(HONGKONG, cargo.lastKnownLocation());
     assertEquals(StatusCode.ONBOARD_CARRIER, cargo.deliveryHistory().status());
     assertFalse(cargo.isMisdirected());
@@ -79,11 +79,11 @@ public class CargoHandlingScenarioTest extends TestCase {
 
     // Cargo is now (incorrectly) unloaded in Tokyo
     HandlingEvent unloadedInTokyo = handlingEventFactory.createHandlingEvent(
-      dateUnloadingCompleted(), trackingId, CM003.carrierMovementId(), TOKYO.unLocode(), HandlingEvent.Type.UNLOAD);
+      dateUnloadingCompleted(), trackingId, CM003.voyageNumber(), TOKYO.unLocode(), HandlingEvent.Type.UNLOAD);
     handlingEventService.register(unloadedInTokyo);
 
     // Check current state - cargo is misdirected!
-    assertEquals(CarrierMovement.NONE, cargo. deliveryHistory().currentCarrierMovement());
+    assertEquals(CarrierMovement.NONE, cargo. deliveryHistory().currentVoyage());
     assertEquals(TOKYO, cargo.lastKnownLocation());
     assertEquals(StatusCode.IN_PORT, cargo.deliveryHistory().status());
     assertTrue(cargo.isMisdirected());
@@ -128,9 +128,9 @@ public class CargoHandlingScenarioTest extends TestCase {
       public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         return Arrays.asList(
           new Itinerary(Arrays.asList(
-                new Leg(CM003, HONGKONG, NEWYORK),
-                new Leg(CM004, NEWYORK, CHICAGO),
-                new Leg(CM005, CHICAGO, STOCKHOLM)
+                new Leg(CM003, HONGKONG, NEWYORK, new Date(), new Date()),
+                new Leg(CM004, NEWYORK, CHICAGO, new Date(), new Date()),
+                new Leg(CM005, CHICAGO, STOCKHOLM, new Date(), new Date())
           ))
         );
       }
@@ -164,7 +164,7 @@ public class CargoHandlingScenarioTest extends TestCase {
     // Stub
     handlingEventRepository = new HandlingEventRepository() {
       public void save(HandlingEvent event) {
-        Set<HandlingEvent> events = new HashSet<HandlingEvent>(cargo.deliveryHistory().eventsOrderedByCompletionTime());
+        Set<HandlingEvent> events = new HashSet<HandlingEvent>(cargo.deliveryHistory().history());
         events.add(event);
         CargoTestHelper.setDeliveryHistory(cargo, events);
       }
@@ -176,11 +176,11 @@ public class CargoHandlingScenarioTest extends TestCase {
 
     // In-memory implementations
     locationRepository = new LocationRepositoryInMem();
-    carrierMovementRepository = new CarrierMovementRepositoryInMem();
+    voyageRepository = new VoyageRepositoryInMem();
 
     // Domain services and factories that are implemented in the domain layer - not stubbed
-    trackingService = new TrackingServiceImpl(cargoRepository);
-    handlingEventFactory = new HandlingEventFactory(cargoRepository, this.carrierMovementRepository, this.locationRepository);
+    trackingService = new TrackingServiceImpl(domainEventNotifier, cargoRepository);
+    handlingEventFactory = new HandlingEventFactory(cargoRepository, this.voyageRepository, this.locationRepository);
     handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, domainEventNotifier);
   }
 }
