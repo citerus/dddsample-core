@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * An itinerary consists of one or more legs.
  */
-public final class Leg implements ValueObject<Leg> {
+public class Leg implements ValueObject<Leg> {
 
   private Voyage voyage;
   private Location loadLocation;

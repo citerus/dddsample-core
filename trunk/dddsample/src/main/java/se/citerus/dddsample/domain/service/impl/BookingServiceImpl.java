@@ -46,7 +46,7 @@ public final class BookingServiceImpl implements BookingService {
     Validate.notNull(trackingId);
     
     final Cargo cargo = cargoRepository.find(trackingId);
-    final RouteSpecification routeSpecification = RouteSpecification.forCargo(cargo, new Date());
+    final RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
 
     return routingService.fetchRoutesForSpecification(routeSpecification);
   }

@@ -49,7 +49,7 @@ public class ExternalRoutingServiceTest extends TestCase {
 
     final Date arrivalDeadline = DateTestUtil.toDate("2008-12-01");
     final Cargo cargo = new Cargo(new TrackingId("C123"), STOCKHOLM, HONGKONG);
-    final RouteSpecification spec = RouteSpecification.forCargo(cargo, arrivalDeadline);
+    final RouteSpecification spec = new RouteSpecification(cargo.origin(), cargo.destination(), arrivalDeadline);
 
     final List<Itinerary> itineraries = routingService.fetchRoutesForSpecification(spec);
     

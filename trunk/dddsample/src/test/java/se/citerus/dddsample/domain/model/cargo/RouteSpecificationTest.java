@@ -15,7 +15,7 @@ public class RouteSpecificationTest extends TestCase {
   }
 
   public void testIsSatisfiedBySuccess() {
-    RouteSpecification spec = RouteSpecification.forCargo(cargo, new Date());
+    RouteSpecification spec = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
     Itinerary itinerary = new Itinerary();
     assertTrue(spec.isSatisfiedBy(itinerary));
   }

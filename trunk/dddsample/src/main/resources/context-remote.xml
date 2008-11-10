@@ -9,7 +9,6 @@
         http://jax-ws.dev.java.net/spring/servlet https://jax-ws.dev.java.net/spring/servlet.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-
   <!-- Handling event registration web service -->
   
   <wss:bindings id="jax-ws.http">
@@ -28,8 +27,8 @@
     <property name="handlingEventFactory" ref="handlingEventFactory"/>
   </bean>
 
-
   <!-- RMI exposed booking service facade -->
+  
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
     <property name="serviceInterface" value="se.citerus.dddsample.application.remoting.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>

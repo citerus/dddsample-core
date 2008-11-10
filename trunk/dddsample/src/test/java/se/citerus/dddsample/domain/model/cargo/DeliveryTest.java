@@ -35,23 +35,23 @@ public class DeliveryTest extends TestCase {
     Set<HandlingEvent> events = new HashSet<HandlingEvent>();
     Delivery delivery = new Delivery(events);
 
-    assertEquals(StatusCode.NOT_RECEIVED, delivery.status());
+    assertEquals(TransportStatus.NOT_RECEIVED, delivery.transportStatus());
 
     events.add(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG));
     delivery = new Delivery(events);
-    assertEquals(StatusCode.IN_PORT, delivery.status());
+    assertEquals(TransportStatus.IN_PORT, delivery.transportStatus());
 
     events.add(new HandlingEvent(cargo, new Date(20), new Date(21), HandlingEvent.Type.LOAD, HAMBURG, CM005));
     delivery = new Delivery(events);
-    assertEquals(StatusCode.ONBOARD_CARRIER, delivery.status());
+    assertEquals(TransportStatus.ONBOARD_CARRIER, delivery.transportStatus());
 
     events.add(new HandlingEvent(cargo, new Date(30), new Date(31), HandlingEvent.Type.UNLOAD, HAMBURG, CM006));
     delivery = new Delivery(events);
-    assertEquals(StatusCode.IN_PORT, delivery.status());
+    assertEquals(TransportStatus.IN_PORT, delivery.transportStatus());
 
     events.add(new HandlingEvent(cargo, new Date(40), new Date(41), HandlingEvent.Type.CLAIM, HAMBURG));
     delivery = new Delivery(events);
-    assertEquals(StatusCode.CLAIMED, delivery.status());
+    assertEquals(TransportStatus.CLAIMED, delivery.transportStatus());
   }
 
   public void testCurrentLocation() throws Exception {

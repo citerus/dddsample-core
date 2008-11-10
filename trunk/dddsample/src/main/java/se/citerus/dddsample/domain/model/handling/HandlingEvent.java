@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.DomainEvent;
+import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
@@ -51,7 +52,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * Handling event type. Either requires or prohibits a carrier movement
    * association, it's never optional.
    */
-  public enum Type {
+  public enum Type implements ValueObject<Type> {
     LOAD(true),
     UNLOAD(true),
     RECEIVE(false),
@@ -83,6 +84,13 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       return !requiresCarrierMovement();
     }
 
+    public boolean sameValueAs(Type other) {
+      return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Type copy() {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
   }
 
   /**

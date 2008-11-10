@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import se.citerus.dddsample.domain.model.ValueObject;
-import static se.citerus.dddsample.domain.model.cargo.StatusCode.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -13,7 +13,7 @@ import java.util.*;
  * the customer requirement (RouteSpecification) and the plan (Itinerary). 
  *
  */
-public final class Delivery implements ValueObject<Delivery> {
+public class Delivery implements ValueObject<Delivery> {
 
   private Set<HandlingEvent> events;
 
@@ -47,7 +47,7 @@ public final class Delivery implements ValueObject<Delivery> {
   /**
    * @return
    */
-  public StatusCode status() {
+  public TransportStatus transportStatus() {
     if (lastEvent() == null)
       return NOT_RECEIVED;
 
@@ -71,10 +71,10 @@ public final class Delivery implements ValueObject<Delivery> {
   }
 
   /**
-   * @return
+   * @return Current location, if  
    */
   public Location currentLocation() {
-    if (status().equals(IN_PORT)) {
+    if (transportStatus().equals(IN_PORT)) {
       return lastEvent().location();
     } else {
       return Location.UNKNOWN;
@@ -82,10 +82,22 @@ public final class Delivery implements ValueObject<Delivery> {
   }
 
   /**
-   * @return
+   * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
+   */
+  public Location lastKnownLocation() {
+    final HandlingEvent lastEvent = lastEvent();
+    if (lastEvent != null) {
+      return lastEvent.location();
+    } else {
+      return Location.UNKNOWN;
+    }
+  }
+
+  /**
+   * @return Current voyage.
    */
   public Voyage currentVoyage() {
-    if (status().equals(ONBOARD_CARRIER)) {
+    if (transportStatus().equals(ONBOARD_CARRIER)) {
       return lastEvent().voyage();
     } else {
       return Voyage.NONE;
@@ -122,5 +134,4 @@ public final class Delivery implements ValueObject<Delivery> {
   Delivery() {
     // Needed by Hibernate
   }
-
 }

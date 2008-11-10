@@ -2,9 +2,12 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
+
+import java.util.Date;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -34,27 +37,27 @@ import se.citerus.dddsample.domain.shared.DomainObjectUtils;
  * in port etc), are captured in this aggregate.
  *
  */
-public final class Cargo implements Entity<Cargo> {
+public class Cargo implements Entity<Cargo> {
 
   private TrackingId trackingId;
-  private Location origin;
-  private Location destination;
   private Itinerary itinerary;
   private Delivery delivery;
+  private RouteSpecification routeSpecification;
+
 
   /**
    * @param trackingId tracking id
    * @param origin origin location
    * @param destination destination location
    */
-  public Cargo(final TrackingId trackingId, final Location origin, final Location destination) {
+  public Cargo(TrackingId trackingId, Location origin, Location destination) {
     Validate.notNull(trackingId);
     Validate.notNull(origin);
     Validate.notNull(destination);
 
     this.trackingId = trackingId;
-    this.origin = origin;
-    this.destination = destination;
+    // TODO this is temporary
+    this.routeSpecification = new RouteSpecification(origin, destination, new Date());
   }
 
   /**
@@ -70,29 +73,20 @@ public final class Cargo implements Entity<Cargo> {
    * @return Origin location.
    */
   public Location origin() {
-    return this.origin;
-  }
-
-  /**
-   * @param newDestination the new destination. May not be null.
-   */
-  public void changeDestination(final Location newDestination) {
-    Validate.notNull(newDestination);
-
-    this.destination = newDestination;
+    return routeSpecification.origin();
   }
 
   /**
    * @return Destination of the cargo.
    */
   public Location destination() {
-    return this.destination;
+    return routeSpecification.destination();
   }
 
   /**
-   * @return The delivery history. Never null.
+   * @return The delivery. Never null.
    */
-  public Delivery deliveryHistory() {
+  public Delivery delivery() {
     return DomainObjectUtils.nullSafe(this.delivery, Delivery.EMPTY_DELIVERY);
   }
 
@@ -104,22 +98,21 @@ public final class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
-   */
-  public Location lastKnownLocation() {
-    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
-    if (lastEvent != null) {
-      return lastEvent.location();
-    } else {
-      return Location.UNKNOWN;
-    }
-  }
-
-  /**
    * @return True if the cargo has arrived at its final destination.
    */
   public boolean hasArrived() {
-    return destination.equals(lastKnownLocation());
+    return destination().equals(delivery.lastKnownLocation());
+  }
+
+  /**
+   * Specifies a route for this cargo.
+   *
+   * @param routeSpecification route specification.
+   */
+  public void specifyRoute(RouteSpecification routeSpecification) {
+    Validate.notNull(routeSpecification);
+
+    this.routeSpecification = routeSpecification;
   }
 
   /**
@@ -131,11 +124,11 @@ public final class Cargo implements Entity<Cargo> {
     Validate.notNull(itinerary);
 
     // Decouple the old itinerary (which may or may not exist) from this cargo
-    itinerary().setCargo(null);
+    //itinerary().setCargo(null);
 
     // Couple this cargo and the new itinerary
     this.itinerary = itinerary;
-    this.itinerary.setCargo(this);
+    //this.itinerary.setCargo(this);
   }
 
   /**
@@ -158,11 +151,26 @@ public final class Cargo implements Entity<Cargo> {
    * @return <code>true</code> if the cargo has been misdirected,
    */
   public boolean isMisdirected() {
-    final HandlingEvent lastEvent = deliveryHistory().lastEvent();
+    final HandlingEvent lastEvent = delivery().lastEvent();
     if (lastEvent == null) {
       return false;
     } else {
       return !itinerary().isExpected(lastEvent);
+    }
+  }
+
+  /**
+   * @return Routing status.
+   */
+  public RoutingStatus routingStatus() {
+    if (itinerary == null) {
+      return NOT_ROUTED;
+    } else {
+      if (routeSpecification.isSatisfiedBy(itinerary)) {
+        return ROUTED;
+      } else {
+        return MISROUTED;
+      }
     }
   }
 
@@ -174,9 +182,9 @@ public final class Cargo implements Entity<Cargo> {
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
-    for (HandlingEvent event : deliveryHistory().history()) {
+    for (HandlingEvent event : delivery().history()) {
       if (HandlingEvent.Type.UNLOAD.equals(event.type())
-        && destination.equals(event.location())) {
+        && destination().equals(event.location())) {
         return true;
       }
     }

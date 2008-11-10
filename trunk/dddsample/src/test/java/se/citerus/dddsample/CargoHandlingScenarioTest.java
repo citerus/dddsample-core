@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
 import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
 import se.citerus.dddsample.domain.model.cargo.*;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.*;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
@@ -51,8 +51,11 @@ public class CargoHandlingScenarioTest extends TestCase {
     Location destination = STOCKHOLM;
     cargo = new Cargo(trackingId, origin, destination);
 
+
+    assertEquals(RoutingStatus.NOT_ROUTED, cargo.routingStatus());
+
     // Route cargo
-    RouteSpecification routeSpecification = RouteSpecification.forCargo(cargo, inTwoWeeks());
+    RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), inTwoWeeks());
     List<Itinerary> itineraries = routingService.fetchRoutesForSpecification(routeSpecification);
     Itinerary itinerary = selectPreferedItinerary(itineraries);
     cargo.assignToRoute(itinerary);
@@ -71,9 +74,9 @@ public class CargoHandlingScenarioTest extends TestCase {
     handlingEventService.register(loadedInHongkong);
 
     // Check current state - should be ok
-    assertEquals(CM003, cargo. deliveryHistory().currentVoyage());
-    assertEquals(HONGKONG, cargo.lastKnownLocation());
-    assertEquals(StatusCode.ONBOARD_CARRIER, cargo.deliveryHistory().status());
+    assertEquals(CM003, cargo.delivery().currentVoyage());
+    assertEquals(HONGKONG, cargo.delivery().lastKnownLocation());
+    assertEquals(TransportStatus.ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.isMisdirected());
 
 
@@ -83,9 +86,9 @@ public class CargoHandlingScenarioTest extends TestCase {
     handlingEventService.register(unloadedInTokyo);
 
     // Check current state - cargo is misdirected!
-    assertEquals(CarrierMovement.NONE, cargo. deliveryHistory().currentVoyage());
-    assertEquals(TOKYO, cargo.lastKnownLocation());
-    assertEquals(StatusCode.IN_PORT, cargo.deliveryHistory().status());
+    assertEquals(Voyage.NONE, cargo.delivery().currentVoyage());
+    assertEquals(TOKYO, cargo.delivery().lastKnownLocation());
+    assertEquals(TransportStatus.IN_PORT, cargo.delivery().transportStatus());
     assertTrue(cargo.isMisdirected());
 
     // Then: Reroute!
@@ -164,7 +167,7 @@ public class CargoHandlingScenarioTest extends TestCase {
     // Stub
     handlingEventRepository = new HandlingEventRepository() {
       public void save(HandlingEvent event) {
-        Set<HandlingEvent> events = new HashSet<HandlingEvent>(cargo.deliveryHistory().history());
+        Set<HandlingEvent> events = new HashSet<HandlingEvent>(cargo.delivery().history());
         events.add(event);
         CargoTestHelper.setDeliveryHistory(cargo, events);
       }

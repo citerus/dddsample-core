@@ -5,8 +5,8 @@ import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.service.InMemTransactionManager;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovementId;
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
@@ -45,7 +45,10 @@ public class HandlinEventServiceEndpointTest extends TestCase {
     );
 
     HandlingEventFactory handlingEventFactory = new HandlingEventFactory(null,null,null) {
-      public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, CarrierMovementId carrierMovementId, UnLocode unlocode, HandlingEvent.Type type) throws UnknownCargoException, UnknownVoyageException, UnknownLocationException {
+      @Override
+      public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
+        throws UnknownCargoException, UnknownVoyageException, UnknownLocationException {
+        
         return event;
       }
     };

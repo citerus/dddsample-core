@@ -42,7 +42,8 @@ public class Voyage implements Entity<Voyage> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null) return false;
+    if (!(o instanceof Voyage)) return false;
 
     final Voyage that = (Voyage) o;
 
@@ -51,7 +52,7 @@ public class Voyage implements Entity<Voyage> {
 
   @Override
   public boolean sameIdentityAs(Voyage other) {
-    return other != null && this.voyageNumber.sameValueAs(other.voyageNumber);
+    return other != null && this.voyageNumber().sameValueAs(other.voyageNumber());
   }
 
   Voyage() {

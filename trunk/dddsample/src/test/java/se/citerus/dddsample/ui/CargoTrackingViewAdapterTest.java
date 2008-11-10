@@ -6,7 +6,6 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
@@ -22,7 +21,7 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));
 
     events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, CM001));
-    events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM002));
+    events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001));
 
     CargoTestHelper.setDeliveryHistory(cargo, events);
 
