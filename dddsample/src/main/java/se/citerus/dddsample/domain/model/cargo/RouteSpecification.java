@@ -13,7 +13,8 @@ import java.util.Date;
  * Route specification.
  * 
  */
-public final class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
+public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
+
   private Location origin;
   private Location destination;
   private Date arrivalDeadline;
@@ -22,17 +23,11 @@ public final class RouteSpecification extends AbstractSpecification<Itinerary> i
    * Factory for creatig a route specification for a cargo, from cargo
    * origin to cargo destination. Use for initial routing.
    *
-   * @param cargo cargo
+   * @param origin origin location
+   * @param destination destination location
    * @param arrivalDeadline arrival deadline
-   * @return A route specification for this cargo and arrival deadline
    */
-  public static RouteSpecification forCargo(Cargo cargo, Date arrivalDeadline) {
-    Validate.notNull(cargo);
-
-    return new RouteSpecification(cargo.origin(), cargo.destination(), arrivalDeadline);
-  }
-
-  private RouteSpecification(Location origin, Location destination, Date arrivalDeadline) {
+  public RouteSpecification(Location origin, Location destination, Date arrivalDeadline) {
     Validate.noNullElements(new Object[] {origin, destination, arrivalDeadline});
     
     this.origin = origin;
@@ -91,4 +86,8 @@ public final class RouteSpecification extends AbstractSpecification<Itinerary> i
       toHashCode();
   }
 
+  RouteSpecification() {
+    // Needed by Hibernate
+  }
+  
 }

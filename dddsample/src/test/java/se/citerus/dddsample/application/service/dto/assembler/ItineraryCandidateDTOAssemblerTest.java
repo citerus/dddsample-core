@@ -9,7 +9,6 @@ import se.citerus.dddsample.application.remoting.dto.assembler.ItineraryCandidat
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
 import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -32,7 +31,7 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     final Itinerary itinerary = new Itinerary(
       Arrays.asList(
         new Leg(CM001, origin, SHANGHAI, new Date(), new Date()),
-        new Leg(CM002, ROTTERDAM, destination, new Date(), new Date())
+        new Leg(CM001, ROTTERDAM, destination, new Date(), new Date())
       )
     );
 
@@ -40,12 +39,12 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
 
     assertEquals(2, dto.getLegs().size());
     LegDTO legDTO = dto.getLegs().get(0);
-    assertEquals("ABC", legDTO.getVoyageNumber());
+    assertEquals("CM001", legDTO.getVoyageNumber());
     assertEquals("SESTO", legDTO.getFrom());
     assertEquals("CNSHA", legDTO.getTo());
 
     legDTO = dto.getLegs().get(1);
-    assertEquals("ABC", legDTO.getVoyageNumber());
+    assertEquals("CM001", legDTO.getVoyageNumber());
     assertEquals("NLRTM", legDTO.getFrom());
     assertEquals("AUMEL", legDTO.getTo());
   }
@@ -54,8 +53,8 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     final ItineraryCandidateDTOAssembler assembler = new ItineraryCandidateDTOAssembler();
 
     final List<LegDTO> legs = new ArrayList<LegDTO>();
-    legs.add(new LegDTO("CM1", "AAAAA", "BBBBB"));
-    legs.add(new LegDTO("CM2", "BBBBB", "CCCCC"));
+    legs.add(new LegDTO("CM001", "AAAAA", "BBBBB"));
+    legs.add(new LegDTO("CM001", "BBBBB", "CCCCC"));
 
     final LocationRepository locationRepository = createMock(LocationRepository.class);
     expect(locationRepository.find(new UnLocode("AAAAA"))).andReturn(HONGKONG);

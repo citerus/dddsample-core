@@ -1,6 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.Schedule;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
@@ -29,34 +30,56 @@ public class CargoTest extends TestCase {
     )));
   }
 
+  public void testRoutingStatus() throws Exception {
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
+    final Itinerary good = new Itinerary();
+    final Itinerary bad = new Itinerary();
+    final RouteSpecification acceptOnlyGood = new RouteSpecification(cargo.origin(), cargo.destination(), new Date()) {
+      @Override
+      public boolean isSatisfiedBy(Itinerary itinerary) {
+        return itinerary == good;
+      }
+    };
+
+    cargo.specifyRoute(acceptOnlyGood);
+
+    assertEquals(NOT_ROUTED, cargo.routingStatus());
+    
+    cargo.assignToRoute(bad);
+    assertEquals(MISROUTED, cargo.routingStatus());
+
+    cargo.assignToRoute(good);
+    assertEquals(ROUTED, cargo.routingStatus());
+  }
+
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
 
-    assertEquals(Location.UNKNOWN, cargo.lastKnownLocation());
+    assertEquals(Location.UNKNOWN, cargo.delivery().lastKnownLocation());
   }
 
   public void testlastKnownLocationReceived() throws Exception {
     Cargo cargo = populateCargoReceivedStockholm();
 
-    assertEquals(STOCKHOLM, cargo.lastKnownLocation());
+    assertEquals(STOCKHOLM, cargo.delivery().lastKnownLocation());
   }
 
   public void testlastKnownLocationClaimed() throws Exception {
     Cargo cargo = populateCargoClaimedMelbourne();
 
-    assertEquals(MELBOURNE, cargo.lastKnownLocation());
+    assertEquals(MELBOURNE, cargo.delivery().lastKnownLocation());
   }
 
   public void testlastKnownLocationUnloaded() throws Exception {
     Cargo cargo = populateCargoOffHongKong();
 
-    assertEquals(HONGKONG, cargo.lastKnownLocation());
+    assertEquals(HONGKONG, cargo.delivery().lastKnownLocation());
   }
 
   public void testlastKnownLocationloaded() throws Exception {
     Cargo cargo = populateCargoOnHamburg();
 
-    assertEquals(HAMBURG, cargo.lastKnownLocation());
+    assertEquals(HAMBURG, cargo.delivery().lastKnownLocation());
   }
 
   public void testAtFinalLocation() throws Exception {

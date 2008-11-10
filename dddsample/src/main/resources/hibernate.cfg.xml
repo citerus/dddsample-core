@@ -11,7 +11,7 @@
     <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
     
     <mapping resource="se/citerus/dddsample/application/persistence/Cargo.hbm.xml" />
-    <mapping resource="se/citerus/dddsample/application/persistence/Itinerary.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/application/persistence/Voyage.hbm.xml" />
     <mapping resource="se/citerus/dddsample/application/persistence/Leg.hbm.xml" />
     <mapping resource="se/citerus/dddsample/application/persistence/Location.hbm.xml" />
     <mapping resource="se/citerus/dddsample/application/persistence/CarrierMovement.hbm.xml" />

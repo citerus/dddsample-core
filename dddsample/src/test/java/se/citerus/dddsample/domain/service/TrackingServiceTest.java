@@ -52,7 +52,7 @@ public class TrackingServiceTest extends TestCase {
 
     assertEquals(cargo, trackedCargo);
 
-    List<HandlingEvent> events = trackedCargo.deliveryHistory().history();
+    List<HandlingEvent> events = trackedCargo.delivery().history();
     assertEquals(3, events.size());
 
     // Claim happened first

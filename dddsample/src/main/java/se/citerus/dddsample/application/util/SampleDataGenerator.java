@@ -34,7 +34,7 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
     String handlingEventSql =
-      "insert into HandlingEvent (completionTime, registrationTime, type, location_id, carrierMovement_id, cargo_id) " +
+      "insert into HandlingEvent (completionTime, registrationTime, type, location_id, voyage_id, cargo_id) " +
       "values (?, ?, ?, ?, ?, ?)";
 
     Object[][] handlingEventArgs = {
@@ -42,91 +42,94 @@ public class SampleDataGenerator implements ServletContextListener {
         {ts(0),     ts((0)),    "RECEIVE",  1,  null,  1},
         {ts((4)),   ts((5)),    "LOAD",     1,  1,     1},
         {ts((14)),  ts((14)),   "UNLOAD",   5,  1,     1},
-        {ts((15)),  ts((15)),   "LOAD",     5,  2,     1},
-        {ts((30)),  ts((30)),   "UNLOAD",   6,  2,     1},
-        {ts((33)),  ts((33)),   "LOAD",     6,  3,     1},
-        {ts((34)),  ts((34)),   "UNLOAD",   3,  3,     1},
-        {ts((60)),  ts((60)),   "LOAD",     3,  4,     1},
-        {ts((70)),  ts((71)),   "UNLOAD",   4,  4,     1},
-        {ts((75)),  ts((75)),   "LOAD",     4,  5,     1},
-        {ts((88)),  ts((88)),   "UNLOAD",   2,  5,     1},
+        {ts((15)),  ts((15)),   "LOAD",     5,  1,     1},
+        {ts((30)),  ts((30)),   "UNLOAD",   6,  1,     1},
+        {ts((33)),  ts((33)),   "LOAD",     6,  1,     1},
+        {ts((34)),  ts((34)),   "UNLOAD",   3,  1,     1},
+        {ts((60)),  ts((60)),   "LOAD",     3,  1,     1},
+        {ts((70)),  ts((71)),   "UNLOAD",   4,  1,     1},
+        {ts((75)),  ts((75)),   "LOAD",     4,  1,     1},
+        {ts((88)),  ts((88)),   "UNLOAD",   2,  1,     1},
         {ts((100)), ts((102)),  "CLAIM",    2,  null,  1},
 
         //ZYX (AUMEL - USCHI - DEHAM -)
         {ts((200)),   ts((201)),  "RECEIVE",  2,  null,  3},
-        {ts((202)),   ts((202)),  "LOAD",     2,  7,     3},
-        {ts((208)),   ts((208)),  "UNLOAD",   7,  7,     3},
-        {ts((212)),   ts((212)),  "LOAD",     7,  8,     3},
-        {ts((230)),   ts((230)),  "UNLOAD",   6,  8,     3},
-        {ts((235)),   ts((235)),  "LOAD",     6,  9,     3},
+        {ts((202)),   ts((202)),  "LOAD",     2,  2,     3},
+        {ts((208)),   ts((208)),  "UNLOAD",   7,  2,     3},
+        {ts((212)),   ts((212)),  "LOAD",     7,  2,     3},
+        {ts((230)),   ts((230)),  "UNLOAD",   6,  2,     3},
+        {ts((235)),   ts((235)),  "LOAD",     6,  2,     3},
 
         //ABC
         {ts((20)),  ts((21)),   "CLAIM",    2,  null,  2},
 
         //CBA
         {ts((0)),   ts((1)),    "RECEIVE",  2,  null,  4},
-        {ts((10)),  ts((11)),   "LOAD",     2,  7,     4},
-        {ts((20)),  ts((21)),   "UNLOAD",   7,  7,     4},
+        {ts((10)),  ts((11)),   "LOAD",     2,  2,     4},
+        {ts((20)),  ts((21)),   "UNLOAD",   7,  2,     4},
 
         //FGH
         {ts(100),   ts(160),    "RECEIVE",  3,  null,   5},
-        {ts(150),   ts(110),    "LOAD",     3,  10,     5},
+        {ts(150),   ts(110),    "LOAD",     3,  3,     5},
 
         // JKL
         {ts(200),   ts(220),    "RECEIVE",  6,  null,   6},
-        {ts(300),   ts(330),    "LOAD",     6,  12,     6},
-        {ts(400),   ts(440),    "UNLOAD",   5,  12,     6}  // Unexpected event
+        {ts(300),   ts(330),    "LOAD",     6,  3,     6},
+        {ts(400),   ts(440),    "UNLOAD",   5,  3,     6}  // Unexpected event
     };
     executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
   }
 
   private static void loadCarrierMovementData(JdbcTemplate jdbcTemplate) {
+    String voyageSql =
+      "insert into Voyage (id, voyage_number) values (?, ?)";
+    Object[][] voyageArgs = {
+      {1,"0101"},
+      {2,"0202"},
+      {3,"0303"}
+    };
+    executeUpdate(jdbcTemplate, voyageSql, voyageArgs);
+
     String carrierMovementSql =
-      "insert into CarrierMovement (id, carrier_movement_id, from_id, to_id, departure_time, arrival_time) " +
-      "values (?,?,?,?,?,?)";
+      "insert into CarrierMovement (id, voyage_id, departure_location_id, arrival_location_id, departure_time, arrival_time, cm_index) " +
+      "values (?,?,?,?,?,?,?)";
 
     Object[][] carrierMovementArgs = {
-     // SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL
-      {1, "CAR_001",1,5,ts(1),ts(2)},
-      {2, "CAR_002",5,6,ts(1),ts(2)},
-      {3, "CAR_003",6,3,ts(1),ts(2)},
-      {4, "CAR_004",3,4,ts(1),ts(2)},
-      {5, "CAR_005",4,2,ts(1),ts(2)},
+      // SESTO - FIHEL - DEHAM - CNHKG - JPTOK - AUMEL (voyage 0101)
+      {1,1,1,5,ts(1),ts(2),0},
+      {2,1,5,6,ts(1),ts(2),1},
+      {3,1,6,3,ts(1),ts(2),2},
+      {4,1,3,4,ts(1),ts(2),3},
+      {5,1,4,2,ts(1),ts(2),4},
 
-      // FIHEL - SESTO
-      {6, "CAR_006",5,1,ts(1),ts(2)},
+      // AUMEL - USCHI - DEHAM - SESTO - FIHEL (voyage 0202)
+      {7,2,2,7,ts(1),ts(2),0},
+      {8,2,7,6,ts(1),ts(2),1},
+      {9,2,6,1,ts(1),ts(2),2},
+      {6,2,1,5,ts(1),ts(2),3},
 
-      // AUMEL - USCHI - DEHAM - SESTO
-      {7, "CAR_007",2,7,ts(1),ts(2)},
-      {8, "CAR_008",7,6,ts(1),ts(2)},
-      {9, "CAR_009",6,1,ts(1),ts(2)},
-
-      // CNHKG - AUMEL
-      {10,"CAR_010",3,2,ts(1),ts(2)},
-      // AUMEL - FIHEL
-      {11,"CAR_011",2,5,ts(1),ts(2)},
-      // DEHAM - SESTO
-      {12,"CAR_020",6,1,ts(1),ts(2)},
-      // SESTO - USCHI
-      {13,"CAR_021",1,7,ts(1),ts(2)},
-      // USCHI - JPTKO
-      {14,"CAR_022",7,4,ts(1),ts(2)}
+      // CNHKG - AUMEL - FIHEL - DEHAM - SESTO - USCHI - JPTKO (voyage 0303)
+      {10,3,3,2,ts(1),ts(2),0},
+      {11,3,2,5,ts(1),ts(2),1},
+      {12,3,6,1,ts(1),ts(2),2},
+      {13,3,1,7,ts(1),ts(2),3},
+      {14,3,7,4,ts(1),ts(2),4}
     };
     executeUpdate(jdbcTemplate, carrierMovementSql, carrierMovementArgs);
   }
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, origin_id, destination_id, is_misdirected) " +
+      "insert into Cargo (id, tracking_id, origin_id, destination_id, arrival_deadline) " +
       "values (?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 2, false},
-      {2, "ABC", 1, 5, false},
-      {3, "ZYX", 2, 1, false},
-      {4, "CBA", 5, 1, false},
-      {5, "FGH", 3, 5, false},
-      {6, "JKL", 6, 4, true}
+      {1, "XYZ", 1, 2, ts(10)},
+      {2, "ABC", 1, 5, ts(20)},
+      {3, "ZYX", 2, 1, ts(30)},
+      {4, "CBA", 5, 1, ts(40)},
+      {5, "FGH", 3, 5, ts(50)},
+      {6, "JKL", 6, 4, ts(60)}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }
@@ -149,27 +152,19 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   private static void loadItineraryData(JdbcTemplate jdbcTemplate) {
-    String itinerarySql = "insert into Itinerary (id, cargo_id) values (?,?)";
-
-    Object[][] itineraryArgs = {
-      {1, 5},
-      {2, 6}
-    };
-    executeUpdate(jdbcTemplate, itinerarySql, itineraryArgs);
-
     String legSql =
-      "insert into Leg (id, itinerary_id, carrierMovement_id, from_id, to_id, leg_index) " +
-      "values (?,?,?,?,?,?)";
+      "insert into Leg (id, cargo_id, voyage_id, load_location_id, unload_location_id, load_time, unload_time, leg_index) " +
+      "values (?,?,?,?,?,?,?,?)";
 
     Object [][] legArgs = {
       // Cargo 5: Hongkong - Melbourne - Stockholm - Helsinki
-      {1,1,10,3,2,0},
-      {2,1,11,2,1,1},
-      {3,1,11,1,5,2},
+      {1,5,1,3,2,ts(1),ts(2),0},
+      {2,5,1,2,1,ts(3),ts(4),1},
+      {3,5,1,1,5,ts(4),ts(5),2},
       // Cargo 6: Hamburg - Stockholm - Chicago - Tokyo
-      {4,2,12,6,1,0},
-      {5,2,13,1,7,1},
-      {6,2,14,7,4,2}
+      {4,6,2,6,1,ts(1),ts(2),0},
+      {5,6,2,1,7,ts(3),ts(4),1},
+      {6,6,2,7,4,ts(5),ts(6),2}
     };
     executeUpdate(jdbcTemplate, legSql, legArgs);
   }

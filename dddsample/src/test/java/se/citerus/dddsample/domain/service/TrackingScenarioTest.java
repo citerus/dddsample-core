@@ -25,7 +25,7 @@ public class TrackingScenarioTest extends TestCase {
 
     Cargo cargo = populateCargo();
 
-    Delivery delivery = cargo.deliveryHistory();
+    Delivery delivery = cargo.delivery();
 
     List<HandlingEvent> handlingEvents = delivery.history();
 

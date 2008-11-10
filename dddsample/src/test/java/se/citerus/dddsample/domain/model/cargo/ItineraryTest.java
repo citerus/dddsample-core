@@ -19,11 +19,15 @@ public class ItineraryTest extends TestCase {
   private final CarrierMovement ghi = new CarrierMovement(ROTTERDAM, NEWYORK, new Date(), new Date());
   private final CarrierMovement jkl = new CarrierMovement(SHANGHAI, HELSINKI, new Date(), new Date());
 
-  Voyage voyage;
+  Voyage voyage, wrongVoyage;
 
   protected void setUp() throws Exception {
     voyage = new Voyage(new VoyageNumber("0123"), new Schedule(Arrays.asList(
       abc, def, ghi, jkl
+    )));
+    wrongVoyage = new Voyage(new VoyageNumber("666"), new Schedule(Arrays.asList(
+      new CarrierMovement(NEWYORK, STOCKHOLM, new Date(), new Date()),
+      new CarrierMovement(STOCKHOLM, HELSINKI, new Date(), new Date())
     )));
   }
 
@@ -66,11 +70,11 @@ public class ItineraryTest extends TestCase {
     assertFalse(itinerary.isExpected(event));
 
     //Loaded to onto the wrong ship, correct location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, ROTTERDAM, voyage);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, ROTTERDAM, wrongVoyage);
     assertFalse(itinerary.isExpected(event));
 
     //Unloaded from the wrong ship in the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, HELSINKI, voyage);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, HELSINKI, wrongVoyage);
     assertFalse(itinerary.isExpected(event));
 
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM);

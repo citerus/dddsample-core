@@ -8,14 +8,14 @@ public class CarrierMovementRepositoryTest extends AbstractRepositoryTest {
 
   VoyageRepository voyageRepository;
 
-  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+  public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
   }
 
   public void testFind() throws Exception {
-    Voyage voyage = voyageRepository.find(new VoyageNumber("0012"));
+    Voyage voyage = voyageRepository.find(new VoyageNumber("0101"));
     assertNotNull(voyage);
-    assertEquals("0012", voyage.voyageNumber().idString());
+    assertEquals("0101", voyage.voyageNumber().idString());
     /* TODO adapt
     assertEquals(STOCKHOLM, carrierMovement.departureLocation());
     assertEquals(HELSINKI, carrierMovement.arrivalLocation());

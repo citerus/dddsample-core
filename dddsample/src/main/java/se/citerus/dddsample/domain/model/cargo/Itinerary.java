@@ -14,14 +14,9 @@ import java.util.List;
  */
 public class Itinerary implements ValueObject<Itinerary> {
 
-  private Cargo cargo;
   private List<Leg> legs = Collections.emptyList();
 
-  static final Itinerary EMPTY_ITINERARY = new Itinerary() {
-    void setCargo(Cargo cargo) {
-      // Noop
-    }
-  };
+  static final Itinerary EMPTY_ITINERARY = new Itinerary();
 
   /**
    * Constructor.
@@ -33,18 +28,6 @@ public class Itinerary implements ValueObject<Itinerary> {
     Validate.noNullElements(legs);
     
     this.legs = legs;
-  }
-
-  /**
-   * For maintaing referential integrity inside the Cargo aggregate,
-   * with package level visibility. 
-   *
-   * @see Cargo#assignToRoute(Itinerary)
-   *  
-   * @param cargo the cargo that this itinerary is for
-   */
-  void setCargo(Cargo cargo) {
-    this.cargo = cargo;
   }
 
   /**

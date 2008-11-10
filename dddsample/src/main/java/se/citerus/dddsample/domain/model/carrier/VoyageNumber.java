@@ -18,6 +18,22 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    if (!(o instanceof VoyageNumber)) return false;
+
+    final VoyageNumber other = (VoyageNumber) o;
+    
+    return sameValueAs(other);
+  }
+
+  @Override
+  public int hashCode() {
+    return number.hashCode();
+  }
+
+  @Override
   public boolean sameValueAs(VoyageNumber other) {
     return other != null && this.number.equals(other.number);
   }
@@ -27,8 +43,17 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
     return new VoyageNumber(number);
   }
 
+  @Override
+  public String toString() {
+    return "Voyage #" + number;
+  }
+
   public String idString() {
     return number;
+  }
+
+  VoyageNumber() {
+    // Needed by Hibernate
   }
   
 }

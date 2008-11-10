@@ -35,7 +35,7 @@ public final class CargoTrackingViewAdapter {
     this.locale = locale;
     this.cargo = cargo;
 
-    final List<HandlingEvent> handlingEvents = cargo.deliveryHistory().history();
+    final List<HandlingEvent> handlingEvents = cargo.delivery().history();
     this.events = new ArrayList<HandlingEventViewAdapter>(handlingEvents.size());
     for (HandlingEvent handlingEvent : handlingEvents) {
       events.add(new HandlingEventViewAdapter(handlingEvent));
@@ -61,11 +61,11 @@ public final class CargoTrackingViewAdapter {
    * @return A translated string describing the cargo status. 
    */
   public String getStatusText() {
-    final Delivery delivery = cargo.deliveryHistory();
-    final String code = "cargo.status." + delivery.status().name();
+    final Delivery delivery = cargo.delivery();
+    final String code = "cargo.status." + delivery.transportStatus().name();
 
     final Object[] args;
-    switch (delivery.status()) {
+    switch (delivery.transportStatus()) {
       case IN_PORT:
         args = new Object[] {getDisplayText(delivery.currentLocation())};
         break;
