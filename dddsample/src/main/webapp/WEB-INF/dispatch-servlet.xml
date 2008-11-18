@@ -16,7 +16,7 @@
     <property name="commandName" value="trackCommand"/>
     <property name="formView" value="cargo/track"/>
     <property name="successView" value="start"/>
-    <property name="trackingService" ref="trackingService"/>
+    <property name="cargoRepository" ref="cargoRepository"/>
     <property name="validator" ref="trackCommandValidator"/>
   </bean>
 

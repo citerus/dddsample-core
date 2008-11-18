@@ -15,6 +15,7 @@
 
   <bean id="trackingService" class="se.citerus.dddsample.domain.service.impl.TrackingServiceImpl">
     <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="domainEventNotifier"/>
   </bean>
 
   <bean id="handlingEventService" class="se.citerus.dddsample.domain.service.impl.HandlingEventServiceImpl">

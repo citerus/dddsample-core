@@ -6,8 +6,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.service.TrackingService;
 import se.citerus.dddsample.ui.command.TrackCommand;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public final class CargoTrackingController extends SimpleFormController {
 
-  private TrackingService trackingService;
+  private CargoRepository cargoRepository;
 
   public CargoTrackingController() {
     setCommandClass(TrackCommand.class);
@@ -45,7 +45,8 @@ public final class CargoTrackingController extends SimpleFormController {
 
     final TrackCommand trackCommand = (TrackCommand) command;
     final String trackingIdString = trackCommand.getTrackingId();
-    final Cargo cargo = trackingService.track(new TrackingId(trackingIdString));
+    
+    final Cargo cargo = cargoRepository.find(new TrackingId(trackingIdString));
 
     final Map<String, CargoTrackingViewAdapter> model = new HashMap();
     if (cargo != null) {
@@ -53,13 +54,12 @@ public final class CargoTrackingController extends SimpleFormController {
       final Locale locale = RequestContextUtils.getLocale(request);
       model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale));
     } else {
-      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[]{trackCommand.getTrackingId()},
-        "Unknown tracking id");
+      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[]{trackCommand.getTrackingId()}, "Unknown tracking id");
     }
     return showForm(request, response, errors, model);
   }
 
-  public void setTrackingService(TrackingService trackingService) {
-    this.trackingService = trackingService;
+  public void setCargoRepository(CargoRepository cargoRepository) {
+    this.cargoRepository = cargoRepository;
   }
 }

@@ -31,7 +31,7 @@ public class RoutingServiceTest extends TestCase {
     routingService.setLocationRepository(locationRepository);
 
     voyageRepository = createMock(VoyageRepository.class);
-    routingService.setCarrierMovementRepository(voyageRepository);
+    routingService.setVoyageRepository(voyageRepository);
 
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO(createMock(DataSource.class)) {
       public List<String> listLocations() {

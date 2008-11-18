@@ -20,20 +20,9 @@ public class TrackingServiceImpl implements TrackingService {
     this.cargoRepository = cargoRepository;
   }
 
-  public Cargo track(final TrackingId trackingId) {
-    // TODO this does not add any value over calling repository
-    // Perhaps this service should be remodeled to only handle inspection
-    // and state updating 
-    Validate.notNull(trackingId);
-
-    return cargoRepository.find(trackingId);
-  }
-
-  public void inspectCargo(final TrackingId trackingId) {
-    // TODO this method name is not descriptive enough
-    // For example, onCargoHandling(), whenCargoIsHandled(), actOnHandling() 
-    // mirrors DomainEventNotifier.cargoWasHandled()
-    Validate.notNull(trackingId);
+  @Override
+  public void onCargoHandled(final TrackingId trackingId) {
+    Validate.notNull(trackingId, "Tracking ID is required");
 
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
@@ -41,16 +30,15 @@ public class TrackingServiceImpl implements TrackingService {
       return;
     }
 
-    // TODO publish events here
+    // TODO cargo delivery status update would happen here
 
     if (cargo.isMisdirected()) {
-      //domainEventNotifier.cargoWasMisdirected(cargo);
+      domainEventNotifier.cargoWasMisdirected(cargo);
     }
 
     if (cargo.isUnloadedAtDestination()) {
-      //domainEventNotifier.cargoHasArrived(cargo);
+      domainEventNotifier.cargoHasArrived(cargo);
     }
-    
   }
 
 }
