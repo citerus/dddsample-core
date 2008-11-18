@@ -10,25 +10,40 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-  <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost"/>
+  <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost?broker.persistent=false"/>
 
-  <amq:topic id="handlingEventTopic" name="HandlingEventTopic" physicalName="HandlingEventTopic"/>
+  <amq:topic id="cargoHandledTopic" name="CargoHandledTopic"/>
+  <amq:topic id="misdirectedCargoTopic" name="MisdirectedCargoTopic"/>
+  <amq:topic id="deliveredCargoTopic" name="DeliveredCargoTopic"/>
+  <amq:queue id="handlingEventRegistrationAttemptQueue" name="HandlingEventRegistrationAttemptQueue"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
-    <jms:listener destination="handlingEventTopic" ref="handlingEventMessageDelegate" />
+    <jms:listener destination="cargoHandledTopic" ref="cargoHandledConsumer" />
+    <!-- TODO subscribers
+    <jms:listener destination="misdirectedCargoTopic" ref="TODO"/>
+    <jms:listener destination="deliveredCargoTopic" ref="TODO"/>
+    -->
+    <jms:listener destination="handlingEventRegistrationAttemptQueue" ref="handlingEventRegistrationAttemptConsumer" />
   </jms:listener-container>
 
-  <bean id="handlingEventMessageDelegate" class="se.citerus.dddsample.application.messaging.HandlingEventMessageDelegate">
-    <property name="trackingService" ref="trackingService"/>
-  </bean>
-  
   <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
   <bean id="domainEventNotifier" class="se.citerus.dddsample.application.messaging.JmsDomainEventNotifierImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
-    <property name="destination" ref="handlingEventTopic"/>
+    <property name="cargoHandledTopic" ref="cargoHandledTopic"/>
+    <property name="misdirectedCargoTopic" ref="misdirectedCargoTopic"/>
+    <property name="deliveredCargoTopic" ref="deliveredCargoTopic"/>
+  </bean>
+
+  <bean id="cargoHandledConsumer" class="se.citerus.dddsample.application.messaging.CargoHandledConsumer">
+    <property name="trackingService" ref="trackingService"/>
+  </bean>
+
+  <bean id="handlingEventRegistrationAttemptConsumer" class="se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttemptConsumer">
+    <property name="handlingEventFactory" ref="handlingEventFactory"/>
+    <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
   
 </beans>

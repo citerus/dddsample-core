@@ -78,7 +78,7 @@ public class ExternalRoutingService implements RoutingService {
     this.locationRepository = locationRepository;
   }
 
-  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+  public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
   }
 }

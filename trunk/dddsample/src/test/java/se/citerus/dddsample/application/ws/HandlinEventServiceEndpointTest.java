@@ -2,69 +2,52 @@ package se.citerus.dddsample.application.ws;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.service.InMemTransactionManager;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
-import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.HandlingEventService;
-import se.citerus.dddsample.domain.service.UnknownCargoException;
-import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownVoyageException;
+import org.springframework.jms.core.JmsOperations;
+import org.springframework.jms.core.MessageCreator;
 
+import javax.jms.Queue;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HandlinEventServiceEndpointTest extends TestCase {
 
   private HandlingEventServiceEndpointImpl endpoint;
-  private HandlingEventService handlingEventService;
-  private SimpleDateFormat sdf;
-  private HandlingEvent event;
+  private SimpleDateFormat sdf = new SimpleDateFormat(HandlingEventServiceEndpointImpl.ISO_8601_FORMAT);
   private Date date = new Date(100);
+  private JmsOperations jmsOperations;
+  private Queue queue;
 
   protected void setUp() throws Exception {
-    sdf = new SimpleDateFormat(HandlingEventServiceEndpointImpl.ISO_8601_FORMAT);
-
     endpoint = new HandlingEventServiceEndpointImpl();
 
-    handlingEventService = createMock(HandlingEventService.class);
-    endpoint.setHandlingEventService(handlingEventService);
+    jmsOperations = createMock(JmsOperations.class);
+    queue = createMock(Queue.class);
 
-    endpoint.setTransactionManager(new InMemTransactionManager());
-
-    Cargo cargo = new Cargo(new TrackingId("FOO"), HONGKONG, NEWYORK);
-
-    event = new HandlingEvent(
-      cargo, date, new Date(), HandlingEvent.Type.LOAD, HONGKONG, SampleVoyages.CM003
-    );
-
-    HandlingEventFactory handlingEventFactory = new HandlingEventFactory(null,null,null) {
-      @Override
-      public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
-        throws UnknownCargoException, UnknownVoyageException, UnknownLocationException {
-        
-        return event;
-      }
-    };
-
-    endpoint.setHandlingEventFactory(handlingEventFactory);
+    endpoint.setJmsOperations(jmsOperations);
+    endpoint.setHandlingEventQueue(queue);
   }
 
   public void testRegisterValidEvent() throws Exception {
-    handlingEventService.register(event);
-    replay(handlingEventService);
+    jmsOperations.send(eq(queue), isA(MessageCreator.class));
+    replay(jmsOperations, queue);
 
     // Tested call
     endpoint.register(sdf.format(date), "FOO", "CAR_456", "CNHKG", "LOAD");
   }
 
+  public void testRegisterInalidEvent() throws Exception {
+    replay(jmsOperations, queue);
+
+    // Tested call
+    try {
+      endpoint.register("NOT_A_DATE", "", "", "NOT_A_UN_LOCODE", "NOT_A_TYPE");
+      fail("Should not accept invalid ");
+    } catch (Exception expected) {
+      System.err.println(expected);
+    }
+  }
+
   protected void tearDown() throws Exception {
-    verify(handlingEventService);
+    verify(jmsOperations, queue);
   }
 }

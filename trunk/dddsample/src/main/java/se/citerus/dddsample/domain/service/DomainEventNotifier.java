@@ -1,5 +1,6 @@
 package se.citerus.dddsample.domain.service;
 
+import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
 /**
@@ -20,9 +21,10 @@ public interface DomainEventNotifier {
    */
   void cargoWasHandled(HandlingEvent event);
 
-  //void cargoWasMisdirected(Cargo cargo);
+  void cargoWasMisdirected(Cargo cargo);
 
-  //void cargoHasArrived(Cargo cargo);
+  void cargoHasArrived(Cargo cargo);
 
   //void scheduleWasChanged(Voyage voyage);
+
 }

@@ -22,9 +22,8 @@
   </wss:bindings>
 
   <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.application.ws.HandlingEventServiceEndpointImpl">
-    <property name="handlingEventService" ref="handlingEventService"/>
-    <property name="transactionManager" ref="transactionManager"/>
-    <property name="handlingEventFactory" ref="handlingEventFactory"/>
+    <property name="jmsOperations" ref="jmsOperations"/>
+    <property name="handlingEventQueue" ref="handlingEventRegistrationAttemptQueue"/>
   </bean>
 
   <!-- RMI exposed booking service facade -->

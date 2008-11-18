@@ -1,6 +1,7 @@
 package se.citerus.dddsample.ui;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -10,17 +11,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import se.citerus.dddsample.domain.service.TrackingService;
+import se.citerus.dddsample.application.persistence.CargoRepositoryInMem;
+import se.citerus.dddsample.application.persistence.HandlingEventRepositoryInMem;
+import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.ui.command.TrackCommand;
-
-import java.util.Arrays;
-import java.util.Date;
 
 public class CargoTrackingControllerTest extends TestCase {
   CargoTrackingController controller;
@@ -28,6 +22,7 @@ public class CargoTrackingControllerTest extends TestCase {
   MockHttpServletResponse response;
   MockHttpSession session;
   MockServletContext servletContext;
+  private CargoRepositoryInMem cargoRepository;
 
   protected void setUp() throws Exception {
     servletContext = new MockServletContext("test");
@@ -42,27 +37,13 @@ public class CargoTrackingControllerTest extends TestCase {
     controller.setFormView("test-form");
     controller.setSuccessView("test-success");
     controller.setCommandName("test-command-name");
-  }
-
-  private TrackingService getCargoServiceMock() {
-    return new EmptyStubTrackingService() {
-
-      public Cargo track(TrackingId trackingId) {
-        final Cargo cargo = new Cargo(trackingId, HONGKONG, TOKYO);
-        final HandlingEvent event = new HandlingEvent(cargo, new Date(10L), new Date(20L), HandlingEvent.Type.RECEIVE, HONGKONG);
-        CargoTestHelper.setDeliveryHistory(cargo, Arrays.asList(event));
-        
-        return cargo;
-      }
-    };
-  }
-
-  private TrackingService getTrackingServiceNullMock() {
-    return new EmptyStubTrackingService();
+    cargoRepository = new CargoRepositoryInMem();
+    cargoRepository.setHandlingEventRepository(new HandlingEventRepositoryInMem());
+    cargoRepository.init();
   }
 
   public void testHandleGet() throws Exception {
-    controller.setTrackingService(getCargoServiceMock());
+    controller.setCargoRepository(new CargoRepositoryInMem());
     request.setMethod("GET");
 
     ModelAndView mav = controller.handleRequest(request, response);
@@ -73,8 +54,8 @@ public class CargoTrackingControllerTest extends TestCase {
   }
 
   public void testHandlePost() throws Exception {
-    controller.setTrackingService(getCargoServiceMock());
-    request.addParameter("trackingId", "JKL456");
+    controller.setCargoRepository(cargoRepository);
+    request.addParameter("trackingId", "ABC");
     request.setMethod("POST");
 
     ModelAndView mav = controller.handleRequest(request, response);
@@ -83,11 +64,14 @@ public class CargoTrackingControllerTest extends TestCase {
     // Errors, command are two standard map attributes, the third should be the cargo object
     assertEquals(3, mav.getModel().size());
     CargoTrackingViewAdapter cargo = (CargoTrackingViewAdapter) mav.getModel().get("cargo");
-    assertEquals("JKL456", cargo.getTrackingId());
+    assertEquals("ABC", cargo.getTrackingId());
   }
 
   public void testUnknownCargo() throws Exception {
-    controller.setTrackingService(getTrackingServiceNullMock());
+    CargoRepository cargoRepository = EasyMock.createNiceMock(CargoRepository.class);
+    EasyMock.replay(cargoRepository);
+    controller.setCargoRepository(cargoRepository);
+    
     request.setMethod("POST");
     request.setParameter("trackingId", "unknown-id");
 
@@ -106,11 +90,4 @@ public class CargoTrackingControllerTest extends TestCase {
     assertEquals(command.getTrackingId(), fe.getArguments()[0]);
   }
 
-  private class EmptyStubTrackingService implements TrackingService {
-    public Cargo track(TrackingId trackingId) {
-      return null;
-    }
-    public void inspectCargo(TrackingId trackingId) {
-    }
-  }
 }

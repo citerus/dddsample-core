@@ -109,7 +109,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     this.cargoRepository = cargoRepository;
   }
 
-  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+  public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
   }
 }

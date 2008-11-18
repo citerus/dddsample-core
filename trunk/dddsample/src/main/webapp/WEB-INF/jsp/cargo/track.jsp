@@ -47,7 +47,7 @@
             <td>Event</td>
             <td>Location</td>
             <td>Time</td>
-            <td>Carrier Movement</td>
+            <td>Voyage number</td>
             <td></td>
           </tr>
         </thead>
@@ -57,7 +57,7 @@
               <td>${event.type}</td>
               <td>${event.location}</td>
               <td>${event.time}</td>
-              <td>${event.carrierMovement}</td>
+              <td>${event.voyageNumber}</td>
               <td>
                 <img src="${rc.contextPath}/images/${event.expected ? "tick" : "cross"}.png" alt=""/>
               </td>

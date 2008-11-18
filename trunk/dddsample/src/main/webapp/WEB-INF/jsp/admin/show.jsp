@@ -23,7 +23,7 @@
         <caption>Itinerary</caption>
         <thead>
           <tr>
-            <td>Carrier</td>
+            <td>Voyage number</td>
             <td>From</td>
             <td>To</td>
           </tr>
@@ -31,7 +31,7 @@
         <tbody>
           <c:forEach items="${cargo.legs}" var="leg">
             <tr>
-              <td>${leg.carrierMovementId}</td>
+              <td>${leg.voyageNumber}</td>
               <td>${leg.from}</td>
               <td>${leg.to}</td>
             </tr>

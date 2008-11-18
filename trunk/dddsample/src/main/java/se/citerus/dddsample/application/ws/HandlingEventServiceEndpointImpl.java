@@ -3,137 +3,127 @@ package se.citerus.dddsample.application.ws;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.jms.core.JmsOperations;
+import org.springframework.jms.core.MessageCreator;
+import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.HandlingEventService;
-import se.citerus.dddsample.domain.service.UnknownCargoException;
-import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownVoyageException;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Queue;
+import javax.jms.Session;
 import javax.jws.WebService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+/**
+ * This web service endpoint implementation performs basic validation and parsing
+ * of incoming data, and in case of a valid registration attempt, sends an asynchronous message
+ * with the informtion to the handling event registration system for proper registration.
+ *  
+ */
 @WebService(endpointInterface = "se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint")
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {
 
-  private HandlingEventFactory handlingEventFactory;
-  private HandlingEventService handlingEventService;
-  private TransactionTemplate transactionTemplate;
-  private final Log logger = LogFactory.getLog(getClass());
-  protected static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
+  private JmsOperations jmsOperations;
+  private Queue handlingEventQueue;
+  private static final Log logger = LogFactory.getLog(HandlingEventServiceEndpointImpl.class);
+  
+  public static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
 
   public void register(final String completionTime, final String trackingId, final String voyageNumberString,
-                       final String unlocode, final String eventType) {
-    try {
-      final Date date = parseIso8601Date(completionTime);
-      final TrackingId tid = new TrackingId(trackingId);
+                       final String unlocode, final String eventType) throws RegistrationFailure {
+    final List<String> errors = new ArrayList<String>();
 
-      final VoyageNumber voyageNumber;
-      if (StringUtils.isNotEmpty(voyageNumberString)) {
-        voyageNumber = new VoyageNumber(voyageNumberString);
-      } else {
-        voyageNumber = null;
-      }
+    final Date date = parseDate(completionTime, errors);
+    final TrackingId tid = parseTrackingId(trackingId, errors);
+    final VoyageNumber voyageNumber = parseVoyageNumber(voyageNumberString, errors);
+    final HandlingEvent.Type type = parseEventType(eventType, errors);
+    final UnLocode ul = parseUnLocode(unlocode, errors);
 
-      final HandlingEvent.Type type = parseEventType(eventType);
-      final UnLocode ul = new UnLocode(unlocode);
-
-      doRegister(date, tid, voyageNumber, type, ul);
-    } catch (IllegalArgumentException iae) {
-      handleIllegalArgument(iae);
-    } catch (ParseException pe) {
-      handleInvalidDateFormat(completionTime);
-    } catch (InvalidEventTypeException iete) {
-      handleInvalidEventType(iete);
-    } catch (Exception e) {
-      handleOtherError(e);
+    if (errors.isEmpty()) {
+      sendRegistrationAttemptMessage(date, tid, voyageNumber, type, ul);
+    } else {
+      logger.info("Handling event registration attempt failed: " + errors);
+      throw new RegistrationFailure(errors);
     }
   }
 
-  // TODO this entire step would be well suited to move to a consumer of asynchronous messages
-  private void doRegister(final Date date, final TrackingId tid, final VoyageNumber voyageNumber, final HandlingEvent.Type type, final UnLocode ul) {
-    // Using programmatic demarcation here due to weaving conflicts
-    // between jax-ws and Spring transaction annotations
-    transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-        protected void doInTransactionWithoutResult(TransactionStatus status) {
-            try {
-                HandlingEvent event = handlingEventFactory.createHandlingEvent(date, tid, voyageNumber, ul, type);
-                handlingEventService.register(event);
-            } catch (UnknownVoyageException e) {
-                handleUnknownCarrierMovementId(e);
-            } catch (UnknownCargoException e) {
-                handleUnknownTrackingId(e);
-            } catch (UnknownLocationException e) {
-                handleUnknownLocation(e);
-            }
-        }
+  private void sendRegistrationAttemptMessage(final Date date, final TrackingId tid, final VoyageNumber voyageNumber, final HandlingEvent.Type type, final UnLocode ul) {
+    jmsOperations.send(handlingEventQueue, new MessageCreator() {
+      public Message createMessage(Session session) throws JMSException {
+        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(date, tid, voyageNumber, type, ul);
+        return session.createObjectMessage(attempt);
+      }
     });
+    if (logger.isDebugEnabled()) {
+      logger.debug("Incoming handling event registration attempt added to queue");
+    }
   }
 
-  private HandlingEvent.Type parseEventType(final String eventType) throws InvalidEventTypeException {
+  private UnLocode parseUnLocode(final String unlocode, final List<String> errors) {
+    try {
+      return new UnLocode(unlocode);
+    } catch (IllegalArgumentException e) {
+      errors.add(e.getMessage());
+      return null;
+    }
+  }
+
+  private TrackingId parseTrackingId(final String trackingId, final List<String> errors) {
+    try {
+      return new TrackingId(trackingId);
+    } catch (IllegalArgumentException e) {
+      errors.add(e.getMessage());
+      return null;
+    }
+  }
+
+  private VoyageNumber parseVoyageNumber(final String voyageNumber, final List<String> errors) {
+    if (StringUtils.isNotEmpty(voyageNumber)) {
+      try {
+        return new VoyageNumber(voyageNumber);
+      } catch (IllegalArgumentException e) {
+        errors.add(e.getMessage());
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  private Date parseDate(final String completionTime, final List<String> errors) {
+    Date date;
+    try {
+      date = new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
+    } catch (ParseException e) {
+      errors.add("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
+      date = null;
+    }
+    return date;
+  }
+
+  private HandlingEvent.Type parseEventType(final String eventType, final List<String> errors) {
     try {
       return HandlingEvent.Type.valueOf(eventType);
     } catch (IllegalArgumentException e) {
-      throw new InvalidEventTypeException(eventType);
+      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingEvent.Type.values()));
+      return null;      
     }
   }
 
-  private Date parseIso8601Date(final String completionTime) throws ParseException {
-    return new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
+  public void setJmsOperations(final JmsOperations jmsOperations) {
+    this.jmsOperations = jmsOperations;
   }
 
-  // Validation/translation errors
-
-  private void handleIllegalArgument(IllegalArgumentException iae) {
-    logger.error(iae, iae);
-  }
-
-  private void handleOtherError(Exception e) {
-    logger.error(e, e);
-  }
-
-  private void handleInvalidEventType(InvalidEventTypeException iete) {
-    logger.error(iete, iete);
-  }
-
-  private void handleInvalidDateFormat(String completionTime) {
-    logger.error("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
-  }
-
-  // Domain errors, don't belong here really
-
-  private void handleUnknownLocation(UnknownLocationException e) {
-    logger.error(e, e);
-  }
-
-  private void handleUnknownCarrierMovementId(UnknownVoyageException e) {
-    logger.error(e, e);
-  }
-
-  private void handleUnknownTrackingId(Exception e) {
-    logger.error(e, e);
-  }
-
-  // Setters
-
-  public void setHandlingEventService(HandlingEventService handlingEventService) {
-    this.handlingEventService = handlingEventService;
-  }
-
-  public void setTransactionManager(PlatformTransactionManager transactionManager) {
-      transactionTemplate = new TransactionTemplate(transactionManager);
-  }
-
-  public void setHandlingEventFactory(HandlingEventFactory handlingEventFactory) {
-    this.handlingEventFactory = handlingEventFactory;
+  public void setHandlingEventQueue(final Queue handlingEventQueue) {
+    this.handlingEventQueue = handlingEventQueue;
   }
 }

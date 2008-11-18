@@ -142,8 +142,10 @@ public class CargoHandlingScenarioTest extends TestCase {
     // Synchronous stub
     domainEventNotifier = new DomainEventNotifier() {
       public void cargoWasHandled(HandlingEvent event) {
-        trackingService.inspectCargo(event.cargo().trackingId());
+        trackingService.onCargoHandled(event.cargo().trackingId());
       }
+      public void cargoWasMisdirected(Cargo cargo) {}
+      public void cargoHasArrived(Cargo cargo) {}
     };
 
     // Stub

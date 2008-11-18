@@ -27,7 +27,7 @@ public class ExternalRoutingServiceTest extends TestCase {
   @Override
   public void setUp() {
     routingService = new ExternalRoutingService();
-    routingService.setCarrierMovementRepository(new VoyageRepositoryInMem());
+    routingService.setVoyageRepository(new VoyageRepositoryInMem());
     routingService.setLocationRepository(new LocationRepositoryInMem());
 
     graphTraversalService = createMock(GraphTraversalService.class);
