@@ -1,9 +1,9 @@
 package se.citerus.dddsample.application.impl;
 
 import org.springframework.transaction.annotation.Transactional;
+import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.application.SystemEvents;
-import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;

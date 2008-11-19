@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.messaging;
+package se.citerus.dddsample.infrastructure.messaging.jms;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

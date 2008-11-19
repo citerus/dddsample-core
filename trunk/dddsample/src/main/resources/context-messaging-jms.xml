@@ -31,7 +31,7 @@
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
-  <bean id="systemEvents" class="se.citerus.dddsample.application.messaging.JmsSystemEventsImpl">
+  <bean id="systemEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsSystemEventsImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="cargoHandledTopic" ref="cargoHandledTopic"/>
     <property name="misdirectedCargoTopic" ref="misdirectedCargoTopic"/>
@@ -39,11 +39,11 @@
     <property name="rejectedRegistrationAttemptsQueue" ref="rejectedRegistrationAttemptsQueue"/>
   </bean>
 
-  <bean id="cargoHandledConsumer" class="se.citerus.dddsample.application.messaging.CargoHandledConsumer">
+  <bean id="cargoHandledConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.CargoHandledConsumer">
     <property name="trackingService" ref="trackingService"/>
   </bean>
 
-  <bean id="handlingEventRegistrationAttemptConsumer" class="se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttemptConsumer">
+  <bean id="handlingEventRegistrationAttemptConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.HandlingEventRegistrationAttemptConsumer">
     <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
   

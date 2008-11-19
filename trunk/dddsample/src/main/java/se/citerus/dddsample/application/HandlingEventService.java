@@ -1,8 +1,5 @@
 package se.citerus.dddsample.application;
 
-import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
-
-
 /**
  * Handling event service.
  */
