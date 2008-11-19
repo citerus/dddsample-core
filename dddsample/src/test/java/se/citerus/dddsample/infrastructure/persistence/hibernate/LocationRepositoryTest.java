@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.persistence;
+package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;

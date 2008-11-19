@@ -10,9 +10,6 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.UnknownCargoException;
-import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownVoyageException;
 
 import java.util.Date;
 
@@ -37,9 +34,9 @@ public class HandlingEventFactory {
    * @param voyageNumber      voyage number
    * @param unlocode          United Nations Location Code for the location of the event
    * @param type              type of event
-   * @throws se.citerus.dddsample.domain.service.UnknownVoyageException
+   * @throws UnknownVoyageException
    *                                    if there's not carrier movement with this id
-   * @throws se.citerus.dddsample.domain.service.UnknownCargoException if there's no cargo with this tracking id
+   * @throws UnknownCargoException if there's no cargo with this tracking id
    * @throws UnknownLocationException   if there's no location with this UN Locode
    * @return A handling event.
    */

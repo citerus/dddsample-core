@@ -2,8 +2,6 @@ package se.citerus.dddsample.domain.model.handling;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
-import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -15,9 +13,8 @@ import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.UnknownCargoException;
-import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownVoyageException;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
 import java.util.Date;
 

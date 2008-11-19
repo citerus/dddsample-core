@@ -7,18 +7,18 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean id="bookingService" class="se.citerus.dddsample.domain.service.impl.BookingServiceImpl">
+  <bean id="bookingService" class="se.citerus.dddsample.application.impl.BookingServiceImpl">
     <constructor-arg ref="cargoRepository"/>
     <constructor-arg ref="locationRepository"/>
     <constructor-arg ref="routingService"/>
   </bean>
 
-  <bean id="trackingService" class="se.citerus.dddsample.domain.service.impl.TrackingServiceImpl">
+  <bean id="trackingService" class="se.citerus.dddsample.application.impl.TrackingServiceImpl">
     <constructor-arg ref="cargoRepository"/>
     <constructor-arg ref="domainEventNotifier"/>
   </bean>
 
-  <bean id="handlingEventService" class="se.citerus.dddsample.domain.service.impl.HandlingEventServiceImpl">
+  <bean id="handlingEventService" class="se.citerus.dddsample.application.impl.HandlingEventServiceImpl">
     <constructor-arg ref="handlingEventRepository"/>
     <constructor-arg ref="domainEventNotifier"/>
   </bean>

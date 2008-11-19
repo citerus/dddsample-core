@@ -3,8 +3,8 @@ package se.citerus.dddsample.application.messaging;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
+import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.service.TrackingService;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;

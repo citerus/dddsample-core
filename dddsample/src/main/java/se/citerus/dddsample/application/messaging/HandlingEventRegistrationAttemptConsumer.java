@@ -3,15 +3,11 @@ package se.citerus.dddsample.application.messaging;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
+import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
+import se.citerus.dddsample.domain.model.handling.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.HandlingEventService;
-import se.citerus.dddsample.domain.service.UnknownCargoException;
-import se.citerus.dddsample.domain.service.UnknownLocationException;
-import se.citerus.dddsample.domain.service.UnknownVoyageException;
 
 import javax.jms.JMSException;
 import javax.jms.Message;

@@ -1,5 +1,6 @@
-package se.citerus.dddsample.domain.service;
+package se.citerus.dddsample.application;
 
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -18,6 +19,7 @@ public interface BookingService {
    * @param destination cargo destination
    * @return Cargo tracking id
    */
+  @Transactional
   TrackingId bookNewCargo(UnLocode origin, UnLocode destination);
 
   /**
@@ -26,6 +28,7 @@ public interface BookingService {
    * @param trackingId cargo tracking id
    * @return A list of possible itineraries for this cargo 
    */
+  @Transactional
   List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId);
 
 }

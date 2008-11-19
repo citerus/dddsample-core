@@ -1,8 +1,10 @@
 package se.citerus.dddsample;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
-import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
+import se.citerus.dddsample.application.HandlingEventService;
+import se.citerus.dddsample.application.TrackingService;
+import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
+import se.citerus.dddsample.application.impl.TrackingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.*;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.*;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
@@ -14,11 +16,9 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.service.DomainEventNotifier;
-import se.citerus.dddsample.domain.service.HandlingEventService;
 import se.citerus.dddsample.domain.service.RoutingService;
-import se.citerus.dddsample.domain.service.TrackingService;
-import se.citerus.dddsample.domain.service.impl.HandlingEventServiceImpl;
-import se.citerus.dddsample.domain.service.impl.TrackingServiceImpl;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
 import java.util.*;
 

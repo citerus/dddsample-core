@@ -26,19 +26,19 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
   
-  <bean id="cargoRepository" class="se.citerus.dddsample.application.persistence.CargoRepositoryHibernate">
+  <bean id="cargoRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.CargoRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="handlingEventRepository" class="se.citerus.dddsample.application.persistence.HandlingEventRepositoryHibernate">
+  <bean id="handlingEventRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.HandlingEventRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="voyageRepository" class="se.citerus.dddsample.application.persistence.VoyageRepositoryHibernate">
+  <bean id="voyageRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.VoyageRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="locationRepository" class="se.citerus.dddsample.application.persistence.LocationRepositoryHibernate">
+  <bean id="locationRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.LocationRepositoryHibernate">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 </beans>
