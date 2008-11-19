@@ -3,6 +3,7 @@ package se.citerus.dddsample.application.messaging;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.service.DomainEventNotifier;
 
@@ -47,6 +48,12 @@ public final class JmsDomainEventNotifierImpl implements DomainEventNotifier {
         return session.createTextMessage(cargo.trackingId().idString());
       }
     });
+  }
+
+  @Override
+  public void rejectHandlingEventRegistrationAttempt(CannotCreateHandlingEventException e) {
+    // TODO send to dedicated queue
+    System.err.println("Rejected handling event registration attempt: " + e);
   }
 
   public void setJmsOperations(final JmsOperations jmsOperations) {

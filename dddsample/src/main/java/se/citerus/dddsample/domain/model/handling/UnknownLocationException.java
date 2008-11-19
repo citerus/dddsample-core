@@ -2,7 +2,7 @@ package se.citerus.dddsample.domain.model.handling;
 
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
-public class UnknownLocationException extends Exception {
+public class UnknownLocationException extends CannotCreateHandlingEventException {
 
   private final UnLocode unlocode;
 

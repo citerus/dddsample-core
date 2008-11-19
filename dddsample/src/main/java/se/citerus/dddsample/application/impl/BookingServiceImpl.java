@@ -28,7 +28,7 @@ public final class BookingServiceImpl implements BookingService {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = false)
   public TrackingId bookNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
@@ -49,7 +49,7 @@ public final class BookingServiceImpl implements BookingService {
   @Transactional
   public List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId) {
     Validate.notNull(trackingId);
-
+    
     final Cargo cargo = cargoRepository.find(trackingId);
     final RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
 

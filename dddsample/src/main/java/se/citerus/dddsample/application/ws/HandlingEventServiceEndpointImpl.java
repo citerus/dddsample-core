@@ -56,10 +56,10 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     }
   }
 
-  private void sendRegistrationAttemptMessage(final Date date, final TrackingId tid, final VoyageNumber voyageNumber, final HandlingEvent.Type type, final UnLocode ul) {
+  private void sendRegistrationAttemptMessage(final Date completionDate, final TrackingId tid, final VoyageNumber voyageNumber, final HandlingEvent.Type type, final UnLocode ul) {
     jmsOperations.send(handlingEventQueue, new MessageCreator() {
       public Message createMessage(Session session) throws JMSException {
-        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(date, tid, voyageNumber, type, ul);
+        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), completionDate, tid, voyageNumber, type, ul);
         return session.createObjectMessage(attempt);
       }
     });

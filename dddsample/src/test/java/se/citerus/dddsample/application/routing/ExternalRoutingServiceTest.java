@@ -2,67 +2,78 @@ package se.citerus.dddsample.application.routing;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.DateTestUtil;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import se.citerus.dddsample.domain.model.cargo.*;
+import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
+import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.location.LocationRepository;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
-import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 import se.citerus.routingteam.GraphTraversalService;
-import se.citerus.routingteam.TransitEdge;
-import se.citerus.routingteam.TransitPath;
+import se.citerus.routingteam.internal.GraphDAO;
+import se.citerus.routingteam.internal.GraphTraversalServiceImpl;
 
-import static java.util.Arrays.asList;
+import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class ExternalRoutingServiceTest extends TestCase {
 
   private ExternalRoutingService routingService;
-  private GraphTraversalService graphTraversalService;
+  private VoyageRepository voyageRepository;
 
-  @Override
-  public void setUp() {
+  protected void setUp() throws Exception {
     routingService = new ExternalRoutingService();
-    routingService.setVoyageRepository(new VoyageRepositoryInMem());
-    routingService.setLocationRepository(new LocationRepositoryInMem());
+    LocationRepository locationRepository = new LocationRepositoryInMem();
+    routingService.setLocationRepository(locationRepository);
 
-    graphTraversalService = createMock(GraphTraversalService.class);
+    voyageRepository = createMock(VoyageRepository.class);
+    routingService.setVoyageRepository(voyageRepository);
+
+    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO(createMock(DataSource.class)) {
+      public List<String> listLocations() {
+        return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
+      }
+
+      public void storeCarrierMovementId(String cmId, String from, String to) {
+      }
+    });
     routingService.setGraphTraversalService(graphTraversalService);
   }
 
-  public void testFetchRoutesForSpecification() {
-    expect(graphTraversalService.findShortestPath("SESTO", "CNHKG")).
-      andReturn(asList(
-        new TransitPath(asList(
-          new TransitEdge("CM001","SESTO","DEHAM"),
-          new TransitEdge("CM002","DEHAM","CNHKG"))),
-        new TransitPath(asList(
-          new TransitEdge("CM001","SESTO","DEHAM"),
-          new TransitEdge("CM006","DEHAM","CNHGH")
-        ))
-      ));
-    replay(graphTraversalService);
+  public void testCalculatePossibleRoutes() {
+    TrackingId trackingId = new TrackingId("ABC");
+    Cargo cargo = new Cargo(trackingId, HONGKONG, HELSINKI);
+    RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
 
-    final Date arrivalDeadline = DateTestUtil.toDate("2008-12-01");
-    final Cargo cargo = new Cargo(new TrackingId("C123"), STOCKHOLM, HONGKONG);
-    final RouteSpecification spec = new RouteSpecification(cargo.origin(), cargo.destination(), arrivalDeadline);
-
-    final List<Itinerary> itineraries = routingService.fetchRoutesForSpecification(spec);
+    expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
     
-    /* TODO implement RouteSpecification, then run these assertions
-    assertEquals(1, itineraries.size());
+    replay(voyageRepository);
 
-    final Itinerary itinerary = itineraries.get(0);
-    assertEquals(2, itinerary.legs().size());
-    */
-  }
+    List<Itinerary> candidates = routingService.fetchRoutesForSpecification(routeSpecification);
+    assertNotNull(candidates);
+    
+    for (Itinerary itinerary : candidates) {
+      List<Leg> legs = itinerary.legs();
+      assertNotNull(legs);
+      assertFalse(legs.isEmpty());
 
-  public void tearDown() {
-    verify(graphTraversalService);
+      // Cargo origin and start of first leg should match
+      assertEquals(cargo.origin(), legs.get(0).loadLocation());
+
+      // Cargo final destination and last leg stop should match
+      Location lastLegStop = legs.get(legs.size() - 1).unloadLocation();
+      assertEquals(cargo.destination(), lastLegStop);
+
+      for (int i = 0; i < legs.size() - 1; i++) {
+        // Assert that all legs are connected
+        assertEquals(legs.get(i).unloadLocation(), legs.get(i + 1).loadLocation());
+      }
+    }
+
+    verify(voyageRepository);
   }
 
 }
