@@ -128,7 +128,7 @@
           </execution>
         </executions>
         <configuration>
-          <sei>se.citerus.dddsample.iface.handling.HandlingEventServiceEndpointImpl</sei>
+          <sei>se.citerus.dddsample.interfaces.handling.HandlingEventServiceEndpointImpl</sei>
           <genWsdl>true</genWsdl>
         </configuration>
       </plugin>
