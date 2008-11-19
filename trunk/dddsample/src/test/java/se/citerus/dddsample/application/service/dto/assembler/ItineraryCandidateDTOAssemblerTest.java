@@ -2,7 +2,6 @@ package se.citerus.dddsample.application.service.dto.assembler;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.persistence.VoyageRepositoryInMem;
 import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.application.remoting.dto.assembler.ItineraryCandidateDTOAssembler;
@@ -14,6 +13,7 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
 import java.util.ArrayList;
 import java.util.Arrays;

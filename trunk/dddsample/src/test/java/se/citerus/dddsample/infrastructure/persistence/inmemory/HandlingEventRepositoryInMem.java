@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.persistence;
+package se.citerus.dddsample.infrastructure.persistence.inmemory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.persistence;
+package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;

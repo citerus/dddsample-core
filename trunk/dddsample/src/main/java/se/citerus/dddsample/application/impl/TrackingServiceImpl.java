@@ -1,13 +1,13 @@
-package se.citerus.dddsample.domain.service.impl;
+package se.citerus.dddsample.application.impl;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.service.DomainEventNotifier;
-import se.citerus.dddsample.domain.service.TrackingService;
 
 public class TrackingServiceImpl implements TrackingService {
 

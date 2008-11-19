@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.persistence;
+package se.citerus.dddsample.infrastructure.persistence.inmemory;
 
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
 import se.citerus.dddsample.domain.model.carrier.Voyage;

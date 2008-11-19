@@ -11,9 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
-import se.citerus.dddsample.application.persistence.CargoRepositoryInMem;
-import se.citerus.dddsample.application.persistence.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.ui.command.TrackCommand;
 
 public class CargoTrackingControllerTest extends TestCase {

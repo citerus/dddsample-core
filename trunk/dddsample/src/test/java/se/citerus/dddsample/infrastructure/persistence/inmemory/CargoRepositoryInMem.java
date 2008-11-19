@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.persistence;
+package se.citerus.dddsample.infrastructure.persistence.inmemory;
 
 import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.model.cargo.Cargo;

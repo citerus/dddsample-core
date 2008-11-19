@@ -1,9 +1,9 @@
-package se.citerus.dddsample.domain.service.impl;
+package se.citerus.dddsample.application.impl;
 
+import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.service.DomainEventNotifier;
-import se.citerus.dddsample.domain.service.HandlingEventService;
 
 public final class HandlingEventServiceImpl implements HandlingEventService {
 

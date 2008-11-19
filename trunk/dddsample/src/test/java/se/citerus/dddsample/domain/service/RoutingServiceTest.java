@@ -2,7 +2,6 @@ package se.citerus.dddsample.domain.service;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.persistence.LocationRepositoryInMem;
 import se.citerus.dddsample.application.routing.ExternalRoutingService;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
@@ -11,6 +10,7 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.routingteam.GraphTraversalService;
 import se.citerus.routingteam.internal.GraphDAO;
 import se.citerus.routingteam.internal.GraphTraversalServiceImpl;

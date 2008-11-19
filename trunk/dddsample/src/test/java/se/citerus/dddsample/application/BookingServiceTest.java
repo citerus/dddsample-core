@@ -1,7 +1,8 @@
-package se.citerus.dddsample.domain.service;
+package se.citerus.dddsample.application;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
+import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -9,7 +10,7 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.impl.BookingServiceImpl;
+import se.citerus.dddsample.domain.service.RoutingService;
 
 public class BookingServiceTest extends TestCase {
 

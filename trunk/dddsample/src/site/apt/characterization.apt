@@ -25,7 +25,7 @@
 
 {Domain Event}
 
-    Some things clearly have identity but no life-cycle, or an extremely limited life-cycle with just one state. We call these things <Domain Events> and they can be viewed as hybrid of <Entities> and <Value Objects>. In the sample application <<<{{{xref/se/citerus/dddsample/domain/model/handling/HandlingEvent.html}HandlingEvent}}>>> is a <Domain Event> that represent real-life event such as a <<<Cargo>>> being loaded or unloaded, customs cleared etc. They carry both a completion time and a registration time and a completion time. The completion time is the time when the event occurred and the registration time is the time when the event was received. The <<<HandlingEvent>>> id is composed of the cargo, carrier movement, completion time, location and type (<<<LOAD>>> or <<<UNLOAD>>>).
+    Some things clearly have identity but no life-cycle, or an extremely limited life-cycle with just one state. We call these things <Domain Events> and they can be viewed as hybrid of <Entities> and <Value Objects>. In the sample application <<<{{{xref/se/citerus/dddsample/domain/model/handling/HandlingEvent.html}HandlingEvent}}>>> is a <Domain Event> that represent real-life event such as a <<<Cargo>>> being loaded or unloaded, customs cleared etc. They carry both a completion time and a registration time. The completion time is the time when the event occurred and the registration time is the time when the event was received by the system. The <<<HandlingEvent>>> id is composed of the cargo, carrier movement, completion time, location and type (<<<LOAD>>> or <<<UNLOAD>>>).
 
 {Aggregates}
 
