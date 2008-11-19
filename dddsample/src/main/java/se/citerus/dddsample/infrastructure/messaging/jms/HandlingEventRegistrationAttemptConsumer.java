@@ -1,7 +1,8 @@
-package se.citerus.dddsample.application.messaging;
+package se.citerus.dddsample.infrastructure.messaging.jms;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.application.HandlingEventService;
 
 import javax.jms.Message;

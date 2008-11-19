@@ -3,7 +3,6 @@ package se.citerus.dddsample.application;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
-import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;

@@ -1,6 +1,5 @@
 package se.citerus.dddsample.application;
 
-import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;

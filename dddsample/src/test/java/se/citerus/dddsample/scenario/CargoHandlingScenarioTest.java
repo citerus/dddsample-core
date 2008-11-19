@@ -1,12 +1,12 @@
 package se.citerus.dddsample.scenario;
 
 import junit.framework.TestCase;
+import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.application.SystemEvents;
 import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.application.impl.TrackingServiceImpl;
-import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.*;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.*;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
