@@ -26,6 +26,6 @@ public interface SystemEvents {
 
   void rejectHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem);
 
-  //void scheduleWasChanged(Voyage voyage);
+  void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt);
 
 }

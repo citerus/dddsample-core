@@ -2,10 +2,9 @@ package se.citerus.dddsample.application.ws;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import org.springframework.jms.core.JmsOperations;
-import org.springframework.jms.core.MessageCreator;
+import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
+import se.citerus.dddsample.application.SystemEvents;
 
-import javax.jms.Queue;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,29 +13,25 @@ public class HandlinEventServiceEndpointTest extends TestCase {
   private HandlingEventServiceEndpointImpl endpoint;
   private SimpleDateFormat sdf = new SimpleDateFormat(HandlingEventServiceEndpointImpl.ISO_8601_FORMAT);
   private Date date = new Date(100);
-  private JmsOperations jmsOperations;
-  private Queue queue;
+  private SystemEvents systemEvents;
 
   protected void setUp() throws Exception {
     endpoint = new HandlingEventServiceEndpointImpl();
 
-    jmsOperations = createMock(JmsOperations.class);
-    queue = createMock(Queue.class);
-
-    endpoint.setJmsOperations(jmsOperations);
-    endpoint.setHandlingEventQueue(queue);
+    systemEvents = createMock(SystemEvents.class);
+    endpoint.setSystemEvents(systemEvents);
   }
 
   public void testRegisterValidEvent() throws Exception {
-    jmsOperations.send(eq(queue), isA(MessageCreator.class));
-    replay(jmsOperations, queue);
+    systemEvents.receivedHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class));
+    replay(systemEvents);
 
     // Tested call
     endpoint.register(sdf.format(date), "FOO", "CAR_456", "CNHKG", "LOAD");
   }
 
   public void testRegisterInalidEvent() throws Exception {
-    replay(jmsOperations, queue);
+    replay(systemEvents);
 
     // Tested call
     try {
@@ -48,6 +43,6 @@ public class HandlinEventServiceEndpointTest extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    verify(jmsOperations, queue);
+    verify(systemEvents);
   }
 }
