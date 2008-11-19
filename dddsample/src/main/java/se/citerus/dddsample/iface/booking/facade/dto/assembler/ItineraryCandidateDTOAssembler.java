@@ -1,7 +1,5 @@
-package se.citerus.dddsample.application.remoting.dto.assembler;
+package se.citerus.dddsample.iface.booking.facade.dto.assembler;
 
-import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.remoting.dto.LegDTO;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
@@ -10,6 +8,8 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.iface.booking.facade.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.LegDTO;
 
 import java.util.ArrayList;
 import java.util.Date;

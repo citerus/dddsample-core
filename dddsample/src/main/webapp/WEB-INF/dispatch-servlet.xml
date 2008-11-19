@@ -11,7 +11,7 @@
     </property>
   </bean>
 
-  <bean name="/cargo/track.html" class="se.citerus.dddsample.ui.CargoTrackingController">
+  <bean name="/cargo/track.html" class="se.citerus.dddsample.iface.tracking.CargoTrackingController">
     <property name="sessionForm" value="true"/>
     <property name="commandName" value="trackCommand"/>
     <property name="formView" value="cargo/track"/>
@@ -20,9 +20,9 @@
     <property name="validator" ref="trackCommandValidator"/>
   </bean>
 
-  <bean id="trackCommandValidator" class="se.citerus.dddsample.ui.command.TrackCommandValidator"/>
+  <bean id="trackCommandValidator" class="se.citerus.dddsample.iface.tracking.TrackCommandValidator"/>
 
-  <bean name="/admin/*" class="se.citerus.dddsample.ui.CargoAdminController">
+  <bean name="/admin/*" class="se.citerus.dddsample.iface.booking.web.CargoAdminController">
     <property name="bookingServiceFacade" ref="bookingServiceFacade"/>
   </bean>
 

@@ -1,14 +1,8 @@
-package se.citerus.dddsample.application.remoting;
+package se.citerus.dddsample.iface.booking.facade;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.BookingService;
-import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
-import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.remoting.dto.LocationDTO;
-import se.citerus.dddsample.application.remoting.dto.assembler.CargoRoutingDTOAssembler;
-import se.citerus.dddsample.application.remoting.dto.assembler.ItineraryCandidateDTOAssembler;
-import se.citerus.dddsample.application.remoting.dto.assembler.LocationDTOAssembler;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
@@ -17,6 +11,12 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.iface.booking.facade.dto.CargoRoutingDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.LocationDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.assembler.CargoRoutingDTOAssembler;
+import se.citerus.dddsample.iface.booking.facade.dto.assembler.ItineraryCandidateDTOAssembler;
+import se.citerus.dddsample.iface.booking.facade.dto.assembler.LocationDTOAssembler;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
-package se.citerus.dddsample.application.remoting.dto.assembler;
+package se.citerus.dddsample.iface.booking.facade.dto.assembler;
 
-import se.citerus.dddsample.application.remoting.dto.LocationDTO;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.iface.booking.facade.dto.LocationDTO;
 
 import java.util.ArrayList;
 import java.util.List;

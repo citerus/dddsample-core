@@ -38,7 +38,7 @@
     <property name="graphTraversalService" ref="graphTraversalService"/>
   </bean>
 
-  <bean id="bookingServiceFacade" class="se.citerus.dddsample.application.remoting.BookingServiceFacadeImpl">
+  <bean id="bookingServiceFacade" class="se.citerus.dddsample.iface.booking.facade.BookingServiceFacadeImpl">
     <property name="bookingService" ref="bookingService"/>
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="locationRepository" ref="locationRepository"/>

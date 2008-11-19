@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.remoting.dto;
+package se.citerus.dddsample.iface.booking.facade.dto;
 
 import java.io.Serializable;
 
