@@ -16,6 +16,7 @@
   <amq:topic id="misdirectedCargoTopic" name="MisdirectedCargoTopic"/>
   <amq:topic id="deliveredCargoTopic" name="DeliveredCargoTopic"/>
   <amq:queue id="handlingEventRegistrationAttemptQueue" name="HandlingEventRegistrationAttemptQueue"/>
+  <amq:queue id="rejectedRegistrationAttemptsQueue" name="RejectedRegistrationAttemptsQueue"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
     <jms:listener destination="cargoHandledTopic" ref="cargoHandledConsumer" />
@@ -30,11 +31,12 @@
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
-  <bean id="domainEventNotifier" class="se.citerus.dddsample.application.messaging.JmsDomainEventNotifierImpl">
+  <bean id="systemEvents" class="se.citerus.dddsample.application.messaging.JmsSystemEventsImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="cargoHandledTopic" ref="cargoHandledTopic"/>
     <property name="misdirectedCargoTopic" ref="misdirectedCargoTopic"/>
     <property name="deliveredCargoTopic" ref="deliveredCargoTopic"/>
+    <property name="rejectedRegistrationAttemptsQueue" ref="rejectedRegistrationAttemptsQueue"/>
   </bean>
 
   <bean id="cargoHandledConsumer" class="se.citerus.dddsample.application.messaging.CargoHandledConsumer">
@@ -42,7 +44,6 @@
   </bean>
 
   <bean id="handlingEventRegistrationAttemptConsumer" class="se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttemptConsumer">
-    <property name="handlingEventFactory" ref="handlingEventFactory"/>
     <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
   

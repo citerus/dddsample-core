@@ -28,7 +28,7 @@ public final class BookingServiceImpl implements BookingService {
   }
 
   @Override
-  @Transactional(readOnly = false)
+  @Transactional
   public TrackingId bookNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
