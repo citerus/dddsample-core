@@ -21,14 +21,14 @@
     </wss:bindings>
   </wss:bindings>
 
-  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.iface.handling.HandlingEventServiceEndpointImpl">
+  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.interfaces.handling.HandlingEventServiceEndpointImpl">
     <property name="systemEvents" ref="systemEvents"/>
   </bean>
 
   <!-- RMI exposed booking service facade -->
   
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
-    <property name="serviceInterface" value="se.citerus.dddsample.iface.booking.facade.BookingServiceFacade"/>
+    <property name="serviceInterface" value="se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
     <property name="serviceName" value="BookingService"/>
   </bean>
