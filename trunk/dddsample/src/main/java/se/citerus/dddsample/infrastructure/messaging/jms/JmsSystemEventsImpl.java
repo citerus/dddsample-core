@@ -23,6 +23,7 @@ public final class JmsSystemEventsImpl implements SystemEvents {
   private Destination misdirectedCargoTopic;
   private Destination deliveredCargoTopic;
   private Destination rejectedRegistrationAttemptsQueue;
+  private Destination handlingEventQueue;
 
   @Override
   public void cargoWasHandled(final HandlingEvent event) {
@@ -62,6 +63,15 @@ public final class JmsSystemEventsImpl implements SystemEvents {
     });
   }
 
+  @Override
+  public void receivedHandlingEventRegistrationAttempt(final HandlingEventRegistrationAttempt attempt) {
+    jmsOperations.send(handlingEventQueue, new MessageCreator() {
+      public Message createMessage(Session session) throws JMSException {
+        return session.createObjectMessage(attempt);
+      }
+    });
+  }
+
   public void setJmsOperations(final JmsOperations jmsOperations) {
     this.jmsOperations = jmsOperations;
   }
@@ -80,5 +90,9 @@ public final class JmsSystemEventsImpl implements SystemEvents {
 
   public void setRejectedRegistrationAttemptsQueue(Destination rejectedRegistrationAttemptsQueue) {
     this.rejectedRegistrationAttemptsQueue = rejectedRegistrationAttemptsQueue;
+  }
+
+  public void setHandlingEventQueue(Destination handlingEventQueue) {
+    this.handlingEventQueue = handlingEventQueue;
   }
 }

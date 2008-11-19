@@ -3,18 +3,13 @@ package se.citerus.dddsample.application.ws;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.jms.core.JmsOperations;
-import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
+import se.citerus.dddsample.application.SystemEvents;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.Session;
 import javax.jws.WebService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,8 +27,7 @@ import java.util.List;
 @WebService(endpointInterface = "se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint")
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {
 
-  private JmsOperations jmsOperations;
-  private Queue handlingEventQueue;
+  private SystemEvents systemEvents;
   private static final Log logger = LogFactory.getLog(HandlingEventServiceEndpointImpl.class);
   
   public static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
@@ -49,22 +43,11 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     final UnLocode ul = parseUnLocode(unlocode, errors);
 
     if (errors.isEmpty()) {
-      sendRegistrationAttemptMessage(date, tid, voyageNumber, type, ul);
+      final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), date, tid, voyageNumber, type, ul);
+      systemEvents.receivedHandlingEventRegistrationAttempt(attempt);
     } else {
-      logger.info("Handling event registration attempt failed: " + errors);
+      logger.warn("Handling event registration attempt failed: " + errors);
       throw new RegistrationFailure(errors);
-    }
-  }
-
-  private void sendRegistrationAttemptMessage(final Date completionDate, final TrackingId tid, final VoyageNumber voyageNumber, final HandlingEvent.Type type, final UnLocode ul) {
-    jmsOperations.send(handlingEventQueue, new MessageCreator() {
-      public Message createMessage(Session session) throws JMSException {
-        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), completionDate, tid, voyageNumber, type, ul);
-        return session.createObjectMessage(attempt);
-      }
-    });
-    if (logger.isDebugEnabled()) {
-      logger.debug("Incoming handling event registration attempt added to queue");
     }
   }
 
@@ -119,11 +102,7 @@ public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEnd
     }
   }
 
-  public void setJmsOperations(final JmsOperations jmsOperations) {
-    this.jmsOperations = jmsOperations;
-  }
-
-  public void setHandlingEventQueue(final Queue handlingEventQueue) {
-    this.handlingEventQueue = handlingEventQueue;
+  public void setSystemEvents(SystemEvents systemEvents) {
+    this.systemEvents = systemEvents;
   }
 }

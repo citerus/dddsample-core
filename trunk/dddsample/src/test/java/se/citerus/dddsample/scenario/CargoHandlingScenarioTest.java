@@ -151,6 +151,8 @@ public class CargoHandlingScenarioTest extends TestCase {
       public void cargoHasArrived(Cargo cargo) {}
       @Override
       public void rejectHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem) {}
+      @Override
+      public void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt) {}
     };
 
     // Stub

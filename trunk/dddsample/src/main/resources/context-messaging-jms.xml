@@ -37,6 +37,7 @@
     <property name="misdirectedCargoTopic" ref="misdirectedCargoTopic"/>
     <property name="deliveredCargoTopic" ref="deliveredCargoTopic"/>
     <property name="rejectedRegistrationAttemptsQueue" ref="rejectedRegistrationAttemptsQueue"/>
+    <property name="handlingEventQueue" ref="handlingEventRegistrationAttemptQueue"/>
   </bean>
 
   <bean id="cargoHandledConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.CargoHandledConsumer">
