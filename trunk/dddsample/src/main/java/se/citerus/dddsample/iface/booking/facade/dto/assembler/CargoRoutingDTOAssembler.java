@@ -1,8 +1,8 @@
-package se.citerus.dddsample.application.remoting.dto.assembler;
+package se.citerus.dddsample.iface.booking.facade.dto.assembler;
 
-import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Leg;
+import se.citerus.dddsample.iface.booking.facade.dto.CargoRoutingDTO;
 
 /**
  * Assembler class for the CargoRoutingDTO.

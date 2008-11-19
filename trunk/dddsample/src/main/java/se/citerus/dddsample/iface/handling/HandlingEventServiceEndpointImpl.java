@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.ws;
+package se.citerus.dddsample.iface.handling;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -24,7 +24,7 @@ import java.util.List;
  * with the informtion to the handling event registration system for proper registration.
  *  
  */
-@WebService(endpointInterface = "se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint")
+@WebService(endpointInterface = "se.citerus.dddsample.iface.handling.HandlingEventServiceEndpoint")
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {
 
   private SystemEvents systemEvents;

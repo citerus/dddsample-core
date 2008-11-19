@@ -1,4 +1,4 @@
-package se.citerus.dddsample.ui.command;
+package se.citerus.dddsample.iface.tracking;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import static org.apache.commons.lang.builder.ToStringStyle.MULTI_LINE_STYLE;

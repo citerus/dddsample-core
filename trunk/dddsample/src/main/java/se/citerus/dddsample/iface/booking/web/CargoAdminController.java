@@ -1,13 +1,11 @@
-package se.citerus.dddsample.ui;
+package se.citerus.dddsample.iface.booking.web;
 
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-import se.citerus.dddsample.application.remoting.BookingServiceFacade;
-import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
-import se.citerus.dddsample.application.remoting.dto.ItineraryCandidateDTO;
-import se.citerus.dddsample.application.remoting.dto.LegDTO;
-import se.citerus.dddsample.application.remoting.dto.LocationDTO;
-import se.citerus.dddsample.ui.command.RegistrationCommand;
-import se.citerus.dddsample.ui.command.RouteAssignmentCommand;
+import se.citerus.dddsample.iface.booking.facade.BookingServiceFacade;
+import se.citerus.dddsample.iface.booking.facade.dto.CargoRoutingDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.ItineraryCandidateDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.LegDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.LocationDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +24,7 @@ import java.util.Map;
  * there is never any one perfect solution for all situations, so we've chosen to demonstrate
  * two polarized ways to build user interfaces.   
  *
- * @see CargoTrackingController
+ * @see se.citerus.dddsample.iface.tracking.CargoTrackingController
  */
 public final class CargoAdminController extends MultiActionController {
 

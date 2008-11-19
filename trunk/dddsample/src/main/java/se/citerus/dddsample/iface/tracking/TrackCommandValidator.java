@@ -1,4 +1,4 @@
-package se.citerus.dddsample.ui.command;
+package se.citerus.dddsample.iface.tracking;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

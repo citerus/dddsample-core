@@ -1,9 +1,6 @@
 package se.citerus.dddsample.application.service.dto.assembler;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.application.remoting.dto.CargoRoutingDTO;
-import se.citerus.dddsample.application.remoting.dto.LegDTO;
-import se.citerus.dddsample.application.remoting.dto.assembler.CargoRoutingDTOAssembler;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
@@ -11,6 +8,9 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.iface.booking.facade.dto.CargoRoutingDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.LegDTO;
+import se.citerus.dddsample.iface.booking.facade.dto.assembler.CargoRoutingDTOAssembler;
 
 import java.util.Arrays;
 import java.util.Date;

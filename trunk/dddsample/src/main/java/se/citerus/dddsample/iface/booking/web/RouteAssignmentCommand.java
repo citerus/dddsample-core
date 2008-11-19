@@ -1,4 +1,4 @@
-package se.citerus.dddsample.ui.command;
+package se.citerus.dddsample.iface.booking.web;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;

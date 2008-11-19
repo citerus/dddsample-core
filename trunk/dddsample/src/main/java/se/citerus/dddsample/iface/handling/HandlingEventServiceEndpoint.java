@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.ws;
+package se.citerus.dddsample.iface.handling;
 
 import javax.jws.WebService;
 
