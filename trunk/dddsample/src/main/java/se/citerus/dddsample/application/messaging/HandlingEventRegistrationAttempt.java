@@ -15,18 +15,21 @@ import java.util.Date;
  */
 public class HandlingEventRegistrationAttempt implements Serializable {
 
+  private final Date registrationDate;
   private final Date date;
   private final TrackingId trackingId;
   private final VoyageNumber voyageNumber;
   private final HandlingEvent.Type type;
   private final UnLocode unLocode;
 
-  public HandlingEventRegistrationAttempt(final Date date,
+  public HandlingEventRegistrationAttempt(final Date registrationDate,
+                                          final Date completionDate,
                                           final TrackingId trackingId,
                                           final VoyageNumber voyageNumber,
                                           final HandlingEvent.Type type,
                                           final UnLocode unLocode) {
-    this.date = date;
+    this.registrationDate = registrationDate;
+    this.date = completionDate;
     this.trackingId = trackingId;
     this.voyageNumber = voyageNumber;
     this.type = type;
@@ -52,5 +55,8 @@ public class HandlingEventRegistrationAttempt implements Serializable {
   public UnLocode getUnLocode() {
     return unLocode;
   }
-  
+
+  public Date getRegistrationDate() {
+    return registrationDate;
+  }
 }

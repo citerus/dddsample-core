@@ -41,7 +41,7 @@ public class HandlingEventFactory {
    * @return A handling event.
    */
   public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
-    throws UnknownCargoException, UnknownVoyageException, UnknownLocationException {
+    throws CannotCreateHandlingEventException {
 
     // Voyage number may be null for certain event types
     Validate.noNullElements(new Object[]{completionTime, trackingId, unlocode, type});

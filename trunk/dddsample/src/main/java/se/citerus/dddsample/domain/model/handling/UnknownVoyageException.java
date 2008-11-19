@@ -5,7 +5,7 @@ import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 /**
  * Thrown when trying to register an event with an unknown carrier movement id.
  */
-public class UnknownVoyageException extends Exception {
+public class UnknownVoyageException extends CannotCreateHandlingEventException {
 
   private final VoyageNumber voyageNumber;
 

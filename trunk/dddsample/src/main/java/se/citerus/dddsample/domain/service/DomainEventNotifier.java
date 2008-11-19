@@ -1,6 +1,7 @@
 package se.citerus.dddsample.domain.service;
 
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
 /**
@@ -24,6 +25,8 @@ public interface DomainEventNotifier {
   void cargoWasMisdirected(Cargo cargo);
 
   void cargoHasArrived(Cargo cargo);
+
+  void rejectHandlingEventRegistrationAttempt(CannotCreateHandlingEventException e);
 
   //void scheduleWasChanged(Voyage voyage);
 
