@@ -1,5 +1,6 @@
 package se.citerus.dddsample.application.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
@@ -15,6 +16,8 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     this.domainEventNotifier = domainEventNotifier;
   }
 
+  @Override
+  @Transactional
   public void register(final HandlingEvent event) {
     /*
      NOTE:
