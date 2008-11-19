@@ -2,6 +2,7 @@ package se.citerus.dddsample.scenario;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.application.HandlingEventService;
+import se.citerus.dddsample.application.SystemEvents;
 import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.application.impl.TrackingServiceImpl;
@@ -17,7 +18,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import se.citerus.dddsample.domain.service.DomainEventNotifier;
 import se.citerus.dddsample.domain.service.RoutingService;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
@@ -31,7 +31,7 @@ public class CargoHandlingScenarioTest extends TestCase {
 
   HandlingEventFactory handlingEventFactory;
 
-  DomainEventNotifier domainEventNotifier;
+  SystemEvents systemEvents;
 
   HandlingEventService handlingEventService;
   TrackingService trackingService;
@@ -140,13 +140,17 @@ public class CargoHandlingScenarioTest extends TestCase {
     };
 
     // Synchronous stub
-    domainEventNotifier = new DomainEventNotifier() {
+    systemEvents = new SystemEvents() {
+      @Override
       public void cargoWasHandled(HandlingEvent event) {
         trackingService.onCargoHandled(event.cargo().trackingId());
       }
+      @Override
       public void cargoWasMisdirected(Cargo cargo) {}
+      @Override
       public void cargoHasArrived(Cargo cargo) {}
-      public void rejectHandlingEventRegistrationAttempt(CannotCreateHandlingEventException e) {}
+      @Override
+      public void rejectHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem) {}
     };
 
     // Stub
@@ -185,8 +189,8 @@ public class CargoHandlingScenarioTest extends TestCase {
     voyageRepository = new VoyageRepositoryInMem();
 
     // Domain services and factories that are implemented in the domain layer - not stubbed
-    trackingService = new TrackingServiceImpl(domainEventNotifier, cargoRepository);
+    trackingService = new TrackingServiceImpl(systemEvents, cargoRepository);
     handlingEventFactory = new HandlingEventFactory(cargoRepository, this.voyageRepository, this.locationRepository);
-    handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, domainEventNotifier, handlingEventFactory);
+    handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, systemEvents, handlingEventFactory);
   }
 }

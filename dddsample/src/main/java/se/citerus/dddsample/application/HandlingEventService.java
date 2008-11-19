@@ -1,7 +1,6 @@
 package se.citerus.dddsample.application;
 
 import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
-import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 
 
 /**
@@ -14,8 +13,7 @@ public interface HandlingEventService {
    * parties that an event has been registered.
    *
    * @param attempt handling event registration attempt
-   * @throws se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException
    */
-  void register(HandlingEventRegistrationAttempt attempt) throws CannotCreateHandlingEventException;
+  void register(HandlingEventRegistrationAttempt attempt);
 
 }

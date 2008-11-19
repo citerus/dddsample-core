@@ -2,22 +2,22 @@ package se.citerus.dddsample.application.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.HandlingEventService;
+import se.citerus.dddsample.application.SystemEvents;
 import se.citerus.dddsample.application.messaging.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
-import se.citerus.dddsample.domain.service.DomainEventNotifier;
 
 public final class HandlingEventServiceImpl implements HandlingEventService {
 
   private final HandlingEventRepository handlingEventRepository;
-  private final DomainEventNotifier domainEventNotifier;
+  private final SystemEvents systemEvents;
   private final HandlingEventFactory handlingEventFactory;
 
-  public HandlingEventServiceImpl(HandlingEventRepository handlingEventRepository, DomainEventNotifier domainEventNotifier, HandlingEventFactory handlingEventFactory) {
+  public HandlingEventServiceImpl(HandlingEventRepository handlingEventRepository, SystemEvents systemEvents, HandlingEventFactory handlingEventFactory) {
     this.handlingEventRepository = handlingEventRepository;
-    this.domainEventNotifier = domainEventNotifier;
+    this.systemEvents = systemEvents;
     this.handlingEventFactory = handlingEventFactory;
   }
 
@@ -33,11 +33,15 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
      are enforced by asynchronous updates, after the commit of this transaction.
   */
   @Override
-  @Transactional(readOnly = false, rollbackFor = {CannotCreateHandlingEventException.class})
-  public void register(HandlingEventRegistrationAttempt attempt) throws CannotCreateHandlingEventException {
-    final HandlingEvent event = handlingEventFactory.createHandlingEvent(attempt.getDate(), attempt.getTrackingId(), attempt.getVoyageNumber(), attempt.getUnLocode(), attempt.getType());
-    handlingEventRepository.save(event);
-    domainEventNotifier.cargoWasHandled(event);
+  @Transactional
+  public void register(HandlingEventRegistrationAttempt attempt) {
+    try {
+      final HandlingEvent event = handlingEventFactory.createHandlingEvent(attempt.getDate(), attempt.getTrackingId(), attempt.getVoyageNumber(), attempt.getUnLocode(), attempt.getType());
+      handlingEventRepository.save(event);
+      systemEvents.cargoWasHandled(event);
+    } catch (CannotCreateHandlingEventException e) {
+      systemEvents.rejectHandlingEventRegistrationAttempt(attempt, e);
+    }
   }
 
 }

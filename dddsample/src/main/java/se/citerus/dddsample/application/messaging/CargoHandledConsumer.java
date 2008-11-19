@@ -2,7 +2,6 @@ package se.citerus.dddsample.application.messaging;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
@@ -19,7 +18,7 @@ public class CargoHandledConsumer implements MessageListener {
   private TrackingService trackingService;
   private final Log logger = LogFactory.getLog(getClass());
 
-  @Transactional(readOnly = true)  
+  @Override  
   public void onMessage(final Message message) {
     if (logger.isDebugEnabled()) {
       logger.debug("Received message " + message);
