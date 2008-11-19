@@ -1,6 +1,5 @@
 package se.citerus.dddsample.application;
 
-import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
 
@@ -15,7 +14,6 @@ public interface HandlingEventService {
    *
    * @param event handling event to register
    */
-  @Transactional
   void register(HandlingEvent event);
 
 }

@@ -3,6 +3,7 @@ package se.citerus.dddsample.application.impl;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.BookingService;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -26,6 +27,8 @@ public final class BookingServiceImpl implements BookingService {
     this.routingService = routingService;
   }
 
+  @Override
+  @Transactional
   public TrackingId bookNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
@@ -42,9 +45,11 @@ public final class BookingServiceImpl implements BookingService {
     return cargo.trackingId();
   }
 
+  @Override
+  @Transactional
   public List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId) {
     Validate.notNull(trackingId);
-    
+
     final Cargo cargo = cargoRepository.find(trackingId);
     final RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
 

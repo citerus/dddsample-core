@@ -3,6 +3,7 @@ package se.citerus.dddsample.application.impl;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -21,6 +22,7 @@ public class TrackingServiceImpl implements TrackingService {
   }
 
   @Override
+  @Transactional
   public void onCargoHandled(final TrackingId trackingId) {
     Validate.notNull(trackingId, "Tracking ID is required");
 

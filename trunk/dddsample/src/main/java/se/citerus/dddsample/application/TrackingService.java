@@ -1,6 +1,5 @@
 package se.citerus.dddsample.application;
 
-import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
 /**
@@ -15,7 +14,6 @@ public interface TrackingService {
    *
    * @param trackingId cargo tracking id
    */
-  @Transactional
   void onCargoHandled(TrackingId trackingId);
 
 }
