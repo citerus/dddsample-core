@@ -24,7 +24,7 @@ import java.util.List;
  * with the informtion to the handling event registration system for proper registration.
  *  
  */
-@WebService(endpointInterface = "se.citerus.dddsample.iface.handling.HandlingEventServiceEndpoint")
+@WebService(endpointInterface = "se.citerus.dddsample.interfaces.handling.HandlingEventServiceEndpoint")
 public class HandlingEventServiceEndpointImpl implements HandlingEventServiceEndpoint {
 
   private SystemEvents systemEvents;
