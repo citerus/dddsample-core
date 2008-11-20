@@ -13,7 +13,7 @@ import java.util.Date;
  * registration attempts to proper the registration procedure.
  *  
  */
-public class HandlingEventRegistrationAttempt implements Serializable {
+public final class HandlingEventRegistrationAttempt implements Serializable {
 
   private final Date registrationDate;
   private final Date date;
@@ -37,7 +37,7 @@ public class HandlingEventRegistrationAttempt implements Serializable {
   }
 
   public Date getDate() {
-    return date;
+    return new Date(date.getTime());
   }
 
   public TrackingId getTrackingId() {
@@ -57,6 +57,6 @@ public class HandlingEventRegistrationAttempt implements Serializable {
   }
 
   public Date getRegistrationDate() {
-    return registrationDate;
+    return new Date(registrationDate.getTime());
   }
 }
