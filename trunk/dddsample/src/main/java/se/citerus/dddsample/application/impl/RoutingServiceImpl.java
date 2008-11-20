@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.routing;
+package se.citerus.dddsample.application.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.RoutingService;
@@ -24,7 +24,7 @@ import java.util.List;
  * by the routing team, which operates in a different context from us.
  *
  */
-public class ExternalRoutingService implements RoutingService {
+public class RoutingServiceImpl implements RoutingService {
 
   private GraphTraversalService graphTraversalService;
   private LocationRepository locationRepository;

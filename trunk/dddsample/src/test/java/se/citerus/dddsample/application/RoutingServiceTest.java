@@ -2,7 +2,7 @@ package se.citerus.dddsample.application;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.routing.ExternalRoutingService;
+import se.citerus.dddsample.application.impl.RoutingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
@@ -22,16 +22,16 @@ import java.util.List;
 
 public class RoutingServiceTest extends TestCase {
 
-  private ExternalRoutingService routingService;
+  private RoutingServiceImpl routingServiceImpl;
   private VoyageRepository voyageRepository;
 
   protected void setUp() throws Exception {
-    routingService = new ExternalRoutingService();
+    routingServiceImpl = new RoutingServiceImpl();
     LocationRepository locationRepository = new LocationRepositoryInMem();
-    routingService.setLocationRepository(locationRepository);
+    routingServiceImpl.setLocationRepository(locationRepository);
 
     voyageRepository = createMock(VoyageRepository.class);
-    routingService.setVoyageRepository(voyageRepository);
+    routingServiceImpl.setVoyageRepository(voyageRepository);
 
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO(createMock(DataSource.class)) {
       public List<String> listLocations() {
@@ -41,7 +41,7 @@ public class RoutingServiceTest extends TestCase {
       public void storeCarrierMovementId(String cmId, String from, String to) {
       }
     });
-    routingService.setGraphTraversalService(graphTraversalService);
+    routingServiceImpl.setGraphTraversalService(graphTraversalService);
   }
 
   public void testCalculatePossibleRoutes() {
@@ -53,7 +53,7 @@ public class RoutingServiceTest extends TestCase {
     
     replay(voyageRepository);
 
-    List<Itinerary> candidates = routingService.fetchRoutesForSpecification(routeSpecification);
+    List<Itinerary> candidates = routingServiceImpl.fetchRoutesForSpecification(routeSpecification);
     assertNotNull(candidates);
     
     for (Itinerary itinerary : candidates) {

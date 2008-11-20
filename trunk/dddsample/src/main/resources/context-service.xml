@@ -32,7 +32,7 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="routingService" class="se.citerus.dddsample.application.routing.ExternalRoutingService">
+  <bean id="routingService" class="se.citerus.dddsample.application.impl.RoutingServiceImpl">
     <property name="locationRepository" ref="locationRepository"/>
     <property name="voyageRepository" ref="voyageRepository"/>
     <property name="graphTraversalService" ref="graphTraversalService"/>
