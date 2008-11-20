@@ -1,7 +1,8 @@
-package se.citerus.dddsample.application.routing;
+package se.citerus.dddsample.application;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
+import se.citerus.dddsample.application.routing.ExternalRoutingService;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ExternalRoutingServiceTest extends TestCase {
+public class RoutingServiceTest extends TestCase {
 
   private ExternalRoutingService routingService;
   private VoyageRepository voyageRepository;
@@ -68,7 +69,7 @@ public class ExternalRoutingServiceTest extends TestCase {
       assertEquals(cargo.destination(), lastLegStop);
 
       for (int i = 0; i < legs.size() - 1; i++) {
-        // Assert that all legs are connected
+        // Assert that all legs are conencted
         assertEquals(legs.get(i).unloadLocation(), legs.get(i + 1).loadLocation());
       }
     }

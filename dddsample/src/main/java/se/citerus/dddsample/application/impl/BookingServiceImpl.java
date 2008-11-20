@@ -5,11 +5,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.BookingService;
+import se.citerus.dddsample.application.RoutingService;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.RoutingService;
 
 import java.util.Date;
 import java.util.List;
@@ -37,10 +37,10 @@ public final class BookingServiceImpl implements BookingService {
     final TrackingId trackingId = cargoRepository.nextTrackingId();
     final Location origin = locationRepository.find(originUnLocode);
     final Location destination = locationRepository.find(destinationUnLocode);
-    Cargo cargo = new Cargo(trackingId, origin, destination);
+    final Cargo cargo = new Cargo(trackingId, origin, destination);
 
     cargoRepository.save(cargo);
-    logger.info("Registered new cargo with tracking id " + cargo.trackingId().idString());
+    logger.info("Booked new cargo with tracking id " + cargo.trackingId().idString());
 
     return cargo.trackingId();
   }

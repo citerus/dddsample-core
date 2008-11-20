@@ -1,6 +1,7 @@
 package se.citerus.dddsample.application.routing;
 
 import org.springframework.transaction.annotation.Transactional;
+import se.citerus.dddsample.application.RoutingService;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -9,7 +10,6 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.service.RoutingService;
 import se.citerus.routingteam.GraphTraversalService;
 import se.citerus.routingteam.TransitEdge;
 import se.citerus.routingteam.TransitPath;
