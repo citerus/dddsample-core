@@ -1,7 +1,10 @@
 package se.citerus.dddsample.scenario;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.application.*;
+import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
+import se.citerus.dddsample.application.HandlingEventService;
+import se.citerus.dddsample.application.SystemEvents;
+import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.application.impl.TrackingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.*;
@@ -15,6 +18,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.service.RoutingService;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
