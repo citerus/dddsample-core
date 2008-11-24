@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application;
+package se.citerus.dddsample.infrastructure.routing;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
@@ -10,7 +10,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
-import se.citerus.dddsample.infrastructure.routing.ExternalRoutingService;
 import se.citerus.routingteam.GraphTraversalService;
 import se.citerus.routingteam.internal.GraphDAO;
 import se.citerus.routingteam.internal.GraphTraversalServiceImpl;
@@ -20,7 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class RoutingServiceTest extends TestCase {
+public class ExternalRoutingServiceTest extends TestCase {
 
   private ExternalRoutingService externalRoutingService;
   private VoyageRepository voyageRepository;
@@ -69,7 +68,7 @@ public class RoutingServiceTest extends TestCase {
       assertEquals(cargo.destination(), lastLegStop);
 
       for (int i = 0; i < legs.size() - 1; i++) {
-        // Assert that all legs are conencted
+        // Assert that all legs are connected
         assertEquals(legs.get(i).unloadLocation(), legs.get(i + 1).loadLocation());
       }
     }
