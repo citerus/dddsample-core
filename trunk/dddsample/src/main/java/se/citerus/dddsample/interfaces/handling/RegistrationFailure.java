@@ -6,7 +6,7 @@ import java.util.List;
 public class RegistrationFailure extends Exception {
   private final String[] errors;
 
-  RegistrationFailure(final List<String> errors) {
+  public RegistrationFailure(final List<String> errors) {
     this.errors = errors.toArray(new String[errors.size()]);
   }
 

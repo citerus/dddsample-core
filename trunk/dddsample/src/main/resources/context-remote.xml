@@ -10,7 +10,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <!-- Handling event registration web service -->
-  
+
   <wss:bindings id="jax-ws.http">
     <wss:bindings>
       <wss:binding url="/ws/RegisterEvent">
@@ -21,12 +21,39 @@
     </wss:bindings>
   </wss:bindings>
 
-  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.interfaces.handling.HandlingEventServiceEndpointImpl">
+  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl">
+    <property name="registrationParser" ref="registrationParser"/>
+  </bean>
+
+  <!-- File upload directory scanner -->
+
+  <bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+    <property name="period" value="5000"/>
+    <property name="delay" value="3000"/>
+    <property name="timerTask" ref="uploadDirectoryScanner"/>
+  </bean>
+
+  <bean id="uploadDirectoryScanner" class="se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner">
+    <property name="uploadDirectory" value="/tmp/upload"/>
+    <property name="parseFailureDirectory" value="/tmp/failed"/>
+    <property name="registrationParser" ref="registrationParser"/>
+  </bean>
+
+  <bean id="registrationParser" class="se.citerus.dddsample.interfaces.handling.RegistrationParser">
     <property name="systemEvents" ref="systemEvents"/>
   </bean>
 
-  <!-- RMI exposed booking service facade -->
+
+  <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+      <list>
+        <ref bean="scheduledTask"/>
+      </list>
+    </property>
+  </bean>
   
+  <!-- RMI exposed booking service facade -->
+
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
     <property name="serviceInterface" value="se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
