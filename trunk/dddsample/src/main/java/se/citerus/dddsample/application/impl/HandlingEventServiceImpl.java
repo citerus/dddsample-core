@@ -36,7 +36,13 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   @Transactional
   public void register(HandlingEventRegistrationAttempt attempt) {
     try {
-      final HandlingEvent event = handlingEventFactory.createHandlingEvent(attempt.getDate(), attempt.getTrackingId(), attempt.getVoyageNumber(), attempt.getUnLocode(), attempt.getType());
+      final HandlingEvent event = handlingEventFactory.createHandlingEvent(
+        attempt.getDate(),
+        attempt.getTrackingId(),
+        attempt.getVoyageNumber(),
+        attempt.getUnLocode(),
+        attempt.getType()
+      );
       handlingEventRepository.save(event);
       systemEvents.cargoWasHandled(event);
     } catch (CannotCreateHandlingEventException e) {
