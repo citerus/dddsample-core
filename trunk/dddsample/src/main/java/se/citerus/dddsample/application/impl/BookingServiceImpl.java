@@ -33,11 +33,14 @@ public final class BookingServiceImpl implements BookingService {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
 
-    // TODO cargo factory? tracking id factory?
     final TrackingId trackingId = cargoRepository.nextTrackingId();
+
+    // TODO pass RS as parameter, with actual arrival deadline
     final Location origin = locationRepository.find(originUnLocode);
     final Location destination = locationRepository.find(destinationUnLocode);
-    final Cargo cargo = new Cargo(trackingId, origin, destination);
+    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
+
+    final Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     cargoRepository.save(cargo);
     logger.info("Booked new cargo with tracking id " + cargo.trackingId().idString());
