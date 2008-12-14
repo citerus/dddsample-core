@@ -47,7 +47,7 @@ public final class CargoAdminController extends MultiActionController {
   public void register(final HttpServletRequest request, final HttpServletResponse response,
                        final RegistrationCommand command) throws Exception {
 
-    final String trackingId = bookingServiceFacade.registerNewCargo(
+    final String trackingId = bookingServiceFacade.bookNewCargo(
       command.getOriginUnlocode(), command.getDestinationUnlocode()
     );
     response.sendRedirect("show.html?trackingId=" + trackingId);

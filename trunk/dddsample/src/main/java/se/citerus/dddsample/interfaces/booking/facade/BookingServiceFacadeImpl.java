@@ -46,7 +46,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   }
 
   @Transactional(readOnly = false)
-  public String registerNewCargo(String origin, String destination) {
+  public String bookNewCargo(String origin, String destination) {
     TrackingId trackingId = bookingService.bookNewCargo(new UnLocode(origin), new UnLocode(destination));
     return trackingId.idString();
   }
