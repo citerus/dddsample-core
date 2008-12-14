@@ -1,6 +1,12 @@
 package se.citerus.dddsample.domain.model.carrier;
 
+import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
+import se.citerus.dddsample.domain.model.location.Location;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A Voyage.
@@ -61,5 +67,35 @@ public class Voyage implements Entity<Voyage> {
 
   // Needed by Hibernate
   private Long id;
+
+  /**
+   * Builder pattern is used for incremental construction
+   * of a Voyage aggregate. This serves as an aggregate factory. 
+   */
+  public static final class Builder {
+
+    private final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>();
+    private final VoyageNumber voyageNumber;
+    private Location departureLocation;
+
+    public Builder(VoyageNumber voyageNumber, Location initialDepartureLocation) {
+      Validate.notNull(voyageNumber, "Voyage number is required");
+      Validate.notNull(voyageNumber, "Departure location is required");
+
+      this.voyageNumber = voyageNumber;
+      this.departureLocation = initialDepartureLocation;
+    }
+
+    public Builder addMovement(Location arrivalLocation, Date departureTime, Date arrivalTime) {
+      carrierMovements.add(new CarrierMovement(departureLocation, arrivalLocation, departureTime, arrivalTime));
+      this.departureLocation = arrivalLocation;
+      return this;
+    }
+
+    public Voyage build() {
+      return new Voyage(voyageNumber, new Schedule(carrierMovements));
+    }
+
+  }
 
 }
