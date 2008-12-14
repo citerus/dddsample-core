@@ -24,6 +24,7 @@ public class SampleLocations {
   public static final Location GOTHENBURG = new Location(new UnLocode("SEGOT"), "Göteborg");
   public static final Location HANGZOU = new Location(new UnLocode("CNHGH"), "Hangzhou");
   public static final Location NEWYORK = new Location(new UnLocode("USNYC"), "New York");
+  public static final Location DALLAS = new Location(new UnLocode("USDAL"), "Dallas");
 
   public static final Map<UnLocode, Location> ALL = new HashMap();
 
