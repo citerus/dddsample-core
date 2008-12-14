@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface BookingServiceFacade extends Remote {
 
-  String registerNewCargo(String origin, String destination) throws RemoteException;
+  String bookNewCargo(String origin, String destination) throws RemoteException;
 
   CargoRoutingDTO loadCargoForRouting(String trackingId) throws RemoteException;
 
