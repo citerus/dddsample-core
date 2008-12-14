@@ -49,15 +49,17 @@ public class CargoHandlingScenarioTest extends TestCase {
 
     // Cargo from Hongkong to Stockholm (skipping the booking procedure here)
     TrackingId trackingId = generateTrackingId();
+
     Location origin = HONGKONG;
     Location destination = STOCKHOLM;
-    cargo = new Cargo(trackingId, origin, destination);
+    Date arrivalDeadline = inTwoWeeks();
+    RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);
 
+    cargo = new Cargo(trackingId, routeSpecification);
 
     assertEquals(RoutingStatus.NOT_ROUTED, cargo.routingStatus());
 
     // Route cargo
-    RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), inTwoWeeks());
     List<Itinerary> itineraries = routingService.fetchRoutesForSpecification(routeSpecification);
     Itinerary itinerary = selectPreferedItinerary(itineraries);
     cargo.assignToRoute(itinerary);

@@ -2,7 +2,6 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.Schedule;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -22,18 +21,22 @@ public class ItineraryTest extends TestCase {
   Voyage voyage, wrongVoyage;
 
   protected void setUp() throws Exception {
-    voyage = new Voyage(new VoyageNumber("0123"), new Schedule(Arrays.asList(
-      abc, def, ghi, jkl
-    )));
-    wrongVoyage = new Voyage(new VoyageNumber("666"), new Schedule(Arrays.asList(
-      new CarrierMovement(NEWYORK, STOCKHOLM, new Date(), new Date()),
-      new CarrierMovement(STOCKHOLM, HELSINKI, new Date(), new Date())
-    )));
+    voyage = new Voyage.Builder(new VoyageNumber("0123"), SHANGHAI).
+      addMovement(ROTTERDAM, new Date(), new Date()).
+      addMovement(GOTHENBURG, new Date(), new Date()).
+      build();
+
+    wrongVoyage = new Voyage.Builder(new VoyageNumber("666"), NEWYORK).
+      addMovement(STOCKHOLM, new Date(), new Date()).
+      addMovement(HELSINKI, new Date(), new Date()).
+      build();
   }
 
   public void testCargoOnTrack() throws Exception {
 
-    Cargo cargo = new Cargo(new TrackingId("CARGO1"), SHANGHAI, GOTHENBURG);
+    TrackingId trackingId = new TrackingId("CARGO1");
+    RouteSpecification routeSpecification = new RouteSpecification(SHANGHAI, GOTHENBURG, new Date());
+    Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     Itinerary itinerary = new Itinerary(
       Arrays.asList(
