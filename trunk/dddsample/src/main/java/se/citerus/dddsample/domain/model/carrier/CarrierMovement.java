@@ -33,6 +33,7 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
    * @param departureTime time of departure
    * @param arrivalTime time of arrival
    */
+  // TODO make package local
   public CarrierMovement(Location departureLocation,
                          Location arrivalLocation,
                          Date departureTime,
