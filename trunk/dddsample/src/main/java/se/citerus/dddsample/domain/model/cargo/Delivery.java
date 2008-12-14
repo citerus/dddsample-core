@@ -71,17 +71,6 @@ public class Delivery implements ValueObject<Delivery> {
   }
 
   /**
-   * @return Current location, if  
-   */
-  public Location currentLocation() {
-    if (transportStatus().equals(IN_PORT)) {
-      return lastEvent().location();
-    } else {
-      return Location.UNKNOWN;
-    }
-  }
-
-  /**
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {

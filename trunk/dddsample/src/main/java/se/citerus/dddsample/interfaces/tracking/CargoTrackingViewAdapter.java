@@ -67,7 +67,7 @@ public final class CargoTrackingViewAdapter {
     final Object[] args;
     switch (delivery.transportStatus()) {
       case IN_PORT:
-        args = new Object[] {getDisplayText(delivery.currentLocation())};
+        args = new Object[] {getDisplayText(delivery.lastKnownLocation())};
         break;
       case ONBOARD_CARRIER:
         args = new Object[] {delivery.currentVoyage().voyageNumber().idString()};
