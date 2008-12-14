@@ -70,6 +70,7 @@ public final class Location implements Entity<Location> {
     return sameIdentityAs(other);
   }
 
+  @Override
   public boolean sameIdentityAs(final Location other) {
     return this.unLocode.sameValueAs(other.unLocode);
   }
@@ -80,6 +81,11 @@ public final class Location implements Entity<Location> {
   @Override
   public int hashCode() {
     return unLocode.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return name + " [" + unLocode + "]";
   }
 
   Location() {
