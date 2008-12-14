@@ -15,7 +15,6 @@ public class DeliveryTest extends TestCase {
   private Cargo cargo = new Cargo(new TrackingId("XYZ"), HONGKONG, NEWYORK);
 
   public void testEvensOrderedByTimeOccured() throws Exception {
-
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     HandlingEvent he1 = new HandlingEvent(cargo, df.parse("2010-01-03"), new Date(), HandlingEvent.Type.RECEIVE, NEWYORK);
     HandlingEvent he2 = new HandlingEvent(cargo, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, NEWYORK, CM003);
@@ -54,21 +53,21 @@ public class DeliveryTest extends TestCase {
     assertEquals(TransportStatus.CLAIMED, delivery.transportStatus());
   }
 
-  public void testCurrentLocation() throws Exception {
+  public void testLastKnownLocation() throws Exception {
     Set<HandlingEvent> events = new HashSet<HandlingEvent>();
     Delivery delivery = new Delivery(events);
 
-    assertEquals(Location.UNKNOWN, delivery.currentLocation());
+    assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
 
     events.add(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG));
     delivery = new Delivery(events);
 
-    assertEquals(HAMBURG, delivery.currentLocation());
+    assertEquals(HAMBURG, delivery.lastKnownLocation());
 
     events.add(new HandlingEvent(cargo, new Date(20), new Date(21), HandlingEvent.Type.LOAD, HAMBURG, CM003));
     delivery = new Delivery(events);
 
-    assertEquals(Location.UNKNOWN, delivery.currentLocation());
+    assertEquals(HAMBURG, delivery.lastKnownLocation());
   }
 
 }
