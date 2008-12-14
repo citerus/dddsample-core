@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
@@ -28,9 +29,9 @@ public class HandlingEventServiceTest extends TestCase {
   private LocationRepository locationRepository;
   private HandlingEventFactory handlingEventFactory;
 
-  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), HAMBURG, TOKYO);
+  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, new Date()));
 
-  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), HONGKONG, HELSINKI);
+  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, HELSINKI, new Date()));
 
   protected void setUp() throws Exception{
     cargoRepository = createMock(CargoRepository.class);

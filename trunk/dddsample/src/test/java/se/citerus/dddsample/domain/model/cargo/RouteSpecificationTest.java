@@ -8,16 +8,10 @@ import java.util.Date;
 
 public class RouteSpecificationTest extends TestCase {
 
-  private Cargo cargo;
-
-  public void setUp() {
-    cargo = new Cargo(new TrackingId("AAA"), HONGKONG, CHICAGO);
-  }
-
   public void testIsSatisfiedBySuccess() {
-    RouteSpecification spec = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
+    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, CHICAGO, new Date());
     Itinerary itinerary = new Itinerary();
-    assertTrue(spec.isSatisfiedBy(itinerary));
+    assertTrue(routeSpecification.isSatisfiedBy(itinerary));
   }
 
   public void testIsSatisfiedByInvalidDate() {

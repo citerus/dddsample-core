@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
@@ -37,7 +38,8 @@ public class HandlingEventFactoryTest extends TestCase {
 
 
     trackingId = new TrackingId("ABC");
-    cargo = new Cargo(trackingId, TOKYO, HELSINKI);
+    RouteSpecification routeSpecification = new RouteSpecification(TOKYO, HELSINKI, new Date());
+    cargo = new Cargo(trackingId, routeSpecification);
   }
 
   public void testCreateHandlingEventWithCarrierMovement() throws Exception {

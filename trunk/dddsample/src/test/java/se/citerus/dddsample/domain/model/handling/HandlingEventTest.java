@@ -2,6 +2,7 @@ package se.citerus.dddsample.domain.model.handling;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM003;
@@ -13,7 +14,13 @@ import static java.util.Arrays.asList;
 import java.util.Date;
 
 public class HandlingEventTest extends TestCase {
-  private final Cargo cargo = new Cargo(new TrackingId("XYZ"), HONGKONG, NEWYORK);
+  private Cargo cargo;
+
+  protected void setUp() throws Exception {
+    TrackingId trackingId = new TrackingId("XYZ");
+    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, NEWYORK, new Date());
+    cargo = new Cargo(trackingId, routeSpecification);
+  }
 
   public void testNewWithCarrierMovement() throws Exception {
 

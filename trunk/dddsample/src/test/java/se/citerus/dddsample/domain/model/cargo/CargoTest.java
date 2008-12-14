@@ -2,8 +2,6 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.Schedule;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -23,11 +21,11 @@ public class CargoTest extends TestCase {
   protected void setUp() throws Exception {
     events = new HashSet<HandlingEvent>();
 
-    voyage = new Voyage(new VoyageNumber("0123"), new Schedule(Arrays.asList(
-      new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date()),
-      new CarrierMovement(HAMBURG, HONGKONG, new Date(), new Date()),
-      new CarrierMovement(HONGKONG, MELBOURNE, new Date(), new Date())
-    )));
+    voyage = new Voyage.Builder(new VoyageNumber("0123"), STOCKHOLM).
+      addMovement(HAMBURG, new Date(), new Date()).
+      addMovement(HONGKONG, new Date(), new Date()).
+      addMovement(MELBOURNE, new Date(), new Date()).
+      build();
   }
 
   public void testRoutingStatus() throws Exception {
@@ -118,8 +116,9 @@ public class CargoTest extends TestCase {
     cargo.setDeliveryHistory(new Delivery(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
-    CarrierMovement cm1 = new CarrierMovement(HANGZOU, NEWYORK, new Date(), new Date());
-    Voyage voyage = new Voyage(new VoyageNumber("0123"), new Schedule(Arrays.asList(cm1)));
+    Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
+      addMovement(NEWYORK, new Date(), new Date()).
+      build();
 
     // Adding an unload event, but not at the final destination
     events.add(

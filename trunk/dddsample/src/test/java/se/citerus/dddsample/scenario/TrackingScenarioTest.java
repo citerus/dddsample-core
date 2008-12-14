@@ -1,10 +1,7 @@
 package se.citerus.dddsample.scenario;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
-import se.citerus.dddsample.domain.model.cargo.Delivery;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.cargo.*;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM002;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -40,7 +37,9 @@ public class TrackingScenarioTest extends TestCase {
   }
 
   private Cargo populateCargo() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, MELBOURNE);
+    final TrackingId trackingId = new TrackingId("XYZ");
+    final RouteSpecification routeSpecification = new RouteSpecification(STOCKHOLM, MELBOURNE, new Date());
+    final Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     final List<HandlingEvent> handlingEventList = Arrays.asList(
       new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), LOAD, STOCKHOLM, CM001),

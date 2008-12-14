@@ -2,7 +2,11 @@ package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
 import se.citerus.dddsample.application.util.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.cargo.*;
-import se.citerus.dddsample.domain.model.carrier.*;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM004;
+import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.HELSINKI_TO_HONGKONG;
+import se.citerus.dddsample.domain.model.carrier.Voyage;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
@@ -11,7 +15,10 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class CargoRepositoryTest extends AbstractRepositoryTest {
 
@@ -46,9 +53,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     HandlingEvent secondEvent = events.get(1);
 
-    Voyage voyage = new Voyage(new VoyageNumber("0303"), new Schedule(new ArrayList<CarrierMovement>()));
-
-    assertHandlingEvent(cargo,  secondEvent, LOAD, HONGKONG, 150, 110, voyage);
+    assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, 150, 110, HELSINKI_TO_HONGKONG);
 
     List<Leg> legs = cargo.itinerary().legs();
     assertEquals(3, legs.size());
@@ -116,7 +121,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
     Location legTo = locationRepository.find(new UnLocode("DEHAM"));
-    Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(SampleVoyages.CM004, legFrom, legTo, new Date(), new Date())));
+    Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
 
     cargo.assignToRoute(newItinerary);
 
