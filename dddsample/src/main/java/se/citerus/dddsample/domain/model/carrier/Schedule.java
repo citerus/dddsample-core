@@ -18,10 +18,11 @@ public class Schedule implements ValueObject<Schedule> {
 
   public static final Schedule EMPTY = new Schedule();
 
-  public Schedule(List<CarrierMovement> carrierMovements) {
+  Schedule(List<CarrierMovement> carrierMovements) {
     Validate.notNull(carrierMovements);
     Validate.noNullElements(carrierMovements);
-      
+    Validate.notEmpty(carrierMovements);
+
     this.carrierMovements = carrierMovements;
   }
 
