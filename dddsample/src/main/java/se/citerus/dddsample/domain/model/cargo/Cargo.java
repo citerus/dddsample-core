@@ -47,18 +47,20 @@ public class Cargo implements Entity<Cargo> {
 
   /**
    * @param trackingId tracking id
-   * @param origin origin location
-   * @param destination destination location
+   * @param routeSpecification route specification
    */
-  public Cargo(TrackingId trackingId, Location origin, Location destination) {
+  public Cargo(TrackingId trackingId, RouteSpecification routeSpecification) {
     Validate.notNull(trackingId);
-    Validate.notNull(origin);
-    Validate.notNull(destination);
-
+    Validate.notNull(routeSpecification);
     this.trackingId = trackingId;
-    // TODO this is temporary
-    this.routeSpecification = new RouteSpecification(origin, destination, new Date());
+    this.routeSpecification = routeSpecification;
   }
+
+  // TODO remove this, only present during migration to other ctor
+  public Cargo(TrackingId trackingId, Location origin, Location destination) {
+    this(trackingId, new RouteSpecification(origin, destination, new Date()));
+  }
+
 
   /**
    * The tracking id is the identity of this entity, and is unique.
@@ -98,7 +100,7 @@ public class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * @return True if the cargo has arrived at its final destination.
+   * @return True if the cargo has arrived at its destination.
    */
   public boolean hasArrived() {
     return destination().equals(delivery.lastKnownLocation());
@@ -122,13 +124,7 @@ public class Cargo implements Entity<Cargo> {
    */
   public void assignToRoute(final Itinerary itinerary) {
     Validate.notNull(itinerary);
-
-    // Decouple the old itinerary (which may or may not exist) from this cargo
-    //itinerary().setCargo(null);
-
-    // Couple this cargo and the new itinerary
     this.itinerary = itinerary;
-    //this.itinerary.setCargo(this);
   }
 
   /**
