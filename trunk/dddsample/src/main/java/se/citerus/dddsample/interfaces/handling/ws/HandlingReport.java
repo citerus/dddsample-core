@@ -16,25 +16,16 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 public class HandlingReport {
 
-  @XmlElement(required = true)
   private String[] trackingIds;
-
-  @XmlElement(required = true)
   private String unLocode;
-
-  @XmlElement(required = false)
   private String voyageNumber;
-
-  @XmlSchemaType(name="dateTime")
-  @XmlElement(required = true)
   private XMLGregorianCalendar completionTime;
-
-  @XmlElement(required = true)
   private String type;
 
   /**
    * @return tracking ids of cargos that have been handled (the same way)
    */
+  @XmlElement(required = true)
   public String[] getTrackingIds() {
     return trackingIds;
   }
@@ -46,6 +37,7 @@ public class HandlingReport {
   /**
    * @return United Nations Location Code for the location where the event occured
    */
+  @XmlElement(required = true)
   public String getUnLocode() {
     return unLocode;
   }
@@ -59,6 +51,8 @@ public class HandlingReport {
    * 
    * @return voyage number, if applicable
    */
+
+  @XmlElement(required = false)
   public String getVoyageNumber() {
     return voyageNumber;
   }
@@ -70,6 +64,9 @@ public class HandlingReport {
   /**
    * @return time when event occured, for example a the loading of cargo was completed
    */
+
+  @XmlSchemaType(name="dateTime")
+  @XmlElement(required = true)
   public XMLGregorianCalendar getCompletionTime() {
     return completionTime;
   }
@@ -81,6 +78,8 @@ public class HandlingReport {
   /**
    * @return type of event
    */
+
+  @XmlElement(required = true)
   public String getType() {
     return type;
   }

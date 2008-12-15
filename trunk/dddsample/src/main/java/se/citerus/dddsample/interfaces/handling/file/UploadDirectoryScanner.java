@@ -4,8 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import se.citerus.dddsample.interfaces.handling.RegistrationFailure;
 import se.citerus.dddsample.interfaces.handling.RegistrationParser;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     }
   }
 
-  private void parse(final File file) throws IOException, RegistrationFailure {
+  private void parse(final File file) throws IOException, HandlingReportErrors {
     final List<String> lines = FileUtils.readLines(file);
     final List<String> rejectedLines = new ArrayList<String>();
     for (String line : lines) {
@@ -68,7 +68,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     );
   }
 
-  private void parseLine(final String line) throws RegistrationFailure {
+  private void parseLine(final String line) throws HandlingReportErrors {
     final String[] columns = line.split("\t");
     if (columns.length == 5) {
       registrationParser.convertAndSend(

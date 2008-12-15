@@ -1,9 +1,11 @@
-package se.citerus.dddsample.interfaces.handling.ws;
+package se.citerus.dddsample.interfaces.handling.ws.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import se.citerus.dddsample.interfaces.handling.RegistrationFailure;
 import se.citerus.dddsample.interfaces.handling.RegistrationParser;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
 
 import javax.jws.WebService;
 import java.util.Date;
@@ -23,7 +25,7 @@ public class HandlingReportServiceImpl implements HandlingReportService {
   public static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
 
   @Override
-  public void submitReport(HandlingReport handlingReport) throws RegistrationFailure {
+  public void submitReport(HandlingReport handlingReport) throws HandlingReportErrors {
     Date date = handlingReport.getCompletionTime().toGregorianCalendar().getTime();
     for (String trackingId : handlingReport.getTrackingIds()) {
       registrationParser.convertAndSend(

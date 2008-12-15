@@ -1,27 +1,20 @@
 <?xml version="1.0"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-       xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-        http://jax-ws.dev.java.net/spring/core https://jax-ws.dev.java.net/spring/core.xsd
-        http://jax-ws.dev.java.net/spring/servlet https://jax-ws.dev.java.net/spring/servlet.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	     xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
   <!-- Handling event registration web service -->
 
-  <wss:bindings id="jax-ws.http">
-    <wss:bindings>
-      <wss:binding url="/ws/RegisterEvent">
-        <wss:service>
-          <ws:service bean="#handlingEventServiceEndpoint"/>
-        </wss:service>
-      </wss:binding>
-    </wss:bindings>
-  </wss:bindings>
+  <jaxws:endpoint id="jax-ws.http" implementor="#handlingReportService" address="/ws/RegisterEvent"/>
 
-  <bean id="handlingEventServiceEndpoint" class="se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl">
+  <bean id="handlingReportService" class="se.citerus.dddsample.interfaces.handling.ws.impl.HandlingReportServiceImpl">
     <property name="registrationParser" ref="registrationParser"/>
   </bean>
 
