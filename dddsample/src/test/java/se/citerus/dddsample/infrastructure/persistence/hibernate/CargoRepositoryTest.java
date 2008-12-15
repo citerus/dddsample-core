@@ -3,7 +3,6 @@ package se.citerus.dddsample.infrastructure.persistence.hibernate;
 import se.citerus.dddsample.application.util.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.cargo.*;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM004;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.HELSINKI_TO_HONGKONG;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
@@ -53,7 +52,14 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     HandlingEvent secondEvent = events.get(1);
 
-    assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, 150, 110, HELSINKI_TO_HONGKONG);
+    Voyage hongkongMelbourneTokyoAndBack = new Voyage.Builder(
+      new VoyageNumber("0303"), HONGKONG).
+      addMovement(MELBOURNE, new Date(), new Date()).
+      addMovement(TOKYO, new Date(), new Date()).
+      addMovement(HONGKONG, new Date(), new Date()).
+      build();
+    
+    assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, 150, 110, hongkongMelbourneTokyoAndBack);
 
     List<Leg> legs = cargo.itinerary().legs();
     assertEquals(3, legs.size());
@@ -77,7 +83,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     Date expectedRegistrationTime = SampleDataGenerator.offset(registrationTimeMs);
     assertEquals(expectedRegistrationTime, event.registrationTime());
-    
+
     assertEquals(voyage, event.voyage());
     assertEquals(cargo, event.cargo());
   }

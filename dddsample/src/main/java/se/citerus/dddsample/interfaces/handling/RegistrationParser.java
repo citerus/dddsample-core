@@ -9,7 +9,8 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
+import se.citerus.dddsample.interfaces.handling.ws.impl.HandlingReportServiceImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +25,7 @@ public class RegistrationParser {
   
   private static final Log logger = LogFactory.getLog(RegistrationParser.class);
 
-  public void convertAndSend(String completionTime, String trackingId, String voyageNumberString, String unlocode, String eventType) throws RegistrationFailure {
+  public void convertAndSend(String completionTime, String trackingId, String voyageNumberString, String unlocode, String eventType) throws HandlingReportErrors {
     final List<String> errors = new ArrayList<String>();
 
     final Date date = parseDate(completionTime, errors);
@@ -38,7 +39,7 @@ public class RegistrationParser {
       systemEvents.receivedHandlingEventRegistrationAttempt(attempt);
     } else {
       logger.warn("Handling event registration attempt failed: " + errors);
-      throw new RegistrationFailure(errors);
+      throw new HandlingReportErrors(errors);
     }
   }
 
