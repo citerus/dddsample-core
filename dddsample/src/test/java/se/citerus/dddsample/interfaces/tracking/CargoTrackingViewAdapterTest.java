@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.springframework.context.support.StaticApplicationContext;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
+import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -15,7 +16,7 @@ import java.util.*;
 public class CargoTrackingViewAdapterTest extends TestCase {
 
   public void testCreate() {
-    Cargo cargo = new Cargo(new TrackingId("XYZ"), HANGZOU, HELSINKI);
+    Cargo cargo = new Cargo(new TrackingId("XYZ"), HANGZOU, new RouteSpecification(HANGZOU, HELSINKI, new Date()));
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));

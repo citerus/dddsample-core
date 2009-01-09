@@ -40,7 +40,7 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public void save(final Cargo cargo) {
-    //No need to save anything with InMem
+    cargoDb.put(cargo.trackingId().idString(), cargo);
   }
 
   public TrackingId nextTrackingId() {

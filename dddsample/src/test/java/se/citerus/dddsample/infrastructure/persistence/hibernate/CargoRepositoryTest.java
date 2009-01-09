@@ -39,8 +39,9 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   public void testFindByCargoId() {
     Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
-    assertEquals(HONGKONG, cargo.origin());
-    assertEquals(HELSINKI, cargo.destination());
+    assertEquals(STOCKHOLM, cargo.origin());
+    assertEquals(HONGKONG, cargo.routeSpecification().origin());
+    assertEquals(HELSINKI, cargo.routeSpecification().destination());
 
     assertNotNull(cargo.delivery());
 
@@ -103,7 +104,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Location origin = locationRepository.find(STOCKHOLM.unLocode());
     Location destination = locationRepository.find(MELBOURNE.unLocode());
 
-    Cargo cargo = new Cargo(trackingId, origin, destination);
+    Cargo cargo = new Cargo(trackingId, origin, new RouteSpecification(origin, destination, new Date()));
     cargoRepository.save(cargo);
 
     flush();
@@ -114,10 +115,10 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals("AAA", map.get("TRACKING_ID"));
 
     Long originId = getLongId(origin);
-    assertEquals(originId, map.get("ORIGIN_ID"));
+    assertEquals(originId, map.get("SPEC_ORIGIN_ID"));
 
     Long destinationId = getLongId(destination);
-    assertEquals(destinationId, map.get("DESTINATION_ID"));
+    assertEquals(destinationId, map.get("SPEC_DESTINATION_ID"));
   }
 
   public void testReplaceItinerary() {
