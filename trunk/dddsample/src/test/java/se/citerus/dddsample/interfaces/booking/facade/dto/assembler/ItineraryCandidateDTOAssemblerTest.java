@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application.service.dto.assembler;
+package se.citerus.dddsample.interfaces.booking.facade.dto.assembler;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
@@ -13,7 +13,6 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
-import se.citerus.dddsample.interfaces.booking.facade.dto.assembler.ItineraryCandidateDTOAssembler;
 
 import java.util.ArrayList;
 import java.util.Arrays;

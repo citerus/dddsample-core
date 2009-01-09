@@ -46,7 +46,7 @@ public class ExternalRoutingServiceTest extends TestCase {
   public void testCalculatePossibleRoutes() {
     TrackingId trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, new Date());
-    Cargo cargo = new Cargo(trackingId, routeSpecification);
+    Cargo cargo = new Cargo(trackingId, HONGKONG, routeSpecification);
 
     expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
     
@@ -65,7 +65,7 @@ public class ExternalRoutingServiceTest extends TestCase {
 
       // Cargo final destination and last leg stop should match
       Location lastLegStop = legs.get(legs.size() - 1).unloadLocation();
-      assertEquals(cargo.destination(), lastLegStop);
+      assertEquals(cargo.routeSpecification().destination(), lastLegStop);
 
       for (int i = 0; i < legs.size() - 1; i++) {
         // Assert that all legs are connected

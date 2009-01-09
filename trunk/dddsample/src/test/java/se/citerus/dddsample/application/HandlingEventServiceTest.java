@@ -22,29 +22,28 @@ import java.util.Date;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
-  private SystemEvents systemEvents;
+  private ApplicationEvents applicationEvents;
   private CargoRepository cargoRepository;
   private VoyageRepository voyageRepository;
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
   private HandlingEventFactory handlingEventFactory;
 
-  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, new Date()));
-
-  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, HELSINKI, new Date()));
+  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), HAMBURG, new RouteSpecification(HAMBURG, TOKYO, new Date()));
+  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), HONGKONG, new RouteSpecification(HONGKONG, HELSINKI, new Date()));
 
   protected void setUp() throws Exception{
     cargoRepository = createMock(CargoRepository.class);
     voyageRepository = createMock(VoyageRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     locationRepository = createMock(LocationRepository.class);
-    systemEvents = createMock(SystemEvents.class);
+    applicationEvents = createMock(ApplicationEvents.class);
     handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
-    service = new HandlingEventServiceImpl(handlingEventRepository, systemEvents, handlingEventFactory);
+    service = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
   }
 
   protected void tearDown() throws Exception {
-    verify(cargoRepository, voyageRepository, handlingEventRepository, systemEvents);
+    verify(cargoRepository, voyageRepository, handlingEventRepository, applicationEvents);
   }
 
   public void testRegisterEvent() throws Exception {
@@ -59,11 +58,11 @@ public class HandlingEventServiceTest extends TestCase {
 
     // TODO: does not inspect the handling event instance in a sufficient way
     handlingEventRepository.save(isA(HandlingEvent.class));
-    systemEvents.cargoWasHandled(isA(HandlingEvent.class));
+    applicationEvents.cargoWasHandled(isA(HandlingEvent.class));
 
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
 
-    service.register(new HandlingEventRegistrationAttempt(
+    service.registerHandlingEvent(new HandlingEventRegistrationAttempt(
       new Date(), new Date(), trackingId, voyageNumber, HandlingEvent.Type.LOAD, unLocode
     ));
   }
@@ -73,13 +72,13 @@ public class HandlingEventServiceTest extends TestCase {
     expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
 
     handlingEventRepository.save(isA(HandlingEvent.class));
-    systemEvents.cargoWasHandled(isA(HandlingEvent.class));
+    applicationEvents.cargoWasHandled(isA(HandlingEvent.class));
 
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
 
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
 
-    service.register(new HandlingEventRegistrationAttempt(
+    service.registerHandlingEvent(new HandlingEventRegistrationAttempt(
       new Date(), new Date(), trackingId, null, HandlingEvent.Type.RECEIVE, STOCKHOLM.unLocode()
     ));
   }
@@ -90,15 +89,15 @@ public class HandlingEventServiceTest extends TestCase {
     expect(voyageRepository.find(voyageNumber)).andReturn(null);
 
     final TrackingId trackingId = new TrackingId("XYZ");
-    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, CHICAGO, STOCKHOLM));
+    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, CHICAGO, new RouteSpecification(CHICAGO, STOCKHOLM, new Date())));
 
     expect(locationRepository.find(MELBOURNE.unLocode())).andReturn(MELBOURNE);
 
-    systemEvents.rejectHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class), isA(CannotCreateHandlingEventException.class));
+    applicationEvents.rejectedHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class), isA(CannotCreateHandlingEventException.class));
 
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
     
-    service.register(new HandlingEventRegistrationAttempt(
+    service.registerHandlingEvent(new HandlingEventRegistrationAttempt(
       new Date(), new Date(), trackingId, voyageNumber, HandlingEvent.Type.UNLOAD, MELBOURNE.unLocode()
     ));
   }
@@ -109,11 +108,11 @@ public class HandlingEventServiceTest extends TestCase {
 
     expect(locationRepository.find(HONGKONG.unLocode())).andReturn(HONGKONG);
 
-    systemEvents.rejectHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class), isA(CannotCreateHandlingEventException.class));
+    applicationEvents.rejectedHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class), isA(CannotCreateHandlingEventException.class));
 
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
     
-      service.register(new HandlingEventRegistrationAttempt(
+      service.registerHandlingEvent(new HandlingEventRegistrationAttempt(
         new Date(), new Date(), trackingId, new VoyageNumber("V001"), HandlingEvent.Type.CLAIM, HONGKONG.unLocode()
       ));
   }
@@ -124,11 +123,11 @@ public class HandlingEventServiceTest extends TestCase {
     UnLocode wayOff = new UnLocode("XXYYY");
     expect(locationRepository.find(wayOff)).andReturn(null);
 
-    systemEvents.rejectHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class), isA(CannotCreateHandlingEventException.class));
+    applicationEvents.rejectedHandlingEventRegistrationAttempt(isA(HandlingEventRegistrationAttempt.class), isA(CannotCreateHandlingEventException.class));
 
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
     
-    service.register(new HandlingEventRegistrationAttempt(
+    service.registerHandlingEvent(new HandlingEventRegistrationAttempt(
       new Date(), new Date(), trackingId, null, HandlingEvent.Type.CLAIM, wayOff
     ));
   }

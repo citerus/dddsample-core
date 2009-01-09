@@ -12,9 +12,11 @@ import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHO
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
+import java.util.Date;
+
 public class BookingServiceTest extends TestCase {
 
-  BookingServiceImpl cargoService;
+  BookingServiceImpl bookingService;
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
   RoutingService routingService;
@@ -23,7 +25,7 @@ public class BookingServiceTest extends TestCase {
     cargoRepository = createMock(CargoRepository.class);
     locationRepository = createMock(LocationRepository.class);
     routingService = createMock(RoutingService.class);
-    cargoService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
+    bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
   }
 
   public void testRegisterNew() {
@@ -39,14 +41,14 @@ public class BookingServiceTest extends TestCase {
 
     replay(cargoRepository, locationRepository);
 
-    TrackingId trackingId = cargoService.bookNewCargo(fromUnlocode, toUnlocode);
+    TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
     assertEquals(expectedTrackingId, trackingId);
   }
 
   public void testRegisterNewNullArguments() {
     replay(cargoRepository, locationRepository);
     try {
-      cargoService.bookNewCargo(null, null);
+      bookingService.bookNewCargo(null, null, null);
       fail("Null arguments should not be allowed");
     } catch (IllegalArgumentException expected) {}
   }
