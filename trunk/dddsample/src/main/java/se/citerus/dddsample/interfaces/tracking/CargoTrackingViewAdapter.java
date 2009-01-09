@@ -87,7 +87,7 @@ public final class CargoTrackingViewAdapter {
    * @return Cargo destination location.
    */
   public String getDestination() {
-    return getDisplayText(cargo.destination());
+    return getDisplayText(cargo.routeSpecification().destination());
   }
 
   /**
