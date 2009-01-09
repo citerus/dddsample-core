@@ -11,6 +11,7 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,9 @@ public final class BookingServiceImpl implements BookingService {
   private final RoutingService routingService;
   private final Log logger = LogFactory.getLog(getClass());
 
-  public BookingServiceImpl(CargoRepository cargoRepository, LocationRepository locationRepository, RoutingService routingService) {
+  public BookingServiceImpl(final CargoRepository cargoRepository,
+                            final LocationRepository locationRepository,
+                            final RoutingService routingService) {
     this.cargoRepository = cargoRepository;
     this.locationRepository = locationRepository;
     this.routingService = routingService;
@@ -29,18 +32,19 @@ public final class BookingServiceImpl implements BookingService {
 
   @Override
   @Transactional
-  public TrackingId bookNewCargo(final UnLocode originUnLocode, final UnLocode destinationUnLocode) {
+  public TrackingId bookNewCargo(final UnLocode originUnLocode,
+                                 final UnLocode destinationUnLocode,
+                                 final Date arrivalDeadline) {
     Validate.notNull(originUnLocode);
     Validate.notNull(destinationUnLocode);
 
+    // TODO modeling this as a cargo factory might be suitable
     final TrackingId trackingId = cargoRepository.nextTrackingId();
-
-    // TODO pass RS as parameter, with actual arrival deadline
     final Location origin = locationRepository.find(originUnLocode);
     final Location destination = locationRepository.find(destinationUnLocode);
-    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
+    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);
 
-    final Cargo cargo = new Cargo(trackingId, routeSpecification);
+    final Cargo cargo = new Cargo(trackingId, origin, routeSpecification);
 
     cargoRepository.save(cargo);
     logger.info("Booked new cargo with tracking id " + cargo.trackingId().idString());
@@ -54,9 +58,12 @@ public final class BookingServiceImpl implements BookingService {
     Validate.notNull(trackingId);
     
     final Cargo cargo = cargoRepository.find(trackingId);
-    final RouteSpecification routeSpecification = new RouteSpecification(cargo.origin(), cargo.destination(), new Date());
 
-    return routingService.fetchRoutesForSpecification(routeSpecification);
+    if (cargo == null) {
+      return Collections.EMPTY_LIST;
+    }
+
+    return routingService.fetchRoutesForSpecification(cargo.routeSpecification());
   }
 
 }
