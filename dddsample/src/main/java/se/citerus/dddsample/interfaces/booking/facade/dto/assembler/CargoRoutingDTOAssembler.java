@@ -13,7 +13,7 @@ public class CargoRoutingDTOAssembler {
     final CargoRoutingDTO dto = new CargoRoutingDTO(
       cargo.trackingId().idString(),
       cargo.origin().unLocode().idString(),
-      cargo.destination().unLocode().idString()
+      cargo.routeSpecification().destination().unLocode().idString()
     );
     for (Leg leg : cargo.itinerary().legs()) {
       dto.addLeg(
