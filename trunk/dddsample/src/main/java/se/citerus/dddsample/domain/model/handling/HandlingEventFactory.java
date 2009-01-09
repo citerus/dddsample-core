@@ -52,6 +52,7 @@ public class HandlingEventFactory {
     
     if (location == null) throw new UnknownLocationException(unlocode);
 
+    // TODO parameterize
     final Date registrationTime = new Date();
 
     if (voyage == null) {

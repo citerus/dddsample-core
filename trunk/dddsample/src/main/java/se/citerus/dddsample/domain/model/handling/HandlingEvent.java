@@ -3,10 +3,11 @@ package se.citerus.dddsample.domain.model.handling;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import se.citerus.dddsample.domain.model.DomainEvent;
 import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
@@ -21,11 +22,11 @@ import java.util.Date;
  * The HandlingEvent's are sent from different Incident Logging Applications
  * some time after the event occured and contain information about the
  * {@link se.citerus.dddsample.domain.model.cargo.TrackingId}, {@link se.citerus.dddsample.domain.model.location.Location}, timestamp of the completion of the event,
- * and possibly, if applicable a {@link se.citerus.dddsample.domain.model.carrier.CarrierMovement}.
+ * and possibly, if applicable a {@link se.citerus.dddsample.domain.model.carrier.Voyage}.
  * <p/>
  * This class is the only member, and consequently the root, of the HandlingEvent aggregate. 
  * <p/>
- * HandlingEvent's could contain information about a {@link CarrierMovement} and if so,
+ * HandlingEvent's could contain information about a {@link Voyage} and if so,
  * the event type must be either {@link Type#LOAD} or {@link Type#UNLOAD}.
  * <p/>
  * All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
@@ -35,11 +36,12 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   /**
    * Comparator used to be able to sort HandlingEvents according to their completion time
    */
-  public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR = new Comparator<HandlingEvent>() {
-    public int compare(final HandlingEvent o1, final HandlingEvent o2) {
-      return o1.completionTime().compareTo(o2.completionTime());
-    }
-  };
+  public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR =
+    new Comparator<HandlingEvent>() {
+      public int compare(final HandlingEvent he1, final HandlingEvent he2) {
+        return he1.completionTime().compareTo(he2.completionTime());
+      }
+    };
 
   private Type type;
   private Voyage voyage;
@@ -59,37 +61,39 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     CLAIM(false),
     CUSTOMS(false);
 
-    private boolean carrierMovementRequired;
+    private final boolean voyageRequired;
 
     /**
      * Private enum constructor.
      *
-     * @param carrierMovementRequired whether or not a carrier movement is associated with this event type
+     * @param voyageRequired whether or not a voyage is associated with this event type
      */
-    private Type(final boolean carrierMovementRequired) {
-      this.carrierMovementRequired = carrierMovementRequired;
+    private Type(final boolean voyageRequired) {
+      this.voyageRequired = voyageRequired;
     }
 
     /**
-     * @return True if a carrier movement association is required for this event type.
+     * @return True if a voyage association is required for this event type.
      */
-    public boolean requiresCarrierMovement() {
-      return carrierMovementRequired;
+    public boolean requiresVoyage() {
+      return voyageRequired;
     }
 
     /**
-     * @return True if a carrier movement association is prohibited for this event type.
+     * @return True if a voyage association is prohibited for this event type.
      */
-    public boolean prohibitsCarrierMovement() {
-      return !requiresCarrierMovement();
+    public boolean prohibitsVoyage() {
+      return !requiresVoyage();
     }
 
+    @Override
     public boolean sameValueAs(Type other) {
-      return false;  //To change body of implemented methods use File | Settings | File Templates.
+      return other != null && this.equals(other);
     }
 
+    @Override
     public Type copy() {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      return this;
     }
   }
 
@@ -104,8 +108,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type,
                        Location location, Voyage voyage) {
     Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location, voyage});
-    if (type.prohibitsCarrierMovement()) {
-      throw new IllegalArgumentException("Carrier movement is not allowed with event type " + type);
+    if (type.prohibitsVoyage()) {
+      throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
     }
 
     this.voyage = voyage;
@@ -125,8 +129,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    */
   public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
     Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location});
-    if (type.requiresCarrierMovement()) {
-      throw new IllegalArgumentException("Carrier movement is required for event type " + type);
+    if (type.requiresVoyage()) {
+      throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
     this.completionTime = completionTime;
@@ -171,6 +175,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return sameEventAs(event);
   }
 
+  @Override
   public boolean sameEventAs(final HandlingEvent other) {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
@@ -192,8 +197,13 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       toHashCode();
   }
 
-  // Needed by Hibernate
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+  }
+
   HandlingEvent() {
+    // Needed by Hibernate
   }
 
 
