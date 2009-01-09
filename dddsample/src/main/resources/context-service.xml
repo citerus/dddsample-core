@@ -15,13 +15,13 @@
 
   <bean id="trackingService" class="se.citerus.dddsample.application.impl.TrackingServiceImpl">
     <constructor-arg ref="cargoRepository"/>
-    <constructor-arg ref="systemEvents"/>
+    <constructor-arg ref="applicationEvents"/>
   </bean>
 
   <bean id="handlingEventService" class="se.citerus.dddsample.application.impl.HandlingEventServiceImpl">
     <constructor-arg ref="handlingEventRepository"/>
     <constructor-arg ref="handlingEventFactory"/>
-    <constructor-arg ref="systemEvents"/>
+    <constructor-arg ref="applicationEvents"/>
   </bean>
 
   <bean id="handlingEventFactory" class="se.citerus.dddsample.domain.model.handling.HandlingEventFactory">
@@ -38,11 +38,4 @@
     <property name="graphTraversalService" ref="graphTraversalService"/>
   </bean>
 
-  <bean id="bookingServiceFacade" class="se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacadeImpl">
-    <property name="bookingService" ref="bookingService"/>
-    <property name="cargoRepository" ref="cargoRepository"/>
-    <property name="locationRepository" ref="locationRepository"/>
-    <property name="voyageRepository" ref="voyageRepository"/>
-  </bean>
-  
 </beans>
