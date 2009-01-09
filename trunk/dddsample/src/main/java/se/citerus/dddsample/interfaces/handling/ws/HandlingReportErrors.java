@@ -5,7 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HandlingReportErrors extends Exception {
-  private final String[] errors;
+
+  private String[] errors;
+
+  public HandlingReportErrors() {
+  }
 
   public HandlingReportErrors(final List<String> errors) {
     this.errors = errors.toArray(new String[errors.size()]);
@@ -15,6 +19,11 @@ public class HandlingReportErrors extends Exception {
   public String[] getErrors() {
     return errors;
   }
+
+  public void setErrors(String[] errors) {
+    this.errors = errors;
+  }
+
 
   @Override
   @XmlElement(required = true)
