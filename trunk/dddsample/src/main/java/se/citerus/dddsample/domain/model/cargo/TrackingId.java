@@ -53,6 +53,11 @@ public final class TrackingId implements ValueObject<TrackingId> {
     return new TrackingId(id);
   }
 
+  @Override
+  public String toString() {
+    return id;
+  }
+
   TrackingId() {
     // Needed by Hibernate
   }
