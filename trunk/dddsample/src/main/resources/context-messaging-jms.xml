@@ -5,12 +5,11 @@
        xmlns:amq="http://activemq.apache.org/schema/core"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
-
-  <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost?broker.persistent=false"/>
+  <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost?broker.persistent=false&amp;broker.useJmx=false"/>
 
   <amq:topic id="cargoHandledTopic" name="CargoHandledTopic" physicalName="CargoHandledTopic"/>
   <amq:topic id="misdirectedCargoTopic" name="MisdirectedCargoTopic" physicalName="MisdirectedCargoTopic"/>
@@ -19,19 +18,18 @@
   <amq:queue id="rejectedRegistrationAttemptsQueue" name="RejectedRegistrationAttemptsQueue" physicalName="RejectedRegistrationAttemptsQueue"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
-    <jms:listener destination="cargoHandledTopic" ref="cargoHandledConsumer" />
-    <!-- TODO subscribers for these topics/queues
-    <jms:listener destination="misdirectedCargoTopic" ref="TODO"/>
-    <jms:listener destination="deliveredCargoTopic" ref="TODO"/>
-    -->
-    <jms:listener destination="handlingEventRegistrationAttemptQueue" ref="handlingEventRegistrationAttemptConsumer" />
+    <jms:listener destination="CargoHandledTopic" ref="cargoHandledConsumer" />
+    <jms:listener destination="HandlingEventRegistrationAttemptQueue" ref="handlingEventRegistrationAttemptConsumer" />
+    <jms:listener destination="MisdirectedCargoTopic" ref="simpleLoggingConsumer"/>
+    <jms:listener destination="DeliveredCargoTopic" ref="simpleLoggingConsumer"/>
+    <jms:listener destination="RejectedRegistrationAttemptsQueue" ref="simpleLoggingConsumer"/>
   </jms:listener-container>
 
   <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
-  <bean id="systemEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsSystemEventsImpl">
+  <bean id="applicationEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsApplicationEventsImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="cargoHandledTopic" ref="cargoHandledTopic"/>
     <property name="misdirectedCargoTopic" ref="misdirectedCargoTopic"/>
@@ -47,5 +45,7 @@
   <bean id="handlingEventRegistrationAttemptConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.HandlingEventRegistrationAttemptConsumer">
     <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
+
+  <bean id="simpleLoggingConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.SimpleLoggingConsumer"/>
   
 </beans>

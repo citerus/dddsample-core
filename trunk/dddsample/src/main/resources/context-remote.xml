@@ -15,27 +15,24 @@
   <jaxws:endpoint id="jax-ws.http" implementor="#handlingReportService" address="/ws/RegisterEvent"/>
 
   <bean id="handlingReportService" class="se.citerus.dddsample.interfaces.handling.ws.impl.HandlingReportServiceImpl">
-    <property name="registrationParser" ref="registrationParser"/>
+    <property name="applicationEvents" ref="applicationEvents"/>
   </bean>
 
   <!-- File upload directory scanner -->
 
   <bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
     <property name="period" value="5000"/>
-    <property name="delay" value="3000"/>
+    <property name="delay" value="5000"/>
     <property name="timerTask" ref="uploadDirectoryScanner"/>
   </bean>
 
   <bean id="uploadDirectoryScanner" class="se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner">
     <property name="uploadDirectory" value="/tmp/upload"/>
     <property name="parseFailureDirectory" value="/tmp/failed"/>
-    <property name="registrationParser" ref="registrationParser"/>
+    <property name="applicationEvents" ref="applicationEvents"/>
   </bean>
 
-  <bean id="registrationParser" class="se.citerus.dddsample.interfaces.handling.RegistrationParser">
-    <property name="systemEvents" ref="systemEvents"/>
-  </bean>
-
+  <bean id="handlingReportConsumptionSupport" class="se.citerus.dddsample.interfaces.handling.HandlingReportParser"/>
 
   <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
     <property name="scheduledTimerTasks">
@@ -45,8 +42,28 @@
     </property>
   </bean>
   
-  <!-- RMI exposed booking service facade -->
+  <!-- RMI exposed booking service facade, which operates in an open Hibernate session -->
 
+  <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="bookingServiceFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="target" ref="bookingServiceFacadeTarget"/>
+    <property name="interceptorNames">
+      <list>
+        <value>hibernateInterceptor</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="bookingServiceFacadeTarget" class="se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacadeImpl">
+    <property name="bookingService" ref="bookingService"/>
+    <property name="cargoRepository" ref="cargoRepository"/>
+    <property name="locationRepository" ref="locationRepository"/>
+    <property name="voyageRepository" ref="voyageRepository"/>
+  </bean>
+  
   <bean id="rmiBookingServiceFacade" class="org.springframework.remoting.rmi.RmiServiceExporter">
     <property name="serviceInterface" value="se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
