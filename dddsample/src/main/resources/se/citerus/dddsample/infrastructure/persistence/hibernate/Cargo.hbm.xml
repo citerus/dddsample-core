@@ -11,6 +11,8 @@
       <generator class="org.hibernate.id.IdentityGenerator"/>
     </id>
 
+    <many-to-one name="origin" column="origin_id" not-null="false" cascade="none" update="false" foreign-key="origin_fk"/>
+
     <component name="trackingId" unique="true" update="false">
       <property name="id" column="tracking_id"/>
     </component>
@@ -23,9 +25,9 @@
     </component>
 
     <component name="routeSpecification">
-      <many-to-one name="origin" column="origin_id" cascade="none" update="false" foreign-key="origin_fk"/>
-      <many-to-one name="destination" column="destination_id" cascade="none" foreign-key="destination_fk"/>
-      <property name="arrivalDeadline" column="arrival_deadline" not-null="true"/>
+      <many-to-one name="origin" column="spec_origin_id" cascade="none" update="false" foreign-key="spec_origin_fk"/>
+      <many-to-one name="destination" column="spec_destination_id" cascade="none" foreign-key="spec_destination_fk"/>
+      <property name="arrivalDeadline" column="spec_arrival_deadline" not-null="true"/>
     </component>
 
     <component name="itinerary">

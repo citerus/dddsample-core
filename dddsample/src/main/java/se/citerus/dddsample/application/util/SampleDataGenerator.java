@@ -120,16 +120,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, origin_id, destination_id, arrival_deadline) " +
-      "values (?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, origin_id, spec_origin_id, spec_destination_id, spec_arrival_deadline) " +
+      "values (?, ?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 2, ts(10)},
-      {2, "ABC", 1, 5, ts(20)},
-      {3, "ZYX", 2, 1, ts(30)},
-      {4, "CBA", 5, 1, ts(40)},
-      {5, "FGH", 3, 5, ts(50)},
-      {6, "JKL", 6, 4, ts(60)}
+      {1, "XYZ", 1, 1, 2, ts(10)},
+      {2, "ABC", 1, 1, 5, ts(20)},
+      {3, "ZYX", 2, 2, 1, ts(30)},
+      {4, "CBA", 5, 5, 1, ts(40)},
+      {5, "FGH", 1, 3, 5, ts(50)},  // Cargo origin differs from spec origin
+      {6, "JKL", 6, 6, 4, ts(60)}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }

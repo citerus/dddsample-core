@@ -4,6 +4,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * For easy testdata creation.
@@ -11,11 +12,13 @@ import java.util.Collection;
  */
 public class CargoTestHelper {
 
-  public static Cargo createCargoWithDeliveryHistory(
-    TrackingId trackingId, Location origin, Location destination,
-    Collection<HandlingEvent> events) {
+  public static Cargo createCargoWithDeliveryHistory(TrackingId trackingId,
+                                                     Location origin,
+                                                     Location destination,
+                                                     Collection<HandlingEvent> events) {
 
-    final Cargo cargo = new Cargo(trackingId, origin, destination);
+    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
+    final Cargo cargo = new Cargo(trackingId, origin, routeSpecification);
     setDeliveryHistory(cargo, events);
 
     return cargo;

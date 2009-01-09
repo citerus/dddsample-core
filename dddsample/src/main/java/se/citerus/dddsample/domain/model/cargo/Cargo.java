@@ -7,8 +7,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
-import java.util.Date;
-
 /**
  * A Cargo. This is the central class in the domain model,
  * and it is the root of the Cargo-Itinerary-Leg-DeliveryHistory aggregate.
@@ -40,25 +38,20 @@ import java.util.Date;
 public class Cargo implements Entity<Cargo> {
 
   private TrackingId trackingId;
+  private Location origin;
   private Itinerary itinerary;
   private Delivery delivery;
   private RouteSpecification routeSpecification;
 
+  // TODO origin can be taken from route spec on creation, even if the origin never changes
+  public Cargo(final TrackingId trackingId, final Location origin, final RouteSpecification routeSpecification) {
+    Validate.notNull(trackingId, "Tracking id is required");
+    Validate.notNull(origin, "Origin location is required");
+    Validate.notNull(routeSpecification, "Route specification is required");
 
-  /**
-   * @param trackingId tracking id
-   * @param routeSpecification route specification
-   */
-  public Cargo(TrackingId trackingId, RouteSpecification routeSpecification) {
-    Validate.notNull(trackingId);
-    Validate.notNull(routeSpecification);
     this.trackingId = trackingId;
+    this.origin = origin;
     this.routeSpecification = routeSpecification;
-  }
-
-  // TODO remove this, only present during migration to other ctor
-  public Cargo(TrackingId trackingId, Location origin, Location destination) {
-    this(trackingId, new RouteSpecification(origin, destination, new Date()));
   }
 
 
@@ -75,14 +68,7 @@ public class Cargo implements Entity<Cargo> {
    * @return Origin location.
    */
   public Location origin() {
-    return routeSpecification.origin();
-  }
-
-  /**
-   * @return Destination of the cargo.
-   */
-  public Location destination() {
-    return routeSpecification.destination();
+    return origin;
   }
 
   /**
@@ -100,10 +86,17 @@ public class Cargo implements Entity<Cargo> {
   }
 
   /**
+   * @return The route specification.
+   */
+  public RouteSpecification routeSpecification() {
+    return routeSpecification;
+  }
+  
+  /**
    * @return True if the cargo has arrived at its destination.
    */
   public boolean hasArrived() {
-    return destination().equals(delivery.lastKnownLocation());
+    return routeSpecification.destination().equals(delivery.lastKnownLocation());
   }
 
   /**
@@ -180,13 +173,14 @@ public class Cargo implements Entity<Cargo> {
   public boolean isUnloadedAtDestination() {
     for (HandlingEvent event : delivery().history()) {
       if (HandlingEvent.Type.UNLOAD.equals(event.type())
-        && destination().equals(event.location())) {
+        && routeSpecification.destination().equals(event.location())) {
         return true;
       }
     }
     return false;
   }
 
+  @Override
   public boolean sameIdentityAs(final Cargo other) {
     return other != null && trackingId.sameValueAs(other.trackingId);
   }
@@ -211,6 +205,11 @@ public class Cargo implements Entity<Cargo> {
   @Override
   public int hashCode() {
     return trackingId.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return trackingId.toString();
   }
 
   Cargo() {

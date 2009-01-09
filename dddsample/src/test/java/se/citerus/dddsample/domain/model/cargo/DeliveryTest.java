@@ -12,7 +12,7 @@ import java.util.*;
 
 public class DeliveryTest extends TestCase {
 
-  private Cargo cargo = new Cargo(new TrackingId("XYZ"), HONGKONG, NEWYORK);
+  private Cargo cargo = new Cargo(new TrackingId("XYZ"), HONGKONG, new RouteSpecification(HONGKONG, NEWYORK, new Date()));
 
   public void testEvensOrderedByTimeOccured() throws Exception {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
