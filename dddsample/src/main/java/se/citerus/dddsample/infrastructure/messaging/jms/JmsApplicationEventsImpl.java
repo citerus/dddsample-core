@@ -2,8 +2,8 @@ package se.citerus.dddsample.infrastructure.messaging.jms;
 
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
+import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
-import se.citerus.dddsample.application.SystemEvents;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -16,7 +16,7 @@ import javax.jms.Session;
 /**
  * JMS based implementation.
  */
-public final class JmsSystemEventsImpl implements SystemEvents {
+public final class JmsApplicationEventsImpl implements ApplicationEvents {
 
   private JmsOperations jmsOperations;
   private Destination cargoHandledTopic;
@@ -54,7 +54,7 @@ public final class JmsSystemEventsImpl implements SystemEvents {
   }
 
   @Override
-  public void rejectHandlingEventRegistrationAttempt(final HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem) {
+  public void rejectedHandlingEventRegistrationAttempt(final HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem) {
     // TODO include error message in JMS message
     jmsOperations.send(rejectedRegistrationAttemptsQueue, new MessageCreator() {
       public Message createMessage(Session session) throws JMSException {

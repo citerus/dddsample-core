@@ -11,7 +11,10 @@ import javax.jms.TextMessage;
 
 /**
  * Consumes JMS messages and delegates notification of misdirected
- * cargo to the cargo service.
+ * cargo to the tracking service.
+ *
+ * This is a programmatic hook into the JMS infrastructure to
+ * make cargo inspection message-driven.
  */
 public class CargoHandledConsumer implements MessageListener {
 
@@ -20,13 +23,11 @@ public class CargoHandledConsumer implements MessageListener {
 
   @Override  
   public void onMessage(final Message message) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("Received message " + message);
-    }
     try {
       final TextMessage textMessage = (TextMessage) message;
       final String trackingidString = textMessage.getText();
-      trackingService.onCargoHandled(new TrackingId(trackingidString));
+      
+      trackingService.inspectCargo(new TrackingId(trackingidString));
     } catch (Exception e) {
       logger.error(e, e);
     }
