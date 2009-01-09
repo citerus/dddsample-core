@@ -14,6 +14,7 @@ public interface TrackingService {
    *
    * @param trackingId cargo tracking id
    */
-  void onCargoHandled(TrackingId trackingId);
+  // TODO rename! The method updates the delivery status on handling
+  void inspectCargo(TrackingId trackingId);
 
 }
