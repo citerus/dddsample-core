@@ -2,13 +2,21 @@ package se.citerus.dddsample.interfaces.handling.ws.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import se.citerus.dddsample.interfaces.handling.RegistrationParser;
+import se.citerus.dddsample.application.ApplicationEvents;
+import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
+import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.location.UnLocode;
+import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
 
 import javax.jws.WebService;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This web service endpoint implementation performs basic validation and parsing
@@ -19,23 +27,33 @@ import java.util.Date;
 @WebService(endpointInterface = "se.citerus.dddsample.interfaces.handling.ws.HandlingReportService")
 public class HandlingReportServiceImpl implements HandlingReportService {
 
-  private RegistrationParser registrationParser;
-  private static final Log logger = LogFactory.getLog(HandlingReportServiceImpl.class);
-  
-  public static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
+  private ApplicationEvents applicationEvents;
+  private final static Log logger = LogFactory.getLog(HandlingReportServiceImpl.class);
 
   @Override
   public void submitReport(HandlingReport handlingReport) throws HandlingReportErrors {
-    Date date = handlingReport.getCompletionTime().toGregorianCalendar().getTime();
+    final Date date = handlingReport.getCompletionTime().toGregorianCalendar().getTime();
+    
     for (String trackingId : handlingReport.getTrackingIds()) {
-      registrationParser.convertAndSend(
-        "", trackingId, handlingReport.getVoyageNumber(), handlingReport.getUnLocode(), handlingReport.getType()
-      );
+      List<String> errors = new ArrayList<String>();
+
+      final TrackingId tid = parseTrackingId(trackingId, errors);
+      final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
+      final HandlingEvent.Type type = parseEventType(handlingReport.getType(), errors);
+      final UnLocode ul = parseUnLocode(handlingReport.getUnLocode(), errors);
+
+      if (errors.isEmpty()) {
+        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), date, tid, voyageNumber, type, ul);
+        applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
+      } else {
+        logger.error("Parse error in handling report: " + errors);
+        throw new HandlingReportErrors(errors);
+      }
     }
   }
 
-  public void setRegistrationParser(RegistrationParser registrationParser) {
-    this.registrationParser = registrationParser;
+  public void setApplicationEvents(ApplicationEvents applicationEvents) {
+    this.applicationEvents = applicationEvents;
   }
 
 }
