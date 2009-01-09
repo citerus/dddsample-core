@@ -15,8 +15,8 @@ import java.util.Date;
  */
 public final class HandlingEventRegistrationAttempt implements Serializable {
 
-  private final Date registrationDate;
-  private final Date date;
+  private final Date registrationTime;
+  private final Date completionTime;
   private final TrackingId trackingId;
   private final VoyageNumber voyageNumber;
   private final HandlingEvent.Type type;
@@ -28,16 +28,16 @@ public final class HandlingEventRegistrationAttempt implements Serializable {
                                           final VoyageNumber voyageNumber,
                                           final HandlingEvent.Type type,
                                           final UnLocode unLocode) {
-    this.registrationDate = registrationDate;
-    this.date = completionDate;
+    this.registrationTime = registrationDate;
+    this.completionTime = completionDate;
     this.trackingId = trackingId;
     this.voyageNumber = voyageNumber;
     this.type = type;
     this.unLocode = unLocode;
   }
 
-  public Date getDate() {
-    return new Date(date.getTime());
+  public Date getCompletionTime() {
+    return new Date(completionTime.getTime());
   }
 
   public TrackingId getTrackingId() {
@@ -56,7 +56,7 @@ public final class HandlingEventRegistrationAttempt implements Serializable {
     return unLocode;
   }
 
-  public Date getRegistrationDate() {
-    return new Date(registrationDate.getTime());
+  public Date getRegistrationTime() {
+    return new Date(registrationTime.getTime());
   }
 }
