@@ -45,7 +45,7 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
 
   @Override
   public String toString() {
-    return "Voyage #" + number;
+    return number;
   }
 
   public String idString() {
