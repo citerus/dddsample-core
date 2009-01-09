@@ -1,9 +1,9 @@
 package se.citerus.dddsample.application.impl;
 
 import org.springframework.transaction.annotation.Transactional;
+import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.application.HandlingEventService;
-import se.citerus.dddsample.application.SystemEvents;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
@@ -11,42 +11,45 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
 public final class HandlingEventServiceImpl implements HandlingEventService {
 
+  private final ApplicationEvents applicationEvents;
   private final HandlingEventRepository handlingEventRepository;
-  private final SystemEvents systemEvents;
   private final HandlingEventFactory handlingEventFactory;
 
-  public HandlingEventServiceImpl(HandlingEventRepository handlingEventRepository, SystemEvents systemEvents, HandlingEventFactory handlingEventFactory) {
+  public HandlingEventServiceImpl(final HandlingEventRepository handlingEventRepository,
+                                  final ApplicationEvents applicationEvents,
+                                  final HandlingEventFactory handlingEventFactory) {
     this.handlingEventRepository = handlingEventRepository;
-    this.systemEvents = systemEvents;
+    this.applicationEvents = applicationEvents;
     this.handlingEventFactory = handlingEventFactory;
   }
 
-  /*
-   NOTE:
-     The cargo instance that's loaded and associated with the handling event is
-     in an inconsitent state, because the cargo delivery history's collection of
-     events does not contain the event created here. However, this is not a problem,
-     because cargo is in a different aggregate from handling event.
-
-     The rules of an aggregate dictate that all consistency rules within the aggregate
-     are enforced synchronously in the transaction, but consistency rules of other aggregates
-     are enforced by asynchronous updates, after the commit of this transaction.
-  */
   @Override
   @Transactional
-  public void register(HandlingEventRegistrationAttempt attempt) {
+  public void registerHandlingEvent(final HandlingEventRegistrationAttempt attempt) {
     try {
+      /* Using a factory to create a HandlingEvent (aggregate). This is where
+         it is determined wether the incoming data, the attempt, actually is capable
+         of representing a real handling event. */
       final HandlingEvent event = handlingEventFactory.createHandlingEvent(
-        attempt.getDate(),
+        attempt.getCompletionTime(),
         attempt.getTrackingId(),
         attempt.getVoyageNumber(),
         attempt.getUnLocode(),
         attempt.getType()
       );
+
+      /* Store the new handling event, which updates the persistent
+         state of the handling event aggregate (but not the cargo aggregate -
+         that happens asynchronously!)
+       */
       handlingEventRepository.save(event);
-      systemEvents.cargoWasHandled(event);
+
+      /* Publish a system event stating that a cargo has been handled. */
+      applicationEvents.cargoWasHandled(event);
     } catch (CannotCreateHandlingEventException e) {
-      systemEvents.rejectHandlingEventRegistrationAttempt(attempt, e);
+      /* This may be a bogus attempt, for example containing a tracking id
+         that doesn't match any cargo that we're tracking. */
+      applicationEvents.rejectedHandlingEventRegistrationAttempt(attempt, e);
     }
   }
 

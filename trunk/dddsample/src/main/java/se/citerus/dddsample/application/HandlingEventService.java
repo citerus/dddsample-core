@@ -7,10 +7,10 @@ public interface HandlingEventService {
 
   /**
    * Registers a handling event in the system, and notifies interested
-   * parties that an event has been registered.
+   * parties that a cargo has been handled.
    *
    * @param attempt handling event registration attempt
    */
-  void register(HandlingEventRegistrationAttempt attempt);
+  void registerHandlingEvent(HandlingEventRegistrationAttempt attempt);
 
 }
