@@ -19,7 +19,7 @@ public class HandlingEventTest extends TestCase {
   protected void setUp() throws Exception {
     TrackingId trackingId = new TrackingId("XYZ");
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, NEWYORK, new Date());
-    cargo = new Cargo(trackingId, routeSpecification);
+    cargo = new Cargo(trackingId, HONGKONG, routeSpecification);
   }
 
   public void testNewWithCarrierMovement() throws Exception {
