@@ -21,7 +21,10 @@ public class Voyage implements Entity<Voyage> {
     new VoyageNumber(""), Schedule.EMPTY
   );
 
-  public Voyage(VoyageNumber voyageNumber, Schedule schedule) {
+  public Voyage(final VoyageNumber voyageNumber, final Schedule schedule) {
+    Validate.notNull(voyageNumber, "Voyage number is required");
+    Validate.notNull(schedule, "Schedule is required");
+
     this.voyageNumber = voyageNumber;
     this.schedule = schedule;
   }
@@ -61,6 +64,11 @@ public class Voyage implements Entity<Voyage> {
     return other != null && this.voyageNumber().sameValueAs(other.voyageNumber());
   }
 
+  @Override
+  public String toString() {
+    return "Voyage " + voyageNumber;
+  }
+
   Voyage() {
     // Needed by Hibernate
   }
@@ -78,16 +86,17 @@ public class Voyage implements Entity<Voyage> {
     private final VoyageNumber voyageNumber;
     private Location departureLocation;
 
-    public Builder(VoyageNumber voyageNumber, Location initialDepartureLocation) {
+    public Builder(final VoyageNumber voyageNumber, final Location departureLocation) {
       Validate.notNull(voyageNumber, "Voyage number is required");
-      Validate.notNull(voyageNumber, "Departure location is required");
+      Validate.notNull(departureLocation, "Departure location is required");
 
       this.voyageNumber = voyageNumber;
-      this.departureLocation = initialDepartureLocation;
+      this.departureLocation = departureLocation;
     }
 
     public Builder addMovement(Location arrivalLocation, Date departureTime, Date arrivalTime) {
       carrierMovements.add(new CarrierMovement(departureLocation, arrivalLocation, departureTime, arrivalTime));
+      // Next departure location is the same as this arrival location
       this.departureLocation = arrivalLocation;
       return this;
     }
