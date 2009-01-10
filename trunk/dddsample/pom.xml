@@ -156,8 +156,11 @@
             <configuration>
               <classifier>ws-client</classifier>
               <includes>
-                <include>**/se/citerus/dddsample/interfaces/handling/ws/*</include>
+                <include>**/se/citerus/dddsample/interfaces/handling/ws/*.class</include>
               </includes>
+              <archive>
+                <addMavenDescriptor>false</addMavenDescriptor>
+              </archive>
             </configuration>
           </execution>
         </executions>
