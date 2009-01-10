@@ -1,4 +1,4 @@
-package se.citerus.routingteam;
+package com.partner.pathfinder.api;
 
 import java.io.Serializable;
 

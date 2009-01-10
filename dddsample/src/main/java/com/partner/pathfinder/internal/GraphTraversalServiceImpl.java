@@ -1,8 +1,8 @@
-package se.citerus.routingteam.internal;
+package com.partner.pathfinder.internal;
 
-import se.citerus.routingteam.GraphTraversalService;
-import se.citerus.routingteam.TransitEdge;
-import se.citerus.routingteam.TransitPath;
+import com.partner.pathfinder.api.GraphTraversalService;
+import com.partner.pathfinder.api.TransitEdge;
+import com.partner.pathfinder.api.TransitPath;
 
 import java.util.*;
 
