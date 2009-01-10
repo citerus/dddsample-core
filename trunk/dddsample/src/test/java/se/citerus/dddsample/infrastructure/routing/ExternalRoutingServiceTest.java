@@ -1,5 +1,8 @@
 package se.citerus.dddsample.infrastructure.routing;
 
+import com.partner.pathfinder.api.GraphTraversalService;
+import com.partner.pathfinder.internal.GraphDAO;
+import com.partner.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.*;
@@ -10,9 +13,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
-import se.citerus.routingteam.GraphTraversalService;
-import se.citerus.routingteam.internal.GraphDAO;
-import se.citerus.routingteam.internal.GraphTraversalServiceImpl;
 
 import javax.sql.DataSource;
 import java.util.Arrays;

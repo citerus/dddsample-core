@@ -1,5 +1,8 @@
 package se.citerus.dddsample.infrastructure.routing;
 
+import com.partner.pathfinder.api.GraphTraversalService;
+import com.partner.pathfinder.api.TransitEdge;
+import com.partner.pathfinder.api.TransitPath;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
@@ -10,9 +13,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
-import se.citerus.routingteam.GraphTraversalService;
-import se.citerus.routingteam.TransitEdge;
-import se.citerus.routingteam.TransitPath;
 
 import java.util.ArrayList;
 import java.util.Date;
