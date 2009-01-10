@@ -3,6 +3,7 @@ package com.partner.pathfinder.internal;
 import com.partner.pathfinder.api.GraphTraversalService;
 import com.partner.pathfinder.api.TransitEdge;
 import com.partner.pathfinder.api.TransitPath;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -16,6 +17,7 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     this.random = new Random();
   }
 
+  @Transactional(readOnly = true)
   public List<TransitPath> findShortestPath(String originUnLocode, String destinationUnLocode) {
     List<String> allVertices = dao.listLocations();
     allVertices.remove(originUnLocode);

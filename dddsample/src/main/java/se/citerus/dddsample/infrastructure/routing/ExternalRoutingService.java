@@ -3,7 +3,6 @@ package se.citerus.dddsample.infrastructure.routing;
 import com.partner.pathfinder.api.GraphTraversalService;
 import com.partner.pathfinder.api.TransitEdge;
 import com.partner.pathfinder.api.TransitPath;
-import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -30,10 +29,11 @@ public class ExternalRoutingService implements RoutingService {
   private LocationRepository locationRepository;
   private VoyageRepository voyageRepository;
 
-  @Transactional(readOnly = true)
   public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
     final Location origin = routeSpecification.origin();
     final Location destination = routeSpecification.destination();
+
+    // TODO send arrival deadline too
 
     final List<TransitPath> transitPaths = graphTraversalService.findShortestPath(
       origin.unLocode().idString(),
@@ -47,6 +47,8 @@ public class ExternalRoutingService implements RoutingService {
       // Use the specification to safe-guard against invalid itineraries
       if (routeSpecification.isSatisfiedBy(itinerary)) {
         itineraries.add(itinerary);
+      } else {
+        // TODO log warning/error? Fail?
       }
     }
 
