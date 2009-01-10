@@ -3,9 +3,11 @@ package se.citerus.dddsample.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.location.Location;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +19,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   private List<Leg> legs = Collections.emptyList();
 
   static final Itinerary EMPTY_ITINERARY = new Itinerary();
+  private static final Date END_OF_DAYS = new Date(Long.MAX_VALUE);
 
   /**
    * Constructor.
@@ -76,12 +79,58 @@ public class Itinerary implements ValueObject<Itinerary> {
 
     if (event.type() == HandlingEvent.Type.CLAIM) {
       //Check that the last leg's destination is from the event's location
-      final Leg leg = legs.get(legs.size() - 1);
+      final Leg leg = lastLeg();
       return (leg.unloadLocation().equals(event.location()));
     }
 
     //HandlingEvent.Type.CUSTOMS;
     return true;
+  }
+
+  /**
+   * @return The initial departure location.
+   */
+  public Location initialDepartureLocation() {
+     if (legs.isEmpty()) {
+       return Location.UNKNOWN;
+     } else {
+       return legs.get(0).loadLocation();
+     }
+  }
+
+  /**
+   * @return The final arrival location.
+   */
+  public Location finalArrivalLocation() {
+    if (legs.isEmpty()) {
+      return Location.UNKNOWN;
+    } else {
+      return lastLeg().unloadLocation();
+    }
+  }
+
+  /**
+   * @return Date when cargo arrives at final destination.
+   */
+  public Date finalArrivalDate() {
+    final Leg lastLeg = lastLeg();
+
+    if (lastLeg == null) {
+      return END_OF_DAYS;
+    } else {
+      return lastLeg.unloadTime();
+    }
+  }
+
+  /**
+   * @return The last leg on the itinerary.
+   */
+  public Leg lastLeg() {
+    if (legs.isEmpty()) {
+      return null;
+    } else {
+      return legs.get(legs.size() - 1);
+    }
   }
 
   /**
@@ -123,5 +172,4 @@ public class Itinerary implements ValueObject<Itinerary> {
 
   // Auto-generated surrogate key
   private Long id;
-
 }
