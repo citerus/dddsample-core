@@ -43,6 +43,8 @@ public class ExternalRoutingServiceTest extends TestCase {
     externalRoutingService.setGraphTraversalService(graphTraversalService);
   }
 
+  // TODO this test belongs in com.partner.pathfinder
+
   public void testCalculatePossibleRoutes() {
     TrackingId trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, new Date());
@@ -54,7 +56,7 @@ public class ExternalRoutingServiceTest extends TestCase {
 
     List<Itinerary> candidates = externalRoutingService.fetchRoutesForSpecification(routeSpecification);
     assertNotNull(candidates);
-    
+
     for (Itinerary itinerary : candidates) {
       List<Leg> legs = itinerary.legs();
       assertNotNull(legs);
