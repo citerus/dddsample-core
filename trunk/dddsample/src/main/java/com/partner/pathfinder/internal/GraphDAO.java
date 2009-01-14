@@ -1,44 +1,23 @@
 package com.partner.pathfinder.internal;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
-
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class GraphDAO {
 
-  private final JdbcTemplate jt;
-
-  public GraphDAO(DataSource dataSource) {
-    jt = new JdbcTemplate(dataSource);
-  }
-
   public List<String> listLocations() {
-    final List<String> result = new ArrayList();
-
-    jt.query("select unlocode from location", new RowCallbackHandler() {
-      public void processRow(ResultSet resultSet) throws SQLException {
-        result.add(resultSet.getString("unlocode"));
-      }
-    });
-
-    return result;
+    return Arrays.asList(
+      "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JNTKO", "DEHAM",
+      "CNSHA", "NLRTM", "SEGOT", "CNHGH", "USNYC", "USDAL"
+    );
   }
 
-  // TODO adapt to Voyage
-  public void storeCarrierMovementId(String cmId, String from, String to) {
-    final String locationSql = "select id from location where unlocode = ?";
-
-    final Long fromId = jt.queryForLong(locationSql, new Object[]{ from });
-    final Long toId = jt.queryForLong(locationSql, new Object[]{ to });
-
-    final Object[] params = {cmId, fromId, toId};
-    jt.update(
-      "insert into CarrierMovement (carrier_movement_id,from_id,to_id) " +
-      "values (?,?,?)", params);
+  public String getVoyageNumber(String from, String to) {
+    // TODO return only those that are in the database
+    final String random = UUID.randomUUID().toString().toUpperCase();
+    final String cmId =  random.substring(0, 4);
+    //dao.storeCarrierMovementId(cmId, from, to);
+    return cmId;
   }
 }

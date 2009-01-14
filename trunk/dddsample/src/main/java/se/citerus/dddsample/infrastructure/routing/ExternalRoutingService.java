@@ -3,6 +3,8 @@ package se.citerus.dddsample.infrastructure.routing;
 import com.partner.pathfinder.api.GraphTraversalService;
 import com.partner.pathfinder.api.TransitEdge;
 import com.partner.pathfinder.api.TransitPath;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -16,6 +18,7 @@ import se.citerus.dddsample.domain.service.RoutingService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Our end of the routing service. This is basically a data model
@@ -28,18 +31,27 @@ public class ExternalRoutingService implements RoutingService {
   private GraphTraversalService graphTraversalService;
   private LocationRepository locationRepository;
   private VoyageRepository voyageRepository;
+  private static final Log log = LogFactory.getLog(ExternalRoutingService.class);
 
   public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
+    /*
+      The RouteSpecification is picked apart and adapted to the external API.
+     */
     final Location origin = routeSpecification.origin();
     final Location destination = routeSpecification.destination();
 
-    // TODO send arrival deadline too
+    final Properties limitations = new Properties();
+    limitations.setProperty("DEADLINE", routeSpecification.arrivalDeadline().toString());
 
     final List<TransitPath> transitPaths = graphTraversalService.findShortestPath(
       origin.unLocode().idString(),
-      destination.unLocode().idString()
+      destination.unLocode().idString(),
+      limitations
     );
     
+    /*
+      The returned result is then translated back into our domain model.
+     */
     final List<Itinerary> itineraries = new ArrayList<Itinerary>();
 
     for (TransitPath transitPath : transitPaths) {
@@ -48,7 +60,7 @@ public class ExternalRoutingService implements RoutingService {
       if (routeSpecification.isSatisfiedBy(itinerary)) {
         itineraries.add(itinerary);
       } else {
-        // TODO log warning/error? Fail?
+        log.warn("Received itinerary that did not satisfy the route specification");
       }
     }
 

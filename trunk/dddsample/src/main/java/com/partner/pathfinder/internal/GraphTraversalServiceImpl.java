@@ -3,7 +3,6 @@ package com.partner.pathfinder.internal;
 import com.partner.pathfinder.api.GraphTraversalService;
 import com.partner.pathfinder.api.TransitEdge;
 import com.partner.pathfinder.api.TransitPath;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -17,8 +16,9 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     this.random = new Random();
   }
 
-  @Transactional(readOnly = true)
-  public List<TransitPath> findShortestPath(String originUnLocode, String destinationUnLocode) {
+  public List<TransitPath> findShortestPath(final String originUnLocode,
+                                            final String destinationUnLocode,
+                                            final Properties limitations) {
     List<String> allVertices = dao.listLocations();
     allVertices.remove(originUnLocode);
     allVertices.remove(destinationUnLocode);
@@ -32,31 +32,24 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
       final String firstLegTo = allVertices.get(0);
 
       transitEdges.add(new TransitEdge(
-        getRandomCarrierMovementId(originUnLocode, firstLegTo),
+        dao.getVoyageNumber(originUnLocode, firstLegTo),
         originUnLocode, firstLegTo));
 
       for (int j = 0; j < allVertices.size() - 1; j++) {
         final String curr = allVertices.get(j);
         final String next = allVertices.get(j + 1);
-        transitEdges.add(new TransitEdge(getRandomCarrierMovementId(curr, next), curr, next));
+        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next));
       }
 
       final String lastLegFrom = allVertices.get(allVertices.size() - 1);
       transitEdges.add(new TransitEdge(
-        getRandomCarrierMovementId(lastLegFrom, destinationUnLocode),
+        dao.getVoyageNumber(lastLegFrom, destinationUnLocode),
         lastLegFrom, destinationUnLocode));
 
       candidates.add(new TransitPath(transitEdges));
     }
 
     return candidates;
-  }
-
-  private String getRandomCarrierMovementId(String from, String to) {
-    final String random = UUID.randomUUID().toString().toUpperCase();
-    final String cmId =  random.substring(0, 4);
-    dao.storeCarrierMovementId(cmId, from, to);
-    return cmId;
   }
 
   private int getRandomNumberOfCandidates() {
