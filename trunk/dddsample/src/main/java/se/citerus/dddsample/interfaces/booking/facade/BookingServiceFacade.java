@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * This facade shields the domain layer - model, services, repositories -
  * from concerns about such things as the user interface and remoting.
- * It is an application service.
  */
 public interface BookingServiceFacade extends Remote {
 
