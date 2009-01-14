@@ -14,7 +14,6 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
-import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +31,7 @@ public class ExternalRoutingServiceTest extends TestCase {
     voyageRepository = createMock(VoyageRepository.class);
     externalRoutingService.setVoyageRepository(voyageRepository);
 
-    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO(createMock(DataSource.class)) {
+    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO() {
       public List<String> listLocations() {
         return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
       }

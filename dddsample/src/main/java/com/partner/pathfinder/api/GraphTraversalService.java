@@ -1,6 +1,7 @@
 package com.partner.pathfinder.api;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Part of the external graph traversal API exposed by the routing team
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public interface GraphTraversalService {
 
-  List<TransitPath> findShortestPath(String originUnLocode, String destinationUnLocode);
+  List<TransitPath> findShortestPath(String originUnLocode, String destinationUnLocode, Properties limitations);
 
 }
