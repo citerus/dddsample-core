@@ -1,4 +1,4 @@
-package se.citerus.dddsample.interfaces.booking.facade.dto.assembler;
+package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;

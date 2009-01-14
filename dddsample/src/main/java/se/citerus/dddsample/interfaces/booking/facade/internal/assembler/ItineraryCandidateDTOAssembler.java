@@ -1,4 +1,4 @@
-package se.citerus.dddsample.interfaces.booking.facade.dto.assembler;
+package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
