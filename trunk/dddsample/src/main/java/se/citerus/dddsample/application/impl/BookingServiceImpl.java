@@ -54,7 +54,7 @@ public final class BookingServiceImpl implements BookingService {
 
   @Override
   @Transactional
-  public List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId) {
+  public List<Itinerary> requestPossibleRoutesForCargo(final TrackingId trackingId) {
     Validate.notNull(trackingId);
     
     final Cargo cargo = cargoRepository.find(trackingId);
