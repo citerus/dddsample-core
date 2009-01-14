@@ -144,11 +144,12 @@
         </executions>
       </plugin>
 
-      <!-- Package WS api classes -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
+          <!-- Package WS api classes in separate jar -->
           <execution>
+            <id>package-ws-client</id>
             <phase>package</phase>
             <goals>
               <goal>jar</goal>
@@ -157,6 +158,24 @@
               <classifier>ws-client</classifier>
               <includes>
                 <include>**/se/citerus/dddsample/interfaces/handling/ws/*.class</include>
+              </includes>
+              <archive>
+                <addMavenDescriptor>false</addMavenDescriptor>
+              </archive>
+            </configuration>
+          </execution>
+          <!-- Package booking service facade classes in separate jar -->
+          <execution>
+            <id>package-booking-facade</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>booking-facade</classifier>
+              <includes>
+                <include>**/se/citerus/dddsample/interfaces/booking/facade/*.class</include>
+                <include>**/se/citerus/dddsample/interfaces/booking/facade/dto/*.class</include>
               </includes>
               <archive>
                 <addMavenDescriptor>false</addMavenDescriptor>
