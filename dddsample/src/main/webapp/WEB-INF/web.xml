@@ -7,6 +7,10 @@
   <display-name>DDDSample</display-name>
 
   <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+
+  <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
@@ -17,24 +21,37 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      classpath:context-persistence-hibernate.xml
-      classpath:context-messaging-jms.xml
-      classpath:context-service.xml
-      classpath:context-routingteam.xml
-      classpath:context-remote.xml
-      classpath:context-web.xml
+      classpath:com/partner/pathfinder/internal/applicationContext.xml
+
+      classpath:context-infrastructure.xml
+      classpath:context-application.xml
+      classpath:context-domain.xml
+      classpath:context-interfaces.xml
     </param-value>
   </context-param>
 
   <servlet>
-    <servlet-name>dispatch</servlet-name>
+    <servlet-name>tracking</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>dispatch</servlet-name>
-    <url-pattern>*.html</url-pattern>
+    <servlet-name>tracking</servlet-name>
+    <url-pattern>/public/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>booking</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name></param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>booking</servlet-name>
+    <url-pattern>/admin/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -54,7 +71,12 @@
 
   <filter-mapping>
     <filter-name>sitemesh</filter-name>
-    <servlet-name>dispatch</servlet-name>
+    <servlet-name>booking</servlet-name>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <servlet-name>tracking</servlet-name>
   </filter-mapping>
 
   <jsp-config>
