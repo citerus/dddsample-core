@@ -1,8 +1,8 @@
 <decorators defaultdir="/WEB-INF/jsp">
-    <decorator name="main" page="decorator.jsp">
-          <pattern>/cargo/*.html</pattern>
-    </decorator>
   <decorator name="admin" page="adminDecorator.jsp">
-        <pattern>/admin/*.html</pattern>
+    <pattern>/admin</pattern>
+  </decorator>
+  <decorator name="main" page="publicDecorator.jsp">
+    <pattern>/public</pattern>
   </decorator>
 </decorators>
