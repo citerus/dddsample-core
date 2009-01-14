@@ -21,14 +21,15 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   private Date arrivalDeadline;
 
   /**
-   * @param origin origin location
-   * @param destination destination location
+   * @param origin origin location - can't be the same as the destination
+   * @param destination destination location - can't be the same as the origin
    * @param arrivalDeadline arrival deadline
    */
   public RouteSpecification(final Location origin, final Location destination, final Date arrivalDeadline) {
     Validate.notNull(origin, "Origin is required");
     Validate.notNull(destination, "Destination is required");
     Validate.notNull(arrivalDeadline, "Arrival deadline is required");
+    Validate.isTrue(origin.equals(destination), "Origin and destination can't be the same: " + origin);
 
     this.origin = origin;
     this.destination = destination;
