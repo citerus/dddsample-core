@@ -1,4 +1,4 @@
-package se.citerus.dddsample.interfaces.booking.facade;
+package se.citerus.dddsample.interfaces.booking.facade.internal;
 
 import org.apache.log4j.Logger;
 import se.citerus.dddsample.application.BookingService;
@@ -10,12 +10,13 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
-import se.citerus.dddsample.interfaces.booking.facade.dto.assembler.CargoRoutingDTOAssembler;
-import se.citerus.dddsample.interfaces.booking.facade.dto.assembler.ItineraryCandidateDTOAssembler;
-import se.citerus.dddsample.interfaces.booking.facade.dto.assembler.LocationDTOAssembler;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.CargoRoutingDTOAssembler;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.ItineraryCandidateDTOAssembler;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.LocationDTOAssembler;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package se.citerus.dddsample.interfaces.booking.facade.dto.assembler;
+package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.location.Location;
