@@ -9,9 +9,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * This is a simple data holder for passing incoming handling event
+ * This is a simple transfer object for passing incoming handling event
  * registration attempts to proper the registration procedure.
- *  
+ *
+ * It is used as a message queue element. 
+ *
  */
 public final class HandlingEventRegistrationAttempt implements Serializable {
 
