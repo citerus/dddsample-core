@@ -32,18 +32,22 @@ public class HandlingReportServiceImpl implements HandlingReportService {
 
   @Override
   public void submitReport(HandlingReport handlingReport) throws HandlingReportErrors {
-    final Date date = handlingReport.getCompletionTime().toGregorianCalendar().getTime();
-    
-    for (String trackingId : handlingReport.getTrackingIds()) {
-      List<String> errors = new ArrayList<String>();
+    final List<String> errors = new ArrayList<String>();
 
-      final TrackingId tid = parseTrackingId(trackingId, errors);
-      final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
-      final HandlingEvent.Type type = parseEventType(handlingReport.getType(), errors);
-      final UnLocode ul = parseUnLocode(handlingReport.getUnLocode(), errors);
+    final Date completionTime = handlingReport.getCompletionTime().toGregorianCalendar().getTime();
+    final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
+    final HandlingEvent.Type type = parseEventType(handlingReport.getType(), errors);
+    final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), errors);
+
+    for (String trackingIdStr : handlingReport.getTrackingIds()) {
+      final TrackingId trackingId = parseTrackingId(trackingIdStr, errors);
 
       if (errors.isEmpty()) {
-        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), date, tid, voyageNumber, type, ul);
+        final Date registrationTime = new Date();
+        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(
+          registrationTime, completionTime, trackingId, voyageNumber, type, unLocode
+        );
+
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
       } else {
         logger.error("Parse error in handling report: " + errors);
