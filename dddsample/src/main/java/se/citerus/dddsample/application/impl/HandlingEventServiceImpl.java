@@ -43,7 +43,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
          state of the handling event aggregate (but not the cargo aggregate -
          that happens asynchronously!)
        */
-      handlingEventRepository.save(event);
+      handlingEventRepository.store(event);
 
       /* Publish an event stating that a cargo has been handled. */
       applicationEvents.cargoWasHandled(event);

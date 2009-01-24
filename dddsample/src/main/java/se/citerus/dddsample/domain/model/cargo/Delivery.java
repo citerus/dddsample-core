@@ -117,7 +117,7 @@ public class Delivery implements ValueObject<Delivery> {
     }
   }
 
-  // TODO add currentCarrierMovement
+  // TODO add currentCarrierMovement (?)
 
   private void calculateCurrentVoyage() {
     if (transportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {

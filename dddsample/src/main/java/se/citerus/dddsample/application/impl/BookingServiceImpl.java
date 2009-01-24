@@ -46,7 +46,7 @@ public final class BookingServiceImpl implements BookingService {
 
     final Cargo cargo = new Cargo(trackingId, origin, routeSpecification);
 
-    cargoRepository.save(cargo);
+    cargoRepository.store(cargo);
     logger.info("Booked new cargo with tracking id " + cargo.trackingId().idString());
 
     return cargo.trackingId();

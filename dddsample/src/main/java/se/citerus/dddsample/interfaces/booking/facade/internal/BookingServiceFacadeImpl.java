@@ -68,7 +68,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     }
 
     cargo.assignToRoute(itinerary);
-    cargoRepository.save(cargo);
+    cargoRepository.store(cargo);
 
     logger.info("Assigned cargo " + trackingId + " to new route");
   }

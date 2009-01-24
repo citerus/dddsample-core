@@ -31,16 +31,15 @@ public class HandlingEventFactory {
   }
 
   /**
+   * @param registrationTime  time when this event was received by the system
    * @param completionTime    when the event was completed, for example finished loading
-   * @param trackingId        tracking id
+   * @param trackingId        cargo tracking id
    * @param voyageNumber      voyage number
    * @param unlocode          United Nations Location Code for the location of the event
    * @param type              type of event
-   * @param registrationTime  time when this event was received by the system
-   * @throws UnknownVoyageException
-   *                                    if there's not carrier movement with this id
-   * @throws UnknownCargoException if there's no cargo with this tracking id
-   * @throws UnknownLocationException   if there's no location with this UN Locode
+   * @throws UnknownVoyageException   if there's no voyage with this number
+   * @throws UnknownCargoException    if there's no cargo with this tracking id
+   * @throws UnknownLocationException if there's no location with this UN Locode
    * @return A handling event.
    */
   public HandlingEvent createHandlingEvent(Date registrationTime, Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)

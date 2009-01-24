@@ -41,7 +41,7 @@ public class CargoRepositoryInMem implements CargoRepository {
     return cargoDb.get(trackingId.idString());
   }
 
-  public void save(final Cargo cargo) {
+  public void store(final Cargo cargo) {
     cargoDb.put(cargo.trackingId().idString(), cargo);
   }
 

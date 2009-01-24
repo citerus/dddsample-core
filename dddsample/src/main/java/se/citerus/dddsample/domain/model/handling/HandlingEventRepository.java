@@ -10,16 +10,17 @@ import java.util.List;
 public interface HandlingEventRepository {
 
   /**
-   * Saves a (new) handling event.
+   * Stores a (new) handling event.
    *
    * @param event handling event to save
    */
-  void save(final HandlingEvent event);
+  void store(HandlingEvent event);
 
 
   /**
    * @param trackingId cargo tracking id
-   * @return All handling events for this cargo, ordered by completion time.
+   * @return All handling events for this cargo
    */
-  List<HandlingEvent> findEventsForCargo(final TrackingId trackingId);
+  List<HandlingEvent> findEventsForCargo(TrackingId trackingId);
+
 }

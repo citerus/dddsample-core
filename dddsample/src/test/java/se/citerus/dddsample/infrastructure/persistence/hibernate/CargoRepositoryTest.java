@@ -112,7 +112,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Location destination = locationRepository.find(MELBOURNE.unLocode());
 
     Cargo cargo = new Cargo(trackingId, origin, new RouteSpecification(origin, destination, new Date()));
-    cargoRepository.save(cargo);
+    cargoRepository.store(cargo);
 
     flush();
 
@@ -139,7 +139,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     cargo.assignToRoute(newItinerary);
 
-    cargoRepository.save(cargo);
+    cargoRepository.store(cargo);
     flush();
 
     assertEquals(1, sjt.queryForInt("select count(*) from Leg where cargo_id = ?", cargoId));

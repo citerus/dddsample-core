@@ -14,13 +14,15 @@ import java.util.List;
 @Repository
 public class HandlingEventRepositoryHibernate extends HibernateRepository implements HandlingEventRepository {
 
-  public void save(HandlingEvent event) {
+  @Override
+  public void store(HandlingEvent event) {
     getSession().save(event);
   }
 
+  @Override
   public List<HandlingEvent> findEventsForCargo(TrackingId tid) {
     return getSession().createQuery(
-            "from HandlingEvent where cargo.trackingId = :tid order by completionTime").
+            "from HandlingEvent where cargo.trackingId = :tid").
             setParameter("tid", tid).
             list();
   }

@@ -57,7 +57,7 @@ public class HandlingEventServiceTest extends TestCase {
     expect(locationRepository.find(unLocode)).andReturn(STOCKHOLM);
 
     // TODO: does not inspect the handling event instance in a sufficient way
-    handlingEventRepository.save(isA(HandlingEvent.class));
+    handlingEventRepository.store(isA(HandlingEvent.class));
     applicationEvents.cargoWasHandled(isA(HandlingEvent.class));
 
     replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
@@ -71,7 +71,7 @@ public class HandlingEventServiceTest extends TestCase {
     final TrackingId trackingId = new TrackingId("ABC");
     expect(cargoRepository.find(trackingId)).andReturn(cargoABC);
 
-    handlingEventRepository.save(isA(HandlingEvent.class));
+    handlingEventRepository.store(isA(HandlingEvent.class));
     applicationEvents.cargoWasHandled(isA(HandlingEvent.class));
 
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);

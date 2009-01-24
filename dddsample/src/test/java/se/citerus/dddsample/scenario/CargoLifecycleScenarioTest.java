@@ -238,7 +238,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     handlingEventRepository = new HandlingEventRepository() {
       Map<TrackingId, List<HandlingEvent>> eventMap = new HashMap<TrackingId, List<HandlingEvent>>();
 
-      public void save(HandlingEvent event) {
+      public void store(HandlingEvent event) {
         final TrackingId trackingId = event.cargo().trackingId();
         List<HandlingEvent> list = eventMap.get(trackingId);
         if (list == null) {
