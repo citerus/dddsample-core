@@ -22,7 +22,9 @@ public class HandlingEventFactory {
   private final VoyageRepository voyageRepository;
   private final LocationRepository locationRepository;
 
-  public HandlingEventFactory(CargoRepository cargoRepository, VoyageRepository voyageRepository, LocationRepository locationRepository) {
+  public HandlingEventFactory(final CargoRepository cargoRepository,
+                              final VoyageRepository voyageRepository,
+                              final LocationRepository locationRepository) {
     this.cargoRepository = cargoRepository;
     this.voyageRepository = voyageRepository;
     this.locationRepository = locationRepository;
@@ -34,26 +36,24 @@ public class HandlingEventFactory {
    * @param voyageNumber      voyage number
    * @param unlocode          United Nations Location Code for the location of the event
    * @param type              type of event
+   * @param registrationTime  time when this event was received by the system
    * @throws UnknownVoyageException
    *                                    if there's not carrier movement with this id
    * @throws UnknownCargoException if there's no cargo with this tracking id
    * @throws UnknownLocationException   if there's no location with this UN Locode
    * @return A handling event.
    */
-  public HandlingEvent createHandlingEvent(Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
+  public HandlingEvent createHandlingEvent(Date registrationTime, Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
     throws CannotCreateHandlingEventException {
 
     // Voyage number may be null for certain event types
-    Validate.noNullElements(new Object[]{completionTime, trackingId, unlocode, type});
+    Validate.noNullElements(new Object[]
+      {registrationTime, completionTime, trackingId, unlocode, type}
+    );
 
     final Cargo cargo = findCargo(trackingId);
     final Voyage voyage = findVoyage(voyageNumber);
     final Location location = findLocation(unlocode);
-    
-    if (location == null) throw new UnknownLocationException(unlocode);
-
-    // TODO parameterize
-    final Date registrationTime = new Date();
 
     if (voyage == null) {
       return new HandlingEvent(cargo, completionTime, registrationTime, type, location);   
