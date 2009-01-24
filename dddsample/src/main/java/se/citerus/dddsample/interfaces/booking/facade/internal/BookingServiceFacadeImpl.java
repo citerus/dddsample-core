@@ -29,7 +29,6 @@ import java.util.List;
  * service and for keeping the OR-mapper unit-of-work open during DTO assembly,
  * analogous to the view rendering for web interfaces.
  *
- * See context-remote.xml.  
  */
 public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
@@ -45,10 +44,12 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     return assembler.toDTOList(allLocations);
   }
 
-  public String bookNewCargo(String origin, String destination) {
-    // TODO push date to parameter
-    Date arrivalDeadline = new Date();
-    TrackingId trackingId = bookingService.bookNewCargo(new UnLocode(origin), new UnLocode(destination), arrivalDeadline);
+  public String bookNewCargo(String origin, String destination, Date arrivalDeadline) {
+    TrackingId trackingId = bookingService.bookNewCargo(
+      new UnLocode(origin), 
+      new UnLocode(destination),
+      arrivalDeadline
+    );
     return trackingId.idString();
   }
 

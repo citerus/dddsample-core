@@ -6,6 +6,7 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public interface BookingServiceFacade extends Remote {
 
-  String bookNewCargo(String origin, String destination) throws RemoteException;
+  String bookNewCargo(String origin, String destination, Date arrivalDeadline) throws RemoteException;
 
   CargoRoutingDTO loadCargoForRouting(String trackingId) throws RemoteException;
 

@@ -7,6 +7,7 @@ public final class RegistrationCommand {
 
   private String originUnlocode;
   private String destinationUnlocode;
+  private String arrivalDeadline;
 
   public String getOriginUnlocode() {
     return originUnlocode;
@@ -24,4 +25,11 @@ public final class RegistrationCommand {
     this.destinationUnlocode = destinationUnlocode;
   }
 
+  public String getArrivalDeadline() {
+    return arrivalDeadline;
+  }
+
+  public void setArrivalDeadline(String arrivalDeadline) {
+    this.arrivalDeadline = arrivalDeadline;
+  }
 }

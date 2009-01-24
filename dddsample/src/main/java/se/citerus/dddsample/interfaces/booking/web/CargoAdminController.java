@@ -9,10 +9,7 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Handles cargo booking and routing. Operates against a dedicated remoting service facade,
@@ -46,9 +43,9 @@ public final class CargoAdminController extends MultiActionController {
 
   public void register(final HttpServletRequest request, final HttpServletResponse response,
                        final RegistrationCommand command) throws Exception {
-
+    // TODO get date from command    
     final String trackingId = bookingServiceFacade.bookNewCargo(
-      command.getOriginUnlocode(), command.getDestinationUnlocode()
+      command.getOriginUnlocode(), command.getDestinationUnlocode(), new Date()
     );
     response.sendRedirect("show.html?trackingId=" + trackingId);
   }
