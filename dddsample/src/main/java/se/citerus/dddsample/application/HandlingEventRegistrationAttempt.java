@@ -59,6 +59,6 @@ public final class HandlingEventRegistrationAttempt implements Serializable {
   }
 
   public Date getRegistrationTime() {
-    return new Date(registrationTime.getTime());
+    return registrationTime;
   }
 }
