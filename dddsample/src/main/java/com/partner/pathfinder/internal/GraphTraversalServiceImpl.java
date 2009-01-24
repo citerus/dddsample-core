@@ -33,18 +33,18 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
 
       transitEdges.add(new TransitEdge(
         dao.getVoyageNumber(originUnLocode, firstLegTo),
-        originUnLocode, firstLegTo));
+        originUnLocode, firstLegTo, new Date(), new Date()));
 
       for (int j = 0; j < allVertices.size() - 1; j++) {
         final String curr = allVertices.get(j);
         final String next = allVertices.get(j + 1);
-        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next));
+        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next, new Date(), new Date()));
       }
 
       final String lastLegFrom = allVertices.get(allVertices.size() - 1);
       transitEdges.add(new TransitEdge(
         dao.getVoyageNumber(lastLegFrom, destinationUnLocode),
-        lastLegFrom, destinationUnLocode));
+        lastLegFrom, destinationUnLocode, new Date(), new Date()));
 
       candidates.add(new TransitPath(transitEdges));
     }
