@@ -1,12 +1,21 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import static java.util.Collections.EMPTY_SET;
+import static java.util.Collections.sort;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * The actual result of the cargo transportation, as opposed to
@@ -15,94 +24,117 @@ import java.util.*;
  */
 public class Delivery implements ValueObject<Delivery> {
 
-  private Set<HandlingEvent> events;
+  public static final Delivery EMPTY_DELIVERY = Delivery.derivedFrom(EMPTY_SET);
 
-  public static final Delivery EMPTY_DELIVERY = new Delivery(Collections.EMPTY_SET);
-
-  Delivery(final Collection<HandlingEvent> events) {
-    this.events = new HashSet<HandlingEvent>(events);
-  }
-
-  /**
-   * @return An <b>unmodifiable</b> list of handling events, ordered by the time the events occured.
-   */
-  public List<HandlingEvent> history() {
-    final List<HandlingEvent> eventList = new ArrayList<HandlingEvent>(events);
-    Collections.sort(eventList, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
-    return Collections.unmodifiableList(eventList);
-  }
+  private TransportStatus transportStatus;
+  private Location lastKnownLocation;
+  private Voyage currentVoyage;
+  private HandlingEvent lastEvent;
 
   /**
-   * @return The last event of the delivery history, or null is history is empty.
-   */
-  public HandlingEvent lastEvent() {
-    if (events.isEmpty()) {
-      return null;
-    } else {
-      final List<HandlingEvent> orderedEvents = history();
-      return orderedEvents.get(orderedEvents.size() - 1);
-    }
-  }
-
-  /**
-   * @return
+   * @return Transport status
    */
   public TransportStatus transportStatus() {
-    if (lastEvent() == null)
-      return NOT_RECEIVED;
-
-    final HandlingEvent.Type type = lastEvent().type();
-    
-    switch (type) {
-      case LOAD:
-        return ONBOARD_CARRIER;
-
-      case UNLOAD:
-      case RECEIVE:
-      case CUSTOMS:
-        return IN_PORT;
-
-      case CLAIM:
-        return CLAIMED;
-
-      default:
-        return null;
-    }
+    return transportStatus;
   }
 
   /**
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {
-    final HandlingEvent lastEvent = lastEvent();
-    if (lastEvent != null) {
-      return lastEvent.location();
-    } else {
-      return Location.UNKNOWN;
-    }
+    return DomainObjectUtils.nullSafe(lastKnownLocation, Location.UNKNOWN);
   }
 
   /**
    * @return Current voyage.
    */
   public Voyage currentVoyage() {
-    if (transportStatus().equals(ONBOARD_CARRIER)) {
-      return lastEvent().voyage();
+    return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE);
+  }
+
+  /**
+   * @param handlingEvents handling events
+   * @return An up to date Delivery derived from this collection of handling events.
+   */
+  static Delivery derivedFrom(final Collection<HandlingEvent> handlingEvents) {
+    Validate.notNull(handlingEvents, "Handling events are required");
+    
+    final List<HandlingEvent> eventsByCompletionTime =
+      new ArrayList<HandlingEvent>(new HashSet<HandlingEvent>(handlingEvents));
+    sort(eventsByCompletionTime, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
+
+    final Delivery delivery = new Delivery();
+    delivery.calculateLastEvent(eventsByCompletionTime);
+    delivery.calculateTransportStatus();
+    delivery.calculateLastKnownLocation();
+    delivery.calculateCurrentVoyage();
+    return delivery;
+  }
+
+  /**
+   * @return The last event of the delivery history, or null is history is empty.
+   */
+  HandlingEvent lastEvent() {
+    return lastEvent;
+  }
+
+  private void calculateLastEvent(final List<HandlingEvent> handlingEvents) {
+    if (handlingEvents.isEmpty()) {
+      lastEvent =  null;
     } else {
-      return Voyage.NONE;
+      lastEvent = handlingEvents.get(handlingEvents.size() - 1);
+    }
+  }
+
+  private void calculateTransportStatus() {
+    if (lastEvent == null) {
+      transportStatus = NOT_RECEIVED;
+      return;
+    }
+
+    switch (lastEvent.type()) {
+      case LOAD:
+        transportStatus = ONBOARD_CARRIER;
+        break;
+      case UNLOAD:
+      case RECEIVE:
+      case CUSTOMS:
+        transportStatus = IN_PORT;
+        break;
+      case CLAIM:
+        transportStatus = CLAIMED;
+        break;
+      default:
+        transportStatus = UNKNOWN;
+    }
+  }
+
+  private void calculateLastKnownLocation() {
+    if (lastEvent != null) {
+      lastKnownLocation = lastEvent.location();
+    } else {
+      lastKnownLocation = null;
+    }
+  }
+
+  // TODO add currentCarrierMovement
+
+  private void calculateCurrentVoyage() {
+    if (transportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
+      currentVoyage = lastEvent.voyage();
+    } else {
+      currentVoyage = null;
     }
   }
 
   @Override
   public boolean sameValueAs(Delivery other) {
-    return other != null && events.equals(other.events);
-  }
-
-  @Override
-  public Delivery copy() {
-    final Set<HandlingEvent> eventsCopy = new HashSet<HandlingEvent>(events);
-
-    return new Delivery(eventsCopy);
+    return other != null && new EqualsBuilder().
+      append(this.transportStatus, other.transportStatus).
+      append(this.lastKnownLocation, other.lastKnownLocation).
+      append(this.currentVoyage, other.currentVoyage).
+      append(this.lastEvent, other.lastEvent).
+      isEquals();
   }
 
   @Override
@@ -117,10 +149,16 @@ public class Delivery implements ValueObject<Delivery> {
 
   @Override
   public int hashCode() {
-    return events.hashCode();
+    return new HashCodeBuilder().
+      append(transportStatus).
+      append(lastKnownLocation).
+      append(currentVoyage).
+      append(lastEvent).
+      toHashCode();
   }
 
   Delivery() {
     // Needed by Hibernate
   }
+
 }

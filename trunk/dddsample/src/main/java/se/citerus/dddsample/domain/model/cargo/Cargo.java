@@ -7,21 +7,24 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A Cargo. This is the central class in the domain model,
- * and it is the root of the Cargo-Itinerary-Leg-DeliveryHistory aggregate.
+ * and it is the root of the Cargo-Itinerary-Leg-Delivery-RouteSpecification aggregate.
  *
  * A cargo is identified by a unique tracking id, and it always has an origin
- * and a destination. The life cycle of a cargo begins with the booking procedure,
+ * and a route specification. The life cycle of a cargo begins with the booking procedure,
  * when the tracking id is assigned. During a (short) period of time, between booking
  * and initial routing, the cargo has no itinerary.
  *
- * The booking clerk requests a list of possible routes, matching a route specification,
- * and assigns the cargo to one route. An itinerary listing the legs of the route
- * is attached to the cargo.
+ * The booking clerk requests a list of possible routes, matching the route specification,
+ * and assigns the cargo to one route. The route to which a cargo is assigned is described
+ * by an itinerary.
  *
  * A cargo can be re-routed during transport, on demand of the customer, in which case
- * the destination is changed and a new route is requested. The old itinerary,
+ * a new route is specified for the cargo and a new route is requested. The old itinerary,
  * being a value object, is discarded and a new one is attached.
  *
  * It may also happen that a cargo is accidentally misrouted, which should notify the proper
@@ -42,6 +45,8 @@ public class Cargo implements Entity<Cargo> {
   private Itinerary itinerary;
   private Delivery delivery;
   private RouteSpecification routeSpecification;
+  private RoutingStatus routingStatus;
+  private boolean misdirected;
 
   // TODO origin can be taken from route spec on creation, even if the origin never changes
   public Cargo(final TrackingId trackingId, final Location origin, final RouteSpecification routeSpecification) {
@@ -52,8 +57,8 @@ public class Cargo implements Entity<Cargo> {
     this.trackingId = trackingId;
     this.origin = origin;
     this.routeSpecification = routeSpecification;
+    updateStatus(Collections.<HandlingEvent>emptyList());
   }
-
 
   /**
    * The tracking id is the identity of this entity, and is unique.
@@ -93,21 +98,16 @@ public class Cargo implements Entity<Cargo> {
   }
   
   /**
-   * @return True if the cargo has arrived at its destination.
-   */
-  public boolean hasArrived() {
-    return routeSpecification.destination().equals(delivery.lastKnownLocation());
-  }
-
-  /**
-   * Specifies a route for this cargo.
+   * Specifies a new route for this cargo.
    *
    * @param routeSpecification route specification.
    */
-  public void specifyRoute(RouteSpecification routeSpecification) {
+  public void specifyNewRoute(final RouteSpecification routeSpecification) {
     Validate.notNull(routeSpecification);
 
     this.routeSpecification = routeSpecification;
+    // Handling consistency within the Cargo aggregate synchronously
+    updateRoutingStatus();
   }
 
   /**
@@ -116,16 +116,12 @@ public class Cargo implements Entity<Cargo> {
    * @param itinerary an itinerary. May not be null.
    */
   public void assignToRoute(final Itinerary itinerary) {
-    Validate.notNull(itinerary);
-    this.itinerary = itinerary;
-  }
+    Validate.notNull(itinerary, "Itinerary is required for assignment");
 
-  /**
-   * @param delivery Cargo delivery history
-   */
-  void setDeliveryHistory(final Delivery delivery) {
-    Validate.notNull(delivery);
-    this.delivery = delivery;
+    this.itinerary = itinerary;
+    // Handling consistency within the Cargo aggregate synchronously
+    updateRoutingStatus();
+    updateIsMisdirected();
   }
 
   /**
@@ -140,44 +136,70 @@ public class Cargo implements Entity<Cargo> {
    * @return <code>true</code> if the cargo has been misdirected,
    */
   public boolean isMisdirected() {
+    return misdirected;
+  }
+
+  private void updateIsMisdirected() {
     final HandlingEvent lastEvent = delivery().lastEvent();
     if (lastEvent == null) {
-      return false;
+      misdirected = false;
     } else {
-      return !itinerary().isExpected(lastEvent);
+      misdirected = !itinerary().isExpected(lastEvent);
     }
   }
+
 
   /**
    * @return Routing status.
    */
   public RoutingStatus routingStatus() {
+    return routingStatus;
+  }
+
+  /**
+   * Updates the routing status.
+   */
+  private void updateRoutingStatus() {
     if (itinerary == null) {
-      return NOT_ROUTED;
+      routingStatus = NOT_ROUTED;
     } else {
       if (routeSpecification.isSatisfiedBy(itinerary)) {
-        return ROUTED;
+        routingStatus = ROUTED;
       } else {
-        return MISROUTED;
+        routingStatus = MISROUTED;
       }
     }
   }
 
   /**
-   * Does not take into account the possibility of the cargo having been
-   * (errouneously) loaded onto another carrier after it has been unloaded
-   * at the final destination.
-   *
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
-    for (HandlingEvent event : delivery().history()) {
-      if (HandlingEvent.Type.UNLOAD.equals(event.type())
-        && routeSpecification.destination().equals(event.location())) {
-        return true;
-      }
-    }
-    return false;
+    final HandlingEvent lastEvent = delivery.lastEvent();
+    return lastEvent != null &&
+           HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.type()) &&
+           routeSpecification.destination().sameIdentityAs(lastEvent.location());
+  }
+
+  /**
+   * Updates all aspects of the cargo aggregate status
+   * based on the current route specification, itinerary and delivery history.
+   * <p/>
+   * When either of those three changes, i.e. when a new route is specified for the cargo,
+   * the cargo is assigned to a route or when the cargo is handled, the status must be
+   * re-calculated.
+   * <p/>
+   * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
+   * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
+   * but changes to the delivery history (when a cargo is handled) cause the status update
+   * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
+   * @param handlingEvents
+   */
+  public void updateStatus(final List<HandlingEvent> handlingEvents) {
+    // Delivery is a value object, so we can simply discard the old one and replace with a new
+    delivery = Delivery.derivedFrom(handlingEvents);
+    updateRoutingStatus();
+    updateIsMisdirected();
   }
 
   @Override

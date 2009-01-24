@@ -62,11 +62,6 @@ public class Leg implements ValueObject<Leg> {
   }
 
   @Override
-  public Leg copy() {
-    return new Leg(voyage(), loadLocation(), unloadLocation(), loadTime(), unloadTime());
-  }
-
-  @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;

@@ -61,11 +61,6 @@ public final class UnLocode implements ValueObject<UnLocode> {
   }
 
   @Override
-  public UnLocode copy() {
-    return new UnLocode(unlocode);
-  }
-
-  @Override
   public String toString() {
     return idString();
   }

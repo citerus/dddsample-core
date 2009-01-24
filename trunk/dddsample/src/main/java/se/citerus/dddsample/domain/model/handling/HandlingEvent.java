@@ -91,10 +91,6 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       return other != null && this.equals(other);
     }
 
-    @Override
-    public Type copy() {
-      return this;
-    }
   }
 
   /**
@@ -105,16 +101,23 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param location         where the event took place
    * @param voyage           the voyage
    */
-  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type,
-                       Location location, Voyage voyage) {
-    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location, voyage});
+  public HandlingEvent(final Cargo cargo,
+                       final Date completionTime,
+                       final Date registrationTime,
+                       final Type type,
+                       final Location location,
+                       final Voyage voyage) {
+    Validate.noNullElements(new Object[]
+      {cargo, completionTime, registrationTime, type, location, voyage}
+    );
+
     if (type.prohibitsVoyage()) {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
     }
 
     this.voyage = voyage;
-    this.completionTime = completionTime;
-    this.registrationTime = registrationTime;
+    this.completionTime = (Date) completionTime.clone();
+    this.registrationTime = (Date) registrationTime.clone();
     this.type = type;
     this.location = location;
     this.cargo = cargo;
@@ -127,14 +130,21 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param type             type of event
    * @param location         where the event took place
    */
-  public HandlingEvent(Cargo cargo, Date completionTime, Date registrationTime, Type type, Location location) {
-    Validate.noNullElements(new Object[] {cargo, completionTime, registrationTime, type, location});
+  public HandlingEvent(final Cargo cargo,
+                       final Date completionTime,
+                       final Date registrationTime,
+                       final Type type,
+                       final Location location) {
+    Validate.noNullElements(new Object[]
+      {cargo, completionTime, registrationTime, type, location}
+    );
+
     if (type.requiresVoyage()) {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
-    this.completionTime = completionTime;
-    this.registrationTime = registrationTime;
+    this.completionTime = (Date) completionTime.clone();
+    this.registrationTime = (Date) registrationTime.clone();
     this.type = type;
     this.location = location;
     this.cargo = cargo;

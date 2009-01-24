@@ -5,14 +5,13 @@ import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 /**
  * An itinerary.
- * 
+ *
  */
 public class Itinerary implements ValueObject<Itinerary> {
 
@@ -29,7 +28,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   public Itinerary(final List<Leg> legs) {
     Validate.notEmpty(legs);
     Validate.noNullElements(legs);
-    
+
     this.legs = legs;
   }
 
@@ -116,7 +115,7 @@ public class Itinerary implements ValueObject<Itinerary> {
     final Leg lastLeg = lastLeg();
 
     if (lastLeg == null) {
-      return END_OF_DAYS;
+      return new Date(END_OF_DAYS.getTime());
     } else {
       return lastLeg.unloadTime();
     }
@@ -140,15 +139,6 @@ public class Itinerary implements ValueObject<Itinerary> {
   @Override
   public boolean sameValueAs(final Itinerary other) {
     return other != null && legs.equals(other.legs);
-  }
-
-  @Override
-  public Itinerary copy() {
-    final List<Leg> legsCopy = new ArrayList<Leg>(legs.size());
-    for (Leg leg : legs) {
-      legsCopy.add(leg.copy());
-    }
-    return new Itinerary(legsCopy);
   }
 
   @Override

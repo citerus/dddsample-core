@@ -29,7 +29,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     Validate.notNull(origin, "Origin is required");
     Validate.notNull(destination, "Destination is required");
     Validate.notNull(arrivalDeadline, "Arrival deadline is required");
-    Validate.isTrue(origin.equals(destination), "Origin and destination can't be the same: " + origin);
+    Validate.isTrue(!origin.sameIdentityAs(destination), "Origin and destination can't be the same: " + origin);
 
     this.origin = origin;
     this.destination = destination;
@@ -75,16 +75,11 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   }
 
   @Override
-  public RouteSpecification copy() {
-    return new RouteSpecification(origin, destination, arrivalDeadline);
-  }
-
-  @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    RouteSpecification that = (RouteSpecification) o;
+    final RouteSpecification that = (RouteSpecification) o;
 
     return sameValueAs(that);
   }

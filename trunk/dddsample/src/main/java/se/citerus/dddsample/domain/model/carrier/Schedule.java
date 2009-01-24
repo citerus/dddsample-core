@@ -4,7 +4,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class Schedule implements ValueObject<Schedule> {
 
   public static final Schedule EMPTY = new Schedule();
 
-  Schedule(List<CarrierMovement> carrierMovements) {
+  Schedule(final List<CarrierMovement> carrierMovements) {
     Validate.notNull(carrierMovements);
     Validate.noNullElements(carrierMovements);
     Validate.notEmpty(carrierMovements);
@@ -34,22 +33,12 @@ public class Schedule implements ValueObject<Schedule> {
   }
 
   @Override
-  public boolean sameValueAs(Schedule other) {
+  public boolean sameValueAs(final Schedule other) {
     return other != null && this.carrierMovements.equals(other.carrierMovements);
   }
 
   @Override
-  public Schedule copy() {
-    final List<CarrierMovement> copyCarrierMovements = new ArrayList(carrierMovements.size());
-    for (CarrierMovement carrierMovement : carrierMovements) {
-      copyCarrierMovements.add(carrierMovement.copy());
-    }
-
-    return new Schedule(copyCarrierMovements);
-  }
-
-  @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
