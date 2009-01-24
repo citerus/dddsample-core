@@ -3,18 +3,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:jms="http://www.springframework.org/schema/jms"
        xmlns:amq="http://activemq.apache.org/schema/core"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:jdbc.properties"/>
-  </bean>
-
+  <import resource="context-infrastructure-persistence.xml" />
 
   <!-- JMS messaging -->
 
@@ -58,50 +53,10 @@
   <bean id="simpleLoggingConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.SimpleLoggingConsumer"/>
 
   
-  <!-- Persistence - database, Hibernate, repository implementations -->
-
-  
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    <property name="url" value="${hibernate.connection.url}"/>
-    <property name="driverClassName" value="${hibernate.connection.driver_class}"/>
-    <property name="username" value="${hibernate.connection.username}"/>
-    <property name="password" value="${hibernate.connection.password}"/>
-    <property name="initialSize" value="4"/>
-    <property name="defaultAutoCommit" value="false"/>
-  </bean>
-
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-    <property name="dataSource" ref="dataSource"/>
-    <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
-  </bean>
-
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <bean id="cargoRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.CargoRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <bean id="handlingEventRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.HandlingEventRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <bean id="voyageRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.VoyageRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <bean id="locationRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.LocationRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <tx:annotation-driven transaction-manager="transactionManager"/>
-
-
   <!-- External graph traversal routing service  -->
 
   <bean id="routingService" class="se.citerus.dddsample.infrastructure.routing.ExternalRoutingService">
-    <property name="graphTraversalService" ref="graphTraversalService"/>
+    <property name="graphTraversalService" ref="internalGraphTraversalService"/>
     <property name="locationRepository" ref="locationRepository"/>
     <property name="voyageRepository" ref="voyageRepository"/>
   </bean>
@@ -109,7 +64,6 @@
   <bean id="graphTraversalService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
     <property name="serviceUrl" value="rmi://localhost:1099/PathFinder"/>
     <property name="serviceInterface" value="com.partner.pathfinder.api.GraphTraversalService"/>
-    <property name="lookupStubOnStartup" value="false"/>
   </bean>
 
 </beans>
