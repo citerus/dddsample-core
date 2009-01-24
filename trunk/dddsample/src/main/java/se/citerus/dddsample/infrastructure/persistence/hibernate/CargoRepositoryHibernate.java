@@ -21,7 +21,7 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
       uniqueResult();
   }
 
-  public void save(Cargo cargo) {
+  public void store(Cargo cargo) {
     getSession().persist(cargo);
     getSession().createSQLQuery("delete from Leg where cargo_id = null").executeUpdate();
   }

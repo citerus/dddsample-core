@@ -82,7 +82,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
   }
 
 
-  public void save(HandlingEvent event) {
+  public void store(HandlingEvent event) {
     eventDB.put(event.cargo().trackingId().idString(), event);
   }
 

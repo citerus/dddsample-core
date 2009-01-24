@@ -39,7 +39,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     Date registrationTime = new Date(20);
     HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, HandlingEvent.Type.CLAIM, location);
 
-    handlingEventRepository.save(event);
+    handlingEventRepository.store(event);
 
     flush();
 

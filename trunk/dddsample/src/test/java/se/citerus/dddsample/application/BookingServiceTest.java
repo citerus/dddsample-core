@@ -37,7 +37,7 @@ public class BookingServiceTest extends TestCase {
     expect(locationRepository.find(fromUnlocode)).andReturn(CHICAGO);
     expect(locationRepository.find(toUnlocode)).andReturn(STOCKHOLM);
 
-    cargoRepository.save(isA(Cargo.class));
+    cargoRepository.store(isA(Cargo.class));
 
     replay(cargoRepository, locationRepository);
 
