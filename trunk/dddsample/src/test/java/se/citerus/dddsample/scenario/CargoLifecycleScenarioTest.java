@@ -26,24 +26,53 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepository
 
 import java.util.*;
 
-/**
- * Cargo scenarios.
- */
 public class CargoLifecycleScenarioTest extends TestCase {
 
-  HandlingEventFactory handlingEventFactory;
-
-  ApplicationEvents applicationEvents;
-
-  BookingService bookingService;
-  HandlingEventService handlingEventService;
-  TrackingService trackingService;
-  RoutingService routingService;
-
+  /**
+   * Repository implementations are part of the infrastructure layer,
+   * which in this test is stubbed out by in-memory replacements.
+   */
   HandlingEventRepository handlingEventRepository;
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
   VoyageRepository voyageRepository;
+
+  /**
+   * This interface is part of the application layer,
+   * and defines a number of events that occur during
+   * aplication execution. It is used for message-driving
+   * and is implemented using JMS.
+   *
+   * In this test it is stubbed with synchronous calls.
+   */
+  ApplicationEvents applicationEvents;
+
+  /**
+   * These three components all belong to the application layer,
+   * and map against use cases of the application. The "real"
+   * implementations are used in this lifecycle test,
+   * but wired with stubbed infrastructure.
+   */
+  BookingService bookingService;
+  HandlingEventService handlingEventService;
+  TrackingService trackingService;
+
+  /**
+   * This factory is part of the handling aggregate and belongs to
+   * the domain layer. Similar to the application layer components,
+   * the "real" implementation is used here too,
+   * wired with stubbed infrastructure.
+   */
+  HandlingEventFactory handlingEventFactory;
+
+  /**
+   * This is a domain service interface, whose implementation
+   * is part of the infrastructure layer (remote call to external system).
+   *
+   * It is stubbed in this test.
+   */
+  RoutingService routingService;
+
 
   public void testCargoFromHongkongToStockholm() throws Exception {
     /* Test setup: A cargo should be shipped from Hongkong to Stockholm,
@@ -103,13 +132,13 @@ public class CargoLifecycleScenarioTest extends TestCase {
       Handling begins: cargo is received in Hongkong.
       */
     HandlingEventRegistrationAttempt attempt1 = new HandlingEventRegistrationAttempt(
-      new Date(), new Date(), trackingId, null, RECEIVE, HONGKONG.unLocode()
+      new Date(), new Date(100), trackingId, null, RECEIVE, HONGKONG.unLocode()
     );
     handlingEventService.registerHandlingEvent(attempt1);
 
     // Next event: Load onto voyage CM003 in Hongkong
     handlingEventService.registerHandlingEvent(new HandlingEventRegistrationAttempt(
-      new Date(), new Date(), trackingId, CM003.voyageNumber(), LOAD, HONGKONG.unLocode()
+      new Date(), new Date(200), trackingId, CM003.voyageNumber(), LOAD, HONGKONG.unLocode()
     ));
 
     // Check current state - should be ok
@@ -128,14 +157,14 @@ public class CargoLifecycleScenarioTest extends TestCase {
     VoyageNumber noSuchVoyageNumber = new VoyageNumber("XX000");
     UnLocode noSuchUnLocode = new UnLocode("ZZZZZ");
     HandlingEventRegistrationAttempt failedAttempt = new HandlingEventRegistrationAttempt(
-      new Date(), new Date(), trackingId, noSuchVoyageNumber, LOAD, noSuchUnLocode
+      new Date(), new Date(300), trackingId, noSuchVoyageNumber, LOAD, noSuchUnLocode
     );
     handlingEventService.registerHandlingEvent(failedAttempt);
 
 
     // Cargo is now (incorrectly) unloaded in Tokyo
     handlingEventService.registerHandlingEvent(new HandlingEventRegistrationAttempt(
-      new Date(), new Date(), trackingId, CM003.voyageNumber(), UNLOAD, TOKYO.unLocode()
+      new Date(), new Date(400), trackingId, CM003.voyageNumber(), UNLOAD, TOKYO.unLocode()
     ));
 
     // Check current state - cargo is misdirected!
@@ -146,11 +175,10 @@ public class CargoLifecycleScenarioTest extends TestCase {
 
     // Specify a new route, this time from Tokyo (where it was incorrectly unloaded) to Stockholm
     RouteSpecification fromTokyo = new RouteSpecification(TOKYO, STOCKHOLM, arrivalDeadline);
-    cargo.specifyRoute(fromTokyo);
+    cargo.specifyNewRoute(fromTokyo);
 
     // The old itinerary does not satisfy the new specification
-    // TODO won't work until .isSatisfied() is implemented 
-    //assertEquals(RoutingStatus.MISROUTED, cargo.routingStatus());
+    assertEquals(RoutingStatus.MISROUTED, cargo.routingStatus());
 
     // Repeat procedure of selecting one out of a number of possible routes satisfying the route spec
     List<Itinerary> newItineraries = bookingService.requestPossibleRoutesForCargo(cargo.trackingId());
@@ -208,15 +236,20 @@ public class CargoLifecycleScenarioTest extends TestCase {
     // Stub
     // TODO move functionality to in-mem impl
     handlingEventRepository = new HandlingEventRepository() {
+      Map<TrackingId, List<HandlingEvent>> eventMap = new HashMap<TrackingId, List<HandlingEvent>>();
+
       public void save(HandlingEvent event) {
-        Cargo cargo = event.cargo();
-        Set<HandlingEvent> events = new HashSet<HandlingEvent>(cargo.delivery().history());
-        events.add(event);
-        CargoTestHelper.setDeliveryHistory(cargo, events);
+        final TrackingId trackingId = event.cargo().trackingId();
+        List<HandlingEvent> list = eventMap.get(trackingId);
+        if (list == null) {
+          list = new ArrayList<HandlingEvent>();
+          eventMap.put(trackingId, list);
+        }
+        list.add(event);
       }
 
       public List<HandlingEvent> findEventsForCargo(TrackingId trackingId) {
-        return null;
+        return eventMap.get(trackingId);
       }
     };
 
@@ -226,7 +259,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     voyageRepository = new VoyageRepositoryInMem();
 
     // Actual factories and application services, wired with stubbed or in-memory infrastructure
-    trackingService = new TrackingServiceImpl(applicationEvents, cargoRepository);
+    trackingService = new TrackingServiceImpl(applicationEvents, cargoRepository, handlingEventRepository);
     handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
     bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);

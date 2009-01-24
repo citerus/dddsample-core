@@ -3,7 +3,6 @@ package se.citerus.dddsample.interfaces.tracking;
 import junit.framework.TestCase;
 import org.springframework.context.support.StaticApplicationContext;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
@@ -24,13 +23,13 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, CM001));
     events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001));
 
-    CargoTestHelper.setDeliveryHistory(cargo, events);
+    cargo.updateStatus(events);
 
     StaticApplicationContext applicationContext = new StaticApplicationContext();
     applicationContext.addMessage("cargo.status.IN_PORT", Locale.GERMAN, "In port {0}");
     applicationContext.refresh();
 
-    CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, applicationContext, Locale.GERMAN);
+    CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, applicationContext, Locale.GERMAN, events);
 
     assertEquals("XYZ", adapter.getTrackingId());
     assertEquals("CNHGH (Hangzhou)", adapter.getOrigin());

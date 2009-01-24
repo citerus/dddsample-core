@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.ModelAndView;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 
@@ -21,7 +22,8 @@ public class CargoTrackingControllerTest extends TestCase {
   MockHttpServletResponse response;
   MockHttpSession session;
   MockServletContext servletContext;
-  private CargoRepositoryInMem cargoRepository;
+  CargoRepositoryInMem cargoRepository;
+  HandlingEventRepository handlingEventRepository;
 
   protected void setUp() throws Exception {
     servletContext = new MockServletContext("test");
@@ -39,6 +41,9 @@ public class CargoTrackingControllerTest extends TestCase {
     cargoRepository = new CargoRepositoryInMem();
     cargoRepository.setHandlingEventRepository(new HandlingEventRepositoryInMem());
     cargoRepository.init();
+
+    handlingEventRepository = new HandlingEventRepositoryInMem();
+    controller.setHandlingEventRepository(handlingEventRepository);
   }
 
   public void testHandleGet() throws Exception {
