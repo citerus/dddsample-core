@@ -10,12 +10,13 @@
     <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
   </listener>
 
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>classpath:log4j.properties</param-value>
+  </context-param>
 
   <listener>
-    <listener-class>se.citerus.dddsample.application.util.SampleDataGenerator</listener-class>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
   <context-param>
@@ -30,6 +31,10 @@
     </param-value>
   </context-param>
 
+  <listener>
+    <listener-class>se.citerus.dddsample.application.util.SampleDataGenerator</listener-class>
+  </listener>
+  
   <servlet>
     <servlet-name>tracking</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
