@@ -29,13 +29,13 @@ public final class CargoTrackingViewAdapter {
    * @param cargo
    * @param messageSource
    * @param locale
+   * @param handlingEvents
    */
-  public CargoTrackingViewAdapter(Cargo cargo, MessageSource messageSource, Locale locale) {
+  public CargoTrackingViewAdapter(Cargo cargo, MessageSource messageSource, Locale locale, List<HandlingEvent> handlingEvents) {
     this.messageSource = messageSource;
     this.locale = locale;
     this.cargo = cargo;
 
-    final List<HandlingEvent> handlingEvents = cargo.delivery().history();
     this.events = new ArrayList<HandlingEventViewAdapter>(handlingEvents.size());
     for (HandlingEvent handlingEvent : handlingEvents) {
       events.add(new HandlingEventViewAdapter(handlingEvent));

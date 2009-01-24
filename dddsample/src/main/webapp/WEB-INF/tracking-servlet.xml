@@ -16,8 +16,9 @@
     <property name="commandName" value="trackCommand"/>
     <property name="formView" value="track"/>
     <property name="successView" value="start"/>
-    <property name="cargoRepository" ref="cargoRepository"/>
     <property name="validator" ref="trackCommandValidator"/>
+    <property name="cargoRepository" ref="cargoRepository"/>
+    <property name="handlingEventRepository" ref="handlingEventRepository"/>
   </bean>
 
   <bean id="trackCommandValidator" class="se.citerus.dddsample.interfaces.tracking.TrackCommandValidator"/>
