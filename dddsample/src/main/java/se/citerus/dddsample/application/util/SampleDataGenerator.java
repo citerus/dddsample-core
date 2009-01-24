@@ -120,16 +120,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, origin_id, spec_origin_id, spec_destination_id, spec_arrival_deadline) " +
-      "values (?, ?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, origin_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, transport_status, current_voyage_id, last_known_location_id, is_misdirected, routing_status) " +
+      "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 1, 2, ts(10)},
-      {2, "ABC", 1, 1, 5, ts(20)},
-      {3, "ZYX", 2, 2, 1, ts(30)},
-      {4, "CBA", 5, 5, 1, ts(40)},
-      {5, "FGH", 1, 3, 5, ts(50)},  // Cargo origin differs from spec origin
-      {6, "JKL", 6, 6, 4, ts(60)}
+      {1, "XYZ", 1, 1, 2, ts(10), "IN_PORT", null, 1, false, "ROUTED"},
+      {2, "ABC", 1, 1, 5, ts(20), "IN_PORT", null, 1, false, "ROUTED"},
+      {3, "ZYX", 2, 2, 1, ts(30), "IN_PORT", null, 1, false, "NOT_ROUTED"},
+      {4, "CBA", 5, 5, 1, ts(40), "IN_PORT", null, 1, false, "MISROUTED"},
+      {5, "FGH", 1, 3, 5, ts(50), "IN_PORT", null, 1, false, "ROUTED"},  // Cargo origin differs from spec origin
+      {6, "JKL", 6, 6, 4, ts(60), "IN_PORT", null, 1, true, "ROUTED"}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }

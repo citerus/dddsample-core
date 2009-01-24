@@ -39,11 +39,6 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
   }
 
   @Override
-  public VoyageNumber copy() {
-    return new VoyageNumber(number);
-  }
-
-  @Override
   public String toString() {
     return number;
   }

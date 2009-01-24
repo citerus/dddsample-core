@@ -13,15 +13,29 @@
 
     <many-to-one name="origin" column="origin_id" not-null="false" cascade="none" update="false" foreign-key="origin_fk"/>
 
+    <property name="misdirected" column="is_misdirected" not-null="true"/>
+
+    <property name="routingStatus" column="routing_status" not-null="true">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
+        <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+      </type>
+    </property>
+
     <component name="trackingId" unique="true" update="false">
       <property name="id" column="tracking_id"/>
     </component>
 
     <component name="delivery" lazy="true" update="false">
-      <set name="events" lazy="true" cascade="none">
-        <key column="cargo_id"/>
-        <one-to-many class="se.citerus.dddsample.domain.model.handling.HandlingEvent"/>
-      </set>
+      <property name="transportStatus" column="transport_status" not-null="true">
+        <type name="org.hibernate.type.EnumType">
+          <param name="enumClass">se.citerus.dddsample.domain.model.cargo.TransportStatus</param>
+          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+        </type>
+      </property>
+      <many-to-one name="currentVoyage" column="current_voyage_id" not-null="false" cascade="none" foreign-key="current_voyage_fk"/>
+      <many-to-one name="lastKnownLocation" column="last_known_location_id" not-null="false" cascade="none" foreign-key="last_known_location_fk"/>
+      <many-to-one name="lastEvent" column="last_event_id" not-null="false" cascade="none" foreign-key="last_event_fk"/>
     </component>
 
     <component name="routeSpecification">

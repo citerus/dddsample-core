@@ -15,6 +15,7 @@ public interface TrackingService {
    * @param trackingId cargo tracking id
    */
   // TODO rename! The method updates the delivery status on handling
+  // TODO [Cargo]InspectionService is fine 
   void inspectCargo(TrackingId trackingId);
 
 }

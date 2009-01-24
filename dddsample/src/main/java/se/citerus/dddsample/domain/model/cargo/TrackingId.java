@@ -49,11 +49,6 @@ public final class TrackingId implements ValueObject<TrackingId> {
   }
 
   @Override
-  public TrackingId copy() {
-    return new TrackingId(id);
-  }
-
-  @Override
   public String toString() {
     return id;
   }

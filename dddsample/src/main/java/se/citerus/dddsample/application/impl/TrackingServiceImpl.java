@@ -9,20 +9,28 @@ import se.citerus.dddsample.application.TrackingService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+
+import java.util.List;
 
 public class TrackingServiceImpl implements TrackingService {
 
   private final ApplicationEvents applicationEvents;
   private final CargoRepository cargoRepository;
+  private final HandlingEventRepository handlingEventRepository;
   private final Log logger = LogFactory.getLog(getClass());
 
-  public TrackingServiceImpl(final ApplicationEvents applicationEvents, final CargoRepository cargoRepository) {
+  public TrackingServiceImpl(final ApplicationEvents applicationEvents,
+                             final CargoRepository cargoRepository,
+                             final HandlingEventRepository handlingEventRepository) {
     this.applicationEvents = applicationEvents;
     this.cargoRepository = cargoRepository;
+    this.handlingEventRepository = handlingEventRepository;
   }
 
   @Override
-  @Transactional(readOnly = true)
+  @Transactional
   public void inspectCargo(final TrackingId trackingId) {
     Validate.notNull(trackingId, "Tracking ID is required");
 
@@ -32,7 +40,8 @@ public class TrackingServiceImpl implements TrackingService {
       return;
     }
 
-    // TODO cargo delivery status update would happen here
+    final List<HandlingEvent> deliveryHistory = handlingEventRepository.findEventsForCargo(trackingId);
+    cargo.updateStatus(deliveryHistory);
 
     if (cargo.isMisdirected()) {
       applicationEvents.cargoWasMisdirected(cargo);

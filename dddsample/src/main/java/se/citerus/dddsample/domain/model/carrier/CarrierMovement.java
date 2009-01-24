@@ -103,16 +103,6 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
       isEquals();
   }
 
-  @Override
-  public CarrierMovement copy() {
-    return new CarrierMovement(
-      departureLocation(),
-      arrivalLocation(),
-      departureTime(),
-      arrivalTime()
-    );
-  }
-
   CarrierMovement() {
     // Needed by Hibernate
   }
