@@ -15,8 +15,9 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -43,15 +44,21 @@ public class ExternalRoutingService implements RoutingService {
     final Properties limitations = new Properties();
     limitations.setProperty("DEADLINE", routeSpecification.arrivalDeadline().toString());
 
-    final List<TransitPath> transitPaths = graphTraversalService.findShortestPath(
+    final List<TransitPath> transitPaths;
+    try {
+      transitPaths = graphTraversalService.findShortestPath(
       origin.unLocode().idString(),
       destination.unLocode().idString(),
       limitations
     );
-    
+    } catch (RemoteException e) {
+      log.error(e, e);
+      return Collections.EMPTY_LIST;
+    }
+
     /*
-      The returned result is then translated back into our domain model.
-     */
+     The returned result is then translated back into our domain model.
+    */
     final List<Itinerary> itineraries = new ArrayList<Itinerary>();
 
     for (TransitPath transitPath : transitPaths) {
@@ -77,10 +84,10 @@ public class ExternalRoutingService implements RoutingService {
 
   private Leg toLeg(TransitEdge edge) {
     return new Leg(
-      voyageRepository.find(new VoyageNumber(edge.getCarrierMovementId())),
+      voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
       locationRepository.find(new UnLocode(edge.getFromUnLocode())),
       locationRepository.find(new UnLocode(edge.getToUnLocode())),
-      new Date(), new Date()  // TODO better dates
+      edge.getFromDate(), edge.getToDate()
     );
   }
 
