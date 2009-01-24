@@ -35,7 +35,7 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
 
   @Override
   protected String[] getConfigLocations() {
-    return new String[] {"context-persistence-hibernate.xml"};
+    return new String[] {"/context-infrastructure-persistence.xml"};
   }
 
   @Override

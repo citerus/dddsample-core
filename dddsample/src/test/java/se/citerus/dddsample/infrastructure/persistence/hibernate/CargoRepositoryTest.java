@@ -9,6 +9,7 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -24,6 +25,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
   VoyageRepository voyageRepository;
+  HandlingEventRepository handlingEventRepository;
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
@@ -33,19 +35,24 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     this.locationRepository = locationRepository;
   }
 
-  public void setCarrierMovementRepository(VoyageRepository voyageRepository) {
+  public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
   }
 
+  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
+    this.handlingEventRepository = handlingEventRepository;
+  }
+
   public void testFindByCargoId() {
-    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
+    final TrackingId trackingId = new TrackingId("FGH");
+    final Cargo cargo = cargoRepository.find(trackingId);
     assertEquals(STOCKHOLM, cargo.origin());
     assertEquals(HONGKONG, cargo.routeSpecification().origin());
     assertEquals(HELSINKI, cargo.routeSpecification().destination());
 
     assertNotNull(cargo.delivery());
 
-    List<HandlingEvent> events = cargo.delivery().history();
+    final List<HandlingEvent> events = handlingEventRepository.findEventsForCargo(trackingId);
     assertEquals(2, events.size());
 
     HandlingEvent firstEvent = events.get(0);
@@ -138,28 +145,6 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals(1, sjt.queryForInt("select count(*) from Leg where cargo_id = ?", cargoId));
   }
 
-
-  public void testSaveShouldNotCascadeToHandlingEvents() {
-    Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
-    int eventCount = cargo.delivery().history().size();
-
-    Location origin = locationRepository.find(STOCKHOLM.unLocode());
-
-    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin);
-    assertFalse(cargo.delivery().history().contains(event));
-
-    CargoTestHelper.setDeliveryHistory(cargo, Arrays.asList(event));
-    assertTrue(cargo.delivery().history().contains(event));
-
-    // Save cargo, evict from session and then re-load it - should not pick up the added event,
-    // as it was never cascade-saved
-    cargoRepository.save(cargo);
-    getSession().evict(cargo);
-
-    cargo = cargoRepository.find(cargo.trackingId());
-    assertFalse(cargo.delivery().history().contains(event));
-    assertEquals(eventCount, cargo.delivery().history().size());
-  }
 
   public void testFindAll() {
     List<Cargo> all = cargoRepository.findAll();

@@ -3,9 +3,11 @@ package se.citerus.dddsample.infrastructure.persistence.inmemory;
 import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
-import se.citerus.dddsample.domain.model.cargo.CargoTestHelper;
+import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 import java.util.*;
@@ -56,27 +58,39 @@ public class CargoRepositoryInMem implements CargoRepository {
 
   public void init() throws Exception {
     final TrackingId xyz = new TrackingId("XYZ");
-    final Cargo cargoXYZ = CargoTestHelper.createCargoWithDeliveryHistory(
+    final Cargo cargoXYZ = createCargoWithDeliveryHistory(
       xyz, STOCKHOLM, MELBOURNE, handlingEventRepository.findEventsForCargo(xyz));
     cargoDb.put(xyz.idString(), cargoXYZ);
 
     final TrackingId zyx = new TrackingId("ZYX");
-    final Cargo cargoZYX = CargoTestHelper.createCargoWithDeliveryHistory(
+    final Cargo cargoZYX = createCargoWithDeliveryHistory(
       zyx, MELBOURNE, STOCKHOLM, handlingEventRepository.findEventsForCargo(zyx));
     cargoDb.put(zyx.idString(), cargoZYX);
 
     final TrackingId abc = new TrackingId("ABC");
-    final Cargo cargoABC = CargoTestHelper.createCargoWithDeliveryHistory(
+    final Cargo cargoABC = createCargoWithDeliveryHistory(
       abc, STOCKHOLM, HELSINKI, handlingEventRepository.findEventsForCargo(abc));
     cargoDb.put(abc.idString(), cargoABC);
 
     final TrackingId cba = new TrackingId("CBA");
-    final Cargo cargoCBA = CargoTestHelper.createCargoWithDeliveryHistory(
+    final Cargo cargoCBA = createCargoWithDeliveryHistory(
       cba, HELSINKI, STOCKHOLM, handlingEventRepository.findEventsForCargo(cba));
     cargoDb.put(cba.idString(), cargoCBA);
   }
 
   public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
+  }
+
+  public static Cargo createCargoWithDeliveryHistory(TrackingId trackingId,
+                                                     Location origin,
+                                                     Location destination,
+                                                     Collection<HandlingEvent> events) {
+
+    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
+    final Cargo cargo = new Cargo(trackingId, origin, routeSpecification);
+    cargo.updateStatus(new ArrayList<HandlingEvent>(events));
+
+    return cargo;
   }
 }
