@@ -31,6 +31,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
          it is determined wether the incoming data, the attempt, actually is capable
          of representing a real handling event. */
       final HandlingEvent event = handlingEventFactory.createHandlingEvent(
+        attempt.getRegistrationTime(),
         attempt.getCompletionTime(),
         attempt.getTrackingId(),
         attempt.getVoyageNumber(),
@@ -44,7 +45,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
        */
       handlingEventRepository.save(event);
 
-      /* Publish a system event stating that a cargo has been handled. */
+      /* Publish an event stating that a cargo has been handled. */
       applicationEvents.cargoWasHandled(event);
     } catch (CannotCreateHandlingEventException e) {
       /* This may be a bogus attempt, for example containing a tracking id
