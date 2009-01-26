@@ -17,20 +17,16 @@
   </bean>
 
   <bean id="registerApp" class="se.citerus.registerapp.RegisterApp">
-    <property name="handlingEventService" ref="handlingEventServiceWs"/>
+    <property name="handlingReportService" ref="handlingReportService"/>
     <property name="debugUI" value="false" />
   </bean>
 
-  <bean id="handlingEventServiceWs" class="se.citerus.registerapp.service.HandlingEventServiceWs">
-    <property name="endPoint" ref="handlingEventWebServiceEndPoint"/>
-  </bean>
-
-  <bean id="handlingEventWebServiceEndPoint" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-    <property name="serviceInterface" value="se.citerus.dddsample.application.ws.HandlingEventServiceEndpoint" />
+  <bean id="handlingReportService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
+    <property name="serviceInterface" value="se.citerus.dddsample.interfaces.handling.ws.HandlingReportService" />
     <property name="wsdlDocumentUrl" value="${wsdl.url}" />
-    <property name="namespaceUri" value="http://ws.application.dddsample.citerus.se/" />
-    <property name="serviceName" value="HandlingEventServiceEndpointImplService" />
-    <property name="portName" value="HandlingEventServiceEndpointImplPort" />
+    <property name="namespaceUri" value="http://impl.ws.handling.interfaces.dddsample.citerus.se/" />
+    <property name="serviceName" value="HandlingReportServiceImplService" />
+    <property name="portName" value="HandlingReportServiceImplPort" />
   </bean>
 
 </beans>

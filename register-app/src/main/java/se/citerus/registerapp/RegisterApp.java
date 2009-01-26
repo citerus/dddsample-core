@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,20 +16,25 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
 import javax.swing.text.DefaultFormatter;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import se.citerus.registerapp.service.HandlingEventService;
 import se.citerus.registerapp.validation.FormValidationDecorator;
 import se.citerus.registerapp.validation.FormValidationSwingDecorator;
 import se.citerus.registerapp.validation.MandatoryTextFieldValidator;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class RegisterApp {
   private static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
-  private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS.SSS");
+  private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
   private static final String TITLE = "Incident Logging Application";
   private JFrame frame;
   private JFormattedTextField completionTimeField;
@@ -37,31 +44,38 @@ public class RegisterApp {
   //private JFormattedTextField eventTypeField;
   private JComboBox eventTypeField;
   private JButton registerButton;
-  
-  private HandlingEventService handlingEventService;
+
+  private HandlingReportService handlingReportService;
   private boolean debugUI;
   private FormValidationDecorator validator;
 
 
-
-  /////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
   // GUI EVENT HANDLING
   /////////////////////////////////////////////////////////////////////////////
   protected void onRegister(){
-    assert handlingEventService != null : "No HandlingEventService available";
+    assert handlingReportService != null : "No HandlingEventService available";
 
-      handlingEventService.register(ISO8601_DATE_FORMAT.format(completionTimeField.getValue()),
-                                  getStringValue(trackingIdField),
-                                  getStringValue(carrierMovementField),
-                                  getStringValue(locationField),
-                                  getStringValue(eventTypeField).toUpperCase());
-    
-    clearForm();
+        try {
+            final HandlingReport report = new HandlingReport();
+            final GregorianCalendar completionTime = new GregorianCalendar();
+            completionTime.setTime((Date) completionTimeField.getValue());
+            report.setCompletionTime(new XMLGregorianCalendarImpl(completionTime));
+            report.setTrackingIds(new String[] {getStringValue(trackingIdField)});
+            report.setType(getStringValue(eventTypeField).toUpperCase());
+            report.setUnLocode(getStringValue(locationField));
+            report.setVoyageNumber(getStringValue(carrierMovementField));
+
+            handlingReportService.submitReport(report);
+            clearForm();
+        } catch (HandlingReportErrors handlingReportErrors) {
+            System.err.println(handlingReportErrors.getMessage());
+        }
   }
 
   private String getStringValue(JComboBox comboBox) {
       Object value = comboBox.getSelectedItem();
-      
+
       if (value != null) {
         return value.toString();
       } else {
@@ -72,15 +86,15 @@ public class RegisterApp {
 
   private String getStringValue(JFormattedTextField formattedTextField) {
     Object value = formattedTextField.getValue();
-    
+
     if (value != null) {
       return value.toString();
     } else {
       return null;
     }
   }
-  
-  
+
+
   /////////////////////////////////////////////////////////////////////////////
   // PUBLIC API
   /////////////////////////////////////////////////////////////////////////////
@@ -90,25 +104,25 @@ public class RegisterApp {
     } catch (Exception e) {
       // Likely PlasticXP is not in the class path; ignore.
     }
-    
+
     initComponents();
     JComponent panel = createMainPanel();
-    
-    
+
+
     frame = createFrame(panel);
     frame.pack();
     centerOnScreen(frame);
-    
+
     initValidation(frame);
-    
+
     frame.setVisible(true);
-    
+
     clearForm();
   }
 
 
-  public void setHandlingEventService(HandlingEventService handlingEventService) {
-    this.handlingEventService = handlingEventService;
+  public void setHandlingReportService(HandlingReportService handlingReportService) {
+    this.handlingReportService = handlingReportService;
   }
 
   public void setDebugUI(boolean on){
@@ -129,14 +143,14 @@ public class RegisterApp {
   public static Border getMandatoryBorder() {
     return new CompoundBorder(new LineBorder(Color.RED), new BasicBorders.MarginBorder());
   }
-  
+
   private void initComponents(){
     completionTimeField = new JFormattedTextField(ISO8601_DATE_FORMAT);
     trackingIdField = new JFormattedTextField(DEFAULT_FORMATTER);
     carrierMovementField = new JFormattedTextField(DEFAULT_FORMATTER);
     locationField = new JFormattedTextField(DEFAULT_FORMATTER);
     eventTypeField = new JComboBox(new String[] {"-- Select --","Receive","Load","Unload","Customs","Claim"});
-    
+
     registerButton = new JButton("Register");
     registerButton.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
@@ -149,20 +163,20 @@ public class RegisterApp {
 
   /**
    * We need to do initialization of validators after the components and their parent frame has been initialized.
-   * @param frame 
-   * 
+   * @param frame
+   *
    */
   private void initValidation(JFrame frame){
     validator = new FormValidationSwingDecorator(frame);
-    
+
     validator.add(trackingIdField, new MandatoryTextFieldValidator("Tracking id can't be empty"));
     validator.add(locationField, new MandatoryTextFieldValidator("Location can't be empty"));
   }
-  
-  
+
+
   /**
    * Center a component on the screen.
-   * 
+   *
    * @param component the component to be centered
    */
 
@@ -181,18 +195,18 @@ public class RegisterApp {
     f.setTitle(TITLE);
     f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     f.getContentPane().add(panel);
-    
+
     return f;
   }
 
   private JComponent createMainPanel() {
     JComponent fieldPanel = createFieldPanel();
     JComponent buttonPanel = createButtonPanel();
-    
+
     DefaultFormBuilder mainBuilder = createBuilder("p");
     mainBuilder.append(fieldPanel);
     mainBuilder.append(buttonPanel);
-    
+
     return mainBuilder.getPanel();
   }
 
@@ -204,20 +218,20 @@ public class RegisterApp {
 
   private JComponent createFieldPanel() {
     DefaultFormBuilder builder = createBuilder("right:pref, 3dlu, 100dlu");
-    
+
     builder.appendSeparator("Completion");
     builder.append("Time", completionTimeField); builder.nextLine();
-    
+
     builder.appendSeparator("Cargo");
     builder.append("Tracking Id", trackingIdField); builder.nextLine();
-    
+
     builder.appendSeparator("Event");
-    builder.append("Carrier Movement", carrierMovementField); builder.nextLine();
+    builder.append("Voyage", carrierMovementField); builder.nextLine();
     builder.append("Location UN/Locode", locationField); builder.nextLine();
     builder.append("Event Type", eventTypeField); builder.nextLine();
-    
+
     builder.appendSeparator("");
-    
+
     return builder.getPanel();
   }
 
@@ -238,5 +252,5 @@ public class RegisterApp {
       return new DefaultFormBuilder(layout);
     }
   }
- 
+
 }
