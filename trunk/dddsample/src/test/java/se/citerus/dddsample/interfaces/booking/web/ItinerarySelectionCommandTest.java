@@ -32,12 +32,12 @@ public class ItinerarySelectionCommandTest extends TestCase {
     assertEquals(2, legs.size());
 
     RouteAssignmentCommand.LegCommand leg = legs.get(0);
-    assertEquals("CM01", leg.getCarrierMovementId());
+    assertEquals("CM01", leg.getVoyageNumber());
     assertEquals("AAAAA", leg.getFromUnLocode());
     assertEquals("BBBBB", leg.getToUnLocode());
 
     leg = legs.get(1);
-    assertEquals("CM02", leg.getCarrierMovementId());
+    assertEquals("CM02", leg.getVoyageNumber());
     assertEquals("CCCCC", leg.getFromUnLocode());
     assertEquals("DDDDD", leg.getToUnLocode());
 

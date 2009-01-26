@@ -1,34 +1,38 @@
 package se.citerus.dddsample.interfaces.handling.ws;
 
 import javax.xml.bind.annotation.XmlElement;
-import java.util.Arrays;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement
 public class HandlingReportErrors extends Exception {
 
-  private String[] errors;
+  @XmlElement
+  List<String> errors;
 
   public HandlingReportErrors() {
   }
 
-  public HandlingReportErrors(final List<String> errors) {
-    this.errors = errors.toArray(new String[errors.size()]);
+  public HandlingReportErrors(List<String> errors) {
+    setErrors(errors);
   }
 
-  @XmlElement(required = true)
-  public String[] getErrors() {
+  public List<String> getErrors() {
     return errors;
   }
 
-  public void setErrors(String[] errors) {
+  public void setErrors(List<String> errors) {
+    if (errors == null) {
+      errors = new ArrayList<String>();
+    }
     this.errors = errors;
   }
-
 
   @Override
   @XmlElement(required = true)
   public String getMessage() {
-    return "Reistration failure: " + Arrays.toString(errors);
+    return "Report errors: " + errors;
   }
   
 }

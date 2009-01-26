@@ -1,6 +1,5 @@
 package se.citerus.dddsample.interfaces.handling.ws;
 
-import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
@@ -21,7 +20,6 @@ public interface HandlingReportService {
    * @param handlingReport handling report
    * @throws HandlingReportErrors if there are formatting errors in the handling report
    */
-  @WebMethod
   void submitReport(@WebParam HandlingReport handlingReport) throws HandlingReportErrors;
 
 }

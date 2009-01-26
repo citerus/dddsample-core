@@ -9,4 +9,11 @@ package se.citerus.dddsample.domain.model.handling;
  * program execution.
  */
 public class CannotCreateHandlingEventException extends Exception {
+  public CannotCreateHandlingEventException(Exception e) {
+    super(e);
+  }
+
+  public CannotCreateHandlingEventException() {
+    super();
+  }
 }

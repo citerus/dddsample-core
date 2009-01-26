@@ -5,7 +5,9 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -73,4 +75,13 @@ public class HandlingReportParser {
     }
   }
 
+  public static Date parseCompletionTime(HandlingReport handlingReport, List<String> errors) {
+    final XMLGregorianCalendar completionTime = handlingReport.getCompletionTime();
+    if (completionTime == null) {
+      errors.add("Completion time is required");
+      return null;
+    }
+
+    return completionTime.toGregorianCalendar().getTime();
+  }
 }

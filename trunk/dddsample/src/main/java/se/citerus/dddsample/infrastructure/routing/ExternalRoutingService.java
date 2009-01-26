@@ -75,7 +75,7 @@ public class ExternalRoutingService implements RoutingService {
   }
 
   private Itinerary toItinerary(TransitPath transitPath) {
-    List<Leg> legs = new ArrayList(transitPath.getTransitEdges().size());
+    List<Leg> legs = new ArrayList<Leg>(transitPath.getTransitEdges().size());
     for (TransitEdge edge : transitPath.getTransitEdges()) {
       legs.add(toLeg(edge));
     }

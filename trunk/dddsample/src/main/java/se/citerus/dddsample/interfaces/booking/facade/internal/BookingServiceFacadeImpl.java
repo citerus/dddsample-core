@@ -59,18 +59,11 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     return assembler.toDTO(cargo);
   }
 
-  public void assignCargoToRoute(String trackingId, ItineraryCandidateDTO itineraryCandidateDTO) {
+  public void assignCargoToRoute(String trackingIdStr, ItineraryCandidateDTO itineraryCandidateDTO) {
     final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, voyageRepository, locationRepository);
+    final TrackingId trackingId = new TrackingId(trackingIdStr);
 
-    final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
-    if (cargo == null) {
-      throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
-    }
-
-    cargo.assignToRoute(itinerary);
-    cargoRepository.store(cargo);
-
-    logger.info("Assigned cargo " + trackingId + " to new route");
+    bookingService.assignCargoToRoute(itinerary, trackingId);
   }
 
   public List<CargoRoutingDTO> listAllCargos() {

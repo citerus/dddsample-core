@@ -1,23 +1,25 @@
 package com.partner.pathfinder.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 public class GraphDAO {
 
+  private static final Random random = new Random();
+
   public List<String> listLocations() {
-    return Arrays.asList(
-      "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JNTKO", "DEHAM",
-      "CNSHA", "NLRTM", "SEGOT", "CNHGH", "USNYC", "USDAL"
-    );
+    return new ArrayList<String>(Arrays.asList(
+      "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JPTOK", "DEHAM"
+    ));
   }
 
   public String getVoyageNumber(String from, String to) {
-    // TODO return only those that are in the database
-    final String random = UUID.randomUUID().toString().toUpperCase();
-    final String cmId =  random.substring(0, 4);
-    //dao.storeCarrierMovementId(cmId, from, to);
-    return cmId;
+    final int i = random.nextInt(3);
+    if (i == 0) return "0101";
+    if (i == 1) return "0202";
+    return "0303";
   }
+  
 }

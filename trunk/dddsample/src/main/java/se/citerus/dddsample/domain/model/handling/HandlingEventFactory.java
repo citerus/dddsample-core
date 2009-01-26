@@ -54,10 +54,14 @@ public class HandlingEventFactory {
     final Voyage voyage = findVoyage(voyageNumber);
     final Location location = findLocation(unlocode);
 
-    if (voyage == null) {
-      return new HandlingEvent(cargo, completionTime, registrationTime, type, location);   
-    } else {
-      return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage);
+    try {
+      if (voyage == null) {
+        return new HandlingEvent(cargo, completionTime, registrationTime, type, location);
+      } else {
+        return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage);
+      }
+    } catch (Exception e) {
+      throw new CannotCreateHandlingEventException(e);
     }
   }
 

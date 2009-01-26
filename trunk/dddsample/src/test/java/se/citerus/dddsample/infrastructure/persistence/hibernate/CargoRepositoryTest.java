@@ -114,6 +114,14 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Cargo cargo = new Cargo(trackingId, origin, new RouteSpecification(origin, destination, new Date()));
     cargoRepository.store(cargo);
 
+    cargo.assignToRoute(new Itinerary(Arrays.asList(
+      new Leg(
+        voyageRepository.find(new VoyageNumber("0101")),
+        locationRepository.find(STOCKHOLM.unLocode()),
+        locationRepository.find(MELBOURNE.unLocode()),
+        new Date(), new Date())
+    )));
+    
     flush();
 
     Map<String, Object> map = sjt.queryForMap(
@@ -126,6 +134,11 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     Long destinationId = getLongId(destination);
     assertEquals(destinationId, map.get("SPEC_DESTINATION_ID"));
+
+    getSession().clear();
+
+    final Cargo loadedCargo = cargoRepository.find(trackingId);
+    assertEquals(1, loadedCargo.itinerary().legs().size());
   }
 
   public void testReplaceItinerary() {

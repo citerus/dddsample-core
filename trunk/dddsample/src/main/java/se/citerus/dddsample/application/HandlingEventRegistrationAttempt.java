@@ -1,5 +1,7 @@
 package se.citerus.dddsample.application;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -61,4 +63,10 @@ public final class HandlingEventRegistrationAttempt implements Serializable {
   public Date getRegistrationTime() {
     return registrationTime;
   }
+
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+  }
+  
 }
