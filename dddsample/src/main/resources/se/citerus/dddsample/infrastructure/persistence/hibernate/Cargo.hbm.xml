@@ -26,7 +26,7 @@
       <property name="id" column="tracking_id"/>
     </component>
 
-    <component name="delivery" lazy="true" update="false">
+    <component name="delivery" lazy="true">
       <property name="transportStatus" column="transport_status" not-null="true">
         <type name="org.hibernate.type.EnumType">
           <param name="enumClass">se.citerus.dddsample.domain.model.cargo.TransportStatus</param>

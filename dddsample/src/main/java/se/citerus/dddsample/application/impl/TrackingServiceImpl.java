@@ -43,6 +43,8 @@ public class TrackingServiceImpl implements TrackingService {
     final List<HandlingEvent> deliveryHistory = handlingEventRepository.findEventsForCargo(trackingId);
     cargo.updateStatus(deliveryHistory);
 
+    cargoRepository.store(cargo);
+
     if (cargo.isMisdirected()) {
       applicationEvents.cargoWasMisdirected(cargo);
     }

@@ -34,7 +34,7 @@ public class HandlingReportServiceImpl implements HandlingReportService {
   public void submitReport(HandlingReport handlingReport) throws HandlingReportErrors {
     final List<String> errors = new ArrayList<String>();
 
-    final Date completionTime = handlingReport.getCompletionTime().toGregorianCalendar().getTime();
+    final Date completionTime = parseCompletionTime(handlingReport, errors);
     final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
     final HandlingEvent.Type type = parseEventType(handlingReport.getType(), errors);
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), errors);

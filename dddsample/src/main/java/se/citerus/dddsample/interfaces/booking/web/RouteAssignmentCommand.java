@@ -30,16 +30,16 @@ public class RouteAssignmentCommand {
   }
 
   public static final class LegCommand {
-    private String carrierMovementId;
+    private String voyageNumber;
     private String fromUnLocode;
     private String toUnLocode;
 
-    public String getCarrierMovementId() {
-      return carrierMovementId;
+    public String getVoyageNumber() {
+      return voyageNumber;
     }
 
-    public void setCarrierMovementId(final String carrierMovementId) {
-      this.carrierMovementId = carrierMovementId;
+    public void setVoyageNumber(final String voyageNumber) {
+      this.voyageNumber = voyageNumber;
     }
 
     public String getFromUnLocode() {
@@ -65,6 +65,6 @@ public class RouteAssignmentCommand {
         }
       };
     }
-    
+
   }
 }

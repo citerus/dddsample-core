@@ -43,7 +43,7 @@
         <tr>
           <td>Arrival deadline:</td>
           <td>
-            <input name="spec" type="text" size="10" id="cal1" value="${param.spec}"/>&nbsp;
+            <input name="arrivalDeadline" type="text" size="10" id="cal1" value="${param.arrivalDeadline}"/>&nbsp;
             <img alt="" src="<c:url value="/images/calendarTrigger.gif"/>" class="calendarTrigger" onclick="calendar.toggle( event, this, 'cal1')"/>
           </td>
         </tr>

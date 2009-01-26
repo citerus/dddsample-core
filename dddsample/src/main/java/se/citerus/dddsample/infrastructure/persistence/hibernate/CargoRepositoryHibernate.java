@@ -22,7 +22,7 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
   }
 
   public void store(Cargo cargo) {
-    getSession().persist(cargo);
+    getSession().saveOrUpdate(cargo);
     getSession().createSQLQuery("delete from Leg where cargo_id = null").executeUpdate();
   }
 

@@ -56,14 +56,31 @@ public final class BookingServiceImpl implements BookingService {
   @Transactional
   public List<Itinerary> requestPossibleRoutesForCargo(final TrackingId trackingId) {
     Validate.notNull(trackingId);
-    
+
     final Cargo cargo = cargoRepository.find(trackingId);
 
     if (cargo == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     return routingService.fetchRoutesForSpecification(cargo.routeSpecification());
   }
 
+  @Override
+  @Transactional
+  public void assignCargoToRoute(final Itinerary itinerary, final TrackingId trackingId) {
+    Validate.notNull(itinerary);
+    Validate.notNull(trackingId);
+
+    final Cargo cargo = cargoRepository.find(trackingId);
+    if (cargo == null) {
+      throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
+    }
+
+    cargo.assignToRoute(itinerary);
+    cargoRepository.store(cargo);
+
+    logger.info("Assigned cargo " + trackingId + " to new route");
+  }
+  
 }

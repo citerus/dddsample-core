@@ -9,6 +9,7 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -43,9 +44,9 @@ public final class CargoAdminController extends MultiActionController {
 
   public void register(final HttpServletRequest request, final HttpServletResponse response,
                        final RegistrationCommand command) throws Exception {
-    // TODO get date from command    
+    final Date arrivalDeadline = new SimpleDateFormat("M/dd/yyyy").parse(command.getArrivalDeadline());
     final String trackingId = bookingServiceFacade.bookNewCargo(
-      command.getOriginUnlocode(), command.getDestinationUnlocode(), new Date()
+      command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline
     );
     response.sendRedirect("show.html?trackingId=" + trackingId);
   }
@@ -70,22 +71,21 @@ public final class CargoAdminController extends MultiActionController {
     final Map<String, Object> map = new HashMap<String, Object>();
     final String trackingId = request.getParameter("trackingId");
     final List<ItineraryCandidateDTO> itineraryCandidates = bookingServiceFacade.requestPossibleRoutesForCargo(trackingId);
+    map.put("itineraryCandidates", itineraryCandidates);
 
-    if (request.getParameter("spec") != null) {
-      map.put("itineraryCandidates", itineraryCandidates);
-    }
 
     final CargoRoutingDTO cargoDTO = bookingServiceFacade.loadCargoForRouting(trackingId);
     map.put("origin", cargoDTO.getOrigin());
     map.put("destination", cargoDTO.getFinalDestination());
     map.put("trackingId", trackingId);
+    
     return map;
   }
 
   public void assignItinerary(final HttpServletRequest request, final HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
     final List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
     for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
-      legDTOs.add(new LegDTO(leg.getCarrierMovementId(), leg.getFromUnLocode(), leg.getToUnLocode()));
+      legDTOs.add(new LegDTO(leg.getVoyageNumber(), leg.getFromUnLocode(), leg.getToUnLocode()));
     }
 
     final ItineraryCandidateDTO selectedItinerary = new ItineraryCandidateDTO(legDTOs);

@@ -1,5 +1,7 @@
 package se.citerus.dddsample.application.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
@@ -14,6 +16,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   private final ApplicationEvents applicationEvents;
   private final HandlingEventRepository handlingEventRepository;
   private final HandlingEventFactory handlingEventFactory;
+  private static final Log logger = LogFactory.getLog(HandlingEventServiceImpl.class);
 
   public HandlingEventServiceImpl(final HandlingEventRepository handlingEventRepository,
                                   final ApplicationEvents applicationEvents,
@@ -47,6 +50,8 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
 
       /* Publish an event stating that a cargo has been handled. */
       applicationEvents.cargoWasHandled(event);
+
+      logger.info("Registered handling event");
     } catch (CannotCreateHandlingEventException e) {
       /* This may be a bogus attempt, for example containing a tracking id
          that doesn't match any cargo that we're tracking. */
