@@ -15,11 +15,11 @@ public class ItinerarySelectionCommandTest extends TestCase {
     command = new RouteAssignmentCommand();
     request = new MockHttpServletRequest();
 
-    request.addParameter("legs[0].carrierMovementId", "CM01");
+    request.addParameter("legs[0].voyageNumber", "CM01");
     request.addParameter("legs[0].fromUnLocode", "AAAAA");
     request.addParameter("legs[0].toUnLocode", "BBBBB");
 
-    request.addParameter("legs[1].carrierMovementId", "CM02");
+    request.addParameter("legs[1].voyageNumber", "CM02");
     request.addParameter("legs[1].fromUnLocode", "CCCCC");
     request.addParameter("legs[1].toUnLocode", "DDDDD");
 
