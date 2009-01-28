@@ -1,7 +1,6 @@
 package se.citerus.dddsample.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
 
 import java.util.regex.Pattern;
@@ -52,7 +51,7 @@ public final class UnLocode implements ValueObject<UnLocode> {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(unlocode).toHashCode();
+    return unlocode.hashCode();
   }
 
   @Override
