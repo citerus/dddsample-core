@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field">
+  <class name="se.citerus.dddsample.domain.model.cargo.Cargo" table="Cargo">
+
+    <id name="id" column="id">
+      <generator class="org.hibernate.id.IdentityGenerator"/>
+    </id>
+
+    <many-to-one name="origin" column="origin_id" not-null="false" cascade="none" update="false" foreign-key="origin_fk"/>
+
+    <property name="misdirected" column="is_misdirected" not-null="true"/>
+
+    <property name="routingStatus" column="routing_status" not-null="true">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
+        <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+      </type>
+    </property>
+
+    <component name="trackingId" unique="true" update="false">
+      <property name="id" column="tracking_id"/>
+    </component>
+
+    <component name="delivery" lazy="true">
+      <property name="transportStatus" column="transport_status" not-null="true">
+        <type name="org.hibernate.type.EnumType">
+          <param name="enumClass">se.citerus.dddsample.domain.model.cargo.TransportStatus</param>
+          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+        </type>
+      </property>
+      <many-to-one name="currentVoyage" column="current_voyage_id" not-null="false" cascade="none" foreign-key="current_voyage_fk"/>
+      <many-to-one name="lastKnownLocation" column="last_known_location_id" not-null="false" cascade="none" foreign-key="last_known_location_fk"/>
+      <many-to-one name="lastEvent" column="last_event_id" not-null="false" cascade="none" foreign-key="last_event_fk"/>
+    </component>
+
+    <component name="routeSpecification">
+      <many-to-one name="origin" column="spec_origin_id" cascade="none" update="false" foreign-key="spec_origin_fk"/>
+      <many-to-one name="destination" column="spec_destination_id" cascade="none" foreign-key="spec_destination_fk"/>
+      <property name="arrivalDeadline" column="spec_arrival_deadline" not-null="true"/>
+    </component>
+
+    <component name="itinerary">
+      <list name="legs" lazy="true" cascade="all">
+        <key column="cargo_id" foreign-key="itinerary_fk"/>
+        <index column="leg_index"/>
+        <one-to-many class="se.citerus.dddsample.domain.model.cargo.Leg"/>
+      </list>
+    </component>
+
+  </class>
+</hibernate-mapping>

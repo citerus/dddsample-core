@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <!-- Persistence - database, Hibernate, transactions, repository implementations -->
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="classpath:/jdbc.properties"/>
+  </bean>
+
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="url" value="${hibernate.connection.url}"/>
+    <property name="driverClassName" value="${hibernate.connection.driver_class}"/>
+    <property name="username" value="${hibernate.connection.username}"/>
+    <property name="password" value="${hibernate.connection.password}"/>
+    <property name="initialSize" value="4"/>
+    <property name="defaultAutoCommit" value="false"/>
+  </bean>
+
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="configLocation" value="classpath:/hibernate.cfg.xml"/>
+  </bean>
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+
+  <bean id="cargoRepository" class="se.citerus.dddsample.infrastructure.persistence.hibernate.CargoRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="handlingEventRepository"
+        class="se.citerus.dddsample.infrastructure.persistence.hibernate.HandlingEventRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="voyageRepository"
+        class="se.citerus.dddsample.infrastructure.persistence.hibernate.VoyageRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="locationRepository"
+        class="se.citerus.dddsample.infrastructure.persistence.hibernate.LocationRepositoryHibernate">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+</beans>
