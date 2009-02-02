@@ -60,7 +60,8 @@ public class Delivery implements ValueObject<Delivery> {
     Validate.notNull(handlingEvents, "Handling events are required");
     
     final List<HandlingEvent> eventsByCompletionTime =
-      new ArrayList<HandlingEvent>(new HashSet<HandlingEvent>(handlingEvents));
+      new ArrayList<HandlingEvent>(
+        new HashSet<HandlingEvent>(handlingEvents));
     sort(eventsByCompletionTime, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
 
     final Delivery delivery = new Delivery();

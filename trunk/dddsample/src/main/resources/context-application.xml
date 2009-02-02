@@ -10,7 +10,7 @@
     <constructor-arg ref="routingService"/>
   </bean>
 
-  <bean id="trackingService" class="se.citerus.dddsample.application.impl.TrackingServiceImpl">
+  <bean id="cargoInspectionService" class="se.citerus.dddsample.application.impl.CargoInspectionServiceImpl">
     <constructor-arg ref="cargoRepository"/>
     <constructor-arg ref="applicationEvents"/>
     <constructor-arg ref="handlingEventRepository"/>

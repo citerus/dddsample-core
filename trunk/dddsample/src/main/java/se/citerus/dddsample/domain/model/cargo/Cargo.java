@@ -57,7 +57,7 @@ public class Cargo implements Entity<Cargo> {
     this.trackingId = trackingId;
     this.origin = origin;
     this.routeSpecification = routeSpecification;
-    updateStatus(Collections.<HandlingEvent>emptyList());
+    deriveStatusFromHandling(Collections.<HandlingEvent>emptyList());
   }
 
   /**
@@ -103,11 +103,11 @@ public class Cargo implements Entity<Cargo> {
    * @param routeSpecification route specification.
    */
   public void specifyNewRoute(final RouteSpecification routeSpecification) {
-    Validate.notNull(routeSpecification);
+    Validate.notNull(routeSpecification, "Route specification is required");
 
     this.routeSpecification = routeSpecification;
     // Handling consistency within the Cargo aggregate synchronously
-    updateRoutingStatus();
+    this.routingStatus = deriveRoutingStatus();
   }
 
   /**
@@ -120,8 +120,8 @@ public class Cargo implements Entity<Cargo> {
 
     this.itinerary = itinerary;
     // Handling consistency within the Cargo aggregate synchronously
-    updateRoutingStatus();
-    updateIsMisdirected();
+    this.routingStatus = deriveRoutingStatus();
+    this.misdirected = deriveMisdirectionStatus();
   }
 
   /**
@@ -139,12 +139,12 @@ public class Cargo implements Entity<Cargo> {
     return misdirected;
   }
 
-  private void updateIsMisdirected() {
+  private boolean deriveMisdirectionStatus() {
     final HandlingEvent lastEvent = delivery().lastEvent();
     if (lastEvent == null) {
-      misdirected = false;
+      return false;
     } else {
-      misdirected = !itinerary().isExpected(lastEvent);
+      return !itinerary().isExpected(lastEvent);
     }
   }
 
@@ -158,15 +158,16 @@ public class Cargo implements Entity<Cargo> {
 
   /**
    * Updates the routing status.
+   * @return current routing status
    */
-  private void updateRoutingStatus() {
+  private RoutingStatus deriveRoutingStatus() {
     if (itinerary == null) {
-      routingStatus = NOT_ROUTED;
+      return NOT_ROUTED;
     } else {
       if (routeSpecification.isSatisfiedBy(itinerary)) {
-        routingStatus = ROUTED;
+        return ROUTED;
       } else {
-        routingStatus = MISROUTED;
+        return MISROUTED;
       }
     }
   }
@@ -193,13 +194,15 @@ public class Cargo implements Entity<Cargo> {
    * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
    * but changes to the delivery history (when a cargo is handled) cause the status update
    * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
-   * @param handlingEvents
+   *
+   * @param deliveryHistory all handling events for this cargo
    */
-  public void updateStatus(final List<HandlingEvent> handlingEvents) {
-    // Delivery is a value object, so we can simply discard the old one and replace with a new
-    delivery = Delivery.derivedFrom(handlingEvents);
-    updateRoutingStatus();
-    updateIsMisdirected();
+  public void deriveStatusFromHandling(final List<HandlingEvent> deliveryHistory) {
+    // Delivery is a value object, so we can simply discard the old one
+    // and replace with a new
+    this.delivery = Delivery.derivedFrom(deliveryHistory);
+    this.routingStatus = deriveRoutingStatus();
+    this.misdirected = deriveMisdirectionStatus();
   }
 
   @Override
@@ -214,9 +217,9 @@ public class Cargo implements Entity<Cargo> {
    */
   @Override
   public boolean equals(final Object object) {
-    if (!(object instanceof Cargo)) {
-      return false;
-    }
+    if (this == object) return true;
+    if (object == null || getClass() != object.getClass()) return false;
+
     final Cargo other = (Cargo) object;
     return sameIdentityAs(other);
   }

@@ -6,10 +6,6 @@ import javax.jws.WebService;
 /**
  * Web service endpoint for handling report submissions.
  *
- * TODO
- * decide an explicit SD role for this service (downstream of feed provider or open host)
- * and then document that role here.
- *
  */
 @WebService
 public interface HandlingReportService {
