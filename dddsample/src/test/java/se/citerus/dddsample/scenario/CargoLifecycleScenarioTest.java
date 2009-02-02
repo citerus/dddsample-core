@@ -3,8 +3,8 @@ package se.citerus.dddsample.scenario;
 import junit.framework.TestCase;
 import se.citerus.dddsample.application.*;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
+import se.citerus.dddsample.application.impl.CargoInspectionServiceImpl;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
-import se.citerus.dddsample.application.impl.TrackingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.*;
 import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.*;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
@@ -55,7 +55,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
    */
   BookingService bookingService;
   HandlingEventService handlingEventService;
-  TrackingService trackingService;
+  CargoInspectionService cargoInspectionService;
 
   /**
    * This factory is part of the handling aggregate and belongs to
@@ -259,7 +259,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     voyageRepository = new VoyageRepositoryInMem();
 
     // Actual factories and application services, wired with stubbed or in-memory infrastructure
-    trackingService = new TrackingServiceImpl(applicationEvents, cargoRepository, handlingEventRepository);
+    cargoInspectionService = new CargoInspectionServiceImpl(applicationEvents, cargoRepository, handlingEventRepository);
     handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
     bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
@@ -269,7 +269,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     @Override
     public void cargoWasHandled(HandlingEvent event) {
       System.out.println("EVENT: cargo was handled: " + event);
-      trackingService.inspectCargo(event.cargo().trackingId());
+      cargoInspectionService.inspectCargo(event.cargo().trackingId());
     }
 
     @Override

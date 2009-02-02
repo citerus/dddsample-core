@@ -3,9 +3,9 @@ package se.citerus.dddsample.application;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
 /**
- * Cargo tracking service.
+ * Cargo inspection service.
  */
-public interface TrackingService {
+public interface CargoInspectionService {
 
   /**
    * Inspect cargo and send relevant notifications to interested parties,
@@ -14,8 +14,6 @@ public interface TrackingService {
    *
    * @param trackingId cargo tracking id
    */
-  // TODO rename! The method updates the delivery status on handling
-  // TODO [Cargo]InspectionService is fine 
   void inspectCargo(TrackingId trackingId);
 
 }

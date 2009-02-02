@@ -2,7 +2,7 @@ package se.citerus.dddsample.infrastructure.messaging.jms;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import se.citerus.dddsample.application.TrackingService;
+import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
 import javax.jms.Message;
@@ -18,7 +18,7 @@ import javax.jms.TextMessage;
  */
 public class CargoHandledConsumer implements MessageListener {
 
-  private TrackingService trackingService;
+  private CargoInspectionService cargoInspectionService;
   private final Log logger = LogFactory.getLog(getClass());
 
   @Override  
@@ -27,13 +27,13 @@ public class CargoHandledConsumer implements MessageListener {
       final TextMessage textMessage = (TextMessage) message;
       final String trackingidString = textMessage.getText();
       
-      trackingService.inspectCargo(new TrackingId(trackingidString));
+      cargoInspectionService.inspectCargo(new TrackingId(trackingidString));
     } catch (Exception e) {
       logger.error(e, e);
     }
   }
 
-  public void setTrackingService(TrackingService trackingService) {
-    this.trackingService = trackingService;
+  public void setCargoInspectionService(CargoInspectionService cargoInspectionService) {
+    this.cargoInspectionService = cargoInspectionService;
   }
 }
