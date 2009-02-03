@@ -11,7 +11,6 @@ import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.*;
 import static se.citerus.dddsample.domain.model.carrier.Voyage.NONE;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
-import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
@@ -21,6 +20,7 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
+import se.citerus.dddsample.infrastructure.messaging.stub.SynchronousApplicationEventsStub;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
@@ -297,7 +297,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     };
 
 
-    applicationEvents = new SynchronousApplicationEventsStub();
+    applicationEvents = new SynchronousApplicationEventsStub(cargoInspectionService);
 
     // Stub
     // TODO move functionality to in-mem impl
@@ -331,31 +331,4 @@ public class CargoLifecycleScenarioTest extends TestCase {
     bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
   }
 
-  private class SynchronousApplicationEventsStub implements ApplicationEvents {
-    @Override
-    public void cargoWasHandled(HandlingEvent event) {
-      System.out.println("EVENT: cargo was handled: " + event);
-      cargoInspectionService.inspectCargo(event.cargo().trackingId());
-    }
-
-    @Override
-    public void cargoWasMisdirected(Cargo cargo) {
-      System.out.println("EVENT: cargo was misdirected");
-    }
-
-    @Override
-    public void cargoHasArrived(Cargo cargo) {
-      System.out.println("EVENT: cargo has arrived: " + cargo.trackingId().idString());
-    }
-
-    @Override
-    public void rejectedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem) {
-      System.out.println("EVENT: rejected handling event registration attempt: " + problem);
-    }
-
-    @Override
-    public void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt) {
-      System.out.println("EVENT: received handling event registration attempt");
-    }
-  }
 }
