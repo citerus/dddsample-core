@@ -22,7 +22,7 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      classpath:com/partner/pathfinder/internal/applicationContext.xml
+      classpath:/com/pathfinder/internal/applicationContext.xml
 
       classpath:context-infrastructure.xml
       classpath:context-application.xml
@@ -49,8 +49,8 @@
     <servlet-name>booking</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>
-      <param-name></param-name>
-      <param-value></param-value>
+      <param-name>a</param-name>
+      <param-value>b</param-value>
     </init-param>
   </servlet>
 
