@@ -1,8 +1,8 @@
 package se.citerus.dddsample.infrastructure.routing;
 
-import com.partner.pathfinder.api.GraphTraversalService;
-import com.partner.pathfinder.api.TransitEdge;
-import com.partner.pathfinder.api.TransitPath;
+import com.pathfinder.api.GraphTraversalService;
+import com.pathfinder.api.TransitEdge;
+import com.pathfinder.api.TransitPath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;

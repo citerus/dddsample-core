@@ -1,4 +1,4 @@
-package com.partner.pathfinder.api;
+package com.pathfinder.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,8 +1,8 @@
-package com.partner.pathfinder.internal;
+package com.pathfinder.internal;
 
-import com.partner.pathfinder.api.GraphTraversalService;
-import com.partner.pathfinder.api.TransitEdge;
-import com.partner.pathfinder.api.TransitPath;
+import com.pathfinder.api.GraphTraversalService;
+import com.pathfinder.api.TransitEdge;
+import com.pathfinder.api.TransitPath;
 
 import java.util.*;
 

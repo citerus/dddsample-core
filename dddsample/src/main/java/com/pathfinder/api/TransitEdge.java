@@ -1,4 +1,4 @@
-package com.partner.pathfinder.api;
+package com.pathfinder.api;
 
 import java.io.Serializable;
 import java.util.Date;
