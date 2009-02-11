@@ -11,7 +11,7 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
   CargoInspectionService cargoInspectionService;
 
-  public SynchronousApplicationEventsStub(CargoInspectionService cargoInspectionService) {
+  public void setCargoInspectionService(CargoInspectionService cargoInspectionService) {
     this.cargoInspectionService = cargoInspectionService;
   }
 

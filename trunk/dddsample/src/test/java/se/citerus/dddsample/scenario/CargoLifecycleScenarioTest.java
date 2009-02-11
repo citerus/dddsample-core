@@ -297,7 +297,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     };
 
 
-    applicationEvents = new SynchronousApplicationEventsStub(cargoInspectionService);
+    applicationEvents = new SynchronousApplicationEventsStub();
 
     // Stub
     // TODO move functionality to in-mem impl
@@ -329,6 +329,9 @@ public class CargoLifecycleScenarioTest extends TestCase {
     handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
     bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
+
+    // Stub
+    ((SynchronousApplicationEventsStub) applicationEvents).setCargoInspectionService(cargoInspectionService);
   }
 
 }
