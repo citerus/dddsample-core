@@ -1,8 +1,8 @@
 package se.citerus.dddsample.infrastructure.routing;
 
-import com.partner.pathfinder.api.GraphTraversalService;
-import com.partner.pathfinder.internal.GraphDAO;
-import com.partner.pathfinder.internal.GraphTraversalServiceImpl;
+import com.pathfinder.api.GraphTraversalService;
+import com.pathfinder.internal.GraphDAO;
+import com.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.*;
@@ -42,7 +42,7 @@ public class ExternalRoutingServiceTest extends TestCase {
     externalRoutingService.setGraphTraversalService(graphTraversalService);
   }
 
-  // TODO this test belongs in com.partner.pathfinder
+  // TODO this test belongs in com.pathfinder
 
   public void testCalculatePossibleRoutes() {
     TrackingId trackingId = new TrackingId("ABC");
