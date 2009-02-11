@@ -1,14 +1,16 @@
 package se.citerus.registerapp;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import com.aggregator.HandlingReport;
+import com.aggregator.HandlingReportErrors_Exception;
+import com.aggregator.HandlingReportService;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.debug.FormDebugPanel;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.FormLayout;
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import se.citerus.registerapp.validation.FormValidationDecorator;
+import se.citerus.registerapp.validation.FormValidationSwingDecorator;
+import se.citerus.registerapp.validation.MandatoryTextFieldValidator;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -16,21 +18,12 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
 import javax.swing.text.DefaultFormatter;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import se.citerus.registerapp.service.HandlingEventService;
-import se.citerus.registerapp.validation.FormValidationDecorator;
-import se.citerus.registerapp.validation.FormValidationSwingDecorator;
-import se.citerus.registerapp.validation.MandatoryTextFieldValidator;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
-
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.debug.FormDebugPanel;
-import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.FormLayout;
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class RegisterApp {
   private static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
@@ -61,17 +54,17 @@ public class RegisterApp {
             final GregorianCalendar completionTime = new GregorianCalendar();
             completionTime.setTime((Date) completionTimeField.getValue());
             report.setCompletionTime(new XMLGregorianCalendarImpl(completionTime));
-            report.setTrackingIds(new String[] {getStringValue(trackingIdField)});
+            report.getTrackingIds().add(getStringValue(trackingIdField));
             report.setType(getStringValue(eventTypeField).toUpperCase());
             report.setUnLocode(getStringValue(locationField));
             report.setVoyageNumber(getStringValue(carrierMovementField));
 
             handlingReportService.submitReport(report);
             clearForm();
-        } catch (HandlingReportErrors handlingReportErrors) {
-            System.err.println(handlingReportErrors.getMessage());
+        } catch (HandlingReportErrors_Exception e) {
+            e.printStackTrace();
         }
-  }
+    }
 
   private String getStringValue(JComboBox comboBox) {
       Object value = comboBox.getSelectedItem();
