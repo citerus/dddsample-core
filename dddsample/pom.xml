@@ -116,7 +116,7 @@
         </configuration>
       </plugin>
 
-      <!-- Generates WSDL from Java -->
+      <!-- Generates WSDL from Java
       <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-java2ws-plugin</artifactId>
@@ -142,6 +142,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
 
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -156,7 +157,7 @@
             <configuration>
               <classifier>ws-client</classifier>
               <includes>
-                <include>**/se/citerus/dddsample/interfaces/handling/ws/*.class</include>
+                <include>**/com/aggregator/*.class</include>
               </includes>
               <archive>
                 <addMavenDescriptor>false</addMavenDescriptor>

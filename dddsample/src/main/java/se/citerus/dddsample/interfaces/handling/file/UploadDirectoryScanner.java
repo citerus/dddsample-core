@@ -11,7 +11,6 @@ import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReportErrors;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,7 +74,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     );
   }
 
-  private void parseLine(final String line) throws HandlingReportErrors {
+  private void parseLine(final String line) throws Exception {
     final String[] columns = line.split("\t");
     if (columns.length == 5) {
       queueAttempt(columns[0], columns[1], columns[2], columns[3], columns[4]);
@@ -86,7 +85,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     }
   }
 
-  private void queueAttempt(String completionTimeStr, String trackingIdStr, String voyageNumberStr, String unLocodeStr, String eventTypeStr) throws HandlingReportErrors {
+  private void queueAttempt(String completionTimeStr, String trackingIdStr, String voyageNumberStr, String unLocodeStr, String eventTypeStr) throws Exception {
     final List<String> errors = new ArrayList<String>();
 
     final Date date = parseDate(completionTimeStr, errors);
@@ -99,7 +98,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
       final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), date, trackingId, voyageNumber, eventType, unLocode);
       applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
     } else {
-      throw new HandlingReportErrors(errors);
+      throw new Exception(errors.toString());
     }
   }
 

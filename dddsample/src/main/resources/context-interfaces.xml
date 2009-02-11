@@ -17,7 +17,7 @@
 
   <jaxws:endpoint id="jax-ws.http" implementor="#handlingReportService" address="/RegisterEvent"/>
 
-  <bean id="handlingReportService" class="se.citerus.dddsample.interfaces.handling.ws.impl.HandlingReportServiceImpl">
+  <bean id="handlingReportService" class="se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl">
     <property name="applicationEvents" ref="applicationEvents"/>
   </bean>
 
