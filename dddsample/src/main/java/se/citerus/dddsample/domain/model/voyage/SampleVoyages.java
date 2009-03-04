@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.model.carrier;
+package se.citerus.dddsample.domain.model.voyage;
 
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.domain.model.location.Location;

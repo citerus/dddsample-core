@@ -2,9 +2,9 @@ package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.cargo.*;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 

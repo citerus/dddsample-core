@@ -6,12 +6,12 @@ import com.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.*;
-import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
-import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
-import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
 import java.util.Arrays;

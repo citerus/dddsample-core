@@ -2,10 +2,6 @@ package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
 import se.citerus.dddsample.application.util.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.cargo.*;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM004;
-import se.citerus.dddsample.domain.model.carrier.Voyage;
-import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
-import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
@@ -13,6 +9,10 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import java.util.Arrays;
 import java.util.Date;

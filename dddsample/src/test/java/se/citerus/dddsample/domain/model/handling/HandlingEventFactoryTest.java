@@ -6,14 +6,14 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
-import se.citerus.dddsample.domain.model.carrier.Voyage;
-import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
-import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 

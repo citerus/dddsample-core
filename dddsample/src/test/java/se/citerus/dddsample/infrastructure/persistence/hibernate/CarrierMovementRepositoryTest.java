@@ -1,8 +1,8 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
-import se.citerus.dddsample.domain.model.carrier.Voyage;
-import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
-import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 public class CarrierMovementRepositoryTest extends AbstractRepositoryTest {
 

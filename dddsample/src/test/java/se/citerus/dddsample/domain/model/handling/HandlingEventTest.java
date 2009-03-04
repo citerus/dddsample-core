@@ -4,11 +4,11 @@ import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.carrier.SampleVoyages;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM003;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM004;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
 import static java.util.Arrays.asList;
 import java.util.Date;

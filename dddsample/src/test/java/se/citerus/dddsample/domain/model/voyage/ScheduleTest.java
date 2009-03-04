@@ -1,14 +1,10 @@
-package se.citerus.dddsample.domain.model.carrier;
+package se.citerus.dddsample.domain.model.voyage;
 
 import junit.framework.TestCase;
 
-public class VoyageNumberTest extends TestCase {
+public class ScheduleTest extends TestCase {
 
-    public void testEquals() throws Exception {
-        //TODO: Test goes here...
-    }
-
-    public void testHashCode() throws Exception {
+    public void testCarrierMovements() throws Exception {
         //TODO: Test goes here...
     }
 
@@ -20,11 +16,11 @@ public class VoyageNumberTest extends TestCase {
         //TODO: Test goes here...
     }
 
-    public void testToString() throws Exception {
+    public void testEquals() throws Exception {
         //TODO: Test goes here...
     }
 
-    public void testIdString() throws Exception {
+    public void testHashCode() throws Exception {
         //TODO: Test goes here...
     }
 
