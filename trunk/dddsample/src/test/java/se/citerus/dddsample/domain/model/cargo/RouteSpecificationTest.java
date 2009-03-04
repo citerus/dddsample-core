@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.DateTestUtil.toDate;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;

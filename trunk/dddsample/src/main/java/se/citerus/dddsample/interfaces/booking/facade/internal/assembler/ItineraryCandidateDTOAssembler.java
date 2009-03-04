@@ -8,8 +8,8 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,24 +20,24 @@ import java.util.List;
  */
 public class ItineraryCandidateDTOAssembler {
   
-  public ItineraryCandidateDTO toDTO(final Itinerary itinerary) {
+  public RouteCandidateDTO toDTO(final Itinerary itinerary) {
     final List<LegDTO> legDTOs = new ArrayList<LegDTO>(itinerary.legs().size());
     for (Leg leg : itinerary.legs()) {
       legDTOs.add(toLegDTO(leg));
     }
-    return new ItineraryCandidateDTO(legDTOs);
+    return new RouteCandidateDTO(legDTOs);
   }
 
   protected LegDTO toLegDTO(final Leg leg) {
     final VoyageNumber voyageNumber = leg.voyage().voyageNumber();
     final UnLocode from = leg.loadLocation().unLocode();
     final UnLocode to = leg.unloadLocation().unLocode();
-    return new LegDTO(voyageNumber.idString(), from.idString(), to.idString());
+    return new LegDTO(voyageNumber.idString(), from.idString(), to.idString(), leg.loadTime(), leg.unloadTime());
   }
 
-  public Itinerary fromDTO(ItineraryCandidateDTO itineraryCandidateDTO, VoyageRepository voyageRepository, LocationRepository locationRepository) {
-    final List<Leg> legs = new ArrayList<Leg>(itineraryCandidateDTO.getLegs().size());
-    for (LegDTO legDTO : itineraryCandidateDTO.getLegs()) {
+  public Itinerary fromDTO(RouteCandidateDTO routeCandidateDTO, VoyageRepository voyageRepository, LocationRepository locationRepository) {
+    final List<Leg> legs = new ArrayList<Leg>(routeCandidateDTO.getLegs().size());
+    for (LegDTO legDTO : routeCandidateDTO.getLegs()) {
       final VoyageNumber voyageNumber = new VoyageNumber(legDTO.getVoyageNumber());
       final Voyage voyage = voyageRepository.find(voyageNumber);
       final Location from = locationRepository.find(new UnLocode(legDTO.getFrom()));

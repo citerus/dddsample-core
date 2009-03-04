@@ -82,5 +82,23 @@ public final class BookingServiceImpl implements BookingService {
 
     logger.info("Assigned cargo " + trackingId + " to new route");
   }
-  
+
+  @Override
+  @Transactional
+  public void changeDestination(final TrackingId trackingId, final UnLocode unLocode) {
+    Validate.notNull(trackingId);
+    Validate.notNull(unLocode);
+
+    final Cargo cargo = cargoRepository.find(trackingId);
+    final Location newDestination = locationRepository.find(unLocode);
+
+    final RouteSpecification routeSpecification = new RouteSpecification(
+      cargo.origin(), newDestination, cargo.routeSpecification().arrivalDeadline()
+    );
+    cargo.specifyNewRoute(routeSpecification);
+
+    cargoRepository.store(cargo);
+    logger.info("Changed destination for cargo " + trackingId + " to " + routeSpecification.destination());
+  }
+
 }

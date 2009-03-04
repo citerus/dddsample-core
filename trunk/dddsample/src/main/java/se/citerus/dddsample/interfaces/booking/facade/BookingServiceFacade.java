@@ -1,8 +1,8 @@
 package se.citerus.dddsample.interfaces.booking.facade;
 
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
-import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,9 +19,11 @@ public interface BookingServiceFacade extends Remote {
 
   CargoRoutingDTO loadCargoForRouting(String trackingId) throws RemoteException;
 
-  void assignCargoToRoute(String trackingId, ItineraryCandidateDTO itinerary) throws RemoteException;
+  void assignCargoToRoute(String trackingId, RouteCandidateDTO route) throws RemoteException;
 
-  List<ItineraryCandidateDTO> requestPossibleRoutesForCargo(String trackingId) throws RemoteException;
+  void changeDestination(String trackingId, String destinationUnLocode) throws RemoteException;
+
+  List<RouteCandidateDTO> requestPossibleRoutesForCargo(String trackingId) throws RemoteException;
 
   List<LocationDTO> listShippingLocations() throws RemoteException;
 

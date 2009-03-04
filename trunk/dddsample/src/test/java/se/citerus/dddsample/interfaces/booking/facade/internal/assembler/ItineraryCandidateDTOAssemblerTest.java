@@ -11,8 +11,8 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
-import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
       )
     );
 
-    final ItineraryCandidateDTO dto = assembler.toDTO(itinerary);
+    final RouteCandidateDTO dto = assembler.toDTO(itinerary);
 
     assertEquals(2, dto.getLegs().size());
     LegDTO legDTO = dto.getLegs().get(0);
@@ -52,8 +52,8 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     final ItineraryCandidateDTOAssembler assembler = new ItineraryCandidateDTOAssembler();
 
     final List<LegDTO> legs = new ArrayList<LegDTO>();
-    legs.add(new LegDTO("CM001", "AAAAA", "BBBBB"));
-    legs.add(new LegDTO("CM001", "BBBBB", "CCCCC"));
+    legs.add(new LegDTO("CM001", "AAAAA", "BBBBB", new Date(), new Date()));
+    legs.add(new LegDTO("CM001", "BBBBB", "CCCCC", new Date(), new Date()));
 
     final LocationRepository locationRepository = createMock(LocationRepository.class);
     expect(locationRepository.find(new UnLocode("AAAAA"))).andReturn(HONGKONG);
@@ -66,7 +66,7 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
 
 
     // Tested call
-    final Itinerary itinerary = assembler.fromDTO(new ItineraryCandidateDTO(legs), voyageRepository, locationRepository);
+    final Itinerary itinerary = assembler.fromDTO(new RouteCandidateDTO(legs), voyageRepository, locationRepository);
 
     
     assertNotNull(itinerary);

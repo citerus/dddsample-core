@@ -3,9 +3,9 @@ package se.citerus.dddsample.interfaces.booking.web;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
-import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,71 +28,72 @@ public final class CargoAdminController extends MultiActionController {
 
   private BookingServiceFacade bookingServiceFacade;
 
-  public Map registrationForm(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-    final Map<String, Object> map = new HashMap<String, Object>();
-    final List<LocationDTO> dtoList = bookingServiceFacade.listShippingLocations();
+  public Map registrationForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    Map<String, Object> map = new HashMap<String, Object>();
+    List<LocationDTO> dtoList = bookingServiceFacade.listShippingLocations();
 
-    final List<String> unLocodeStrings = new ArrayList<String>();
+    List<String> unLocodeStrings = new ArrayList<String>();
 
     for (LocationDTO dto : dtoList) {
       unLocodeStrings.add(dto.getUnLocode());
     }
 
     map.put("unlocodes", unLocodeStrings);
+    map.put("locations", dtoList);
     return map;
   }
 
-  public void register(final HttpServletRequest request, final HttpServletResponse response,
-                       final RegistrationCommand command) throws Exception {
-    final Date arrivalDeadline = new SimpleDateFormat("M/dd/yyyy").parse(command.getArrivalDeadline());
-    final String trackingId = bookingServiceFacade.bookNewCargo(
+  public void register(HttpServletRequest request, HttpServletResponse response,
+                       RegistrationCommand command) throws Exception {
+    Date arrivalDeadline = new SimpleDateFormat("M/dd/yyyy").parse(command.getArrivalDeadline());
+    String trackingId = bookingServiceFacade.bookNewCargo(
       command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline
     );
     response.sendRedirect("show.html?trackingId=" + trackingId);
   }
 
   public Map list(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    final Map<String, Object> map = new HashMap<String, Object>();
-    final List<CargoRoutingDTO> cargoList = bookingServiceFacade.listAllCargos();
+    Map<String, Object> map = new HashMap<String, Object>();
+    List<CargoRoutingDTO> cargoList = bookingServiceFacade.listAllCargos();
 
     map.put("cargoList", cargoList);
     return map;
   }
 
-  public Map show(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-    final Map<String, Object> map = new HashMap<String, Object>();
-    final String trackingId = request.getParameter("trackingId");
-    final CargoRoutingDTO dto = bookingServiceFacade.loadCargoForRouting(trackingId);
+  public Map show(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    Map<String, Object> map = new HashMap<String, Object>();
+    String trackingId = request.getParameter("trackingId");
+    CargoRoutingDTO dto = bookingServiceFacade.loadCargoForRouting(trackingId);
     map.put("cargo", dto);
     return map;
   }
 
-  public Map selectItinerary(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-    final Map<String, Object> map = new HashMap<String, Object>();
-    final String trackingId = request.getParameter("trackingId");
-    final List<ItineraryCandidateDTO> itineraryCandidates = bookingServiceFacade.requestPossibleRoutesForCargo(trackingId);
-    map.put("itineraryCandidates", itineraryCandidates);
+  public Map selectItinerary(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    Map<String, Object> map = new HashMap<String, Object>();
+    String trackingId = request.getParameter("trackingId");
 
+    List<RouteCandidateDTO> routeCandidates = bookingServiceFacade.requestPossibleRoutesForCargo(trackingId);
+    map.put("routeCandidates", routeCandidates);
 
-    final CargoRoutingDTO cargoDTO = bookingServiceFacade.loadCargoForRouting(trackingId);
-    map.put("origin", cargoDTO.getOrigin());
-    map.put("destination", cargoDTO.getFinalDestination());
-    map.put("trackingId", trackingId);
-    
+    CargoRoutingDTO cargoDTO = bookingServiceFacade.loadCargoForRouting(trackingId);
+    map.put("cargo", cargoDTO);
+
     return map;
   }
 
-  public void assignItinerary(final HttpServletRequest request, final HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
-    final List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
+  public void assignItinerary(HttpServletRequest request, HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
+    List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
     for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
-      legDTOs.add(new LegDTO(leg.getVoyageNumber(), leg.getFromUnLocode(), leg.getToUnLocode()));
+      // TODO actual dates
+      legDTOs.add(new LegDTO(leg.getVoyageNumber(), leg.getFromUnLocode(), leg.getToUnLocode(), new Date(), new Date()));
     }
 
-    final ItineraryCandidateDTO selectedItinerary = new ItineraryCandidateDTO(legDTOs);
+    RouteCandidateDTO selectedRoute = new RouteCandidateDTO(legDTOs);
 
-    bookingServiceFacade.assignCargoToRoute(command.getTrackingId(), selectedItinerary);
+    bookingServiceFacade.assignCargoToRoute(command.getTrackingId(), selectedRoute);
 
-    response.sendRedirect("list.html");
+    response.sendRedirect("show.html?trackingId=" + command.getTrackingId());
+    //response.sendRedirect("list.html");
   }
 
   public void setBookingServiceFacade(BookingServiceFacade bookingServiceFacade) {

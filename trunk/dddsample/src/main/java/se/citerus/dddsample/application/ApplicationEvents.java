@@ -1,7 +1,6 @@
 package se.citerus.dddsample.application;
 
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
 /**
@@ -40,13 +39,5 @@ public interface ApplicationEvents {
    * @param attempt handling event registration attempt
    */
   void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt);
-
-  /**
-   * A handling event regitration attempt is rejected for a certain reason.
-   *
-   * @param attempt handling event registration attempt
-   * @param cause cause of rejection
-   */
-  void rejectedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException cause);
 
 }

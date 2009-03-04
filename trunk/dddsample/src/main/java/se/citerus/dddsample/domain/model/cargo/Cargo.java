@@ -8,6 +8,7 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +48,9 @@ public class Cargo implements Entity<Cargo> {
   private RouteSpecification routeSpecification;
   private RoutingStatus routingStatus;
   private boolean misdirected;
+  private Date eta;
+  
+  private static final Date ETA_UNKOWN = null;
 
   // TODO origin can be taken from route spec on creation, even if the origin never changes
   public Cargo(final TrackingId trackingId, final Location origin, final RouteSpecification routeSpecification) {
@@ -122,6 +126,7 @@ public class Cargo implements Entity<Cargo> {
     // Handling consistency within the Cargo aggregate synchronously
     this.routingStatus = deriveRoutingStatus();
     this.misdirected = deriveMisdirectionStatus();
+    this.eta = deriveEta();
   }
 
   /**
@@ -139,16 +144,6 @@ public class Cargo implements Entity<Cargo> {
     return misdirected;
   }
 
-  private boolean deriveMisdirectionStatus() {
-    final HandlingEvent lastEvent = delivery().lastEvent();
-    if (lastEvent == null) {
-      return false;
-    } else {
-      return !itinerary().isExpected(lastEvent);
-    }
-  }
-
-
   /**
    * @return Routing status.
    */
@@ -157,29 +152,20 @@ public class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * Updates the routing status.
-   * @return current routing status
-   */
-  private RoutingStatus deriveRoutingStatus() {
-    if (itinerary == null) {
-      return NOT_ROUTED;
-    } else {
-      if (routeSpecification.isSatisfiedBy(itinerary)) {
-        return ROUTED;
-      } else {
-        return MISROUTED;
-      }
-    }
-  }
-
-  /**
    * @return True if the cargo has been unloaded at the final destination.
    */
   public boolean isUnloadedAtDestination() {
     final HandlingEvent lastEvent = delivery.lastEvent();
     return lastEvent != null &&
-           HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.type()) &&
-           routeSpecification.destination().sameIdentityAs(lastEvent.location());
+      HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.type()) &&
+      routeSpecification.destination().sameIdentityAs(lastEvent.location());
+  }
+
+  /**
+   * @return estimated time of arrival
+   */
+  public Date estimatedTimeOfArrival() {
+    return eta;
   }
 
   /**
@@ -203,8 +189,55 @@ public class Cargo implements Entity<Cargo> {
     this.delivery = Delivery.derivedFrom(deliveryHistory);
     this.routingStatus = deriveRoutingStatus();
     this.misdirected = deriveMisdirectionStatus();
+    this.eta = deriveEta();
   }
 
+  /**
+   *
+   * @return true if this cargo is misdirected.
+   */
+  private boolean deriveMisdirectionStatus() {
+    final HandlingEvent lastEvent = delivery().lastEvent();
+    if (lastEvent == null) {
+      return false;
+    } else {
+      return !itinerary().isExpected(lastEvent);
+    }
+  }
+
+  /**
+   * @return current routing status
+   */
+  private RoutingStatus deriveRoutingStatus() {
+    if (itinerary == null) {
+      return NOT_ROUTED;
+    } else {
+      if (routeSpecification.isSatisfiedBy(itinerary)) {
+        return ROUTED;
+      } else {
+        return MISROUTED;
+      }
+    }
+  }
+
+  /**
+   * @return estimated time of arrival, or null if unknown
+   */
+  private Date deriveEta() {
+    if (onTrack()) {
+      return itinerary().finalArrivalDate();
+    } else {
+      return ETA_UNKOWN;
+    }
+  }
+
+  /**
+   * @return true if cargo is on track, i.e. routed and not misdirected
+   */
+  private boolean onTrack() {
+    return routingStatus().equals(ROUTED) && !misdirected;
+  }
+  
   @Override
   public boolean sameIdentityAs(final Cargo other) {
     return other != null && trackingId.sameValueAs(other.trackingId);

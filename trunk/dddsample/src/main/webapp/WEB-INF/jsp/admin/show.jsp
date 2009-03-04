@@ -13,19 +13,35 @@
       </tr>
       <tr>
         <td>Destination</td>
-        <td>${cargo.finalDestination}</td>
+        <td>
+            ${cargo.finalDestination}
+        </td>
+      </tr>
+      <tr>
+          <td></td>
+          <td>
+            <a href="">Change destination</a>    
+          </td>
+      </tr>
+      <tr>
+        <td>Arrival deadline</td>
+        <td><fmt:formatDate value="${cargo.arrivalDeadline}" pattern="yyyy-MM-dd hh:mm"/></td>
       </tr>
     </tbody>
   </table>
+  <p></p>
   <c:choose>
     <c:when test="${cargo.routed}">
-      <table>
+      <c:if test="${carg.misrouted}">
+      <p><em>Cargo is misrouted - <a href="${selectUrl}">reroute this cargo</a></em></p>    
+      </c:if>
+      <table border="1">
         <caption>Itinerary</caption>
         <thead>
           <tr>
             <td>Voyage number</td>
-            <td>From</td>
-            <td>To</td>
+            <td colspan="2">Load</td>
+            <td colspan="2">Unload</td>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +49,9 @@
             <tr>
               <td>${leg.voyageNumber}</td>
               <td>${leg.from}</td>
+              <td>(<fmt:formatDate value="${leg.loadTime}" pattern="yyyy-MM-dd hh:mm"/>)</td>
               <td>${leg.to}</td>
+              <td>(<fmt:formatDate value="${leg.unloadTime}" pattern="yyyy-MM-dd hh:mm"/>)</td>
             </tr>
           </c:forEach>
         </tbody>
@@ -44,7 +62,7 @@
         <c:url value="/admin/selectItinerary.html" var="selectUrl">
           <c:param name="trackingId" value="${cargo.trackingId}"/>
         </c:url>
-        Not routed - <a href="${selectUrl}">Route this cargo</a>
+        <strong>Not routed</strong> - <a href="${selectUrl}">Route this cargo</a>
       </p>
     </c:otherwise>
   </c:choose>
