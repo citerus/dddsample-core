@@ -32,29 +32,29 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, applicationContext, Locale.GERMAN, events);
 
     assertEquals("XYZ", adapter.getTrackingId());
-    assertEquals("CNHGH (Hangzhou)", adapter.getOrigin());
-    assertEquals("FIHEL (Helsinki)", adapter.getDestination());
-    assertEquals("In port FIHEL (Helsinki)", adapter.getStatusText());
+    assertEquals("Hangzhou", adapter.getOrigin());
+    assertEquals("Helsinki", adapter.getDestination());
+    assertEquals("In port Helsinki", adapter.getStatusText());
 
     Iterator<CargoTrackingViewAdapter.HandlingEventViewAdapter> it = adapter.getEvents().iterator();
 
     CargoTrackingViewAdapter.HandlingEventViewAdapter event = it.next();
     assertEquals("RECEIVE", event.getType());
-    assertEquals("CNHGH", event.getLocation());
+    assertEquals("Hangzhou", event.getLocation());
     assertEquals("1970-01-01 01:00", event.getTime());
     assertEquals("", event.getVoyageNumber());
     assertTrue(event.isExpected());
 
     event = it.next();
     assertEquals("LOAD", event.getType());
-    assertEquals("CNHGH", event.getLocation());
+    assertEquals("Hangzhou", event.getLocation());
     assertEquals("1970-01-01 01:00", event.getTime());
     assertEquals("CM001", event.getVoyageNumber());
     assertTrue(event.isExpected());
 
     event = it.next();
     assertEquals("UNLOAD", event.getType());
-    assertEquals("FIHEL", event.getLocation());
+    assertEquals("Helsinki", event.getLocation());
     assertEquals("1970-01-01 01:00", event.getTime());
     assertEquals("CM001", event.getVoyageNumber());
     assertTrue(event.isExpected());

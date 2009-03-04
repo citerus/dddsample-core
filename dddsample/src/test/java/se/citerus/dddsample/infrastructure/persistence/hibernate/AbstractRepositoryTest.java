@@ -7,6 +7,8 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
 import org.springframework.transaction.support.TransactionTemplate;
 import se.citerus.dddsample.application.util.SampleDataGenerator;
+import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
 import java.lang.reflect.Field;
 
@@ -14,6 +16,16 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
 
   SessionFactory sessionFactory;
   SimpleJdbcTemplate sjt;
+  HandlingEventFactory handlingEventFactory;
+  HandlingEventRepository handlingEventRepository;
+
+  public void setHandlingEventFactory(HandlingEventFactory handlingEventFactory) {
+    this.handlingEventFactory = handlingEventFactory;
+  }
+
+  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
+    this.handlingEventRepository = handlingEventRepository;
+  }
 
   protected AbstractRepositoryTest() {
     setAutowireMode(AUTOWIRE_BY_NAME);
@@ -35,11 +47,12 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
 
   @Override
   protected String[] getConfigLocations() {
-    return new String[] {"/context-infrastructure-persistence.xml"};
+    return new String[] {"/context-infrastructure-persistence.xml", "context-domain.xml"};
   }
 
   @Override
   protected void onSetUpInTransaction() throws Exception {
+    // TODO store Sample* and object instances here instead of handwritten SQL
     SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
     sjt = new SimpleJdbcTemplate(jdbcTemplate);
   }

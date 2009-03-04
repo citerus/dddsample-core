@@ -32,7 +32,16 @@ public interface BookingService {
 
   /**
    * @param itinerary itinerary describing the selected route
-   * @param trackingId tracking id
+   * @param trackingId cargo tracking id
    */
   void assignCargoToRoute(Itinerary itinerary, TrackingId trackingId);
+
+  /**
+   * Changes the destination of a cargo.
+   *
+   * @param trackingId cargo tracking id
+   * @param unLocode UN locode of new destination
+   */
+  void changeDestination(TrackingId trackingId, UnLocode unLocode);
+
 }

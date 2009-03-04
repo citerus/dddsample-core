@@ -7,7 +7,9 @@ body {
   font: 400 0.7em verdana, arial, sans-serif;
   line-height: 170%;
   color: #555;
-  background-color: orange;
+  background-color: #8599f7;
+  background-image: url("images/shade.png");
+  background-repeat: repeat-x;
 }
 
 /* Headers */
@@ -193,8 +195,8 @@ div#outer {
   height: 100%;
   text-align: center;
   background-color: white;
-  border-left: 5px dashed orange;
-  border-right: 5px dashed orange;
+  border-left: 2px solid #4223de;
+  border-right: 2px solid #4223de;
 }
 
 

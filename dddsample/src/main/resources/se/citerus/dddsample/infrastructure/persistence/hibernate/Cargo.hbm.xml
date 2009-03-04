@@ -14,7 +14,8 @@
     <many-to-one name="origin" column="origin_id" not-null="false" cascade="none" update="false" foreign-key="origin_fk"/>
 
     <property name="misdirected" column="is_misdirected" not-null="true"/>
-
+    <property name="eta" column="eta" not-null="false"/>
+    
     <property name="routingStatus" column="routing_status" not-null="true">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>

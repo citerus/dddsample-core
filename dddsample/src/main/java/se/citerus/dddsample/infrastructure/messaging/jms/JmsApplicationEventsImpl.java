@@ -7,7 +7,6 @@ import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
 import javax.jms.Destination;
@@ -56,17 +55,6 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
     jmsOperations.send(deliveredCargoQueue, new MessageCreator() {
       public Message createMessage(Session session) throws JMSException {
         return session.createTextMessage(cargo.trackingId().idString());
-      }
-    });
-  }
-
-  @Override
-  public void rejectedHandlingEventRegistrationAttempt(final HandlingEventRegistrationAttempt attempt, CannotCreateHandlingEventException problem) {
-    // TODO include error message in JMS message
-    logger.info("Rejected handling event registration attempt " + attempt + ", " + problem);
-    jmsOperations.send(rejectedRegistrationAttemptsQueue, new MessageCreator() {
-      public Message createMessage(Session session) throws JMSException {
-        return session.createObjectMessage(attempt);
       }
     });
   }

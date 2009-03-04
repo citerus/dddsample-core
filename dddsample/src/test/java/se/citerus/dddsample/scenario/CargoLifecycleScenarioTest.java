@@ -135,12 +135,13 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt attempt1 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(100), trackingId, null, RECEIVE, HONGKONG.unLocode()
     );
-    handlingEventService.registerHandlingEvent(attempt1);
+    handlingEventService.registerHandlingEvent(attempt1.getCompletionTime(), attempt1.getTrackingId(), attempt1.getVoyageNumber(), attempt1.getUnLocode(), attempt1.getType());
 
     // Next event: Load onto voyage CM003 in Hongkong
-    handlingEventService.registerHandlingEvent(new HandlingEventRegistrationAttempt(
+    final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(
       new Date(), new Date(200), trackingId, CM003.voyageNumber(), LOAD, HONGKONG.unLocode()
-    ));
+    );
+    handlingEventService.registerHandlingEvent(attempt.getCompletionTime(), attempt.getTrackingId(), attempt.getVoyageNumber(), attempt.getUnLocode(), attempt.getType());
 
     // Check current state - should be ok
     assertEquals(CM003, cargo.delivery().currentVoyage());
@@ -160,13 +161,14 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt failingAttempt = new HandlingEventRegistrationAttempt(
       new Date(), new Date(300), trackingId, noSuchVoyageNumber, LOAD, noSuchUnLocode
     );
-    handlingEventService.registerHandlingEvent(failingAttempt);
+    handlingEventService.registerHandlingEvent(failingAttempt.getCompletionTime(), failingAttempt.getTrackingId(), failingAttempt.getVoyageNumber(), failingAttempt.getUnLocode(), failingAttempt.getType());
 
 
     // Cargo is now (incorrectly) unloaded in Tokyo
-    handlingEventService.registerHandlingEvent(new HandlingEventRegistrationAttempt(
+    final HandlingEventRegistrationAttempt attempt7 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(400), trackingId, CM003.voyageNumber(), UNLOAD, TOKYO.unLocode()
-    ));
+    );
+    handlingEventService.registerHandlingEvent(attempt7.getCompletionTime(), attempt7.getTrackingId(), attempt7.getVoyageNumber(), attempt7.getUnLocode(), attempt7.getType());
 
     // Check current state - cargo is misdirected!
     assertEquals(NONE, cargo.delivery().currentVoyage());
@@ -201,7 +203,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt attempt2 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(500), trackingId, CM003.voyageNumber(), LOAD, TOKYO.unLocode()
     );
-    handlingEventService.registerHandlingEvent(attempt2);
+    handlingEventService.registerHandlingEvent(attempt2.getCompletionTime(), attempt2.getTrackingId(), attempt2.getVoyageNumber(), attempt2.getUnLocode(), attempt2.getType());
 
     // Check current state - should be ok
     assertEquals(CM003, cargo.delivery().currentVoyage());
@@ -213,7 +215,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt attempt3 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(600), trackingId, CM003.voyageNumber(), UNLOAD, HAMBURG.unLocode()
     );
-    handlingEventService.registerHandlingEvent(attempt3);
+    handlingEventService.registerHandlingEvent(attempt3.getCompletionTime(), attempt3.getTrackingId(), attempt3.getVoyageNumber(), attempt3.getUnLocode(), attempt3.getType());
 
     // Check current state - should be ok
     assertEquals(NONE, cargo.delivery().currentVoyage());
@@ -225,7 +227,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt attempt4 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(700), trackingId, CM005.voyageNumber(), LOAD, HAMBURG.unLocode()
     );
-    handlingEventService.registerHandlingEvent(attempt4);
+    handlingEventService.registerHandlingEvent(attempt4.getCompletionTime(), attempt4.getTrackingId(), attempt4.getVoyageNumber(), attempt4.getUnLocode(), attempt4.getType());
 
     // Check current state - should be ok
     assertEquals(CM005, cargo.delivery().currentVoyage());
@@ -237,7 +239,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt attempt5 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(800), trackingId, CM005.voyageNumber(), UNLOAD, STOCKHOLM.unLocode()
     );
-    handlingEventService.registerHandlingEvent(attempt5);
+    handlingEventService.registerHandlingEvent(attempt5.getCompletionTime(), attempt5.getTrackingId(), attempt5.getVoyageNumber(), attempt5.getUnLocode(), attempt5.getType());
 
     // Check current state - should be ok
     assertEquals(NONE, cargo.delivery().currentVoyage());
@@ -249,7 +251,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     HandlingEventRegistrationAttempt attempt6 = new HandlingEventRegistrationAttempt(
       new Date(), new Date(900), trackingId, null, CLAIM, STOCKHOLM.unLocode()
     );
-    handlingEventService.registerHandlingEvent(attempt6);
+    handlingEventService.registerHandlingEvent(attempt6.getCompletionTime(), attempt6.getTrackingId(), attempt6.getVoyageNumber(), attempt6.getUnLocode(), attempt6.getType());
 
     // Check current state - should be ok
     assertEquals(NONE, cargo.delivery().currentVoyage());

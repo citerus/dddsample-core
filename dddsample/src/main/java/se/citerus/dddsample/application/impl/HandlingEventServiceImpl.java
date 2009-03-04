@@ -4,12 +4,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.ApplicationEvents;
-import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.application.HandlingEventService;
+import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.domain.model.location.UnLocode;
+
+import java.util.Date;
 
 public final class HandlingEventServiceImpl implements HandlingEventService {
 
@@ -28,18 +32,17 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
 
   @Override
   @Transactional
-  public void registerHandlingEvent(final HandlingEventRegistrationAttempt attempt) {
+  public void registerHandlingEvent(final Date completionTime,
+                                    final TrackingId trackingId,
+                                    final VoyageNumber voyageNumber,
+                                    final UnLocode unLocode,
+                                    final HandlingEvent.Type type) {
     try {
       /* Using a factory to create a HandlingEvent (aggregate). This is where
          it is determined wether the incoming data, the attempt, actually is capable
          of representing a real handling event. */
       final HandlingEvent event = handlingEventFactory.createHandlingEvent(
-        attempt.getRegistrationTime(),
-        attempt.getCompletionTime(),
-        attempt.getTrackingId(),
-        attempt.getVoyageNumber(),
-        attempt.getUnLocode(),
-        attempt.getType()
+        new Date(), completionTime, trackingId, voyageNumber, unLocode, type
       );
 
       /* Store the new handling event, which updates the persistent
@@ -55,7 +58,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     } catch (CannotCreateHandlingEventException e) {
       /* This may be a bogus attempt, for example containing a tracking id
          that doesn't match any cargo that we're tracking. */
-      applicationEvents.rejectedHandlingEventRegistrationAttempt(attempt, e);
+      logger.error(e, e);
     }
   }
 

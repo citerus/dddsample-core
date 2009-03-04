@@ -89,7 +89,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The initial departure location.
    */
-  public Location initialDepartureLocation() {
+  Location initialDepartureLocation() {
      if (legs.isEmpty()) {
        return Location.UNKNOWN;
      } else {
@@ -100,7 +100,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The final arrival location.
    */
-  public Location finalArrivalLocation() {
+  Location finalArrivalLocation() {
     if (legs.isEmpty()) {
       return Location.UNKNOWN;
     } else {
@@ -111,7 +111,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return Date when cargo arrives at final destination.
    */
-  public Date finalArrivalDate() {
+  Date finalArrivalDate() {
     final Leg lastLeg = lastLeg();
 
     if (lastLeg == null) {
@@ -124,7 +124,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The last leg on the itinerary.
    */
-  public Leg lastLeg() {
+  Leg lastLeg() {
     if (legs.isEmpty()) {
       return null;
     } else {

@@ -12,8 +12,8 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
-import se.citerus.dddsample.interfaces.booking.facade.dto.ItineraryCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.CargoRoutingDTOAssembler;
 import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.ItineraryCandidateDTOAssembler;
 import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.LocationDTOAssembler;
@@ -38,12 +38,14 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private VoyageRepository voyageRepository;
   private final Logger logger = Logger.getLogger(BookingServiceFacadeImpl.class);
 
+  @Override
   public List<LocationDTO> listShippingLocations() {
     final List<Location> allLocations = locationRepository.findAll();
     final LocationDTOAssembler assembler = new LocationDTOAssembler();
     return assembler.toDTOList(allLocations);
   }
 
+  @Override
   public String bookNewCargo(String origin, String destination, Date arrivalDeadline) {
     TrackingId trackingId = bookingService.bookNewCargo(
       new UnLocode(origin), 
@@ -53,19 +55,27 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     return trackingId.idString();
   }
 
+  @Override
   public CargoRoutingDTO loadCargoForRouting(String trackingId) {
     final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
     final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     return assembler.toDTO(cargo);
   }
 
-  public void assignCargoToRoute(String trackingIdStr, ItineraryCandidateDTO itineraryCandidateDTO) {
-    final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(itineraryCandidateDTO, voyageRepository, locationRepository);
+  @Override
+  public void assignCargoToRoute(String trackingIdStr, RouteCandidateDTO routeCandidateDTO) {
+    final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(routeCandidateDTO, voyageRepository, locationRepository);
     final TrackingId trackingId = new TrackingId(trackingIdStr);
 
     bookingService.assignCargoToRoute(itinerary, trackingId);
   }
 
+  @Override
+  public void changeDestination(String trackingId, String destinationUnLocode) throws RemoteException {
+    bookingService.changeDestination(new TrackingId(trackingId), new UnLocode(destinationUnLocode));
+  }
+
+  @Override
   public List<CargoRoutingDTO> listAllCargos() {
     final List<Cargo> cargoList = cargoRepository.findAll();
     final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(cargoList.size());
@@ -76,16 +86,17 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     return dtoList;
   }
 
-  public List<ItineraryCandidateDTO> requestPossibleRoutesForCargo(String trackingId) throws RemoteException {
+  @Override
+  public List<RouteCandidateDTO> requestPossibleRoutesForCargo(String trackingId) throws RemoteException {
     final List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
 
-    final List<ItineraryCandidateDTO> itineraryCandidates = new ArrayList<ItineraryCandidateDTO>(itineraries.size());
+    final List<RouteCandidateDTO> routeCandidates = new ArrayList<RouteCandidateDTO>(itineraries.size());
     final ItineraryCandidateDTOAssembler dtoAssembler = new ItineraryCandidateDTOAssembler();
     for (Itinerary itinerary : itineraries) {
-      itineraryCandidates.add(dtoAssembler.toDTO(itinerary));
+      routeCandidates.add(dtoAssembler.toDTO(itinerary));
     }
 
-    return itineraryCandidates;
+    return routeCandidates;
   }
 
   public void setBookingService(BookingService bookingService) {

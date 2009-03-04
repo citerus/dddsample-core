@@ -23,7 +23,14 @@ public class HandlingEventRegistrationAttemptConsumer implements MessageListener
   public void onMessage(final Message message) {
     try {
       final ObjectMessage om = (ObjectMessage) message;
-      handlingEventService.registerHandlingEvent((HandlingEventRegistrationAttempt) om.getObject());
+      HandlingEventRegistrationAttempt attempt = (HandlingEventRegistrationAttempt) om.getObject();
+      handlingEventService.registerHandlingEvent(
+        attempt.getCompletionTime(),
+        attempt.getTrackingId(),
+        attempt.getVoyageNumber(),
+        attempt.getUnLocode(),
+        attempt.getType()
+      );
     } catch (Exception e) {
       logger.error(e, e);
     }

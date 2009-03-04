@@ -9,7 +9,6 @@ import se.citerus.dddsample.domain.model.carrier.VoyageRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -25,7 +24,6 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
   VoyageRepository voyageRepository;
-  HandlingEventRepository handlingEventRepository;
 
   public void setCargoRepository(CargoRepository cargoRepository) {
     this.cargoRepository = cargoRepository;
@@ -37,10 +35,6 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
-  }
-
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
   }
 
   public void testFindByCargoId() {

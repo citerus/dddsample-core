@@ -12,21 +12,18 @@
 <body>
 <div id="container">
   <table>
-    <caption>Select route for cargo ${trackingId}</caption>
+    <caption>Select route</caption>
     <tr>
-      <td><strong>Origin:</strong></td>
-      <td>${origin}</td>
-    </tr>
-    <tr>
-      <td><strong>Destination:</strong></td>
-      <td>${destination}</td>
+      <td>
+          Cargo ${cargo.trackingId} is going from ${cargo.origin} to ${cargo.finalDestination}
+      </td>
     </tr>
   </table>
   <c:url value="/admin/assignItinerary.html" var="postUrl"/>
 
   <c:forEach items="${itineraryCandidates}" var="it" varStatus="itStatus">
       <form action="${postUrl}" method="post">
-        <input type="hidden" name="trackingId" value="${trackingId}"/>
+        <input type="hidden" name="trackingId" value="${cargo.trackingId}"/>
         <table>
           <caption>Route ${itStatus.index + 1}</caption>
           <thead>

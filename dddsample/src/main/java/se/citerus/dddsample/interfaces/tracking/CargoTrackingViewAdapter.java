@@ -8,10 +8,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * View adapter for displaying a cargo in a tracking context.
@@ -22,6 +19,7 @@ public final class CargoTrackingViewAdapter {
   private final MessageSource messageSource;
   private final Locale locale;
   private final List<HandlingEventViewAdapter> events;
+  private final String FORMAT = "yyyy-MM-dd hh:mm";
 
   /**
    * Constructor.
@@ -47,7 +45,7 @@ public final class CargoTrackingViewAdapter {
    * @return A formatted string for displaying the location.
    */
   private String getDisplayText(Location location) {
-    return location.unLocode().idString() + " (" + location.name() + ")";
+    return location.name();
   }
 
   /**
@@ -104,6 +102,13 @@ public final class CargoTrackingViewAdapter {
     return cargo.trackingId().idString();
   }
 
+  public String getEta() {
+    Date eta = cargo.estimatedTimeOfArrival();
+
+    if (eta == null) return "?";
+    else return new SimpleDateFormat(FORMAT).format(eta);
+  }
+
   /**
    * @return True if cargo is misdirected.
    */
@@ -117,7 +122,6 @@ public final class CargoTrackingViewAdapter {
   public final class HandlingEventViewAdapter {
 
     private final HandlingEvent handlingEvent;
-    private final String FORMAT = "yyyy-MM-dd hh:mm";
 
     /**
      * Constructor.
@@ -132,7 +136,7 @@ public final class CargoTrackingViewAdapter {
      * @return Location where the event occurred.
      */
     public String getLocation() {
-      return handlingEvent.location().unLocode().idString();
+      return handlingEvent.location().name();
     }
 
     /**
@@ -164,5 +168,36 @@ public final class CargoTrackingViewAdapter {
       return cargo.itinerary().isExpected(handlingEvent);
     }
 
+    public String getDescription() {
+      Object[] args;
+
+      switch (handlingEvent.type()) {
+        case LOAD:
+        case UNLOAD:
+          args = new Object[] {
+            handlingEvent.voyage().voyageNumber().idString(),
+            handlingEvent.location().name(),
+            handlingEvent.completionTime()
+          };
+          break;
+
+        case RECEIVE:
+        case CLAIM:
+          args = new Object[] {
+            handlingEvent.location().name(),
+            handlingEvent.completionTime()
+          };
+          break;
+
+        default:
+          args = new Object[] {};
+      }
+
+      String key = "deliveryHistory.eventDescription." + handlingEvent.type().name();
+
+      return messageSource.getMessage(key,args,locale);
+    }
+
   }
+  
 }
