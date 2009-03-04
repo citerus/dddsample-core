@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.model.carrier;
+package se.citerus.dddsample.domain.model.voyage;
 
 import junit.framework.TestCase;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;

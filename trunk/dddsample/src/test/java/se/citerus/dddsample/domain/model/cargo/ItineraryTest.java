@@ -1,11 +1,11 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.domain.model.carrier.CarrierMovement;
-import se.citerus.dddsample.domain.model.carrier.Voyage;
-import se.citerus.dddsample.domain.model.carrier.VoyageNumber;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.util.ArrayList;
 import java.util.Arrays;

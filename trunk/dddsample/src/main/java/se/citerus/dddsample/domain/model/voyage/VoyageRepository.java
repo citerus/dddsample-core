@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.model.carrier;
+package se.citerus.dddsample.domain.model.voyage;
 
 public interface VoyageRepository {
 

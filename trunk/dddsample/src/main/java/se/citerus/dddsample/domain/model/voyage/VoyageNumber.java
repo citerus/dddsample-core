@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.model.carrier;
+package se.citerus.dddsample.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.ValueObject;

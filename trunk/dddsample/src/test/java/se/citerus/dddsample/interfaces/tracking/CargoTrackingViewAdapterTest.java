@@ -5,10 +5,10 @@ import org.springframework.context.support.StaticApplicationContext;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.domain.model.carrier.SampleVoyages.CM001;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 
 import java.util.*;
 

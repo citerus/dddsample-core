@@ -8,8 +8,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import se.citerus.dddsample.domain.model.DomainEvent;
 import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.carrier.Voyage;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
 import java.util.Comparator;
@@ -22,7 +22,7 @@ import java.util.Date;
  * The HandlingEvent's are sent from different Incident Logging Applications
  * some time after the event occured and contain information about the
  * {@link se.citerus.dddsample.domain.model.cargo.TrackingId}, {@link se.citerus.dddsample.domain.model.location.Location}, timestamp of the completion of the event,
- * and possibly, if applicable a {@link se.citerus.dddsample.domain.model.carrier.Voyage}.
+ * and possibly, if applicable a {@link se.citerus.dddsample.domain.model.voyage.Voyage}.
  * <p/>
  * This class is the only member, and consequently the root, of the HandlingEvent aggregate. 
  * <p/>
