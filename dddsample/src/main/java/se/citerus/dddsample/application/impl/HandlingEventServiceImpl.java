@@ -3,6 +3,7 @@ package se.citerus.dddsample.application.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.transaction.interceptor.TransactionAspectSupport.currentTransactionStatus;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -58,7 +59,8 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     } catch (CannotCreateHandlingEventException e) {
       /* This may be a bogus attempt, for example containing a tracking id
          that doesn't match any cargo that we're tracking. */
-      logger.error(e, e);
+      logger.error(e);
+      currentTransactionStatus().setRollbackOnly();
     }
   }
 

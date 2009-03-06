@@ -1,6 +1,5 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -44,12 +43,6 @@ public class HandlingEventFactory {
    */
   public HandlingEvent createHandlingEvent(Date registrationTime, Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
     throws CannotCreateHandlingEventException {
-
-    // Voyage number may be null for certain event types
-    Validate.noNullElements(new Object[]
-      {registrationTime, completionTime, trackingId, unlocode, type}
-    );
-
     final Cargo cargo = findCargo(trackingId);
     final Voyage voyage = findVoyage(voyageNumber);
     final Location location = findLocation(unlocode);

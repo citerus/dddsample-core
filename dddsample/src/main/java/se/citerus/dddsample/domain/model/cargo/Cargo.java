@@ -61,7 +61,7 @@ public class Cargo implements Entity<Cargo> {
     this.trackingId = trackingId;
     this.origin = origin;
     this.routeSpecification = routeSpecification;
-    deriveStatusFromHandling(Collections.<HandlingEvent>emptyList());
+    deriveDeliveryProgress(Collections.<HandlingEvent>emptyList());
   }
 
   /**
@@ -165,12 +165,12 @@ public class Cargo implements Entity<Cargo> {
    * @return estimated time of arrival
    */
   public Date estimatedTimeOfArrival() {
-    return eta;
+    return new Date(eta.getTime());
   }
 
   /**
    * Updates all aspects of the cargo aggregate status
-   * based on the current route specification, itinerary and delivery history.
+   * based on the current route specification, itinerary and handling of the cargo.
    * <p/>
    * When either of those three changes, i.e. when a new route is specified for the cargo,
    * the cargo is assigned to a route or when the cargo is handled, the status must be
@@ -181,12 +181,12 @@ public class Cargo implements Entity<Cargo> {
    * but changes to the delivery history (when a cargo is handled) cause the status update
    * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
    *
-   * @param deliveryHistory all handling events for this cargo
+   * @param handlingEvents all handling events for this cargo
    */
-  public void deriveStatusFromHandling(final List<HandlingEvent> deliveryHistory) {
+  public void deriveDeliveryProgress(final List<HandlingEvent> handlingEvents) {
     // Delivery is a value object, so we can simply discard the old one
-    // and replace with a new
-    this.delivery = Delivery.derivedFrom(deliveryHistory);
+    // and replace it with a new
+    this.delivery = Delivery.derivedFrom(handlingEvents);
     this.routingStatus = deriveRoutingStatus();
     this.misdirected = deriveMisdirectionStatus();
     this.eta = deriveEta();

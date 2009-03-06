@@ -117,7 +117,7 @@ public class Itinerary implements ValueObject<Itinerary> {
     if (lastLeg == null) {
       return new Date(END_OF_DAYS.getTime());
     } else {
-      return lastLeg.unloadTime();
+      return new Date(lastLeg.unloadTime().getTime());
     }
   }
 

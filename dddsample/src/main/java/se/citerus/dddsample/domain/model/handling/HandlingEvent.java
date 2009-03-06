@@ -107,9 +107,12 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
                        final Type type,
                        final Location location,
                        final Voyage voyage) {
-    Validate.noNullElements(new Object[]
-      {cargo, completionTime, registrationTime, type, location, voyage}
-    );
+    Validate.notNull(cargo, "Cargo is required");
+    Validate.notNull(completionTime, "Completion time is required");
+    Validate.notNull(registrationTime, "Registration time is required");
+    Validate.notNull(type, "Handling event type is required");
+    Validate.notNull(location, "Location is required");
+    Validate.notNull(voyage, "Voyage is required");
 
     if (type.prohibitsVoyage()) {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
@@ -135,9 +138,11 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
                        final Date registrationTime,
                        final Type type,
                        final Location location) {
-    Validate.noNullElements(new Object[]
-      {cargo, completionTime, registrationTime, type, location}
-    );
+    Validate.notNull(cargo, "Cargo is required");
+    Validate.notNull(completionTime, "Completion time is required");
+    Validate.notNull(registrationTime, "Registration time is required");
+    Validate.notNull(type, "Handling event type is required");
+    Validate.notNull(location, "Location is required");
 
     if (type.requiresVoyage()) {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
