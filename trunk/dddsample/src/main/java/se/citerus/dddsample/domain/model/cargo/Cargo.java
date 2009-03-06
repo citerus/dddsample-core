@@ -4,11 +4,13 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -158,7 +160,7 @@ public class Cargo implements Entity<Cargo> {
   public boolean isUnloadedAtDestination() {
     final HandlingEvent lastEvent = delivery.lastEvent();
     return lastEvent != null &&
-      HandlingEvent.Type.UNLOAD.sameValueAs(lastEvent.type()) &&
+      UNLOAD.sameValueAs(lastEvent.type()) &&
       routeSpecification.destination().sameIdentityAs(lastEvent.location());
   }
 
@@ -166,7 +168,57 @@ public class Cargo implements Entity<Cargo> {
    * @return estimated time of arrival
    */
   public Date estimatedTimeOfArrival() {
-    return new Date(eta.getTime());
+    if (eta != ETA_UNKOWN) {
+      return new Date(eta.getTime());
+    } else {
+      return ETA_UNKOWN;
+    }
+  }
+
+  /**
+   * @return the next expected activity
+   */
+  public HandlingActivity nextExpectedActivity() {
+    if (!onTrack()) return HandlingActivity.NONE;
+
+    final HandlingEvent lastEvent = delivery().lastEvent();
+
+    if (lastEvent == null) return new HandlingActivity(RECEIVE, origin());
+
+    switch (lastEvent.type()) {
+
+      case LOAD:
+        for (Leg leg : itinerary().legs()) {
+          if (leg.loadLocation().sameIdentityAs(lastEvent.location())) {
+            return new HandlingActivity(UNLOAD, leg.unloadLocation());
+          }
+        }
+
+        return HandlingActivity.NONE;
+
+      case UNLOAD:
+        for (Iterator<Leg> it = itinerary().legs().iterator(); it.hasNext();) {
+          final Leg leg = it.next();
+          if (leg.unloadLocation().sameIdentityAs(lastEvent.location())) {
+            if (it.hasNext()) {
+              final Leg nextLeg = it.next();
+              return new HandlingActivity(LOAD, nextLeg.loadLocation());
+            } else {
+              return new HandlingActivity(CLAIM, leg.unloadLocation());
+            }
+          }
+        }
+
+        return HandlingActivity.NONE;
+
+      case RECEIVE:
+        final Leg firstLeg = itinerary().legs().iterator().next();
+        return new HandlingActivity(LOAD, firstLeg.loadLocation());
+
+      case CLAIM:
+      default:
+        return HandlingActivity.NONE;
+    }
   }
 
   /**
