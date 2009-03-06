@@ -15,7 +15,7 @@ import java.util.*;
 public class CargoTrackingViewAdapterTest extends TestCase {
 
   public void testCreate() {
-    Cargo cargo = new Cargo(new TrackingId("XYZ"), HANGZOU, new RouteSpecification(HANGZOU, HELSINKI, new Date()));
+    Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HANGZOU, HELSINKI, new Date()));
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));

@@ -88,7 +88,7 @@ public class CargoRepositoryInMem implements CargoRepository {
                                                      Collection<HandlingEvent> events) {
 
     final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
-    final Cargo cargo = new Cargo(trackingId, origin, routeSpecification);
+    final Cargo cargo = new Cargo(trackingId, routeSpecification);
     cargo.deriveDeliveryProgress(new ArrayList<HandlingEvent>(events));
 
     return cargo;

@@ -28,8 +28,8 @@ public class HandlingEventServiceTest extends TestCase {
   private LocationRepository locationRepository;
   private HandlingEventFactory handlingEventFactory;
 
-  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), HAMBURG, new RouteSpecification(HAMBURG, TOKYO, new Date()));
-  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), HONGKONG, new RouteSpecification(HONGKONG, HELSINKI, new Date()));
+  private final Cargo cargoABC = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, new Date()));
+  private final Cargo cargoXYZ = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, HELSINKI, new Date()));
 
   protected void setUp() throws Exception{
     cargoRepository = createMock(CargoRepository.class);
@@ -90,7 +90,7 @@ public class HandlingEventServiceTest extends TestCase {
     expect(voyageRepository.find(voyageNumber)).andReturn(null);
 
     final TrackingId trackingId = new TrackingId("XYZ");
-    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, CHICAGO, new RouteSpecification(CHICAGO, STOCKHOLM, new Date())));
+    expect(cargoRepository.find(trackingId)).andReturn(new Cargo(trackingId, new RouteSpecification(CHICAGO, STOCKHOLM, new Date())));
 
     expect(locationRepository.find(MELBOURNE.unLocode())).andReturn(MELBOURNE);
 

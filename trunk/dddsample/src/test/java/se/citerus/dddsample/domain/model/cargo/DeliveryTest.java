@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class DeliveryTest extends TestCase {
 
-  private Cargo cargo = new Cargo(new TrackingId("XYZ"), HONGKONG, new RouteSpecification(HONGKONG, NEWYORK, new Date()));
+  private Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, NEWYORK, new Date()));
 
   public void testToSilenceWarnings() throws Exception {
     assertTrue(true);

@@ -105,7 +105,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Location origin = locationRepository.find(STOCKHOLM.unLocode());
     Location destination = locationRepository.find(MELBOURNE.unLocode());
 
-    Cargo cargo = new Cargo(trackingId, origin, new RouteSpecification(origin, destination, new Date()));
+    Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
     cargoRepository.store(cargo);
 
     cargo.assignToRoute(new Itinerary(Arrays.asList(

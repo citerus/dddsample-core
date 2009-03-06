@@ -36,7 +36,7 @@ public class ItineraryTest extends TestCase {
 
     TrackingId trackingId = new TrackingId("CARGO1");
     RouteSpecification routeSpecification = new RouteSpecification(SHANGHAI, GOTHENBURG, new Date());
-    Cargo cargo = new Cargo(trackingId, SHANGHAI, routeSpecification);
+    Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     Itinerary itinerary = new Itinerary(
       Arrays.asList(
