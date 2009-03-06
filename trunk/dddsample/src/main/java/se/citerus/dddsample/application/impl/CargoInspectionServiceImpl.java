@@ -40,9 +40,9 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
       return;
     }
 
-    final List<HandlingEvent> deliveryHistory = handlingEventRepository.findEventsForCargo(trackingId);
+    final List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(trackingId);
 
-    cargo.deriveStatusFromHandling(deliveryHistory);
+    cargo.deriveDeliveryProgress(handlingEvents);
 
     if (cargo.isMisdirected()) {
       applicationEvents.cargoWasMisdirected(cargo);

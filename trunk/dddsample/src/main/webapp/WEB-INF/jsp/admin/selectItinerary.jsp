@@ -21,7 +21,7 @@
   </table>
   <c:url value="/admin/assignItinerary.html" var="postUrl"/>
 
-  <c:forEach items="${itineraryCandidates}" var="it" varStatus="itStatus">
+  <c:forEach items="${routeCandidates}" var="it" varStatus="itStatus">
       <form action="${postUrl}" method="post">
         <input type="hidden" name="trackingId" value="${cargo.trackingId}"/>
         <table>

@@ -255,7 +255,7 @@ public class SampleDataGenerator implements ServletContextListener {
         }
 
         List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(trackingId);
-        abc123.deriveStatusFromHandling(handlingEvents);
+        abc123.deriveDeliveryProgress(handlingEvents);
 
         session.update(abc123);
 
@@ -300,7 +300,7 @@ public class SampleDataGenerator implements ServletContextListener {
         }
 
         List<HandlingEvent> handlingEvents1 = handlingEventRepository.findEventsForCargo(trackingId1);
-        jkl567.deriveStatusFromHandling(handlingEvents1);
+        jkl567.deriveDeliveryProgress(handlingEvents1);
 
         session.update(jkl567);
       }

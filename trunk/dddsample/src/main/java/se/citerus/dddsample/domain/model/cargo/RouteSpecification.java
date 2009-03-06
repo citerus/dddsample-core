@@ -33,7 +33,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
 
     this.origin = origin;
     this.destination = destination;
-    this.arrivalDeadline = arrivalDeadline;
+    this.arrivalDeadline = (Date) arrivalDeadline.clone();
   }
 
   /**
@@ -54,7 +54,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    * @return Arrival deadline.
    */
   public Date arrivalDeadline() {
-    return arrivalDeadline;
+    return new Date(arrivalDeadline.getTime());
   }
 
   @Override
