@@ -52,15 +52,16 @@ public class Cargo implements Entity<Cargo> {
   
   private static final Date ETA_UNKOWN = null;
 
-  // TODO origin can be taken from route spec on creation, even if the origin never changes
-  public Cargo(final TrackingId trackingId, final Location origin, final RouteSpecification routeSpecification) {
+  public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
     Validate.notNull(trackingId, "Tracking id is required");
-    Validate.notNull(origin, "Origin location is required");
     Validate.notNull(routeSpecification, "Route specification is required");
 
     this.trackingId = trackingId;
-    this.origin = origin;
+    // Cargo origin never changes, even if the route specification changes.
+    // However, at creation, cargo orgin can be derived from the initial route specification.
+    this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
+
     deriveDeliveryProgress(Collections.<HandlingEvent>emptyList());
   }
 

@@ -37,7 +37,7 @@ public class CargoTest extends TestCase {
       STOCKHOLM, MELBOURNE, arrivalDeadline
     );
 
-    final Cargo cargo = new Cargo(trackingId, STOCKHOLM, routeSpecification);
+    final Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     assertEquals(NOT_ROUTED, cargo.routingStatus());
     assertEquals(NOT_RECEIVED, cargo.delivery().transportStatus());
@@ -46,7 +46,7 @@ public class CargoTest extends TestCase {
   }
 
   public void testRoutingStatus() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
     final Itinerary good = new Itinerary();
     final Itinerary bad = new Itinerary();
     final RouteSpecification acceptOnlyGood = new RouteSpecification(cargo.origin(), cargo.routeSpecification().destination(), new Date()) {
@@ -68,7 +68,7 @@ public class CargoTest extends TestCase {
   }
 
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
-    Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
     assertEquals(Location.UNKNOWN, cargo.delivery().lastKnownLocation());
   }
@@ -100,10 +100,10 @@ public class CargoTest extends TestCase {
   public void testEquality() throws Exception {
     RouteSpecification spec1 = new RouteSpecification(STOCKHOLM, HONGKONG, new Date());
     RouteSpecification spec2 = new RouteSpecification(STOCKHOLM, MELBOURNE, new Date());
-    Cargo c1 = new Cargo(new TrackingId("ABC"), STOCKHOLM, spec1);
-    Cargo c2 = new Cargo(new TrackingId("CBA"), STOCKHOLM, spec1);
-    Cargo c3 = new Cargo(new TrackingId("ABC"), STOCKHOLM, spec2);
-    Cargo c4 = new Cargo(new TrackingId("ABC"), STOCKHOLM, spec1);
+    Cargo c1 = new Cargo(new TrackingId("ABC"), spec1);
+    Cargo c2 = new Cargo(new TrackingId("CBA"), spec1);
+    Cargo c3 = new Cargo(new TrackingId("ABC"), spec2);
+    Cargo c4 = new Cargo(new TrackingId("ABC"), spec1);
 
     assertTrue("Cargos should be equal when TrackingIDs are equal", c1.equals(c4));
     assertTrue("Cargos should be equal when TrackingIDs are equal", c1.equals(c3));
@@ -146,7 +146,7 @@ public class CargoTest extends TestCase {
 
   // TODO: Generate test data some better way
   private Cargo populateCargoReceivedStockholm() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
     HandlingEvent he = new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.RECEIVE, STOCKHOLM);
     events.add(he);
@@ -165,7 +165,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOffHongKong() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
 
     events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, voyage));
@@ -179,7 +179,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOnHamburg() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
     events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, voyage));
     events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, voyage));
@@ -190,7 +190,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOffMelbourne() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
     events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, voyage));
     events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, voyage));
@@ -206,7 +206,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOnHongKong() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), STOCKHOLM, new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
     events.add(new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, voyage));
     events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, voyage));
@@ -222,7 +222,7 @@ public class CargoTest extends TestCase {
 
   public void testIsMisdirected() throws Exception {
     //A cargo with no itinerary is not misdirected
-    Cargo cargo = new Cargo(new TrackingId("TRKID"), SHANGHAI, new RouteSpecification(SHANGHAI, GOTHENBURG, new Date()));
+    Cargo cargo = new Cargo(new TrackingId("TRKID"), new RouteSpecification(SHANGHAI, GOTHENBURG, new Date()));
     assertFalse(cargo.isMisdirected());
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
@@ -286,7 +286,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
-    Cargo cargo = new Cargo(new TrackingId("CARGO1"), origin, new RouteSpecification(origin, destination, new Date()));
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, new Date()));
 
     Itinerary itinerary = new Itinerary(
       Arrays.asList(

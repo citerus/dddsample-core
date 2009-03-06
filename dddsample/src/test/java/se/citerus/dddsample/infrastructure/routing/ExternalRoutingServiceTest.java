@@ -47,7 +47,7 @@ public class ExternalRoutingServiceTest extends TestCase {
   public void testCalculatePossibleRoutes() {
     TrackingId trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, new Date());
-    Cargo cargo = new Cargo(trackingId, HONGKONG, routeSpecification);
+    Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
     

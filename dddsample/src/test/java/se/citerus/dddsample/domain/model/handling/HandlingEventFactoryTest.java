@@ -39,7 +39,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(TOKYO, HELSINKI, new Date());
-    cargo = new Cargo(trackingId, TOKYO, routeSpecification);
+    cargo = new Cargo(trackingId, routeSpecification);
   }
 
   public void testCreateHandlingEventWithCarrierMovement() throws Exception {
