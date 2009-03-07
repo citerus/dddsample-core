@@ -3,7 +3,7 @@
   <title>Cargo Administration</title>
 </head>
 <body>
-  <table>
+  <table border="1" width="600">
     <caption>All cargos</caption>
     <thead>
       <tr>
@@ -24,7 +24,7 @@
         </td>
         <td>${cargo.origin}</td>
         <td>${cargo.finalDestination}</td>
-        <td>${cargo.routed ? "Yes" : "No"}</td>
+        <td>${cargo.misrouted ? "Misrouted" : (cargo.routed ? "Yes" : "No")}</td>
       </tr>  
       </c:forEach>
     </tbody>

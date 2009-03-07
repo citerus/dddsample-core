@@ -3,6 +3,7 @@ package se.citerus.dddsample.interfaces.tracking;
 import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Delivery;
+import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
@@ -107,6 +108,27 @@ public final class CargoTrackingViewAdapter {
 
     if (eta == null) return "?";
     else return new SimpleDateFormat(FORMAT).format(eta);
+  }
+
+  public String getNextExpectedActivity() {
+      HandlingActivity activity = cargo.nextExpectedActivity();
+      if (activity == null) {
+        return "";
+      }
+
+    String text = "Next expected activity is to ";
+    HandlingEvent.Type type = activity.type();
+    if (type.sameValueAs(HandlingEvent.Type.LOAD)) {
+        return
+          text + type.name().toLowerCase() + " cargo onto voyage " + activity.voyage().voyageNumber() +
+          " in " + activity.location().name();
+      } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
+        return
+          text + type.name().toLowerCase() + " cargo off of " + activity.voyage().voyageNumber() +
+          " in " + activity.location().name();
+      } else {
+        return text + type.name().toLowerCase() + " cargo in " + activity.location().name();
+      }
   }
 
   /**

@@ -53,6 +53,7 @@ public class Cargo implements Entity<Cargo> {
   private Date eta;
   
   private static final Date ETA_UNKOWN = null;
+  private static final HandlingActivity NO_ACTIVITY = null;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
     Validate.notNull(trackingId, "Tracking id is required");
@@ -179,7 +180,7 @@ public class Cargo implements Entity<Cargo> {
    * @return the next expected activity
    */
   public HandlingActivity nextExpectedActivity() {
-    if (!onTrack()) return HandlingActivity.NONE;
+    if (!onTrack()) return NO_ACTIVITY;
 
     final HandlingEvent lastEvent = delivery().lastEvent();
 
@@ -190,11 +191,11 @@ public class Cargo implements Entity<Cargo> {
       case LOAD:
         for (Leg leg : itinerary().legs()) {
           if (leg.loadLocation().sameIdentityAs(lastEvent.location())) {
-            return new HandlingActivity(UNLOAD, leg.unloadLocation());
+            return new HandlingActivity(UNLOAD, leg.unloadLocation(), leg.voyage());
           }
         }
 
-        return HandlingActivity.NONE;
+        return NO_ACTIVITY;
 
       case UNLOAD:
         for (Iterator<Leg> it = itinerary().legs().iterator(); it.hasNext();) {
@@ -202,22 +203,22 @@ public class Cargo implements Entity<Cargo> {
           if (leg.unloadLocation().sameIdentityAs(lastEvent.location())) {
             if (it.hasNext()) {
               final Leg nextLeg = it.next();
-              return new HandlingActivity(LOAD, nextLeg.loadLocation());
+              return new HandlingActivity(LOAD, nextLeg.loadLocation(), nextLeg.voyage());
             } else {
               return new HandlingActivity(CLAIM, leg.unloadLocation());
             }
           }
         }
 
-        return HandlingActivity.NONE;
+        return NO_ACTIVITY;
 
       case RECEIVE:
         final Leg firstLeg = itinerary().legs().iterator().next();
-        return new HandlingActivity(LOAD, firstLeg.loadLocation());
+        return new HandlingActivity(LOAD, firstLeg.loadLocation(), firstLeg.voyage());
 
       case CLAIM:
       default:
-        return HandlingActivity.NONE;
+        return NO_ACTIVITY;
     }
   }
 

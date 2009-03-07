@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class HandlingReportParser {
 
-  public static final String ISO_8601_FORMAT = "yyyy-mm-dd HH:MM:SS.SSS";
+  public static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
 
   public static UnLocode parseUnLocode(final String unlocode, final List<String> errors) {
     try {

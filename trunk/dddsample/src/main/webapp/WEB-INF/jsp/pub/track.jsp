@@ -36,6 +36,7 @@
     <div id="result">
     <h2>Cargo ${cargo.trackingId} is now: ${cargo.statusText}</h2>
     <p>Estimated time of arrival in ${cargo.destination}: ${cargo.eta}</p>
+    <p>${cargo.nextExpectedActivity}</p>
     <c:if test="${cargo.misdirected}">
       <p class="notify"><img src="${rc.contextPath}/images/error.png" alt="" />Cargo is misdirected</p>
     </c:if>
@@ -70,8 +71,8 @@
         <ul style="list-style-type: none;">
             <c:forEach items="${cargo.events}" var="leg">
             <li>
-                <p><img src="${rc.contextPath}/images/${leg.expected ? "tick" : "cross"}.png" alt=""/>
-                ${leg.description}</p>
+                <p><img style="vertical-align: top;" src="${rc.contextPath}/images/${leg.expected ? "tick" : "cross"}.png" alt=""/>
+                &nbsp;${leg.description}</p>
             </li>
             </c:forEach>
         </ul>

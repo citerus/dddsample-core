@@ -10,6 +10,8 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
 
   private GraphDAO dao;
   private Random random;
+  private static final long ONE_MIN_MS = 1000 * 60;
+  private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
 
   public GraphTraversalServiceImpl(GraphDAO dao) {
     this.dao = dao;
@@ -19,6 +21,8 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
   public List<TransitPath> findShortestPath(final String originUnLocode,
                                             final String destinationUnLocode,
                                             final Properties limitations) {
+    Date date = nextDate(new Date());
+
     List<String> allVertices = dao.listLocations();
     allVertices.remove(originUnLocode);
     allVertices.remove(destinationUnLocode);
@@ -31,20 +35,29 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
       final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>(allVertices.size() - 1);
       final String firstLegTo = allVertices.get(0);
 
+      Date fromDate = nextDate(date);
+      Date toDate = nextDate(fromDate);
+      date = nextDate(toDate);
+
       transitEdges.add(new TransitEdge(
         dao.getVoyageNumber(originUnLocode, firstLegTo),
-        originUnLocode, firstLegTo, new Date(), new Date()));
+        originUnLocode, firstLegTo, fromDate, toDate));
 
       for (int j = 0; j < allVertices.size() - 1; j++) {
         final String curr = allVertices.get(j);
         final String next = allVertices.get(j + 1);
-        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next, new Date(), new Date()));
+        fromDate = nextDate(date);
+        toDate = nextDate(fromDate);
+        date = nextDate(toDate);
+        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next, fromDate, toDate));
       }
 
       final String lastLegFrom = allVertices.get(allVertices.size() - 1);
+      fromDate = nextDate(date);
+      toDate = nextDate(fromDate);
       transitEdges.add(new TransitEdge(
         dao.getVoyageNumber(lastLegFrom, destinationUnLocode),
-        lastLegFrom, destinationUnLocode, new Date(), new Date()));
+        lastLegFrom, destinationUnLocode, fromDate, toDate));
 
       candidates.add(new TransitPath(transitEdges));
     }
@@ -52,14 +65,18 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     return candidates;
   }
 
+  private Date nextDate(Date date) {
+    return new Date(date.getTime() + ONE_DAY_MS + (random.nextInt(1000) - 500) * ONE_MIN_MS);
+  }
+
   private int getRandomNumberOfCandidates() {
-    return 1 + random.nextInt(4);
+    return 3 + random.nextInt(3);
   }
 
   private List<String> getRandomChunkOfLocations(List<String> allLocations) {
     Collections.shuffle(allLocations);
     final int total = allLocations.size();
-    final int chunk = total > 4 ? (total - 4) + random.nextInt(5) : total;
+    final int chunk = total > 4 ? 1 + new Random().nextInt(5) : total;
     return allLocations.subList(0, chunk);
   }
 
