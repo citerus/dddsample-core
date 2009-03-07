@@ -20,7 +20,10 @@
       <tr>
           <td></td>
           <td>
-            <a href="">Change destination</a>    
+           <c:url value="/admin/pickNewDestination.html" var="cdUrl">
+               <c:param name="trackingId" value="${cargo.trackingId}"/>
+           </c:url>
+            <a href="${cdUrl}">Change destination</a>    
           </td>
       </tr>
       <tr>
@@ -32,8 +35,11 @@
   <p></p>
   <c:choose>
     <c:when test="${cargo.routed}">
-      <c:if test="${carg.misrouted}">
-      <p><em>Cargo is misrouted - <a href="${selectUrl}">reroute this cargo</a></em></p>    
+      <c:if test="${cargo.misrouted}">
+          <c:url value="/admin/selectItinerary.html" var="selectUrl">
+            <c:param name="trackingId" value="${cargo.trackingId}"/>
+          </c:url>
+        <p><em>Cargo is misrouted - <a href="${selectUrl}">reroute this cargo</a></em></p>    
       </c:if>
       <table border="1">
         <caption>Itinerary</caption>

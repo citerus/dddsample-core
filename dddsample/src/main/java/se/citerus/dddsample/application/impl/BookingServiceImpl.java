@@ -71,7 +71,7 @@ public final class BookingServiceImpl implements BookingService {
   public void assignCargoToRoute(final Itinerary itinerary, final TrackingId trackingId) {
     Validate.notNull(itinerary);
     Validate.notNull(trackingId);
-
+                                
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);

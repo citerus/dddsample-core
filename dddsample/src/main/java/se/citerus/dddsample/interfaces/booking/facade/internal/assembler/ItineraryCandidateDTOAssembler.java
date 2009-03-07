@@ -12,7 +12,6 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,7 +41,7 @@ public class ItineraryCandidateDTOAssembler {
       final Voyage voyage = voyageRepository.find(voyageNumber);
       final Location from = locationRepository.find(new UnLocode(legDTO.getFrom()));
       final Location to = locationRepository.find(new UnLocode(legDTO.getTo()));
-      legs.add(new Leg(voyage, from, to, new Date(), new Date()));  // TODO better dates
+      legs.add(new Leg(voyage, from, to, legDTO.getLoadTime(), legDTO.getUnloadTime()));
     }
     return new Itinerary(legs);
   }

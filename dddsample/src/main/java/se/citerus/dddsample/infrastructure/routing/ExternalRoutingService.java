@@ -102,4 +102,5 @@ public class ExternalRoutingService implements RoutingService {
   public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
   }
+  
 }

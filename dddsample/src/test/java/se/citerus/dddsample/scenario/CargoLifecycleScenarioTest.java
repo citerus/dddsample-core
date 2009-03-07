@@ -106,7 +106,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(RoutingStatus.NOT_ROUTED, cargo.routingStatus());
     assertFalse(cargo.isMisdirected());
     assertNull(cargo.estimatedTimeOfArrival());
-    assertEquals(HandlingActivity.NONE, cargo.nextExpectedActivity());
+    assertNull(cargo.nextExpectedActivity());
 
     /* Use case 2: routing
 
@@ -152,7 +152,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(HONGKONG, cargo.delivery().lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.isMisdirected());
-    assertEquals(new HandlingActivity(UNLOAD, NEWYORK), cargo.nextExpectedActivity());
+    assertEquals(new HandlingActivity(UNLOAD, NEWYORK, CM003), cargo.nextExpectedActivity());
 
 
     /*
@@ -179,7 +179,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(TOKYO, cargo.delivery().lastKnownLocation());
     assertEquals(IN_PORT, cargo.delivery().transportStatus());
     assertTrue(cargo.isMisdirected());
-    assertEquals(HandlingActivity.NONE, cargo.nextExpectedActivity());
+    assertNull(cargo.nextExpectedActivity());
 
 
     // -- Cargo needs to be rerouted --
@@ -191,7 +191,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
 
     // The old itinerary does not satisfy the new specification
     assertEquals(RoutingStatus.MISROUTED, cargo.routingStatus());
-    assertEquals(HandlingActivity.NONE, cargo.nextExpectedActivity());
+    assertNull(cargo.nextExpectedActivity());
 
     // Repeat procedure of selecting one out of a number of possible routes satisfying the route spec
     List<Itinerary> newItineraries = bookingService.requestPossibleRoutesForCargo(cargo.trackingId());
@@ -219,7 +219,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(TOKYO, cargo.delivery().lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.isMisdirected());
-    assertEquals(new HandlingActivity(UNLOAD, HAMBURG), cargo.nextExpectedActivity());
+    assertEquals(new HandlingActivity(UNLOAD, HAMBURG, CM003), cargo.nextExpectedActivity());
 
     // Unload in Hamburg
     handlingEventService.registerHandlingEvent(
@@ -231,7 +231,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(HAMBURG, cargo.delivery().lastKnownLocation());
     assertEquals(IN_PORT, cargo.delivery().transportStatus());
     assertFalse(cargo.isMisdirected());
-    assertEquals(new HandlingActivity(LOAD, HAMBURG), cargo.nextExpectedActivity());
+    assertEquals(new HandlingActivity(LOAD, HAMBURG, CM005), cargo.nextExpectedActivity());
 
 
     // Load in Hamburg
@@ -244,7 +244,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(HAMBURG, cargo.delivery().lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.isMisdirected());
-    assertEquals(new HandlingActivity(UNLOAD, STOCKHOLM), cargo.nextExpectedActivity());
+    assertEquals(new HandlingActivity(UNLOAD, STOCKHOLM, CM005), cargo.nextExpectedActivity());
 
 
     // Unload in Stockholm
@@ -269,7 +269,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(STOCKHOLM, cargo.delivery().lastKnownLocation());
     assertEquals(CLAIMED, cargo.delivery().transportStatus());
     assertFalse(cargo.isMisdirected());
-    assertEquals(HandlingActivity.NONE, cargo.nextExpectedActivity());
+    assertNull(cargo.nextExpectedActivity());
   }
 
 

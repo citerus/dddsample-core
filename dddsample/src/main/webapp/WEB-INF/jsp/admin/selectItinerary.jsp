@@ -25,12 +25,14 @@
       <form action="${postUrl}" method="post">
         <input type="hidden" name="trackingId" value="${cargo.trackingId}"/>
         <table>
-          <caption>Route ${itStatus.index + 1}</caption>
+          <caption>Route candidate ${itStatus.index + 1}</caption>
           <thead>
             <tr>
               <td>Voyage</td>
               <td>From</td>
+              <td></td>
               <td>To</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
@@ -38,10 +40,14 @@
               <input type="hidden" name="legs[${legStatus.index}].voyageNumber" value="${leg.voyageNumber}"/>
               <input type="hidden" name="legs[${legStatus.index}].fromUnLocode" value="${leg.from}"/>
               <input type="hidden" name="legs[${legStatus.index}].toUnLocode" value="${leg.to}"/>
+              <input type="hidden" name="legs[${legStatus.index}].fromDate" value="<fmt:formatDate value="${leg.loadTime}" pattern="yyyy-MM-dd hh:mm"/>"/>
+              <input type="hidden" name="legs[${legStatus.index}].toDate" value="<fmt:formatDate value="${leg.unloadTime}" pattern="yyyy-MM-dd hh:mm"/>"/>
               <tr>
                 <td>${leg.voyageNumber}</td>
                 <td>${leg.from}</td>
+                <td><fmt:formatDate value="${leg.loadTime}" pattern="yyyy-MM-dd hh:mm"/></td>
                 <td>${leg.to}</td>
+                <td><fmt:formatDate value="${leg.unloadTime}" pattern="yyyy-MM-dd hh:mm"/></td>
               </tr>
             </c:forEach>
           </tbody>

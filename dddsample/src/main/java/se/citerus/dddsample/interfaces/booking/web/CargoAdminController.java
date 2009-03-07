@@ -1,5 +1,7 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
@@ -27,6 +29,12 @@ import java.util.*;
 public final class CargoAdminController extends MultiActionController {
 
   private BookingServiceFacade bookingServiceFacade;
+
+  @Override
+  protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+    super.initBinder(request, binder);
+    binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), false));
+  }
 
   public Map registrationForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
     Map<String, Object> map = new HashMap<String, Object>();
@@ -84,8 +92,13 @@ public final class CargoAdminController extends MultiActionController {
   public void assignItinerary(HttpServletRequest request, HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
     List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
     for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
-      // TODO actual dates
-      legDTOs.add(new LegDTO(leg.getVoyageNumber(), leg.getFromUnLocode(), leg.getToUnLocode(), new Date(), new Date()));
+      legDTOs.add(new LegDTO(
+        leg.getVoyageNumber(),
+        leg.getFromUnLocode(),
+        leg.getToUnLocode(),
+        leg.getFromDate(),
+        leg.getToDate())
+      );
     }
 
     RouteCandidateDTO selectedRoute = new RouteCandidateDTO(legDTOs);
@@ -94,6 +107,26 @@ public final class CargoAdminController extends MultiActionController {
 
     response.sendRedirect("show.html?trackingId=" + command.getTrackingId());
     //response.sendRedirect("list.html");
+  }
+
+  public Map pickNewDestination(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    Map<String, Object> map = new HashMap<String, Object>();
+
+    List<LocationDTO> locations = bookingServiceFacade.listShippingLocations();
+    map.put("locations", locations);
+
+    String trackingId = request.getParameter("trackingId");
+    CargoRoutingDTO cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
+    map.put("cargo", cargo);
+
+    return map;
+  }
+
+  public void changeDestination(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    String trackingId = request.getParameter("trackingId");
+    String unLocode = request.getParameter("unlocode");
+    bookingServiceFacade.changeDestination(trackingId, unLocode);
+    response.sendRedirect("show.html?trackingId=" + trackingId);
   }
 
   public void setBookingServiceFacade(BookingServiceFacade bookingServiceFacade) {

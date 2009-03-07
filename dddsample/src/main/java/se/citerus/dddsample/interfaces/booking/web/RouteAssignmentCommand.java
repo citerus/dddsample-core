@@ -4,6 +4,7 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RouteAssignmentCommand {
@@ -33,6 +34,8 @@ public class RouteAssignmentCommand {
     private String voyageNumber;
     private String fromUnLocode;
     private String toUnLocode;
+    private Date fromDate;
+    private Date toDate;
 
     public String getVoyageNumber() {
       return voyageNumber;
@@ -56,6 +59,22 @@ public class RouteAssignmentCommand {
 
     public void setToUnLocode(final String toUnLocode) {
       this.toUnLocode = toUnLocode;
+    }
+
+    public Date getFromDate() {
+      return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+      this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+      return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+      this.toDate = toDate;
     }
 
     public static Factory factory() {
