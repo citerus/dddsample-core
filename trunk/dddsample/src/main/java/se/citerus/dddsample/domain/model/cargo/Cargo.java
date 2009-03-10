@@ -5,13 +5,12 @@ import se.citerus.dddsample.domain.model.Entity;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -49,6 +48,7 @@ public class Cargo implements Entity<Cargo> {
   private Delivery delivery;
   private RouteSpecification routeSpecification;
   private RoutingStatus routingStatus;
+  private HandlingActivity nextExpectedActivity;
   private boolean misdirected;
   private Date eta;
   
@@ -65,7 +65,7 @@ public class Cargo implements Entity<Cargo> {
     this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
 
-    deriveDeliveryProgress(Collections.<HandlingEvent>emptyList());
+    deriveDeliveryProgress(HandlingHistory.EMPTY);
   }
 
   /**
@@ -130,6 +130,7 @@ public class Cargo implements Entity<Cargo> {
     // Handling consistency within the Cargo aggregate synchronously
     this.routingStatus = deriveRoutingStatus();
     this.misdirected = deriveMisdirectionStatus();
+    this.nextExpectedActivity = deriveNextExpectedActivity();
     this.eta = deriveEta();
   }
 
@@ -180,6 +181,74 @@ public class Cargo implements Entity<Cargo> {
    * @return the next expected activity
    */
   public HandlingActivity nextExpectedActivity() {
+    return nextExpectedActivity;
+  }
+
+  /**
+   * Updates all aspects of the cargo aggregate status
+   * based on the current route specification, itinerary and handling of the cargo.
+   * <p/>
+   * When either of those three changes, i.e. when a new route is specified for the cargo,
+   * the cargo is assigned to a route or when the cargo is handled, the status must be
+   * re-calculated.
+   * <p/>
+   * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
+   * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
+   * but changes to the delivery history (when a cargo is handled) cause the status update
+   * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
+   *
+   * @param handlingHistory delivery history
+   */
+  public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
+    // Delivery is a value object, so we can simply discard the old one
+    // and replace it with a new
+    this.delivery = Delivery.derivedFrom(handlingHistory);
+    this.routingStatus = deriveRoutingStatus();
+    this.misdirected = deriveMisdirectionStatus();
+    this.eta = deriveEta();
+    this.nextExpectedActivity = deriveNextExpectedActivity();
+  }
+
+  /**
+   *
+   * @return true if this cargo is misdirected.
+   */
+  private boolean deriveMisdirectionStatus() {
+    final HandlingEvent lastEvent = delivery().lastEvent();
+    if (lastEvent == null) {
+      return false;
+    } else {
+      return !itinerary().isExpected(lastEvent);
+    }
+  }
+
+  /**
+   * @return current routing status
+   */
+  private RoutingStatus deriveRoutingStatus() {
+    if (itinerary == null) {
+      return NOT_ROUTED;
+    } else {
+      if (routeSpecification.isSatisfiedBy(itinerary)) {
+        return ROUTED;
+      } else {
+        return MISROUTED;
+      }
+    }
+  }
+
+  /**
+   * @return estimated time of arrival, or null if unknown
+   */
+  private Date deriveEta() {
+    if (onTrack()) {
+      return itinerary().finalArrivalDate();
+    } else {
+      return ETA_UNKOWN;
+    }
+  }
+
+  private HandlingActivity deriveNextExpectedActivity() {
     if (!onTrack()) return NO_ACTIVITY;
 
     final HandlingEvent lastEvent = delivery().lastEvent();
@@ -223,73 +292,10 @@ public class Cargo implements Entity<Cargo> {
   }
 
   /**
-   * Updates all aspects of the cargo aggregate status
-   * based on the current route specification, itinerary and handling of the cargo.
-   * <p/>
-   * When either of those three changes, i.e. when a new route is specified for the cargo,
-   * the cargo is assigned to a route or when the cargo is handled, the status must be
-   * re-calculated.
-   * <p/>
-   * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
-   * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
-   * but changes to the delivery history (when a cargo is handled) cause the status update
-   * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
-   *
-   * @param handlingEvents all handling events for this cargo
-   */
-  public void deriveDeliveryProgress(final List<HandlingEvent> handlingEvents) {
-    // Delivery is a value object, so we can simply discard the old one
-    // and replace it with a new
-    this.delivery = Delivery.derivedFrom(handlingEvents);
-    this.routingStatus = deriveRoutingStatus();
-    this.misdirected = deriveMisdirectionStatus();
-    this.eta = deriveEta();
-  }
-
-  /**
-   *
-   * @return true if this cargo is misdirected.
-   */
-  private boolean deriveMisdirectionStatus() {
-    final HandlingEvent lastEvent = delivery().lastEvent();
-    if (lastEvent == null) {
-      return false;
-    } else {
-      return !itinerary().isExpected(lastEvent);
-    }
-  }
-
-  /**
-   * @return current routing status
-   */
-  private RoutingStatus deriveRoutingStatus() {
-    if (itinerary == null) {
-      return NOT_ROUTED;
-    } else {
-      if (routeSpecification.isSatisfiedBy(itinerary)) {
-        return ROUTED;
-      } else {
-        return MISROUTED;
-      }
-    }
-  }
-
-  /**
-   * @return estimated time of arrival, or null if unknown
-   */
-  private Date deriveEta() {
-    if (onTrack()) {
-      return itinerary().finalArrivalDate();
-    } else {
-      return ETA_UNKOWN;
-    }
-  }
-
-  /**
    * @return true if cargo is on track, i.e. routed and not misdirected
    */
   private boolean onTrack() {
-    return routingStatus().equals(ROUTED) && !misdirected;
+    return routingStatus.equals(ROUTED) && !misdirected;
   }
   
   @Override

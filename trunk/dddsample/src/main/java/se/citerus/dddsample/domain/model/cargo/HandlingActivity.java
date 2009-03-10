@@ -81,4 +81,8 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
     return sameValueAs(other);
   }
 
+  HandlingActivity() {
+    // Needed by Hibernate
+  }
+  
 }

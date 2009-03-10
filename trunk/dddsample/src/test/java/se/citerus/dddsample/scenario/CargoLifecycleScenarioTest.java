@@ -9,11 +9,13 @@ import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.application.impl.CargoInspectionServiceImpl;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.*;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -103,7 +105,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     Cargo cargo = cargoRepository.find(trackingId);
     assertNotNull(cargo);
     assertEquals(NOT_RECEIVED, cargo.delivery().transportStatus());
-    assertEquals(RoutingStatus.NOT_ROUTED, cargo.routingStatus());
+    assertEquals(NOT_ROUTED, cargo.routingStatus());
     assertFalse(cargo.isMisdirected());
     assertNull(cargo.estimatedTimeOfArrival());
     assertNull(cargo.nextExpectedActivity());
@@ -120,7 +122,8 @@ public class CargoLifecycleScenarioTest extends TestCase {
     Itinerary itinerary = selectPreferedItinerary(itineraries);
     cargo.assignToRoute(itinerary);
 
-    assertEquals(RoutingStatus.ROUTED, cargo.routingStatus());
+    assertEquals(NOT_RECEIVED, cargo.delivery().transportStatus());
+    assertEquals(ROUTED, cargo.routingStatus());
     assertNotNull(cargo.estimatedTimeOfArrival());
     assertEquals(new HandlingActivity(RECEIVE, HONGKONG), cargo.nextExpectedActivity());
 
@@ -142,6 +145,9 @@ public class CargoLifecycleScenarioTest extends TestCase {
       new Date(100), trackingId, null, HONGKONG.unLocode(), RECEIVE
     );
 
+    assertEquals(IN_PORT, cargo.delivery().transportStatus());
+    assertEquals(HONGKONG, cargo.delivery().lastKnownLocation());
+    
     // Next event: Load onto voyage CM003 in Hongkong
     handlingEventService.registerHandlingEvent(
       new Date(200), trackingId, CM003.voyageNumber(), HONGKONG.unLocode(), LOAD
@@ -160,7 +166,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
       because there is no voyage with the specified voyage number,
       and there's no location with the specified UN Locode either.
 
-      This attempt will be rejected and will not affet the cargo delivery in any way.
+      This attempt will be rejected and will not affect the cargo delivery in any way.
      */
     final VoyageNumber noSuchVoyageNumber = new VoyageNumber("XX000");
     final UnLocode noSuchUnLocode = new UnLocode("ZZZZZ");
@@ -190,7 +196,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     cargo.specifyNewRoute(fromTokyo);
 
     // The old itinerary does not satisfy the new specification
-    assertEquals(RoutingStatus.MISROUTED, cargo.routingStatus());
+    assertEquals(MISROUTED, cargo.routingStatus());
     assertNull(cargo.nextExpectedActivity());
 
     // Repeat procedure of selecting one out of a number of possible routes satisfying the route spec
@@ -199,7 +205,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     cargo.assignToRoute(newItinerary);
 
     // New itinerary should satisfy new route
-    assertEquals(RoutingStatus.ROUTED, cargo.routingStatus());
+    assertEquals(ROUTED, cargo.routingStatus());
 
     // TODO we can't handle the face that after a reroute, the cargo isn't misdirected anymore
     //assertFalse(cargo.isMisdirected());
@@ -323,6 +329,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
     handlingEventRepository = new HandlingEventRepository() {
       Map<TrackingId, List<HandlingEvent>> eventMap = new HashMap<TrackingId, List<HandlingEvent>>();
 
+      @Override
       public void store(HandlingEvent event) {
         final TrackingId trackingId = event.cargo().trackingId();
         List<HandlingEvent> list = eventMap.get(trackingId);
@@ -333,8 +340,9 @@ public class CargoLifecycleScenarioTest extends TestCase {
         list.add(event);
       }
 
-      public List<HandlingEvent> findEventsForCargo(TrackingId trackingId) {
-        return eventMap.get(trackingId);
+      @Override
+      public HandlingHistory lookupHandlingHistoryOfCargo(TrackingId trackingId) {
+        return new HandlingHistory(eventMap.get(trackingId));
       }
     };
 

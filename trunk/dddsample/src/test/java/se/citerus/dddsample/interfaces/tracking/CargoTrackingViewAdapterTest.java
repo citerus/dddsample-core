@@ -6,6 +6,7 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
 import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
@@ -23,7 +24,7 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, CM001));
     events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001));
 
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
     StaticApplicationContext applicationContext = new StaticApplicationContext();
     applicationContext.addMessage("cargo.status.IN_PORT", Locale.GERMAN, "In port {0}");

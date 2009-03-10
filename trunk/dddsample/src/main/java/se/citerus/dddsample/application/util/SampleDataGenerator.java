@@ -12,10 +12,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.domain.model.cargo.*;
-import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
-import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.domain.model.handling.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.SampleLocations;
@@ -31,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import static java.util.Arrays.asList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Provides sample data.
@@ -254,8 +250,8 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(trackingId);
-        abc123.deriveDeliveryProgress(handlingEvents);
+        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        abc123.deriveDeliveryProgress(handlingHistory);
 
         session.update(abc123);
 
@@ -299,8 +295,8 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        List<HandlingEvent> handlingEvents1 = handlingEventRepository.findEventsForCargo(trackingId1);
-        jkl567.deriveDeliveryProgress(handlingEvents1);
+        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        jkl567.deriveDeliveryProgress(handlingHistory1);
 
         session.update(jkl567);
       }

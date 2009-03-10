@@ -22,6 +22,10 @@ public interface HandlingEventService {
    * @param unLocode UN locode for the location where the event occurred
    * @param type type of event
    */
-  void registerHandlingEvent(Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unLocode, HandlingEvent.Type type);
+  void registerHandlingEvent(Date completionTime,
+                             TrackingId trackingId,
+                             VoyageNumber voyageNumber,
+                             UnLocode unLocode,
+                             HandlingEvent.Type type);
 
 }

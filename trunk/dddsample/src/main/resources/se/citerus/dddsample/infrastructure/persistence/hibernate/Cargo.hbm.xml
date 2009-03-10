@@ -23,6 +23,17 @@
       </type>
     </property>
 
+    <component name="nextExpectedActivity" update="true">
+      <many-to-one name="location" column="next_expected_location_id" foreign-key="next_expected_location_fk"/>
+      <property name="type" column="next_expected_handling_event_type">
+        <type name="org.hibernate.type.EnumType">
+          <param name="enumClass">se.citerus.dddsample.domain.model.handling.HandlingEvent$Type</param>
+          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+        </type>
+      </property>
+      <many-to-one name="voyage" column="next_expected_voyage_id" foreign-key="next_expected_voyage_fk"/>
+    </component>
+
     <component name="trackingId" unique="true" update="false">
       <property name="id" column="tracking_id"/>
     </component>

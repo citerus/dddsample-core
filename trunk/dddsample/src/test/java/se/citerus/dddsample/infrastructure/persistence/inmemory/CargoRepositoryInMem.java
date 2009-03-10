@@ -5,8 +5,8 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
@@ -59,22 +59,22 @@ public class CargoRepositoryInMem implements CargoRepository {
   public void init() throws Exception {
     final TrackingId xyz = new TrackingId("XYZ");
     final Cargo cargoXYZ = createCargoWithDeliveryHistory(
-      xyz, STOCKHOLM, MELBOURNE, handlingEventRepository.findEventsForCargo(xyz));
+      xyz, STOCKHOLM, MELBOURNE, handlingEventRepository.lookupHandlingHistoryOfCargo(xyz));
     cargoDb.put(xyz.idString(), cargoXYZ);
 
     final TrackingId zyx = new TrackingId("ZYX");
     final Cargo cargoZYX = createCargoWithDeliveryHistory(
-      zyx, MELBOURNE, STOCKHOLM, handlingEventRepository.findEventsForCargo(zyx));
+      zyx, MELBOURNE, STOCKHOLM, handlingEventRepository.lookupHandlingHistoryOfCargo(zyx));
     cargoDb.put(zyx.idString(), cargoZYX);
 
     final TrackingId abc = new TrackingId("ABC");
     final Cargo cargoABC = createCargoWithDeliveryHistory(
-      abc, STOCKHOLM, HELSINKI, handlingEventRepository.findEventsForCargo(abc));
+      abc, STOCKHOLM, HELSINKI, handlingEventRepository.lookupHandlingHistoryOfCargo(abc));
     cargoDb.put(abc.idString(), cargoABC);
 
     final TrackingId cba = new TrackingId("CBA");
     final Cargo cargoCBA = createCargoWithDeliveryHistory(
-      cba, HELSINKI, STOCKHOLM, handlingEventRepository.findEventsForCargo(cba));
+      cba, HELSINKI, STOCKHOLM, handlingEventRepository.lookupHandlingHistoryOfCargo(cba));
     cargoDb.put(cba.idString(), cargoCBA);
   }
 
@@ -85,11 +85,11 @@ public class CargoRepositoryInMem implements CargoRepository {
   public static Cargo createCargoWithDeliveryHistory(TrackingId trackingId,
                                                      Location origin,
                                                      Location destination,
-                                                     Collection<HandlingEvent> events) {
+                                                     HandlingHistory handlingHistory) {
 
     final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
     final Cargo cargo = new Cargo(trackingId, routeSpecification);
-    cargo.deriveDeliveryProgress(new ArrayList<HandlingEvent>(events));
+    cargo.deriveDeliveryProgress(handlingHistory);
 
     return cargo;
   }

@@ -2,8 +2,6 @@ package se.citerus.dddsample.domain.model.handling;
 
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
-import java.util.List;
-
 /**
  * Handling event repository.
  */
@@ -19,8 +17,8 @@ public interface HandlingEventRepository {
 
   /**
    * @param trackingId cargo tracking id
-   * @return All handling events for this cargo
+   * @return The handling history of this cargo
    */
-  List<HandlingEvent> findEventsForCargo(TrackingId trackingId);
+  HandlingHistory lookupHandlingHistoryOfCargo(TrackingId trackingId);
 
 }

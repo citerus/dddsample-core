@@ -41,33 +41,7 @@
       <p class="notify"><img src="${rc.contextPath}/images/error.png" alt="" />Cargo is misdirected</p>
     </c:if>
     <c:if test="${not empty cargo.events}">
-      <h3>Delivery History</h3>
-      <%--
-      <table cellspacing="4">
-        <thead>
-          <tr>
-            <td>Event</td>
-            <td>Location</td>
-            <td>Time</td>
-            <td>Voyage number</td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          <c:forEach items="${cargo.events}" var="event">
-            <tr class="event-type-${event.type}">
-              <td>${event.type}</td>
-              <td>${event.location}</td>
-              <td>${event.time}</td>
-              <td>${event.voyageNumber}</td>
-              <td>
-                <img src="${rc.contextPath}/images/${event.expected ? "tick" : "cross"}.png" alt=""/>
-              </td>
-            </tr>
-          </c:forEach>
-        </tbody>
-      </table>
-      --%>
+      <h3>Handling History</h3>
         <ul style="list-style-type: none;">
             <c:forEach items="${cargo.events}" var="leg">
             <li>
@@ -76,8 +50,6 @@
             </li>
             </c:forEach>
         </ul>
-
-
     </c:if>
   </div>
   </c:if>

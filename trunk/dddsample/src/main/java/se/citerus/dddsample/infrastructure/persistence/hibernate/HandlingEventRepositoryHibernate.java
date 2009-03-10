@@ -4,8 +4,7 @@ import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
-
-import java.util.List;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
 /**
  * Hibernate implementation of HandlingEventRepository.
@@ -15,16 +14,17 @@ import java.util.List;
 public class HandlingEventRepositoryHibernate extends HibernateRepository implements HandlingEventRepository {
 
   @Override
-  public void store(HandlingEvent event) {
+  public void store(final HandlingEvent event) {
     getSession().save(event);
   }
 
   @Override
-  public List<HandlingEvent> findEventsForCargo(TrackingId tid) {
-    return getSession().createQuery(
+  public HandlingHistory lookupHandlingHistoryOfCargo(final TrackingId trackingId) {
+    return new HandlingHistory(getSession().createQuery(
             "from HandlingEvent where cargo.trackingId = :tid").
-            setParameter("tid", tid).
-            list();
+            setParameter("tid", trackingId).
+            list()
+    );
   }
 
 }
