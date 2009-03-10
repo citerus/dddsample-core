@@ -56,7 +56,7 @@ public final class CargoTrackingController extends SimpleFormController {
     if (cargo != null) {
       final MessageSource messageSource = getApplicationContext();
       final Locale locale = RequestContextUtils.getLocale(request);
-      final List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(trackingId);
+      final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
       model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale, handlingEvents));
     } else {
       errors.rejectValue("trackingId", "cargo.unknown_id", new Object[]{trackCommand.getTrackingId()}, "Unknown tracking id");

@@ -5,6 +5,7 @@ import se.citerus.dddsample.application.util.DateTestUtil;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
@@ -118,7 +119,7 @@ public class CargoTest extends TestCase {
     // Adding an event unrelated to unloading at final destination
     events.add(
       new HandlingEvent(cargo, new Date(10), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU));
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
     Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
@@ -128,19 +129,19 @@ public class CargoTest extends TestCase {
     // Adding an unload event, but not at the final destination
     events.add(
       new HandlingEvent(cargo, new Date(20), new Date(), HandlingEvent.Type.UNLOAD, TOKYO, voyage));
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
     // Adding an event in the final destination, but not unload
     events.add(
       new HandlingEvent(cargo, new Date(30), new Date(), HandlingEvent.Type.CUSTOMS, NEWYORK));
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     assertFalse(cargo.isUnloadedAtDestination());
 
     // Finally, cargo is unloaded at final destination
     events.add(
       new HandlingEvent(cargo, new Date(40), new Date(), HandlingEvent.Type.UNLOAD, NEWYORK, voyage));
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     assertTrue(cargo.isUnloadedAtDestination());
   }
 
@@ -150,7 +151,7 @@ public class CargoTest extends TestCase {
 
     HandlingEvent he = new HandlingEvent(cargo, getDate("2007-12-01"), new Date(), HandlingEvent.Type.RECEIVE, STOCKHOLM);
     events.add(he);
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
     return cargo;
   }
@@ -159,7 +160,7 @@ public class CargoTest extends TestCase {
     final Cargo cargo = populateCargoOffMelbourne();
 
     events.add(new HandlingEvent(cargo, getDate("2007-12-09"), new Date(), HandlingEvent.Type.CLAIM, MELBOURNE));
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
     return cargo;
   }
@@ -174,7 +175,7 @@ public class CargoTest extends TestCase {
     events.add(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, voyage));
     events.add(new HandlingEvent(cargo, getDate("2007-12-04"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, voyage));
 
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     return cargo;
   }
 
@@ -185,7 +186,7 @@ public class CargoTest extends TestCase {
     events.add(new HandlingEvent(cargo, getDate("2007-12-02"), new Date(), HandlingEvent.Type.UNLOAD, HAMBURG, voyage));
     events.add(new HandlingEvent(cargo, getDate("2007-12-03"), new Date(), HandlingEvent.Type.LOAD, HAMBURG, voyage));
 
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     return cargo;
   }
 
@@ -201,7 +202,7 @@ public class CargoTest extends TestCase {
     events.add(new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.LOAD, HONGKONG, voyage));
     events.add(new HandlingEvent(cargo, getDate("2007-12-07"), new Date(), HandlingEvent.Type.UNLOAD, MELBOURNE, voyage));
 
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     return cargo;
   }
 
@@ -216,7 +217,7 @@ public class CargoTest extends TestCase {
 
     events.add(new HandlingEvent(cargo, getDate("2007-12-05"), new Date(), HandlingEvent.Type.LOAD, HONGKONG, voyage));
 
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     return cargo;
   }
 
@@ -242,7 +243,7 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(130), new Date(140), HandlingEvent.Type.CUSTOMS, GOTHENBURG));
 
     events.addAll(handlingEvents);
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
     assertFalse(cargo.isMisdirected());
 
     //Try a couple of failing ones
@@ -252,7 +253,7 @@ public class CargoTest extends TestCase {
 
     handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU));
     events.addAll(handlingEvents);
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
     assertTrue(cargo.isMisdirected());
 
@@ -266,7 +267,7 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(70), new Date(80), HandlingEvent.Type.LOAD, ROTTERDAM, voyage));
 
     events.addAll(handlingEvents);
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
     assertTrue(cargo.isMisdirected());
 
@@ -280,7 +281,7 @@ public class CargoTest extends TestCase {
     handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM));
 
     events.addAll(handlingEvents);
-    cargo.deriveDeliveryProgress(events);
+    cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
     assertTrue(cargo.isMisdirected());
   }

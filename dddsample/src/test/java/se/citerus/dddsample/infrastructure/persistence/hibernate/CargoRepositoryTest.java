@@ -46,7 +46,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     assertNotNull(cargo.delivery());
 
-    final List<HandlingEvent> events = handlingEventRepository.findEventsForCargo(trackingId);
+    final List<HandlingEvent> events = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
     assertEquals(2, events.size());
 
     HandlingEvent firstEvent = events.get(0);

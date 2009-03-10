@@ -6,30 +6,28 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.ValueObject;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import static java.util.Collections.EMPTY_SET;
-import static java.util.Collections.sort;
-import java.util.HashSet;
-import java.util.List;
-
 /**
- * The actual result of the cargo transportation, as opposed to
+ * The actual transportation of the cargo, as opposed to
  * the customer requirement (RouteSpecification) and the plan (Itinerary). 
  *
  */
 public class Delivery implements ValueObject<Delivery> {
 
-  public static final Delivery EMPTY_DELIVERY = Delivery.derivedFrom(EMPTY_SET);
+  public static final Delivery EMPTY_DELIVERY = Delivery.derivedFrom(HandlingHistory.EMPTY);
 
   private TransportStatus transportStatus;
   private Location lastKnownLocation;
   private Voyage currentVoyage;
   private HandlingEvent lastEvent;
+
+  private Delivery(HandlingEvent lastEvent) {
+    this.lastEvent = lastEvent;
+  }
 
   /**
    * @return Transport status
@@ -53,19 +51,15 @@ public class Delivery implements ValueObject<Delivery> {
   }
 
   /**
-   * @param handlingEvents handling events
+   * @param handlingHistory delivery history
    * @return An up to date Delivery derived from this collection of handling events.
    */
-  static Delivery derivedFrom(final Collection<HandlingEvent> handlingEvents) {
-    Validate.notNull(handlingEvents, "Handling events are required");
+  static Delivery derivedFrom(HandlingHistory handlingHistory) {
+    Validate.notNull(handlingHistory, "Delivery history is required");
     
-    final List<HandlingEvent> eventsByCompletionTime =
-      new ArrayList<HandlingEvent>(
-        new HashSet<HandlingEvent>(handlingEvents));
-    sort(eventsByCompletionTime, HandlingEvent.BY_COMPLETION_TIME_COMPARATOR);
-
-    final Delivery delivery = new Delivery();
-    delivery.calculateLastEvent(eventsByCompletionTime);
+    final Delivery delivery = new Delivery(
+      handlingHistory.mostRecentlyCompletedEvent()
+    );
     delivery.calculateTransportStatus();
     delivery.calculateLastKnownLocation();
     delivery.calculateCurrentVoyage();
@@ -77,14 +71,6 @@ public class Delivery implements ValueObject<Delivery> {
    */
   HandlingEvent lastEvent() {
     return lastEvent;
-  }
-
-  private void calculateLastEvent(final List<HandlingEvent> handlingEvents) {
-    if (handlingEvents.isEmpty()) {
-      lastEvent =  null;
-    } else {
-      lastEvent = handlingEvents.get(handlingEvents.size() - 1);
-    }
   }
 
   private void calculateTransportStatus() {

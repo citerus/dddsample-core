@@ -52,7 +52,8 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
   }
 
   public void testFindEventsForCargo() throws Exception {
-    List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(new TrackingId("XYZ"));
+    TrackingId trackingId = new TrackingId("XYZ");
+    List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
     assertEquals(12, handlingEvents.size());
   }
 

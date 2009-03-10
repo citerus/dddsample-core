@@ -9,10 +9,8 @@ import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
-
-import java.util.List;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
 public class CargoInspectionServiceImpl implements CargoInspectionService {
 
@@ -40,9 +38,9 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
       return;
     }
 
-    final List<HandlingEvent> handlingEvents = handlingEventRepository.findEventsForCargo(trackingId);
+    final HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
 
-    cargo.deriveDeliveryProgress(handlingEvents);
+    cargo.deriveDeliveryProgress(handlingHistory);
 
     if (cargo.isMisdirected()) {
       applicationEvents.cargoWasMisdirected(cargo);

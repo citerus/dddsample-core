@@ -12,7 +12,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 
-import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -32,16 +31,6 @@ import java.util.Date;
  * All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
-
-  /**
-   * Comparator used to be able to sort HandlingEvents according to their completion time
-   */
-  public static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR =
-    new Comparator<HandlingEvent>() {
-      public int compare(final HandlingEvent he1, final HandlingEvent he2) {
-        return he1.completionTime().compareTo(he2.completionTime());
-      }
-    };
 
   private Type type;
   private Voyage voyage;
