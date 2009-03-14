@@ -5,9 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.application.ApplicationEvents;
-import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;

@@ -7,11 +7,11 @@ import com.aggregator.HandlingReportService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import se.citerus.dddsample.application.ApplicationEvents;
-import se.citerus.dddsample.application.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 import javax.jws.WebParam;
