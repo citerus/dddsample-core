@@ -16,7 +16,7 @@ public class CargoRoutingDTOAssembler {
       cargo.origin().unLocode().idString(),
       cargo.routeSpecification().destination().unLocode().idString(),
       cargo.routeSpecification().arrivalDeadline(),
-      cargo.routingStatus().equals(RoutingStatus.MISROUTED));
+      cargo.delivery().routingStatus().sameValueAs(RoutingStatus.MISROUTED));
     for (Leg leg : cargo.itinerary().legs()) {
       dto.addLeg(
         leg.voyage().voyageNumber().idString(),

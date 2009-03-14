@@ -132,16 +132,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, origin_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, transport_status, current_voyage_id, last_known_location_id, is_misdirected, routing_status) " +
-      "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, origin_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, transport_status, current_voyage_id, last_known_location_id, is_misdirected, routing_status, calculated_at, unloaded_at_dest) " +
+      "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 1, 2, ts(10), "IN_PORT", null, 1, false, "ROUTED"},
-      {2, "ABC", 1, 1, 5, ts(20), "IN_PORT", null, 1, false, "ROUTED"},
-      {3, "ZYX", 2, 2, 1, ts(30), "IN_PORT", null, 1, false, "NOT_ROUTED"},
-      {4, "CBA", 5, 5, 1, ts(40), "IN_PORT", null, 1, false, "MISROUTED"},
-      {5, "FGH", 1, 3, 5, ts(50), "IN_PORT", null, 1, false, "ROUTED"},  // Cargo origin differs from spec origin
-      {6, "JKL", 6, 6, 4, ts(60), "IN_PORT", null, 1, true, "ROUTED"}
+      {1, "XYZ", 1, 1, 2, ts(10), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},
+      {2, "ABC", 1, 1, 5, ts(20), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},
+      {3, "ZYX", 2, 2, 1, ts(30), "IN_PORT", null, 1, false, "NOT_ROUTED", ts(100), false},
+      {4, "CBA", 5, 5, 1, ts(40), "IN_PORT", null, 1, false, "MISROUTED", ts(100), false},
+      {5, "FGH", 1, 3, 5, ts(50), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},  // Cargo origin differs from spec origin
+      {6, "JKL", 6, 6, 4, ts(60), "IN_PORT", null, 1, true, "ROUTED", ts(100), false}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }
@@ -295,7 +295,7 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId1);
         jkl567.deriveDeliveryProgress(handlingHistory1);
 
         session.update(jkl567);

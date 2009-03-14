@@ -42,11 +42,11 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
 
     cargo.deriveDeliveryProgress(handlingHistory);
 
-    if (cargo.isMisdirected()) {
+    if (cargo.delivery().isMisdirected()) {
       applicationEvents.cargoWasMisdirected(cargo);
     }
 
-    if (cargo.isUnloadedAtDestination()) {
+    if (cargo.delivery().isUnloadedAtDestination()) {
       applicationEvents.cargoHasArrived(cargo);
     }
 

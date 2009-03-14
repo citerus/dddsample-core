@@ -104,14 +104,14 @@ public final class CargoTrackingViewAdapter {
   }
 
   public String getEta() {
-    Date eta = cargo.estimatedTimeOfArrival();
+    Date eta = cargo.delivery().estimatedTimeOfArrival();
 
     if (eta == null) return "?";
     else return new SimpleDateFormat(FORMAT).format(eta);
   }
 
   public String getNextExpectedActivity() {
-      HandlingActivity activity = cargo.nextExpectedActivity();
+      HandlingActivity activity = cargo.delivery().nextExpectedActivity();
       if (activity == null) {
         return "";
       }
@@ -135,7 +135,7 @@ public final class CargoTrackingViewAdapter {
    * @return True if cargo is misdirected.
    */
   public boolean isMisdirected() {
-    return cargo.isMisdirected();
+    return cargo.delivery().isMisdirected();
   }
 
   /**
