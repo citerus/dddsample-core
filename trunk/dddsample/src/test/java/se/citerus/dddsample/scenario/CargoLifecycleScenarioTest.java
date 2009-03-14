@@ -197,6 +197,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
 
     // -- Cargo needs to be rerouted --
 
+    // TODO cleaner reroute from "earliest location from where the new route originates"
 
     // Specify a new route, this time from Tokyo (where it was incorrectly unloaded) to Stockholm
     RouteSpecification fromTokyo = new RouteSpecification(TOKYO, STOCKHOLM, arrivalDeadline);
