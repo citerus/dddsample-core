@@ -47,11 +47,7 @@
 
   <servlet>
     <servlet-name>booking</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-      <param-name>a</param-name>
-      <param-value>b</param-value>
-    </init-param>
+    <servlet-class>se.citerus.dddsample.interfaces.booking.web.BookingDispatcherServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
