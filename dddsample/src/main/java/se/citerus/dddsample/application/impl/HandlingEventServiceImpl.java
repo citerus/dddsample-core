@@ -20,7 +20,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   private final ApplicationEvents applicationEvents;
   private final HandlingEventRepository handlingEventRepository;
   private final HandlingEventFactory handlingEventFactory;
-  private static final Log logger = LogFactory.getLog(HandlingEventServiceImpl.class);
+  private final Log logger = LogFactory.getLog(HandlingEventServiceImpl.class);
 
   public HandlingEventServiceImpl(final HandlingEventRepository handlingEventRepository,
                                   final ApplicationEvents applicationEvents,
@@ -31,35 +31,30 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackFor = CannotCreateHandlingEventException.class)
   public void registerHandlingEvent(final Date completionTime,
                                     final TrackingId trackingId,
                                     final VoyageNumber voyageNumber,
                                     final UnLocode unLocode,
-                                    final HandlingEvent.Type type) {
-    try {
-      /* Using a factory to create a HandlingEvent (aggregate). This is where
-         it is determined wether the incoming data, the attempt, actually is capable
-         of representing a real handling event. */
-      final HandlingEvent event = handlingEventFactory.createHandlingEvent(
-        new Date(), completionTime, trackingId, voyageNumber, unLocode, type
-      );
+                                    final HandlingEvent.Type type) throws CannotCreateHandlingEventException {
+    final Date registrationTime = new Date();
+    /* Using a factory to create a HandlingEvent (aggregate). This is where
+       it is determined wether the incoming data, the attempt, actually is capable
+       of representing a real handling event. */
+    final HandlingEvent event = handlingEventFactory.createHandlingEvent(
+      registrationTime, completionTime, trackingId, voyageNumber, unLocode, type
+    );
 
-      /* Store the new handling event, which updates the persistent
-         state of the handling event aggregate (but not the cargo aggregate -
-         that happens asynchronously!)
-       */
-      handlingEventRepository.store(event);
+    /* Store the new handling event, which updates the persistent
+       state of the handling event aggregate (but not the cargo aggregate -
+       that happens asynchronously!)
+     */
+    handlingEventRepository.store(event);
 
-      /* Publish an event stating that a cargo has been handled. */
-      applicationEvents.cargoWasHandled(event);
+    /* Publish an event stating that a cargo has been handled. */
+    applicationEvents.cargoWasHandled(event);
 
-      logger.info("Registered handling event");
-    } catch (CannotCreateHandlingEventException e) {
-      /* This may be a bogus attempt, for example containing a tracking id
-         that doesn't match any cargo that we're tracking. */
-      logger.error(e);
-    }
+    logger.info("Registered handling event");
   }
 
 }

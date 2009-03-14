@@ -1,6 +1,5 @@
 package se.citerus.dddsample.application.impl;
 
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +34,6 @@ public final class BookingServiceImpl implements BookingService {
   public TrackingId bookNewCargo(final UnLocode originUnLocode,
                                  final UnLocode destinationUnLocode,
                                  final Date arrivalDeadline) {
-    Validate.notNull(originUnLocode);
-    Validate.notNull(destinationUnLocode);
-
     // TODO modeling this as a cargo factory might be suitable
     final TrackingId trackingId = cargoRepository.nextTrackingId();
     final Location origin = locationRepository.find(originUnLocode);
@@ -55,8 +51,6 @@ public final class BookingServiceImpl implements BookingService {
   @Override
   @Transactional
   public List<Itinerary> requestPossibleRoutesForCargo(final TrackingId trackingId) {
-    Validate.notNull(trackingId);
-
     final Cargo cargo = cargoRepository.find(trackingId);
 
     if (cargo == null) {
@@ -69,9 +63,6 @@ public final class BookingServiceImpl implements BookingService {
   @Override
   @Transactional
   public void assignCargoToRoute(final Itinerary itinerary, final TrackingId trackingId) {
-    Validate.notNull(itinerary);
-    Validate.notNull(trackingId);
-                                
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
       throw new IllegalArgumentException("Can't assign itinerary to non-existing cargo " + trackingId);
@@ -86,9 +77,6 @@ public final class BookingServiceImpl implements BookingService {
   @Override
   @Transactional
   public void changeDestination(final TrackingId trackingId, final UnLocode unLocode) {
-    Validate.notNull(trackingId);
-    Validate.notNull(unLocode);
-
     final Cargo cargo = cargoRepository.find(trackingId);
     final Location newDestination = locationRepository.find(unLocode);
 
