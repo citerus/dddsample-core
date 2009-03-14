@@ -42,7 +42,6 @@
     <developer>
       <id>eric_evans</id>
       <name>Eric Evans</name>
-      <email>eric at domainlanguage dot com</email>
       <organization>Domain Language, Inc.</organization>
       <organizationUrl>http://www.domainlanguage.com</organizationUrl>
       <timezone>-8</timezone>
@@ -50,7 +49,6 @@
     <developer>
       <id>peba</id>
       <name>Peter Backlund</name>
-      <email>peter.backlund@citerus.se</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
       <timezone>+1</timezone>
@@ -58,7 +56,6 @@
     <developer>
       <id>patrikfr</id>
       <name>Patrik Fredriksson</name>
-      <email>patrikfr@users.sourceforge.net</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
       <timezone>+1</timezone>
@@ -66,7 +63,6 @@
     <developer>
       <id>jeham</id>
       <name>Jesper Hammarback</name>
-      <email>jeham@users.sourceforge.net</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
       <timezone>+1</timezone>
@@ -74,7 +70,6 @@
     <developer>
       <id>jorgen_falk</id>
       <name>Jorgen Falk</name>
-      <email>jorgen.falk@citerus.se</email>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
       <timezone>+1</timezone>
