@@ -2,15 +2,10 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.Entity;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
-
-import java.util.Date;
-import java.util.Iterator;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -32,11 +27,19 @@ import java.util.Iterator;
  * It may also happen that a cargo is accidentally misrouted, which should notify the proper
  * personnel and also trigger a re-routing procedure.
  *
+ * When a cargo is handled, the status of the delivery changes. Everything about the delivery
+ * of the cargo is contained in the Delivery value object, which is replaced whenever a cargo
+ * is handled by an asynchronous event triggered by the registration of the handling event.
+ *
+ * The delivery can also be affected by routing changes, i.e. when a the route specification
+ * changes, or the cargo is assigned to a new route. In that case, the delivery update is performed
+ * synchronously within the cargo aggregate.
+ *
  * The life cycle of a cargo ends when the cargo is claimed by the customer.
  *
  * The cargo aggregate, and the entre domain model, is built to solve the problem
  * of booking and tracking cargo. All important business rules for determining whether
- * or not a cargo is misrouted, what the current status of the cargo is (on board carrier,
+ * or not a cargo is misdirected, what the current status of the cargo is (on board carrier,
  * in port etc), are captured in this aggregate.
  *
  */
@@ -44,19 +47,12 @@ public class Cargo implements Entity<Cargo> {
 
   private TrackingId trackingId;
   private Location origin;
+  private RouteSpecification routeSpecification;
   private Itinerary itinerary;
   private Delivery delivery;
-  private RouteSpecification routeSpecification;
-  private RoutingStatus routingStatus;
-  private HandlingActivity nextExpectedActivity;
-  private boolean misdirected;
-  private Date eta;
-  
-  private static final Date ETA_UNKOWN = null;
-  private static final HandlingActivity NO_ACTIVITY = null;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
-    Validate.notNull(trackingId, "Tracking id is required");
+    Validate.notNull(trackingId, "Tracking ID is required");
     Validate.notNull(routeSpecification, "Route specification is required");
 
     this.trackingId = trackingId;
@@ -65,7 +61,7 @@ public class Cargo implements Entity<Cargo> {
     this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
 
-    deriveDeliveryProgress(HandlingHistory.EMPTY);
+    this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
   }
 
   /**
@@ -74,7 +70,7 @@ public class Cargo implements Entity<Cargo> {
    * @return Tracking id.
    */
   public TrackingId trackingId() {
-    return this.trackingId;
+    return trackingId;
   }
 
   /**
@@ -88,7 +84,7 @@ public class Cargo implements Entity<Cargo> {
    * @return The delivery. Never null.
    */
   public Delivery delivery() {
-    return DomainObjectUtils.nullSafe(this.delivery, Delivery.EMPTY_DELIVERY);
+    return delivery;
   }
 
   /**
@@ -115,7 +111,7 @@ public class Cargo implements Entity<Cargo> {
 
     this.routeSpecification = routeSpecification;
     // Handling consistency within the Cargo aggregate synchronously
-    this.routingStatus = deriveRoutingStatus();
+    this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
   }
 
   /**
@@ -128,60 +124,7 @@ public class Cargo implements Entity<Cargo> {
 
     this.itinerary = itinerary;
     // Handling consistency within the Cargo aggregate synchronously
-    this.routingStatus = deriveRoutingStatus();
-    this.misdirected = deriveMisdirectionStatus();
-    this.nextExpectedActivity = deriveNextExpectedActivity();
-    this.eta = deriveEta();
-  }
-
-  /**
-   * Check if cargo is misdirected.
-   * <p/>
-   * <ul>
-   * <li>A cargo is misdirected if it is in a location that's not in the itinerary.
-   * <li>A cargo with no itinerary can not be misdirected.
-   * <li>A cargo that has received no handling events can not be misdirected.
-   * </ul>
-   *
-   * @return <code>true</code> if the cargo has been misdirected,
-   */
-  public boolean isMisdirected() {
-    return misdirected;
-  }
-
-  /**
-   * @return Routing status.
-   */
-  public RoutingStatus routingStatus() {
-    return routingStatus;
-  }
-
-  /**
-   * @return True if the cargo has been unloaded at the final destination.
-   */
-  public boolean isUnloadedAtDestination() {
-    final HandlingEvent lastEvent = delivery.lastEvent();
-    return lastEvent != null &&
-      UNLOAD.sameValueAs(lastEvent.type()) &&
-      routeSpecification.destination().sameIdentityAs(lastEvent.location());
-  }
-
-  /**
-   * @return estimated time of arrival
-   */
-  public Date estimatedTimeOfArrival() {
-    if (eta != ETA_UNKOWN) {
-      return new Date(eta.getTime());
-    } else {
-      return ETA_UNKOWN;
-    }
-  }
-
-  /**
-   * @return the next expected activity
-   */
-  public HandlingActivity nextExpectedActivity() {
-    return nextExpectedActivity;
+    this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
   }
 
   /**
@@ -202,102 +145,9 @@ public class Cargo implements Entity<Cargo> {
   public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
     // Delivery is a value object, so we can simply discard the old one
     // and replace it with a new
-    this.delivery = Delivery.derivedFrom(handlingHistory);
-    this.routingStatus = deriveRoutingStatus();
-    this.misdirected = deriveMisdirectionStatus();
-    this.eta = deriveEta();
-    this.nextExpectedActivity = deriveNextExpectedActivity();
+    this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory);
   }
 
-  /**
-   *
-   * @return true if this cargo is misdirected.
-   */
-  private boolean deriveMisdirectionStatus() {
-    final HandlingEvent lastEvent = delivery().lastEvent();
-    if (lastEvent == null) {
-      return false;
-    } else {
-      return !itinerary().isExpected(lastEvent);
-    }
-  }
-
-  /**
-   * @return current routing status
-   */
-  private RoutingStatus deriveRoutingStatus() {
-    if (itinerary == null) {
-      return NOT_ROUTED;
-    } else {
-      if (routeSpecification.isSatisfiedBy(itinerary)) {
-        return ROUTED;
-      } else {
-        return MISROUTED;
-      }
-    }
-  }
-
-  /**
-   * @return estimated time of arrival, or null if unknown
-   */
-  private Date deriveEta() {
-    if (onTrack()) {
-      return itinerary().finalArrivalDate();
-    } else {
-      return ETA_UNKOWN;
-    }
-  }
-
-  private HandlingActivity deriveNextExpectedActivity() {
-    if (!onTrack()) return NO_ACTIVITY;
-
-    final HandlingEvent lastEvent = delivery().lastEvent();
-
-    if (lastEvent == null) return new HandlingActivity(RECEIVE, origin());
-
-    switch (lastEvent.type()) {
-
-      case LOAD:
-        for (Leg leg : itinerary().legs()) {
-          if (leg.loadLocation().sameIdentityAs(lastEvent.location())) {
-            return new HandlingActivity(UNLOAD, leg.unloadLocation(), leg.voyage());
-          }
-        }
-
-        return NO_ACTIVITY;
-
-      case UNLOAD:
-        for (Iterator<Leg> it = itinerary().legs().iterator(); it.hasNext();) {
-          final Leg leg = it.next();
-          if (leg.unloadLocation().sameIdentityAs(lastEvent.location())) {
-            if (it.hasNext()) {
-              final Leg nextLeg = it.next();
-              return new HandlingActivity(LOAD, nextLeg.loadLocation(), nextLeg.voyage());
-            } else {
-              return new HandlingActivity(CLAIM, leg.unloadLocation());
-            }
-          }
-        }
-
-        return NO_ACTIVITY;
-
-      case RECEIVE:
-        final Leg firstLeg = itinerary().legs().iterator().next();
-        return new HandlingActivity(LOAD, firstLeg.loadLocation(), firstLeg.voyage());
-
-      case CLAIM:
-      default:
-        return NO_ACTIVITY;
-    }
-  }
-
-  /**
-   * @return true if cargo is on track, i.e. routed and not misdirected
-   */
-  private boolean onTrack() {
-    return routingStatus.equals(ROUTED) && !misdirected;
-  }
-  
   @Override
   public boolean sameIdentityAs(final Cargo other) {
     return other != null && trackingId.sameValueAs(other.trackingId);

@@ -13,32 +13,34 @@
 
     <many-to-one name="origin" column="origin_id" not-null="false" cascade="none" update="false" foreign-key="origin_fk"/>
 
-    <property name="misdirected" column="is_misdirected" not-null="true"/>
-    <property name="eta" column="eta" not-null="false"/>
-    
-    <property name="routingStatus" column="routing_status" not-null="true">
-      <type name="org.hibernate.type.EnumType">
-        <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
-        <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
-      </type>
-    </property>
-
-    <component name="nextExpectedActivity" update="true">
-      <many-to-one name="location" column="next_expected_location_id" foreign-key="next_expected_location_fk"/>
-      <property name="type" column="next_expected_handling_event_type">
-        <type name="org.hibernate.type.EnumType">
-          <param name="enumClass">se.citerus.dddsample.domain.model.handling.HandlingEvent$Type</param>
-          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
-        </type>
-      </property>
-      <many-to-one name="voyage" column="next_expected_voyage_id" foreign-key="next_expected_voyage_fk"/>
-    </component>
-
     <component name="trackingId" unique="true" update="false">
       <property name="id" column="tracking_id"/>
     </component>
 
     <component name="delivery" lazy="true">
+      <property name="misdirected" column="is_misdirected" not-null="true"/>
+      <property name="eta" column="eta" not-null="false"/>
+      <property name="calculatedAt" column="calculated_at" not-null="true"/>
+      <property name="isUnloadedAtDestination" column="unloaded_at_dest" not-null="true"/>
+
+      <property name="routingStatus" column="routing_status" not-null="true">
+        <type name="org.hibernate.type.EnumType">
+          <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
+          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+        </type>
+      </property>
+
+      <component name="nextExpectedActivity" update="true">
+        <many-to-one name="location" column="next_expected_location_id" foreign-key="next_expected_location_fk" cascade="none"/>
+        <property name="type" column="next_expected_handling_event_type">
+          <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">se.citerus.dddsample.domain.model.handling.HandlingEvent$Type</param>
+            <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+          </type>
+        </property>
+        <many-to-one name="voyage" column="next_expected_voyage_id" foreign-key="next_expected_voyage_fk" cascade="none"/>
+      </component>
+
       <property name="transportStatus" column="transport_status" not-null="true">
         <type name="org.hibernate.type.EnumType">
           <param name="enumClass">se.citerus.dddsample.domain.model.cargo.TransportStatus</param>
@@ -57,6 +59,7 @@
     </component>
 
     <component name="itinerary">
+      <!-- cascade=all-delete-orphan would be better, but it doesn't seem to work inside a component -->
       <list name="legs" lazy="true" cascade="all">
         <key column="cargo_id" foreign-key="itinerary_fk"/>
         <index column="leg_index"/>
