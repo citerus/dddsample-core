@@ -1,6 +1,5 @@
 package se.citerus.dddsample.infrastructure.persistence.inmemory;
 
-import org.springframework.dao.DataRetrievalFailureException;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -19,7 +18,6 @@ import java.util.*;
  * It setup a simple local hash with a number of Cargo's with TrackingId as key
  * defined at compile time.
  * <p/>
- * To be able to test exceptions, a DataRetrievalFailureException is thrown when finding a Cargo with trackingId "DAE".
  */
 public class CargoRepositoryInMem implements CargoRepository {
 
@@ -34,10 +32,6 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public Cargo find(final TrackingId trackingId) {
-    if (trackingId.idString().equalsIgnoreCase("DAE")) {
-      throw new DataRetrievalFailureException("Network failure. Please try again");
-    }
-
     return cargoDb.get(trackingId.idString());
   }
 
