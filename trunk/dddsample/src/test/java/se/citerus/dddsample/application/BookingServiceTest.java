@@ -45,14 +45,6 @@ public class BookingServiceTest extends TestCase {
     assertEquals(expectedTrackingId, trackingId);
   }
 
-  public void testRegisterNewNullArguments() {
-    replay(cargoRepository, locationRepository);
-    try {
-      bookingService.bookNewCargo(null, null, null);
-      fail("Null arguments should not be allowed");
-    } catch (IllegalArgumentException expected) {}
-  }
-
   protected void tearDown() throws Exception {
     verify(cargoRepository, locationRepository);
   }
