@@ -1,8 +1,8 @@
 package se.citerus.dddsample.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.Entity;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.Entity;
 
 import java.util.ArrayList;
 import java.util.Date;

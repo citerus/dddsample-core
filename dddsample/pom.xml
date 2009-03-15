@@ -356,6 +356,8 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
+          <!-- Java source code generated from WSDL -->
+          <excludes>**/com/aggregator/**/*</excludes>
         </configuration>
       </plugin>
     </plugins>

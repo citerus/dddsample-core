@@ -5,12 +5,12 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import se.citerus.dddsample.domain.model.DomainEvent;
-import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.shared.DomainEvent;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
+import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
 

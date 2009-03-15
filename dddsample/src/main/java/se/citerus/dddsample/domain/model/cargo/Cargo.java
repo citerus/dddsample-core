@@ -1,11 +1,11 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.Entity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
+import se.citerus.dddsample.domain.shared.Entity;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -61,7 +61,9 @@ public class Cargo implements Entity<Cargo> {
     this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
 
-    this.delivery = Delivery.derivedFrom(this.routeSpecification, this.itinerary, HandlingHistory.EMPTY);
+    this.delivery = Delivery.derivedFrom(
+      this.routeSpecification, this.itinerary, HandlingHistory.EMPTY
+    );
   }
 
   /**
@@ -140,9 +142,11 @@ public class Cargo implements Entity<Cargo> {
    * but changes to the delivery history (when a cargo is handled) cause the status update
    * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
    *
-   * @param handlingHistory delivery history
+   * @param handlingHistory handling history
    */
   public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
+    // TODO filter events on cargo (must be same as this cargo)
+
     // Delivery is a value object, so we can simply discard the old one
     // and replace it with a new
     this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory);

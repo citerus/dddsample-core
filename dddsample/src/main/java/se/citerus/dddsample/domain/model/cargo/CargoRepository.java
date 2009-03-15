@@ -31,6 +31,4 @@ public interface CargoRepository {
    */
   TrackingId nextTrackingId();
 
-  // TODO perhaps it belongs in a factory instead
-
 }
