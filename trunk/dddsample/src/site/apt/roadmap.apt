@@ -6,25 +6,9 @@ Roadmap
 
   This application is a work of progress, and these are some ideas for continued development:
 
-  * Remodel Cargo-HandlingEvent aggregates to make boundaries
-    and asynchronous updates more explicit
+  * Ports to C#/.NET and other frameworks
 
-  * Make handling event registration completely asynchronous
+  * Handling voyage delays and intentional rescheduling, how that affects itineraries
 
-  * Next expected event, for tracking
-
-  * Timezones for locations and handling events
-
-  * Departure/arrival time for carrier movements, ETA for itineraries
-
-  * Improve web service interface
-
-  * Diversify user interfaces
-
-  * More ways to register handing events (FTP CSV file upload etc)
-
-  * Port to C#
-
-  * Port to TimeAndMoney
-
-  * Notify on delayed delivery
+  * More one the time aspect: timezones for locations and handling events,
+    notify on delayed delivery, port to TimeAndMoney or similar date/time framework

@@ -14,12 +14,18 @@
       <item name="Citerus" href="http://www.citerus.se/"/>
       <item name="DomainDrivenDesign.org" href="http://www.domaindrivendesign.org/"/>
     </links>
-    <menu name="About the application">
+    <menu name="Project information">
       <item name="Introduction" href="index.html"/>
       <item name="Download" href="download.html"/>
+      <item name="Changelog" href="changelog.html" />
+      <item name="Roadmap" href="roadmap.html" />
+    </menu>
+    <menu name="Application information">
+      <item name="Screencast" href="screencast.html" />
       <item name="Characterization" href="characterization.html"/>
       <item name="Patterns Reference" href="patterns-reference.html"/>
-      <item name="Roadmap" href="roadmap.html" />
+      <item name="Architecture" href="architecture.html" />
+      <item name="Case study: handling" href="handlingEventRegistration.html" />
     </menu>
     <menu ref="reports"/>
   </body>
