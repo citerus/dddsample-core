@@ -3,7 +3,7 @@ package se.citerus.dddsample.domain.shared.experimental;
 import java.lang.reflect.Field;
 
 /**
- *
+ * Base class for entities.
  *
  */
 public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, ID> {
