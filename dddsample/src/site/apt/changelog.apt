@@ -6,28 +6,41 @@ Changelog
 
 * 1.1 (March 2009)
 
-  * Remodel Cargo-HandlingEvent aggregates to make boundaries
-    and asynchronous updates more explicit
+  * Remodeled Cargo and HandlingEvent aggregates to make boundaries
+    and asynchronous updates more explicit. Cargo delivery progress is now
+    inspected and stored on handling, asynchronously, as an example of
+    how aggregates may be inconsistent for a (short) period of time.
 
-  * Make handling event registration completely asynchronous
+  * Restructured packages to have a one-to-one mapping between layers and packages.
 
-  * Next expected event, for tracking
+  * Gathered all aspects of the cargo delivery in the Delivery value object
+    in the Cargo aggregate.
 
-  * Timezones for locations and handling events
+  * RouteSpecification is now a persistent part of the Cargo aggregate.
 
-  * Departure/arrival time for carrier movements, ETA for itineraries
+  * Made handling event registration completely asynchronous.
 
-  * Improve web service interface
+  * Implemented "next expected event" for tracking.
 
-  * Diversify user interfaces
+  * The old CarrierMovement aggregate is remodeled, and the root entity
+    is now Voyage. A voyage has a schedule containing a list of carrier
+    movements.
 
-  * More ways to register handing events (FTP CSV file upload etc)
+  * Legs and carrier movements have departure/arrival and load/unload times, respectively.
 
-  * Port to C#
+  * ETA for itineraries
 
-  * Port to TimeAndMoney
+  * Web service for registering handling events is now more clearly
+    downstream from handling report aggregation service context,
+    with Java code generated from a given WSDL.
 
-  * Notify on delayed delivery
+  * There is now a directory scanner routine that picks up and parses CSV
+    files containing handling event information, as an example of an alternative
+    interface.
+
+  * Updated framework dependencies.
+
+  * Screencast showing what the application can do.   
 
 * 1.0 (September 2008)
 

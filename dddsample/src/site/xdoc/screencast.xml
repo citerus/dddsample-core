@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Screencast</title>
+  </properties>
+
+  <body>
+    <section name="Screencast">
+      <p>
+        Here's a 10 minute screencast that shows the different interfaces in action.
+        TODO upload and link to actual screencast :-)
+      </p>
+      <object width="425" height="344">
+        <param name="movie" value="http://www.youtube.com/v/y3HH0EwZYjU&amp;hl=en&amp;fs=1"></param>
+        <param name="allowFullScreen" value="true"></param>
+        <param name="allowscriptaccess" value="always"></param>
+        <embed src="http://www.youtube.com/v/y3HH0EwZYjU&amp;hl=en&amp;fs=1" type="application/x-shockwave-flash"
+               allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed>
+      </object>
+    </section>
+  </body>
+
+</document>
