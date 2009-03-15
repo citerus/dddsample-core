@@ -14,6 +14,11 @@ public interface Entity<T,ID> {
    */
   boolean sameIdentityAs(T other);
 
+  /**
+   * Entities have an identity.
+   *
+   * @return The identity of this entity.
+   */
   ID identity();
 
 }
