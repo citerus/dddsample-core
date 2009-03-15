@@ -4,7 +4,7 @@
 
 Prerequisites
 
-  * Java 5 or later
+  * Java 6 or later
 
   []
 
@@ -41,21 +41,17 @@ mvn clean package
 mvn jetty:run
 -------------
 
-    The public tracking interface is available at {{http://localhost:8080/dddsample}} (try tracking cargos XYZ and JKL, for example)
+    The public tracking interface is available at {{http://localhost:8080/dddsample}}
     and the booking and routing administration interface can be found at {{http://localhost:8080/dddsample/admin/list.html}}.
     The administration interface is used for booking and routing cargo.
+
+	There is a screencast available on the project site that demonstrates how the different interfaces are used.
 
     An RMI registry will be started on port <<<1099>>>, in addition to the Jetty container on port <<<8080>>>, so those ports
     need to be available or you have to reconfigure the application.
 
-    <<NOTE>>: running some Maven targets (<<<jetty:run>>> for example) currently do not work in IntelliJ with the embedded Maven runner.
-    Workaround: either run Maven from command line, or swich to external Maven runner in IntelliJ.
-
-    <<NOTE>>: the application currently can't be run offline, due to an unresolved problem with XSD validation.
-    Workaround: run application online.
-
     Also, you can {{{source-repository.html}track Subversion}} directly.
-    Use the {{{http://svnbook.red-bean.com/en/1.0/re27.html}<<<svn switch>>>}} command on the source package to start tracking trunk or a stable branch.
+    Subversion repository information is available in the {{{source-repository.html}project information section}}.
 
 * Incident Logging Application
 
