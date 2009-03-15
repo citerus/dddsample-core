@@ -1,9 +1,9 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Collections;
 import java.util.Date;

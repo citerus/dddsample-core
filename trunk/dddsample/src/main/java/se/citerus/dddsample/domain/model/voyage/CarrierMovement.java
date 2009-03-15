@@ -3,8 +3,8 @@ package se.citerus.dddsample.domain.model.voyage;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import se.citerus.dddsample.domain.model.ValueObject;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
 

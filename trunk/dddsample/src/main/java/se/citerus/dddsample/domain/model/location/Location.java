@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.Entity;
+import se.citerus.dddsample.domain.shared.Entity;
 
 /**
  * A location is our model is stops on a journey, such as cargo

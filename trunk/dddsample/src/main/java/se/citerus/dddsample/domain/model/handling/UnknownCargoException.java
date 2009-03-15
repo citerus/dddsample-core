@@ -9,10 +9,16 @@ public final class UnknownCargoException extends CannotCreateHandlingEventExcept
 
   private final TrackingId trackingId;
 
+  /**
+   * @param trackingId cargo tracking id
+   */
   public UnknownCargoException(final TrackingId trackingId) {
     this.trackingId = trackingId;
   }
 
+  /**
+   * {@inheritDoc}
+   */            
   @Override
   public String getMessage() {
     return "No cargo with tracking id " + trackingId.idString() + " exists in the system";

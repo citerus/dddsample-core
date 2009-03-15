@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.handling;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.ValueObject;
+import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.*;
 import static java.util.Collections.sort;

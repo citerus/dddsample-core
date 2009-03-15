@@ -24,9 +24,9 @@ public interface BookingService {
 
   /**
    * Requests a list of itineraries describing possible routes for this cargo.
-   * 
+   *
    * @param trackingId cargo tracking id
-   * @return A list of possible itineraries for this cargo 
+   * @return A list of possible itineraries for this cargo
    */
   List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId);
 
