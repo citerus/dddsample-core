@@ -1,0 +1,35 @@
+  ---------
+  Changelog
+  ---------
+
+Changelog
+
+* 1.1 (March 2009)
+
+  * Remodel Cargo-HandlingEvent aggregates to make boundaries
+    and asynchronous updates more explicit
+
+  * Make handling event registration completely asynchronous
+
+  * Next expected event, for tracking
+
+  * Timezones for locations and handling events
+
+  * Departure/arrival time for carrier movements, ETA for itineraries
+
+  * Improve web service interface
+
+  * Diversify user interfaces
+
+  * More ways to register handing events (FTP CSV file upload etc)
+
+  * Port to C#
+
+  * Port to TimeAndMoney
+
+  * Notify on delayed delivery
+
+* 1.0 (September 2008)
+
+  * Initial public release
+
