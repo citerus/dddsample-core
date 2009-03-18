@@ -2,7 +2,7 @@
   Download
   --------
 
-Prerequisites
+Download
 
   * Java 6 or later
 
@@ -16,10 +16,9 @@ Prerequisites
 
 Downloads
 
-    There are three different {{{http://sourceforge.net/project/showfiles.php?group_id=210606}downloads}} available:
-    the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} source package}},
-    the {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} Incident Logging Application}}
-    and the {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0.war?use_mirror=osdn} pre-built web archive}}.
+    There are two {{{http://sourceforge.net/project/showfiles.php?group_id=210606}downloads}} available:
+    the core application {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} source package}},
+    and the {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} Incident Logging Application}}.
 
     The project uses Maven for build and management.
 
@@ -41,9 +40,7 @@ mvn clean package
 mvn jetty:run
 -------------
 
-    The public tracking interface is available at {{http://localhost:8080/dddsample}}
-    and the booking and routing administration interface can be found at {{http://localhost:8080/dddsample/admin/list.html}}.
-    The administration interface is used for booking and routing cargo.
+    The start page is available at {{http://localhost:8080/dddsample}}, and has links to the various interfaces.
 
 	There is a screencast available on the project site that demonstrates how the different interfaces are used.
 
@@ -72,17 +69,6 @@ java -jar IncidentLoggingApplication.jar
 
     The source code for this application is currently only available {{{source-repository.html}in Subversion}}.
 
-* Pre-built web archive 
-
-    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0.war?use_mirror=osdn} here}}
-
-    This is a pre-built standard .war, ready to be deployed in a standard servlet container such as Tomcat. It is
-    offered as a convenience if you want a simple way to run the application without bothering with the build
-    environment. Developers who are interested in how DDD is applied in the application should download the source
-    archive instead.
-
-    The same caveats for running the application that are listed in the source package section above apply to this package as well.
-
 IDE Setup
 
     * IntelliJ 7 or later:
@@ -95,14 +81,11 @@ IDE Setup
 
     * Eclipse
 
-      Either install a Maven integration plugin ({{{http://code.google.com/p/q4e/} q4e}} recommended), or
-      use standalone Maven to {{{http://maven.apache.org/plugins/maven-eclipse-plugin/}generate project descriptor files}}.
+      Eclipse support for Maven is still a bit rocky, so project descriptor files have been
+      committed into the repository so that the project can immediately be opened with no further
+      configuration.
 
-    * Other
-
-      Use standalone Maven to generate project descriptor files for your IDE.
-
-About Maven
+About Maven          pom
 
     Maven downloads all external library dependencies and plugins separately, which can amount to quite a large number of
     small files that are downloaded sequentially. These are all cached locally, but the first time you run it you should

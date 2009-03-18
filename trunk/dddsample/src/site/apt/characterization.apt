@@ -5,6 +5,8 @@
   ------------------------------------
   March 11, 2009
 
+Characterization
+
   Careful characterization of the classes is an important activity when doing Domain-Driven Design. Sometimes it is fairly obvious in what category a particular class belongs, other times it is not as easy to sort out the different <Building Blocks of a Model-Driven Design>.
 
   The trickiest ones to classify are typically <Entities>, <Aggregates>, <Value Objects> and <Domain Events>. When possible, we tend to favor <Value Objects> over <Entities> or <Domain Events>, because they require less attention during implementation. <Value Objects> can be created and thrown away at will, and since they are immutable we can pass them around as we wish. We must be much less cavalier with <Entities> as identity and life-cycle have to be carefully managed. Below is a short walkthrough of key classes in the application and the motivation behind their implementation choice. All but <Domain Event> are thoroughly described in {{{http://www.domaindrivendesign.org/books/index.html#DDD}Eric Evans' book}}. A short introduction to Domain Events can be found here: {{http://martinfowler.com/eaaDev/DomainEvent.html}}

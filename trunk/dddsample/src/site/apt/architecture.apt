@@ -1,6 +1,8 @@
   ------------
-  Layering
+  Architecture
   ------------
+
+Architecture
 
   The sample application is layered as illustrated by this picture:
 
@@ -8,14 +10,14 @@
 
   There are three vertical layers: interfaces, application and domain, each supported by different kinds of infrastructure.
 
-  * Interfaces
+* Interfaces
 
 	This layer holds everythng that interacts with other systems, such as web services, RMI interfaces
-	or web applications. It handles interpretation, validation and translation of incoming data. It also
-	handles serialization of outgoing data, such as HTML or XML across HTTP to web browsers or web service
-	clients, or DTO classes and distributed facade interfaces for remote Java clients.
+	or web applications, and batch processing frontends. It handles interpretation, validation and translation
+	of incoming data. It also handles serialization of outgoing data, such as HTML or XML across HTTP to
+	web browsers or web service clients, or DTO classes and distributed facade interfaces for remote Java clients.
 
-  * Application
+* Application
 
     The application layer is responsible for defining the use cases of the application, operations that can
     are interface-independent and can be synchronous or message-driven. This layer is well suited for spanning
@@ -24,19 +26,29 @@
     The application layer is thin in terms of domain logic - it merely coordinates the domain layer objects
     perform the actual work.
 
-  * Domain
+* Domain
 
 	The domain layer is the heart of the software, and this is where the interesting stuff happens.
+	There is one package per aggregate, and to each aggregate belongs entities, value objects, domain events,
+	a repository interface and sometimes factories. The aggregate roots are Cargo, HandlingEvent, Location and Voyage.
 
-    Everything below the domain package: domain service interfaces (and in some cases their implementations),
-    repository interfaces (but not the implementations!) and the domain model with each aggregate in its own
-    subpackage.
+	Everything about determining whether a handling event should be registered and how the delivery of a cargo
+	is affected by handling and belongs in here. The structure and naming of aggregates, classes and methods in
+	should follow the ubiquitous language, and you should be able to explain to a domain expert
+	how this part of the software works by drawing a few simple diagrams and using the actual class- and method names
+	of the source code.
 
+* Infrastructure
 
-	Infrastructure
+	In addition to the three vertical layers, there's also the infrastructure. As the the picture shows, it supports
+	all of the three layers in different ways, facilitating communication between the layers. In simple terms,
+	the infrastructure consists of everything that exists independently of our application: external libraries,
+	database engine, application server, messaging backend and so on.
 
-	In adition to the three vertical layers, there's also the infrastructure. As the the picture shows, it supports
-	all of the three layers in different ways, facilitating communication between the layers.
+	Also, we consider code and configuration files  that glues the other layers to the infrastructure as part of the infrastructure layer.
+	Looking for example at the persistence aspect, the database schema definition, Hibernate configuration and mapping files
+	and implementations of the repository interfaces are part of the infrastructure layer.
 
-    Hibernate mapping metadata files, Spring context definition files, logging configuration.
-    All external libraries,  
+	While it can be tricky to give a waterproof definition of what kind of code belongs to the infrastructure layer for any given situation,
+	it should be possible to completely stub out the infrastructure in pure Java unit/scenario tests and still be able to
+	use the domain layer and possibly the application layer to work out the core business problems.
