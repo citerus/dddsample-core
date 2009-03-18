@@ -82,10 +82,22 @@ IDE Setup
     * Eclipse
 
       Eclipse support for Maven is still a bit rocky, so project descriptor files have been
-      committed into the repository so that the project can immediately be opened with no further
-      configuration.
+      committed into the repository so that the project can immediately be opened with
+      minimal additional configuration.
 
-About Maven          pom
+      The only thing you need to do is to is to define the classpath variable M2_REPO,
+      which is:
+
+      * Windows: C:\Documents and Settings\<Your username>\.m2\repository
+
+      * Mac: /Users/<Your username>\.m2\repository
+
+      * Unix: /home/<Your username>\.m2\repository
+
+      Go to Window -> Preferences, Java -> Build Path -> Classpath variables, New.
+      Set the name to M2_REPO and use the Folder button to browse to the aforementioned location.
+
+About Maven
 
     Maven downloads all external library dependencies and plugins separately, which can amount to quite a large number of
     small files that are downloaded sequentially. These are all cached locally, but the first time you run it you should
