@@ -14,8 +14,8 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
@@ -87,12 +87,6 @@
       <groupId>com.jgoodies</groupId>
       <artifactId>looks</artifactId>
       <version>2.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>se.citerus</groupId>
-      <artifactId>dddsample</artifactId>
-      <version>1.1-SNAPSHOT</version>
-      <classifier>ws-client</classifier>
     </dependency>
   </dependencies>
 </project>
