@@ -1,0 +1,14 @@
+<projectDescription>
+  <name>dddsample</name>
+  <comment>This application shows a few key concepts of
+    Domain Driven Design implemented in Enterprise Java.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
