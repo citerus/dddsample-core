@@ -76,11 +76,13 @@ Characterization
     The application services in the sample application are responsible for driving workflow and coordinating
     transaction management (by use of the declarative transaction management support in Spring).
     They also provide a high-level abstraction for clients to use when interacting with the domain.
-    These services are typically designed to support specific use cases or fulfill technical requirements (web services, etc).
+    These services are typically designed to define or support specific use cases.
+    See <<<{{{xref/se/citerus/dddsample/application/impl/BookingServiceImpl.html}BookingService}}>>> or
+	<<<{{{xref/se/citerus/dddsample/application/impl/HandlingEventServiceImpl.html}HandlingEventService}}>>>.
 
     In some situations, e.g. when dealing with graphs of lazy-loaded
     domain objects or when passing services' return values over network boundaries, the services are wrapped in facades.
     The facades handle ORM session management issues and/or convert the domain objects to more portable
     {{{http://martinfowler.com/eaaCatalog/dataTransferObject.html}Data Transfer Objects}}) that can be tailored
-    to specific use cases.
-    See <<<{{{xref/se/citerus/dddsample/interfaces/booking/facade/internal/BookingServiceFacadeImpl.html}BookingServiceFacadeImpl}}>>> for an example.
+    to specific use cases. In that case, we consider the DTO-serializing facade part of the {{{architecture.html#Interfaces}interfaces layer}}.
+    See <<<{{{xref/se/citerus/dddsample/interfaces/booking/facade/internal/BookingServiceFacadeImpl.html}BookingServiceFacade}}>>> for an example.

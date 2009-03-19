@@ -13,6 +13,16 @@
   implementation of the building block patterns as well as illustrate the
   impact of aggregates and bounded contexts.
 
+News
+
+  * 2009-03-25: New public release: <<1.1.0>>. See {{{changelog.html}changelog}} for details.
+
+  * 2009-03-09: Sample application tutorial at the {{{http://qconlondon.com/london-2009/}QCon conference}} in London.
+
+  * 2009-01-27: Sample application tutorial at the {{{http://www.jfokus.se/jfokus/}JFokus conference}} in Stockholm.
+
+  * 2008-09-15: First public release: <<1.0>>.
+
 Purpose
 
   * A how-to example for implementing a typical DDD application
