@@ -82,7 +82,6 @@ public class CargoLifecycleScenarioTest extends TestCase {
    */
   RoutingService routingService;
 
-
   public void testCargoFromHongkongToStockholm() throws Exception {
     /* Test setup: A cargo should be shipped from Hongkong to Stockholm,
        and it should arrive in no more than two weeks. */
@@ -153,15 +152,15 @@ public class CargoLifecycleScenarioTest extends TestCase {
     
     // Next event: Load onto voyage CM003 in Hongkong
     handlingEventService.registerHandlingEvent(
-      toDate("2009-03-03"), trackingId, CM003.voyageNumber(), HONGKONG.unLocode(), LOAD
+      toDate("2009-03-03"), trackingId, v100.voyageNumber(), HONGKONG.unLocode(), LOAD
     );
 
     // Check current state - should be ok
-    assertEquals(CM003, cargo.delivery().currentVoyage());
+    assertEquals(v100, cargo.delivery().currentVoyage());
     assertEquals(HONGKONG, cargo.delivery().lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.delivery().isMisdirected());
-    assertEquals(new HandlingActivity(UNLOAD, NEWYORK, CM003), cargo.delivery().nextExpectedActivity());
+    assertEquals(new HandlingActivity(UNLOAD, NEWYORK, v100), cargo.delivery().nextExpectedActivity());
 
 
     /*
@@ -184,7 +183,7 @@ public class CargoLifecycleScenarioTest extends TestCase {
 
     // Cargo is now (incorrectly) unloaded in Tokyo
     handlingEventService.registerHandlingEvent(
-      toDate("2009-03-05"), trackingId, CM003.voyageNumber(), TOKYO.unLocode(), UNLOAD
+      toDate("2009-03-05"), trackingId, v100.voyageNumber(), TOKYO.unLocode(), UNLOAD
     );
 
     // Check current state - cargo is misdirected!
@@ -225,19 +224,19 @@ public class CargoLifecycleScenarioTest extends TestCase {
 
     // Load in Tokyo
     handlingEventService.registerHandlingEvent(
-      toDate("2009-03-08"), trackingId, CM003.voyageNumber(), TOKYO.unLocode(), LOAD
+      toDate("2009-03-08"), trackingId, v300.voyageNumber(), TOKYO.unLocode(), LOAD
     );
 
     // Check current state - should be ok
-    assertEquals(CM003, cargo.delivery().currentVoyage());
+    assertEquals(v300, cargo.delivery().currentVoyage());
     assertEquals(TOKYO, cargo.delivery().lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.delivery().isMisdirected());
-    assertEquals(new HandlingActivity(UNLOAD, HAMBURG, CM003), cargo.delivery().nextExpectedActivity());
+    assertEquals(new HandlingActivity(UNLOAD, HAMBURG, v300), cargo.delivery().nextExpectedActivity());
 
     // Unload in Hamburg
     handlingEventService.registerHandlingEvent(
-      toDate("2009-03-12"), trackingId, CM003.voyageNumber(), HAMBURG.unLocode(), UNLOAD
+      toDate("2009-03-12"), trackingId, v300.voyageNumber(), HAMBURG.unLocode(), UNLOAD
     );
 
     // Check current state - should be ok
@@ -245,25 +244,25 @@ public class CargoLifecycleScenarioTest extends TestCase {
     assertEquals(HAMBURG, cargo.delivery().lastKnownLocation());
     assertEquals(IN_PORT, cargo.delivery().transportStatus());
     assertFalse(cargo.delivery().isMisdirected());
-    assertEquals(new HandlingActivity(LOAD, HAMBURG, CM005), cargo.delivery().nextExpectedActivity());
+    assertEquals(new HandlingActivity(LOAD, HAMBURG, v400), cargo.delivery().nextExpectedActivity());
 
 
     // Load in Hamburg
     handlingEventService.registerHandlingEvent(
-      toDate("2009-03-14"), trackingId, CM005.voyageNumber(), HAMBURG.unLocode(), LOAD
+      toDate("2009-03-14"), trackingId, v400.voyageNumber(), HAMBURG.unLocode(), LOAD
     );
 
     // Check current state - should be ok
-    assertEquals(CM005, cargo.delivery().currentVoyage());
+    assertEquals(v400, cargo.delivery().currentVoyage());
     assertEquals(HAMBURG, cargo.delivery().lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, cargo.delivery().transportStatus());
     assertFalse(cargo.delivery().isMisdirected());
-    assertEquals(new HandlingActivity(UNLOAD, STOCKHOLM, CM005), cargo.delivery().nextExpectedActivity());
+    assertEquals(new HandlingActivity(UNLOAD, STOCKHOLM, v400), cargo.delivery().nextExpectedActivity());
 
 
     // Unload in Stockholm
     handlingEventService.registerHandlingEvent(
-      toDate("2009-03-15"), trackingId, CM005.voyageNumber(), STOCKHOLM.unLocode(), UNLOAD
+      toDate("2009-03-15"), trackingId, v400.voyageNumber(), STOCKHOLM.unLocode(), UNLOAD
     );
 
     // Check current state - should be ok
@@ -287,42 +286,32 @@ public class CargoLifecycleScenarioTest extends TestCase {
   }
 
 
-
-
-
-
   /*
   * Utility stubs below.
   */
-
-  private Date inTwoWeeks() {
-    return new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 14);
-  }
 
   private Itinerary selectPreferedItinerary(List<Itinerary> itineraries) {
     return itineraries.get(0);
   }
 
   protected void setUp() throws Exception {
-    // Stub
-    // TODO new voyages
     routingService = new RoutingService() {
       public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         if (routeSpecification.origin().equals(HONGKONG)) {
           // Hongkong - NYC - Chicago - Stockholm, initial routing
           return Arrays.asList(
             new Itinerary(Arrays.asList(
-              new Leg(CM003, HONGKONG, NEWYORK, new Date(), new Date()),
-              new Leg(CM004, NEWYORK, CHICAGO, new Date(), new Date()),
-              new Leg(CM005, CHICAGO, STOCKHOLM, new Date(), new Date())
+              new Leg(v100, HONGKONG, NEWYORK, toDate("2009-03-03"), toDate("2009-03-09")),
+              new Leg(v200, NEWYORK, CHICAGO, toDate("2009-03-10"), toDate("2009-03-14")),
+              new Leg(v200, CHICAGO, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
             ))
           );
         } else {
-          // Tokyo - Hamburg - Stockholm, rerouting
+          // Tokyo - Hamburg - Stockholm, rerouting misdirected cargo from Tokyo 
           return Arrays.asList(
             new Itinerary(Arrays.asList(
-              new Leg(CM003, TOKYO, HAMBURG, new Date(), new Date()),
-              new Leg(CM005, HAMBURG, STOCKHOLM, new Date(), new Date())
+              new Leg(v300, TOKYO, HAMBURG, toDate("2009-03-08"), toDate("2009-03-12")),
+              new Leg(v400, HAMBURG, STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15"))
             ))
           );
         }

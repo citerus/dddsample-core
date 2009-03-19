@@ -3,8 +3,6 @@ package se.citerus.dddsample.domain.model.handling;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
@@ -203,7 +201,18 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   @Override
   public String toString() {
-    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    final StringBuilder builder = new StringBuilder("\n--- Handling event ---\n").
+      append("Cargo: ").append(cargo.trackingId()).append("\n").
+      append("Type: ").append(type).append("\n").
+      append("Location: ").append(location.name()).append("\n").
+      append("Completed on: ").append(completionTime).append("\n").
+      append("Registered on: ").append(registrationTime).append("\n");
+    
+    if (voyage != null) {
+      builder.append("Voyage: ").append(voyage.voyageNumber()).append("\n");
+    }
+
+    return builder.toString();
   }
 
   HandlingEvent() {
