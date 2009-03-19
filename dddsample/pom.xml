@@ -13,7 +13,7 @@
   <distributionManagement>
     <site>
       <id>sf</id>
-      <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs</url>
+      <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>
     </site>
   </distributionManagement>
   <ciManagement/>
@@ -102,35 +102,16 @@
         </configuration>
       </plugin>
 
-      <!-- Jetty servlet container: http://jetty.mortbay.com/maven-plugin -->
+      <!-- Jetty plugin -->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
-        <configuration>
-          <scanIntervalSeconds>3</scanIntervalSeconds>
-        </configuration>
       </plugin>
 
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
-          <!-- Package WS api classes in separate jar -->
-          <execution>
-            <id>package-ws-client</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <classifier>ws-client</classifier>
-              <includes>
-                <include>**/com/aggregator/*.class</include>
-              </includes>
-              <archive>
-                <addMavenDescriptor>false</addMavenDescriptor>
-              </archive>
-            </configuration>
-          </execution>
+
           <!-- Package booking service facade classes in separate jar -->
           <execution>
             <id>package-booking-facade</id>
@@ -156,9 +137,9 @@
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/assembly.xml</descriptor>
-          </descriptors>
+          <descriptorRefs>
+            <descriptorRef>src</descriptorRef>
+          </descriptorRefs>
         </configuration>
       </plugin>
       
