@@ -39,7 +39,6 @@ Characterization
 
     The main reason for not making <<<HandlingEvent>>> part of the cargo aggregate is performance. <<<HandlingEvent>>>s are received from external parties and systems, e.g. warehouse management systems, port handling systems, that call our <<<{{{xref/se/citerus/dddsample/interfaces/handling/ws/HandlingReportServiceImpl.html}HandlingReportService}}>>> webservice implementation. The number of events can be very high and it is important that our webservice can dispatch the remote calls quickly. To be able to support this use case we need to handle the remote webservice calls asynchronously, i.e. we do not want to load the big cargo structure synchronously for each received <<<HandlingEvent>>>. Since all relationships in an aggregate must be handled synchronously we put the <<<HandlingEvent>>> in an aggregate of its own and we are able processes the events quickly and at the same time eliminate dead-locking situations in the system.
     
-[images/aggregates.gif]
 
 {Repositories}
 

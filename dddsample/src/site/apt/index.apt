@@ -48,7 +48,7 @@ Purpose
 Caveats
 
   	Domain-driven design is a very broad topic, and contains lots of things that are difficult or impossible
-    to incorporate into the code base of a sample application, most importantly communication with the domain
+    to incorporate into the code base of a sample application. Perhaps most important is communication with the domain
     expert, iterative modelling and the discovery of a ubiquitous language. This application is a snapshot in time,
     the result of a development effort that you need to imagine has been utilizing domain-driven design,
     to show how one can structure an application around an isolated, rich domain model in a realistic environment.

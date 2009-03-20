@@ -11,4 +11,4 @@ Roadmap
   * Handling voyage delays and intentional rescheduling, how that affects itineraries
 
   * More one the time aspect: timezones for locations and handling events,
-    notify on delayed delivery, port to TimeAndMoney or similar date/time framework
+    notify on delayed delivery, port to {{{http://timeandmoney.sourceforge.net/}TimeAndMoney}} or similar date/time framework

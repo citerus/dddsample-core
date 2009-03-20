@@ -42,7 +42,7 @@ mvn jetty:run
 
     The start page is available at {{http://localhost:8080/dddsample}}, and has links to the various interfaces.
 
-	There is a screencast available on the project site that demonstrates how the different interfaces are used.
+	There is a {{{screencast.html}screencast}} available on the project site that demonstrates how the different interfaces are used.
 
     An RMI registry will be started on port <<<1099>>>, in addition to the Jetty container on port <<<8080>>>, so those ports
     need to be available or you have to reconfigure the application.
