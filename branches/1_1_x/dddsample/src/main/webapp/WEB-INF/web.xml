@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>DDDSample</display-name>
+
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>classpath:log4j.properties</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:/com/pathfinder/internal/applicationContext.xml
+
+      classpath:context-infrastructure.xml
+      classpath:context-application.xml
+      classpath:context-domain.xml
+      classpath:context-interfaces.xml
+    </param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>se.citerus.dddsample.application.util.SampleDataGenerator</listener-class>
+  </listener>
+  
+  <servlet>
+    <servlet-name>tracking</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>tracking</servlet-name>
+    <url-pattern>/public/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>booking</servlet-name>
+    <servlet-class>se.citerus.dddsample.interfaces.booking.web.BookingDispatcherServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>booking</servlet-name>
+    <url-pattern>/admin/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>jaxws</servlet-name>
+    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>jaxws</servlet-name>
+    <url-pattern>/ws/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>sitemesh</filter-name>
+    <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <servlet-name>booking</servlet-name>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <servlet-name>tracking</servlet-name>
+  </filter-mapping>
+
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <include-prelude>/WEB-INF/jspf/include.jspf</include-prelude>
+      <trim-directive-whitespaces>true</trim-directive-whitespaces>
+    </jsp-property-group>
+  </jsp-config>
+
+</web-app>
