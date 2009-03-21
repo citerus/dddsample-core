@@ -2,17 +2,12 @@
   Download
   --------
 
-Download
+Prerequisites
 
   * Java 6 or later
 
-  []
+  * {{{http://maven.apache.org}Maven}} 2.0.9 or later
 
-  Optional:
-
-  * {{{http://maven.apache.org}Maven}} 2.0.9 or later (for development)
-
-  * A servlet container, such as {{{http://tomcat.apache.org}Tomcat}} (for deploying the web archive)
 
 Downloads
 
@@ -77,25 +72,52 @@ IDE Setup
 
     * Netbeans 6 or later:
 
-      Install the Maven plugin (Tools -> Plugins -> Available Plugins), then open project.
+      Install the Maven plugin (<Tools> - <Plugins> - <Available Plugins>), then open project (it will appear as a project directory).
 
     * Eclipse
 
-      Eclipse support for Maven is still a bit rocky, so project descriptor files have been
-      committed into the repository so that the project can immediately be opened with
-      minimal additional configuration.
+      Eclipse embedded support for Maven is still a bit rocky in our experience, so these are instructions
+	  for generating Eclipse project descriptor files using external Maven.
 
-      The only thing you need to do is to is to define the classpath variable M2_REPO,
-      which is:
+	  Unpack the source package, cd into the <<<dddsample>>> directory (where the <<<pom.xml>>> file is located) and
+	  run the following command:
 
-      * Windows: C:\Documents and Settings\<Your username>\.m2\repository
+-------------------
+mvn eclipse:eclipse
+-------------------
 
-      * Mac: /Users/<Your username>\.m2\repository
+	  This will download all external library dependencies and plugins, and will take about 5-10 minutes to complete
+	  depending on you network conditions. It will also generate the files <<<.project>>> and <<<.classpath>>>,
+	  which are Eclipse project descriptor files. When that process is done, you can open Eclipse and select
+	  <File - Import>, <General - Existing projects into workspace>:
 
-      * Unix: /home/<Your username>\.m2\repository
+[images/eclipse1.png]
 
-      Go to Window -> Preferences, Java -> Build Path -> Classpath variables, New.
-      Set the name to M2_REPO and use the Folder button to browse to the aforementioned location.
+	  As project root directory, select the unpacked <<<dddsample>>> directory:
+
+[images/eclipse2.png]
+
+	  Now the project is up and running, except that all library references are relative to the <<<M2_REPO>>> classpath variable,
+	  so you will see a large list of unresolved references:
+
+[images/eclipse3.png]
+
+	  To define that variable, go to <Window - Preferences>, <Java - Build Path - Classpath variables>, <New>.
+	  Set the name to <<<M2_REPO>>> and use the Folder button to browse to the correct location, which is:
+
+*---------+------------------------------------------------------+
+| Windows | C:\Documents and Settings\\<Username>\.m2\repository |
+*---------+------------------------------------------------------+
+| Mac     | /Users/<Username>/.m2/repository                     |
+*---------+------------------------------------------------------+
+| Unix    | /home/<Username>/.m2/repository                      |
+*---------+------------------------------------------------------+
+
+[images/eclipse4.png]
+
+      You should be promted to do a full project rebuild. Select yes. Now the project should compile and you
+      can right-click on the <<<src/test/java>>> folder and do a "Run as/JUnit Test".
+
 
 About Maven
 
