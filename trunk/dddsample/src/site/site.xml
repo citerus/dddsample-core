@@ -26,7 +26,7 @@
       <item name="Characterization" href="characterization.html"/>
       <item name="Patterns Reference" href="patterns-reference.html"/>
       <item name="Architecture" href="architecture.html" />
-      <item name="Case study: Handling" href="handlingEventRegistration.html" />
+      <!--item name="Case study: Handling" href="handlingEventRegistration.html" /-->
     </menu>
     <menu ref="reports"/>
   </body>
