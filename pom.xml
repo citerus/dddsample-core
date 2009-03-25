@@ -12,7 +12,7 @@
   <distributionManagement>
     <site>
       <id>sf</id>
-      <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>
+      <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs</url>
     </site>
   </distributionManagement>
   <ciManagement />

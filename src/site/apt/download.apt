@@ -12,16 +12,16 @@ Prerequisites
 Downloads
 
     There are two {{{http://sourceforge.net/project/showfiles.php?group_id=210606}downloads}} available:
-    the core application {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} source package}},
-    and the {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} Incident Logging Application}}.
+    the core application {{{http://sourceforge.net/project/showfiles.php?group_id=210606&package_id=290691} source package}},
+    and the {{{http://sourceforge.net/project/showfiles.php?group_id=210606&package_id=290690} Incident Logging Application}}.
 
     The project uses Maven for build and management.
 
 * Source package
 
-    Download {{{http://downloads.sourceforge.net/dddsample/dddsample-1.0-src.zip?use_mirror=osdn} here}}.
+    Download {{{http://sourceforge.net/project/showfiles.php?group_id=210606&package_id=290691} here}}.
 
-    This is a complete checkout of the core application source code.
+    This is a the complete source code of the core application.
 
     To build a web archive from scratch (to be found in the target directory):
 
@@ -47,7 +47,7 @@ mvn jetty:run
 
 * Incident Logging Application
 
-    Download {{{http://downloads.sourceforge.net/dddsample/IncidentLoggingApplication.zip?use_mirror=osdn} here}}.
+    Download {{{http://sourceforge.net/project/showfiles.php?group_id=210606&package_id=290690} here}}.
 
     This is a simple, standalone Swing client that's used for registering handling events. It communicates with the core
     application via a Web Service interface. Unpack and run:
