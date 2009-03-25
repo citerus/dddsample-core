@@ -6,7 +6,7 @@ Architecture
 
   The sample application is layered as illustrated by this picture:
 
-[images/layers.png]
+[images/layers.jpg]
 
   There are three vertical layers: Interfaces, Application and Domain, each supported by different kinds of infrastructure.
 
