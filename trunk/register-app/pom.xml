@@ -37,7 +37,7 @@
           <descriptors>
             <descriptor>assembly.xml</descriptor>
           </descriptors>
-          <finalName>IncidentLoggingApplication</finalName>
+          <finalName>IncidentLoggingApplication-${project.version}</finalName>
         </configuration>
       </plugin>
     </plugins>
