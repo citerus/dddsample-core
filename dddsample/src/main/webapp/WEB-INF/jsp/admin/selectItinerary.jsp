@@ -1,13 +1,6 @@
 <html>
 <head>
   <title>Cargo Administration</title>
-  <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/calendar.js"/>"></script>
-  <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/YAHOO.js"/>"></script>
-  <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/event.js"/>"></script>
-  <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/dom.js"/>"></script>
-  <style type="text/css" title="style" media="screen">
-    @import "<c:url value="/calendar.css"/>";
-  </style>
 </head>
 <body>
 <div id="container">
@@ -20,6 +13,11 @@
     </tr>
   </table>
   <c:url value="/admin/assignItinerary.html" var="postUrl"/>
+  <c:if test="${empty routeCandidates}">
+      <p>No routes found that satisfy the route specification.
+          Try setting an arrival deadline futher into the future (a few weeks at least).
+      </p>
+  </c:if>
 
   <c:forEach items="${routeCandidates}" var="it" varStatus="itStatus">
       <form action="${postUrl}" method="post">

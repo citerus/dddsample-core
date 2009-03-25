@@ -1,13 +1,6 @@
 <html>
 <head>
   <title>Cargo Administration</title>
-    <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/calendar.js"/>"></script>
-    <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/YAHOO.js"/>"></script>
-    <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/event.js"/>"></script>
-    <script type="text/javascript" charset="UTF-8" src="<c:url value="/js/dom.js"/>"></script>
-    <style type="text/css" title="style" media="screen">
-      @import "<c:url value="/calendar.css"/>";
-    </style>
   <style type="text/css">
     td {
       align: left;
