@@ -202,7 +202,6 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   public static void loadHibernateData(TransactionTemplate tt, final SessionFactory sf, final HandlingEventFactory handlingEventFactory, final HandlingEventRepository handlingEventRepository) {
-    System.out.println("*** Loading Hibernate data ***");
     tt.execute(new TransactionCallbackWithoutResult() {
       @Override
       protected void doInTransactionWithoutResult(TransactionStatus status) {
@@ -250,7 +249,7 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(abc123);
         abc123.deriveDeliveryProgress(handlingHistory);
 
         session.update(abc123);
@@ -295,7 +294,7 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId1);
+        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(jkl567);
         jkl567.deriveDeliveryProgress(handlingHistory1);
 
         session.update(jkl567);

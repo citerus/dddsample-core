@@ -38,7 +38,7 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
       return;
     }
 
-    final HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+    final HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(cargo);
 
     cargo.deriveDeliveryProgress(handlingHistory);
 

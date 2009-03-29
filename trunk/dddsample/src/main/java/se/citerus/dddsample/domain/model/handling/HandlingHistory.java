@@ -1,6 +1,7 @@
 package se.citerus.dddsample.domain.model.handling;
 
 import org.apache.commons.lang.Validate;
+import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.*;
@@ -13,13 +14,43 @@ import static java.util.Collections.sort;
 public class HandlingHistory implements ValueObject<HandlingHistory> {
 
   private final List<HandlingEvent> handlingEvents;
+  private final Cargo cargo;
 
-  public static final HandlingHistory EMPTY = new HandlingHistory(Collections.<HandlingEvent>emptyList());
+  public static HandlingHistory emptyForCargo(final Cargo cargo) {
+    return new HandlingHistory(cargo);
+  }
 
-  public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
-    Validate.notNull(handlingEvents, "Handling events are required");
+  public static HandlingHistory fromEvents(final Collection<HandlingEvent> handlingEvents) {
+    return new HandlingHistory(handlingEvents);
+  }
 
+  private HandlingHistory(final Cargo cargo) {
+    Validate.notNull(cargo, "Cargo is required");
+    this.cargo = cargo;
+    handlingEvents = Collections.emptyList();
+  }
+
+  private HandlingHistory(final Collection<HandlingEvent> handlingEvents) {
+    Validate.notEmpty(handlingEvents, "Handling events are required");
+
+    this.cargo = uniqueCargo(handlingEvents);
     this.handlingEvents = new ArrayList<HandlingEvent>(handlingEvents);
+  }
+
+  private Cargo uniqueCargo(final Collection<HandlingEvent> handlingEvents) {
+    final Iterator<HandlingEvent> it = handlingEvents.iterator();
+    final Cargo firstCargo = it.next().cargo();
+    Validate.notNull(firstCargo, "Cargo is required");
+
+    while (it.hasNext()) {
+      final Cargo nextCargo = it.next().cargo();
+      Validate.isTrue(firstCargo.sameIdentityAs(nextCargo),
+        "A handling history can only contain handling events for a unique cargo. " +
+        "First event is for cargo " + firstCargo + ", also discovered cargo " + nextCargo
+      );
+    }
+
+    return firstCargo;
   }
 
   /**
@@ -34,7 +65,7 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
   }
 
   /**
-   * @return Most recently completed event, or null if the delivery history is empty.
+   * @return Most recently completed event, or null if the handling history is empty.
    */
   public HandlingEvent mostRecentlyCompletedEvent() {
     final List<HandlingEvent> distinctEvents = distinctEventsByCompletionTime();
@@ -43,6 +74,13 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
     } else {
       return distinctEvents.get(distinctEvents.size() - 1);
     }
+  }
+
+  /**
+   * @return The cargo to which this handling history refers.
+   */
+  public Cargo cargo() {
+    return cargo;
   }
 
   @Override
@@ -70,5 +108,4 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
         return he1.completionTime().compareTo(he2.completionTime());
       }
     };
-
 }
