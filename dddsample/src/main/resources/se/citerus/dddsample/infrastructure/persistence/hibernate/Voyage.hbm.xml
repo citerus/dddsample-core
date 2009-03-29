@@ -17,7 +17,7 @@
 
     <component name="schedule">
       <list name="carrierMovements" cascade="all-delete-orphan">
-        <key column="voyage_id" foreign-key="voyage_fk"/>
+        <key column="voyage_id" foreign-key="cm_voyage_fk"/>
         <index column="cm_index"/>
         <one-to-many class="se.citerus.dddsample.domain.model.voyage.CarrierMovement"/>
       </list>

@@ -10,7 +10,7 @@
       <generator class="org.hibernate.id.IdentityGenerator"/>
     </id>
 
-    <many-to-one name="voyage" column="voyage_id" cascade="none" foreign-key="voyage_fk"/>
+    <many-to-one name="voyage" column="voyage_id" cascade="none" foreign-key="leg_voyage_fk"/>
 
     <many-to-one name="loadLocation" column="load_location_id" cascade="none" foreign-key="load_location_fk"/>
     <property name="loadTime" column="load_time" not-null="true"/>
