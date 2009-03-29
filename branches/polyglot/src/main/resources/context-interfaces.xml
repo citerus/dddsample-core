@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml"/>
+
+
+  <!-- Handling report web service -->
+
+
+  <jaxws:endpoint id="jax-ws.http" implementor="#handlingReportService" address="/RegisterEvent"/>
+
+  <bean id="handlingReportService" class="se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl">
+    <property name="applicationEvents" ref="applicationEvents"/>
+  </bean>
+
+
+  <!-- File upload directory scanner -->
+
+
+  <bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+    <property name="period" value="5000"/>
+    <property name="delay" value="5000"/>
+    <property name="timerTask" ref="uploadDirectoryScanner"/>
+  </bean>
+
+  <bean id="uploadDirectoryScanner" class="se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner">
+    <property name="uploadDirectory" value="/tmp/upload"/>
+    <property name="parseFailureDirectory" value="/tmp/failed"/>
+    <property name="applicationEvents" ref="applicationEvents"/>
+  </bean>
+
+  <bean id="handlingReportConsumptionSupport" class="se.citerus.dddsample.interfaces.handling.HandlingReportParser"/>
+
+  <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+      <list>
+        <ref bean="scheduledTask"/>
+      </list>
+    </property>
+  </bean>
+
+
+  <!-- RMI exposed booking service facade, which operates in an open Hibernate session -->
+
+
+  <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="bookingServiceFacade" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="target" ref="bookingServiceFacadeTarget"/>
+    <property name="interceptorNames">
+      <list>
+        <value>hibernateInterceptor</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="bookingServiceFacadeTarget" class="se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl">
+    <property name="bookingService" ref="bookingService"/>
+    <property name="cargoRepository" ref="cargoRepository"/>
+    <property name="locationRepository" ref="locationRepository"/>
+    <property name="voyageRepository" ref="voyageRepository"/>
+  </bean>
+  
+  <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+    <property name="serviceInterface" value="se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade"/>
+    <property name="service" ref="bookingServiceFacade"/>
+    <property name="serviceName" value="BookingService"/>
+  </bean>
+
+
+  <!-- Tracking web application support -->
+
+
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" value="/WEB-INF/jsp/pub/"/>
+    <property name="suffix" value=".jsp"/>
+    <property name="requestContextAttribute" value="rc"/>
+    <property name="cache" value="false"/>
+  </bean>
+
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="messages"/>
+  </bean>
+
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+    <property name="defaultLocale" value="en"/>
+  </bean>
+
+  <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+</beans>

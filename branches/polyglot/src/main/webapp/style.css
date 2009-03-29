@@ -1,0 +1,279 @@
+html,body {
+  height: 100%;
+}
+
+body {
+  margin: auto;
+  font: 400 0.7em verdana, arial, sans-serif;
+  line-height: 170%;
+  color: #555;
+  background-color: #8599f7;
+  background-image: url("images/shade.png");
+  background-repeat: repeat-x;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+
+h1 {
+  padding-bottom: 0.2em;
+
+  font: 400 1.6em arial, sans-serif;
+  color: #536C71;
+}
+
+h2 {
+  font-size: 1.2em;
+  color: #586B7A;
+}
+
+h3 {
+  text-transform: uppercase;
+  font-size: 0.9em;
+  color: #5D6F73;
+}
+
+h4 {
+  font-size: 0.85em;
+}
+
+h5 {
+  font-size: 0.8em;
+}
+
+
+/* Links */
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+a:hover {
+  color: darkblue;
+}
+
+a img {
+  border: 0;
+}
+
+a img.border {  
+  border: 1px solid #000;
+}
+
+a:hover img.border {  
+  /* Fixes IE bug - IE doesn't correctly apply the style on a:hover so need to mask it */
+  border: 1px solid #668FA3 !important;
+  border: 1px solid #FC3307;
+}
+
+
+
+/* Images */
+img.floatRight {
+  margin: 5px 0 10px 10px;
+}
+
+img.floatLeft {
+  margin: 5px 10px 10px 0;
+}
+
+
+
+/* Lists */
+ul li {
+}
+
+ol li {
+  font-weight: bold;
+  color: #668FA3;
+}
+
+ol li span {
+  font-weight: normal;
+  color: #444;
+}
+
+
+
+/* Blockquote */
+blockquote {
+  margin: 0;
+  padding: 0 20px;
+  background: #eee;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+
+
+/**************************************************************
+   Form Elements
+ **************************************************************/
+
+form {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+/* If you're finding the input elements get pushed down, increase the width */
+label {
+  float: left;
+  width: 25%;
+  vertical-align: top;
+}
+
+input,
+textarea,
+select {
+  padding: 1px;
+  font: 400 1em verdana, sans-serif;
+  color: black;
+  background: #EEE;
+  border: 1px solid #555;
+}
+
+input:focus,
+input:hover,
+textarea:focus,
+textarea:hover,
+select:focus,
+select:hover {
+  color: #000;
+  background: #E7F1F3;
+  border: 1px solid #888;
+}
+
+input.noBorder,
+input:focus.noBorder,
+input:hover.noBorder {
+  padding: 0;
+  border: 0;
+}
+
+input.button {
+  padding: 2px 5px;
+
+  font: 400 0.9em verdana, serif;
+  cursor: pointer;
+
+  color: #fff;
+  background: #ccc;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #888 #888 #8880 #888;
+}
+
+input.radio {
+  background: none;
+  border: 0px;
+}
+
+table {
+  width: 100%;
+}
+
+table caption {
+  font-weight: bold;
+  text-align: left;
+  margin: 5px 0;
+}
+
+
+/**************************************************************
+   Custom div and span
+ **************************************************************/
+
+div#outer {
+  margin: auto;
+  padding: 0 20px;
+  width: 600px;
+  height: 100%;
+  text-align: center;
+  background-color: white;
+  border-left: 2px solid #4223de;
+  border-right: 2px solid #4223de;
+}
+
+
+#apptitle {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #555;
+}
+
+#footer {
+  border-top: 2px solid #555;
+  margin-top: 30px;
+  padding-top: 10px;
+  background-color: white;
+}
+
+#container {
+  text-align: left;
+  background-color: white;
+}
+
+#search {
+  font-size: 1.0em;
+  padding: 10px 0;
+  text-align: center;
+}
+
+#search table {
+  width: 320px;
+  margin: 0 auto;
+}
+
+#search td {
+  white-space: nowrap;
+}
+
+#result {
+  font-size: 1.0em;
+}
+
+#result thead {
+  font-size: 1.2em;
+  font-weight: bold;	
+}
+
+#result tr {
+  line-height: 120%;
+}
+
+.error {
+  color: #CC0033;
+}
+
+.event-type-LOAD {
+  background: #CCFFFF;
+}
+
+.event-type-UNLOAD {
+  background: #FFCCFF;
+}
+
+.event-type-RECEIVE {
+  background: #FFFF99;
+}
+
+.event-type-CLAIM {
+  background: #66FF99;
+}
+
+.notify {
+  border: 1px solid red;
+  padding: 4px;
+  font-weight: bold;
+}
+
+.notify img {
+  margin-right: 6px;
+  vertical-align: middle;
+}
