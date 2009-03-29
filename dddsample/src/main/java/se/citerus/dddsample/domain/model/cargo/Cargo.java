@@ -62,7 +62,7 @@ public class Cargo implements Entity<Cargo> {
     this.routeSpecification = routeSpecification;
 
     this.delivery = Delivery.derivedFrom(
-      this.routeSpecification, this.itinerary, HandlingHistory.EMPTY
+      this.routeSpecification, this.itinerary, HandlingHistory.emptyForCargo(this)
     );
   }
 
@@ -145,7 +145,9 @@ public class Cargo implements Entity<Cargo> {
    * @param handlingHistory handling history
    */
   public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
-    // TODO filter events on cargo (must be same as this cargo)
+    Validate.isTrue(this.sameIdentityAs(handlingHistory.cargo()),
+      "Handling history must refer to this cargo, " + this + ". " +
+      "Given handlig history refers to cargo " + handlingHistory.cargo());
 
     // Delivery is a value object, so we can simply discard the old one
     // and replace it with a new
@@ -154,7 +156,7 @@ public class Cargo implements Entity<Cargo> {
 
   @Override
   public boolean sameIdentityAs(final Cargo other) {
-    return other != null && trackingId.sameValueAs(other.trackingId);
+    return other != null && trackingId().sameValueAs(other.trackingId());
   }
 
   /**
@@ -176,12 +178,12 @@ public class Cargo implements Entity<Cargo> {
    */
   @Override
   public int hashCode() {
-    return trackingId.hashCode();
+    return trackingId().hashCode();
   }
 
   @Override
   public String toString() {
-    return trackingId.toString();
+    return trackingId().toString();
   }
 
   Cargo() {

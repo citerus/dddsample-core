@@ -1,11 +1,15 @@
 package se.citerus.dddsample.infrastructure.persistence.inmemory;
 
+import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HandlingEventRepositoryInMem implements HandlingEventRepository {
 
@@ -23,11 +27,14 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
   }
 
   @Override
-  public HandlingHistory lookupHandlingHistoryOfCargo(TrackingId trackingId) {
-    List<HandlingEvent> events = eventMap.get(trackingId);
-    if (events == null) events = Collections.emptyList();
-    
-    return new HandlingHistory(events);
+  public HandlingHistory lookupHandlingHistoryOfCargo(Cargo cargo) {
+    List<HandlingEvent> events = eventMap.get(cargo.trackingId());
+
+    if (events == null) {
+      return HandlingHistory.emptyForCargo(cargo);
+    } else {
+      return HandlingHistory.fromEvents(events);
+    }
   }
 
 }

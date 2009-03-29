@@ -52,23 +52,19 @@ public class CargoRepositoryInMem implements CargoRepository {
 
   public void init() throws Exception {
     final TrackingId xyz = new TrackingId("XYZ");
-    final Cargo cargoXYZ = createCargoWithDeliveryHistory(
-      xyz, STOCKHOLM, MELBOURNE, handlingEventRepository.lookupHandlingHistoryOfCargo(xyz));
+    final Cargo cargoXYZ = createCargoWithDeliveryHistory(xyz, STOCKHOLM, MELBOURNE);
     cargoDb.put(xyz.idString(), cargoXYZ);
 
     final TrackingId zyx = new TrackingId("ZYX");
-    final Cargo cargoZYX = createCargoWithDeliveryHistory(
-      zyx, MELBOURNE, STOCKHOLM, handlingEventRepository.lookupHandlingHistoryOfCargo(zyx));
+    final Cargo cargoZYX = createCargoWithDeliveryHistory(zyx, MELBOURNE, STOCKHOLM);
     cargoDb.put(zyx.idString(), cargoZYX);
 
     final TrackingId abc = new TrackingId("ABC");
-    final Cargo cargoABC = createCargoWithDeliveryHistory(
-      abc, STOCKHOLM, HELSINKI, handlingEventRepository.lookupHandlingHistoryOfCargo(abc));
+    final Cargo cargoABC = createCargoWithDeliveryHistory(abc, STOCKHOLM, HELSINKI);
     cargoDb.put(abc.idString(), cargoABC);
 
     final TrackingId cba = new TrackingId("CBA");
-    final Cargo cargoCBA = createCargoWithDeliveryHistory(
-      cba, HELSINKI, STOCKHOLM, handlingEventRepository.lookupHandlingHistoryOfCargo(cba));
+    final Cargo cargoCBA = createCargoWithDeliveryHistory(cba, HELSINKI, STOCKHOLM);
     cargoDb.put(cba.idString(), cargoCBA);
   }
 
@@ -78,12 +74,11 @@ public class CargoRepositoryInMem implements CargoRepository {
 
   public static Cargo createCargoWithDeliveryHistory(TrackingId trackingId,
                                                      Location origin,
-                                                     Location destination,
-                                                     HandlingHistory handlingHistory) {
+                                                     Location destination) {
 
     final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
     final Cargo cargo = new Cargo(trackingId, routeSpecification);
-    cargo.deriveDeliveryProgress(handlingHistory);
+    cargo.deriveDeliveryProgress(HandlingHistory.emptyForCargo(cargo));
 
     return cargo;
   }

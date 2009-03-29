@@ -24,7 +24,7 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZOU, CM001));
     events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001));
 
-    cargo.deriveDeliveryProgress(new HandlingHistory(events));
+    cargo.deriveDeliveryProgress(HandlingHistory.fromEvents(events));
 
     StaticApplicationContext applicationContext = new StaticApplicationContext();
     applicationContext.addMessage("cargo.status.IN_PORT", Locale.GERMAN, "In port {0}");

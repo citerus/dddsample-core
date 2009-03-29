@@ -5,6 +5,7 @@ import com.pathfinder.internal.GraphDAO;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -15,7 +16,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class ExternalRoutingServiceTest extends TestCase {
@@ -46,7 +46,7 @@ public class ExternalRoutingServiceTest extends TestCase {
 
   public void testCalculatePossibleRoutes() {
     TrackingId trackingId = new TrackingId("ABC");
-    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, new Date());
+    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, toDate("2009-04-01"));
     Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
