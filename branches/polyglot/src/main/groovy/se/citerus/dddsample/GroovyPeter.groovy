@@ -1,8 +1,12 @@
 package se.citerus.dddsample
 
-@Immutable
+//@Immutable
 final class GroovyPeter {
 
-  String name
+  final String name
 
+  GroovyPeter(String name) {
+    this.name = name
+  }
+  
 }

@@ -3,7 +3,7 @@ package se.citerus.dddsample
 class GroovyPeterTest extends GroovyTestCase {
 
   void testName() {
-    def peter = new GroovyPeter(name:"Peter")
+    def peter = new GroovyPeter("Peter")
 
     assert peter.name == "Peter"
 

@@ -92,13 +92,13 @@ public final class CargoAdminController extends MultiActionController {
   public void assignItinerary(HttpServletRequest request, HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
     List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
     for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
-      legDTOs.add(new LegDTO(
-        leg.getVoyageNumber(),
-        leg.getFromUnLocode(),
-        leg.getToUnLocode(),
-        leg.getFromDate(),
-        leg.getToDate())
-      );
+        final LegDTO dto = new LegDTO(
+                leg.getVoyageNumber(),
+                leg.getFromUnLocode(),
+                leg.getToUnLocode(),
+                leg.getFromDate(),
+                leg.getToDate());
+        legDTOs.add(dto);
     }
 
     RouteCandidateDTO selectedRoute = new RouteCandidateDTO(legDTOs);
