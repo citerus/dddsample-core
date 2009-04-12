@@ -18,7 +18,7 @@ public class CargoRoutingDTOAssembler {
   public CargoRoutingDTO toDTO(final Cargo cargo) {
     final CargoRoutingDTO dto = new CargoRoutingDTO(
       cargo.trackingId().idString(),
-      cargo.origin().unLocode().idString(),
+      cargo.routeSpecification().origin().unLocode().idString(),
       cargo.routeSpecification().destination().unLocode().idString(),
       cargo.routeSpecification().arrivalDeadline(),
       cargo.delivery().routingStatus().sameValueAs(RoutingStatus.MISROUTED));

@@ -90,10 +90,10 @@ public final class CargoTrackingViewAdapter {
   }
 
   /**
-   * @return Cargo osigin location.
+   * @return Cargo origin location.
    */
   public String getOrigin() {
-    return getDisplayText(cargo.origin());
+    return getDisplayText(cargo.routeSpecification().origin());
   }
 
   /**

@@ -80,9 +80,7 @@ public final class BookingServiceImpl implements BookingService {
     final Cargo cargo = cargoRepository.find(trackingId);
     final Location newDestination = locationRepository.find(unLocode);
 
-    final RouteSpecification routeSpecification = new RouteSpecification(
-      cargo.origin(), newDestination, cargo.routeSpecification().arrivalDeadline()
-    );
+    final RouteSpecification routeSpecification = cargo.routeSpecification().withDestination(newDestination);
     cargo.specifyNewRoute(routeSpecification);
 
     cargoRepository.store(cargo);

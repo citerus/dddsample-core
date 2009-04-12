@@ -46,7 +46,6 @@ import se.citerus.dddsample.domain.shared.Entity;
 public class Cargo implements Entity<Cargo> {
 
   private TrackingId trackingId;
-  private Location origin;
   private RouteSpecification routeSpecification;
   private Itinerary itinerary;
   private Delivery delivery;
@@ -56,9 +55,6 @@ public class Cargo implements Entity<Cargo> {
     Validate.notNull(routeSpecification, "Route specification is required");
 
     this.trackingId = trackingId;
-    // Cargo origin never changes, even if the route specification changes.
-    // However, at creation, cargo orgin can be derived from the initial route specification.
-    this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
 
     this.delivery = Delivery.derivedFrom(
@@ -73,13 +69,6 @@ public class Cargo implements Entity<Cargo> {
    */
   public TrackingId trackingId() {
     return trackingId;
-  }
-
-  /**
-   * @return Origin location.
-   */
-  public Location origin() {
-    return origin;
   }
 
   /**
