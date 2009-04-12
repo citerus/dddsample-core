@@ -20,7 +20,7 @@ public final class CargoTrackingViewAdapter {
   private final MessageSource messageSource;
   private final Locale locale;
   private final List<HandlingEventViewAdapter> events;
-  private final String FORMAT = "yyyy-MM-dd hh:mm";
+  private final String FORMAT = "yyyy-MM-dd hh:mm z";
 
   /**
    * Constructor.
@@ -107,7 +107,12 @@ public final class CargoTrackingViewAdapter {
     Date eta = cargo.delivery().estimatedTimeOfArrival();
 
     if (eta == null) return "?";
-    else return new SimpleDateFormat(FORMAT).format(eta);
+	else {
+		Location destination = cargo.routeSpecification().destination();
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT);
+		dateFormat.setTimeZone(destination.timeZone());
+		return dateFormat.format(eta);
+	}
   }
 
   public String getNextExpectedActivity() {
@@ -165,7 +170,10 @@ public final class CargoTrackingViewAdapter {
      * @return Time when the event was completed.
      */
     public String getTime() {
-      return new SimpleDateFormat(FORMAT).format(handlingEvent.completionTime());
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT);
+		dateFormat.setTimeZone(handlingEvent.location().timeZone());
+
+      return dateFormat.format(handlingEvent.completionTime());
     }
 
     /**

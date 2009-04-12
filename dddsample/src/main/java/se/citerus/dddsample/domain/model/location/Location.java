@@ -1,5 +1,7 @@
 package se.citerus.dddsample.domain.model.location;
 
+import java.util.TimeZone;
+
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.shared.Entity;
 
@@ -14,27 +16,31 @@ public final class Location implements Entity<Location> {
 
   private UnLocode unLocode;
   private String name;
+  private TimeZone timeZone;
 
   /**
    * Special Location object that marks an unknown location.
    */
   public static final Location UNKNOWN = new Location(
-    new UnLocode("XXXXX"), "Unknown location"
+    new UnLocode("XXXXX"), "Unknown location", TimeZone.getTimeZone("Zulu")
   );
 
   /**
    * Package-level constructor, visible for test only.
    *
    * @param unLocode UN Locode
-   * @param name     location name
+ * @param name     location name
+ * @param timeZone TODO
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  Location(final UnLocode unLocode, final String name) {
-    Validate.notNull(unLocode);
+  Location(final UnLocode unLocode, final String name, TimeZone timeZone) {
+	Validate.notNull(unLocode);
     Validate.notNull(name);
+    Validate.notNull(timeZone);
     
     this.unLocode = unLocode;
     this.name = name;
+    this.timeZone = timeZone;
   }
 
   /**
@@ -93,5 +99,9 @@ public final class Location implements Entity<Location> {
   }
 
   private Long id;
+
+public TimeZone timeZone() {
+	return timeZone;
+}
 
 }
