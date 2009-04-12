@@ -62,7 +62,7 @@ public class ExternalRoutingServiceTest extends TestCase {
       assertFalse(legs.isEmpty());
 
       // Cargo origin and start of first leg should match
-      assertEquals(cargo.origin(), legs.get(0).loadLocation());
+      assertEquals(cargo.routeSpecification().origin(), legs.get(0).loadLocation());
 
       // Cargo final destination and last leg stop should match
       Location lastLegStop = legs.get(legs.size() - 1).unloadLocation();

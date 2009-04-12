@@ -96,5 +96,11 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   RouteSpecification() {
     // Needed by Hibernate
   }
+
+public RouteSpecification withDestination(Location newDestination) {
+
+	return new RouteSpecification(origin, newDestination, arrivalDeadline);
+	
+}
   
 }

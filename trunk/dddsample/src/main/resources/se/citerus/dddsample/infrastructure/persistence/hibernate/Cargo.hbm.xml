@@ -11,8 +11,6 @@
       <generator class="org.hibernate.id.IdentityGenerator"/>
     </id>
 
-    <many-to-one name="origin" column="origin_id" not-null="false" cascade="none" update="false" foreign-key="origin_fk"/>
-
     <component name="trackingId" unique="true" update="false">
       <property name="id" column="tracking_id"/>
     </component>
