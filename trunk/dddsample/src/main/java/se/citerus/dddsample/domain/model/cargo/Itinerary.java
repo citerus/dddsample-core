@@ -47,7 +47,7 @@ public class Itinerary implements ValueObject<Itinerary> {
    */
   public boolean isExpected(final HandlingEvent event) {
     if (legs.isEmpty()) {
-      return true;
+      return false;
     }
 
     if (event.type() == HandlingEvent.Type.RECEIVE) {

@@ -17,7 +17,13 @@ public class CargoTrackingViewAdapterTest extends TestCase {
 
   public void testCreate() {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HANGZOU, HELSINKI, new Date()));
-
+//	TODO: Need to put an itinerary on the Cargo in order to test the
+//	isExpected(). Those assertions are commented out because they only
+//	worked as a side-effect of the incorrect (now corrected) behavior of 
+//  Itinerary, which previously said than an empty itinerary considered all
+//  events as "expected", whereas an empty itinerary should actually consider
+//  any event unexpected. (ie empty itinerary means nothing happens.)
+    
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));
 
@@ -44,21 +50,21 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     assertEquals("Hangzhou", event.getLocation());
     assertEquals("1970-01-01 08:00 CST", event.getTime());
     assertEquals("", event.getVoyageNumber());
-    assertTrue(event.isExpected());
+//    assertTrue(event.isExpected());
 
     event = it.next();
     assertEquals("LOAD", event.getType());
     assertEquals("Hangzhou", event.getLocation());
     assertEquals("1970-01-01 08:00 CST", event.getTime());
     assertEquals("CM001", event.getVoyageNumber());
-    assertTrue(event.isExpected());
+//    assertTrue(event.isExpected());
 
     event = it.next();
     assertEquals("UNLOAD", event.getType());
     assertEquals("Helsinki", event.getLocation());
     assertEquals("1970-01-01 01:00 CET", event.getTime());
     assertEquals("CM001", event.getVoyageNumber());
-    assertTrue(event.isExpected());
+//    assertTrue(event.isExpected());
   }
 
 }

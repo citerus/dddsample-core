@@ -32,7 +32,7 @@ public class ItineraryTest extends TestCase {
       build();
   }
 
-  public void testCargoOnTrack() throws Exception {
+  public void testCargoOnTrack() {
 
     TrackingId trackingId = new TrackingId("CARGO1");
     RouteSpecification routeSpecification = new RouteSpecification(SHANGHAI, GOTHENBURG, new Date());
@@ -83,6 +83,13 @@ public class ItineraryTest extends TestCase {
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM);
     assertFalse(itinerary.isExpected(event));
 
+    //Unrouted Cargo shouldn't go anywhere or do anything
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, SHANGHAI);
+    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(event));
+
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
+    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(event));
+    
   }
 
   public void testNextExpectedEvent() throws Exception {
