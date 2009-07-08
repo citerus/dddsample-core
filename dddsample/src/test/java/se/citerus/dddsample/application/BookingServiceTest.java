@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.cargo.CargoFactory;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -25,7 +26,7 @@ public class BookingServiceTest extends TestCase {
     cargoRepository = createMock(CargoRepository.class);
     locationRepository = createMock(LocationRepository.class);
     routingService = createMock(RoutingService.class);
-    bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
+    bookingService = new BookingServiceImpl(routingService, new CargoFactory(cargoRepository, locationRepository), cargoRepository, locationRepository);
   }
 
   public void testRegisterNew() {
