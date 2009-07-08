@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0 http://maven.apache.org/xsd/fml-1.0.xsd"
+  title="Frequently Asked Questions"
+  toplink="false">
+
+  <part id="Build">
+    <faq id="jax-ws-compilation-failure">
+      <question>
+        Compilation fails with this error:
+        <code>
+          dddsample\src\main\java\com\aggregator\HandlingReportServiceService.java:[63,43] cannot find symbol
+          symbol: method getPort(javax.xml.namespace.QName,java.lang.Class&lt;com.aggregator.HandlingReportService&gt;,javax.xml.ws.WebServiceFeature[])
+          location: class javax.xml.ws.Service
+        </code>
+      </question>
+      <answer>
+        <p>
+          You are using a compiler older than the required 1.6.0_04. Verify with the output of javac -version.
+          The bundled version of the JAX-WS API changed from 2.0 to 2.1 between updates 3 and 4 of the JDK.</p>
+        <p>
+          Solution: upgrade to the latest JDK.
+        </p>
+      </answer>
+    </faq>
+    <faq id="invalid-target-1-6-mac">
+      <question>
+        <code>javac: invalid target release: 1.6</code> on Mac, even though Java 6 is in the PATH.
+      </question>
+      <answer>
+        <p>
+          Maven (and many other applications) uses the concept of CurrentJDK in Mac, not the java/javac in your PATH.
+        </p>
+        <p>
+          Go to /System/Library/Frameworks/JavaVM.framework/Versions and make sure that the symlink
+          CurrentJDK points to the 1.6.0 directory. 
+        </p>
+      </answer>
+    </faq>
+
+  </part>
+
+</faqs>
