@@ -1,11 +1,7 @@
 package se.citerus.dddsample.domain.model.location;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Sample locations, for test purposes.
@@ -16,9 +12,9 @@ public class SampleLocations {
   private static final TimeZone CENTRAL_EUROPE =  TimeZone.getTimeZone("Europe/Stockholm");
   private static final TimeZone JAPAN =  TimeZone.getTimeZone("Asia/Tokyo");
   private static final TimeZone EASTERN =  TimeZone.getTimeZone("America/New_York");
+  private static final TimeZone PACIFIC =  TimeZone.getTimeZone("America/Los Angeles");
   private static final TimeZone CENTRAL =  TimeZone.getTimeZone("America/Chicago");
   private static final TimeZone EASTERN_AUSTRALIA =  TimeZone.getTimeZone("Australia/Melbourne");
-  
 
   public static final Location HONGKONG = new Location(new UnLocode("CNHKG"), "Hongkong",  CHINA);
   public static final Location MELBOURNE = new Location(new UnLocode("AUMEL"), "Melbourne", EASTERN_AUSTRALIA);
@@ -33,6 +29,7 @@ public class SampleLocations {
   public static final Location HANGZOU = new Location(new UnLocode("CNHGH"), "Hangzhou", CHINA);
   public static final Location NEWYORK = new Location(new UnLocode("USNYC"), "New York", EASTERN);
   public static final Location DALLAS = new Location(new UnLocode("USDAL"), "Dallas", CENTRAL);
+  public static final Location LONG_BEACH = new Location(new UnLocode("USLBC"), "Long Beach", PACIFIC);
 
   public static final Map<UnLocode, Location> ALL = new HashMap<UnLocode, Location>();
 
