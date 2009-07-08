@@ -4,7 +4,7 @@
 
 Prerequisites
 
-  * Java 6 or later
+  * Java 6, Update 4 (1.6.0_04) or later 
 
   * {{{http://maven.apache.org}Maven}} 2.0.9 or later
 
