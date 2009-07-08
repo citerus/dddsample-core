@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
  */
 public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, ID> {
 
-    private static Field identityField;
+    private static volatile Field identityField;
 
     @Override
     public final boolean sameIdentityAs(final T other) {
@@ -24,7 +24,7 @@ public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, I
         try {
             return (ID) identityField.get(this);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
     }
 
