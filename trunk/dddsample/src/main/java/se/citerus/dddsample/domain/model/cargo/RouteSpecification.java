@@ -57,6 +57,30 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     return new Date(arrivalDeadline.getTime());
   }
 
+  /**
+   * @param newDestination destination of new route specification
+   * @return A copy of this route specification but with new destination
+   */
+  public RouteSpecification withDestination(Location newDestination) {
+	  return new RouteSpecification(origin, newDestination, arrivalDeadline);
+  }
+
+  /**
+   * @param newOrigin origin of new route specification
+   * @return A copy of this route specification but with the new origin
+   */
+  public RouteSpecification withOrigin(Location newOrigin) {
+    return new RouteSpecification(newOrigin, destination, arrivalDeadline);
+  }
+
+  /**
+   * @param newArrivalDeadline arrival deadline of new route specification
+   * @return A copy of this route specification but with the new arrival deadline
+   */
+  public RouteSpecification withArrivalDeadline(Date newArrivalDeadline) {
+    return new RouteSpecification(origin, destination, newArrivalDeadline);
+  }
+
   @Override
   public boolean isSatisfiedBy(final Itinerary itinerary) {
     return itinerary != null &&
@@ -96,11 +120,4 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   RouteSpecification() {
     // Needed by Hibernate
   }
-
-public RouteSpecification withDestination(Location newDestination) {
-
-	return new RouteSpecification(origin, newDestination, arrivalDeadline);
-	
-}
-  
 }

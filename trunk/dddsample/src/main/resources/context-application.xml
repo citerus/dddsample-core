@@ -5,9 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean id="bookingService" class="se.citerus.dddsample.application.impl.BookingServiceImpl">
+    <constructor-arg ref="cargoFactory"/>
+    <constructor-arg ref="routingService"/>
     <constructor-arg ref="cargoRepository"/>
     <constructor-arg ref="locationRepository"/>
-    <constructor-arg ref="routingService"/>
   </bean>
 
   <bean id="cargoInspectionService" class="se.citerus.dddsample.application.impl.CargoInspectionServiceImpl">
