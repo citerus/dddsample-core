@@ -133,6 +133,17 @@ public class Itinerary implements ValueObject<Itinerary> {
   }
 
   /**
+   * @return The first leg on the itinerary.
+   */
+  Leg firstLeg() {
+    if (legs.isEmpty()) {
+      return null;
+    } else {
+      return legs.get(0);
+    }
+  }
+
+  /**
    * @param other itinerary to compare
    * @return <code>true</code> if the legs in this and the other itinerary are all equal.
    */
