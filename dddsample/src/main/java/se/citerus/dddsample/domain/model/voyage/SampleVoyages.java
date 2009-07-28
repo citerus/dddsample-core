@@ -29,12 +29,16 @@ public class SampleVoyages {
 
   public final static Voyage v100 = new Voyage.Builder(new VoyageNumber("V100"), HONGKONG).
     addMovement(TOKYO, toDate("2009-03-03"), toDate("2009-03-05")).
-    addMovement(NEWYORK, toDate("2009-03-06"), toDate("2009-03-09")).
+    addMovement(LONG_BEACH, toDate("2009-03-06"), toDate("2009-03-09")).
     build();
-  public final static Voyage v200 = new Voyage.Builder(new VoyageNumber("V200"), TOKYO).
+  public final static Voyage v200 = new Voyage.Builder(new VoyageNumber("V200"), SHANGHAI).
       addMovement(NEWYORK, toDate("2009-03-06"), toDate("2009-03-08")).
-      addMovement(CHICAGO, toDate("2009-03-10"), toDate("2009-03-14")).
+      addMovement(ROTTERDAM, toDate("2009-03-10"), toDate("2009-03-14")).
       addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-16")).
+      build();
+  public final static Voyage v250 = new Voyage.Builder(new VoyageNumber("V250"), LONG_BEACH).
+      addMovement(DALLAS, toDate("2009-03-06"), toDate("2009-03-08")).
+      addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
       build();
   public final static Voyage v300 = new Voyage.Builder(new VoyageNumber("V300"), TOKYO).
         addMovement(ROTTERDAM, toDate("2009-03-08"), toDate("2009-03-11")).

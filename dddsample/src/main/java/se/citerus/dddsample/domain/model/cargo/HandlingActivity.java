@@ -81,6 +81,11 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
     return sameValueAs(other);
   }
 
+  @Override
+  public String toString() {
+    return type + " in " + location + (voyage != null ? ", " + voyage : "");
+  }
+
   HandlingActivity() {
     // Needed by Hibernate
   }
