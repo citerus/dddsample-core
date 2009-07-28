@@ -48,7 +48,10 @@ public class Delivery implements ValueObject<Delivery> {
   Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
     Validate.notNull(routeSpecification, "Route specification is required");
 
-    return new Delivery(this.lastEvent, itinerary, routeSpecification);
+    Delivery delivery = new Delivery(this.lastEvent, itinerary, routeSpecification);
+    delivery.misdirected = false;
+    delivery.nextExpectedActivity = delivery.calculateNextExpectedActivity(routeSpecification, itinerary);
+    return delivery;
   }
 
   /**
@@ -223,6 +226,21 @@ public class Delivery implements ValueObject<Delivery> {
   }
 
   private HandlingActivity calculateNextExpectedActivity(RouteSpecification routeSpecification, Itinerary itinerary) {
+    /*
+      Capture:
+
+      Cargo is misdirected but has been rerouted. Next expected acivity should be to load according to first leg
+      of new itinerary.
+
+      and
+
+      even if a cargo is misdirected, we expect it to be unloaded at next stop.
+      
+     */
+    if (misdirected && ROUTED.equals(routingStatus)) {
+
+    }
+
     if (!onTrack()) return NO_ACTIVITY;
 
     if (lastEvent == null) return new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.origin());
