@@ -4,12 +4,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import se.citerus.dddsample.application.ApplicationEvents;
+import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 import java.io.File;
@@ -30,9 +29,9 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
 
   private File uploadDirectory;
   private File parseFailureDirectory;
+  private HandlingEventService handlingEventService;
 
   private final static Log logger = LogFactory.getLog(UploadDirectoryScanner.class);
-  private ApplicationEvents applicationEvents;
 
   @Override
   public void run() {
@@ -95,8 +94,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     final UnLocode unLocode = parseUnLocode(unLocodeStr, errors);
 
     if (errors.isEmpty()) {
-      final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(new Date(), date, trackingId, voyageNumber, eventType, unLocode);
-      applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
+      handlingEventService.registerHandlingEvent(date, trackingId, voyageNumber, unLocode, eventType);
     } else {
       throw new Exception(errors.toString());
     }
@@ -137,7 +135,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     this.parseFailureDirectory = parseFailureDirectory;
   }
 
-  public void setApplicationEvents(ApplicationEvents applicationEvents) {
-    this.applicationEvents = applicationEvents;
+  public void setHandlingEventService(HandlingEventService handlingEventService) {
+    this.handlingEventService = handlingEventService;
   }
 }
