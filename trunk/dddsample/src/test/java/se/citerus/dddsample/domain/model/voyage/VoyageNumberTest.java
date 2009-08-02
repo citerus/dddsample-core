@@ -24,9 +24,5 @@ public class VoyageNumberTest extends TestCase {
         //TODO: Test goes here...
     }
 
-    public void testIdString() throws Exception {
-        //TODO: Test goes here...
-    }
-
 
 }

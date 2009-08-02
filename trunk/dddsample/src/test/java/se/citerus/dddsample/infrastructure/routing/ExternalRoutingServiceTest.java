@@ -33,7 +33,7 @@ public class ExternalRoutingServiceTest extends TestCase {
 
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO() {
       public List<String> listLocations() {
-        return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
+        return Arrays.asList(TOKYO.unLocode().stringValue(), STOCKHOLM.unLocode().stringValue(), GOTHENBURG.unLocode().stringValue());
       }
 
       public void storeCarrierMovementId(String cmId, String from, String to) {

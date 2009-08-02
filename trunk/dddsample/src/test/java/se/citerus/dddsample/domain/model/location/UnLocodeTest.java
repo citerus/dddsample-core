@@ -18,8 +18,8 @@ public class UnLocodeTest extends TestCase {
     assertInvalid(null);
   }
 
-  public void testIdString() throws Exception {
-    assertEquals("ABCDE", new UnLocode("AbcDe").idString());
+  public void testStringValue() throws Exception {
+    assertEquals("ABCDE", new UnLocode("AbcDe").stringValue());
   }
 
   public void testEquals() throws Exception {

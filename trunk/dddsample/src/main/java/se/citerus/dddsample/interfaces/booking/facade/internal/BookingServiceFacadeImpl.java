@@ -52,7 +52,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
       new UnLocode(destination),
       arrivalDeadline
     );
-    return trackingId.idString();
+    return trackingId.stringValue();
   }
 
   @Override
