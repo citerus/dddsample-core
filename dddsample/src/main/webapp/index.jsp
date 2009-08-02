@@ -15,6 +15,7 @@
 <ul>
 <li>Public <a href="public/track">cargo tracking</a></li> 
 <li>Administration of <a href="admin/list">booking and routing</a>.</li>
+<li>Handling event registration <a href="ws/RegisterEvent?wsdl">web service</a></li>
 </ul>
 <p>The Incident Logging application, that is used to register handling events, is a stand-alone application and a separate download.</p>
 <p>Please visit the <a href="http://dddsample.sf.net">project website</a> for more information and a screencast demonstration of how the application works.</p>
