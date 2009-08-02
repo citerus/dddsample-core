@@ -6,7 +6,6 @@ import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
 public class SynchronousApplicationEventsStub implements ApplicationEvents {
 
@@ -24,17 +23,18 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
   }
 
   @Override
+  public void cargoDeliveryWasUpdated(Cargo cargo) {
+    logger.debug("EVENT: cargo delivery was updated");
+  }
+
+  @Override
   public void cargoWasMisdirected(Cargo cargo) {
     logger.debug("EVENT: cargo was misdirected");
   }
 
   @Override
   public void cargoHasArrived(Cargo cargo) {
-    logger.debug("EVENT: cargo has arrived: " + cargo.trackingId().idString());
+    logger.debug("EVENT: cargo has arrived: " + cargo.trackingId().stringValue());
   }
 
-  @Override
-  public void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt) {
-    logger.debug("EVENT: received handling event registration attempt");
-  }
 }

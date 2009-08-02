@@ -2,7 +2,6 @@ package se.citerus.dddsample.application;
 
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
 /**
  * This interface provides a way to let other parts
@@ -21,6 +20,14 @@ public interface ApplicationEvents {
   void cargoWasHandled(HandlingEvent event);
 
   /**
+   * Cargo delivery has been updated.
+   * @param cargo cargo
+   */
+  void cargoDeliveryWasUpdated(Cargo cargo);
+
+  // TODO remove the two below 
+
+  /**
    * A cargo has been misdirected.
    *
    * @param cargo cargo
@@ -33,12 +40,5 @@ public interface ApplicationEvents {
    * @param cargo cargo
    */
   void cargoHasArrived(Cargo cargo);
-
-  /**
-   * A handling event regitration attempt is received.
-   *
-   * @param attempt handling event registration attempt
-   */
-  void receivedHandlingEventRegistrationAttempt(HandlingEventRegistrationAttempt attempt);
 
 }
