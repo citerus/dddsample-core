@@ -7,7 +7,6 @@ import org.springframework.jms.core.MessageCreator;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -23,8 +22,7 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
   private Destination cargoHandledQueue;
   private Destination misdirectedCargoQueue;
   private Destination deliveredCargoQueue;
-  private Destination rejectedRegistrationAttemptsQueue;
-  private Destination handlingEventQueue;
+  private Destination cargoDeliveryUpdateQueue;
 
   private static final Log logger = LogFactory.getLog(JmsApplicationEventsImpl.class);
 
@@ -34,7 +32,17 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
     logger.info("Cargo was handled " + cargo);
     jmsOperations.send(cargoHandledQueue, new MessageCreator() {
       public Message createMessage(final Session session) throws JMSException {
-        return session.createTextMessage(cargo.trackingId().idString());
+        return session.createTextMessage(cargo.trackingId().stringValue());
+      }
+    });
+  }
+
+  @Override
+  public void cargoDeliveryWasUpdated(final Cargo cargo) {
+    logger.info("Cargo delivery was updated: " + cargo);
+    jmsOperations.send(cargoDeliveryUpdateQueue, new MessageCreator() {
+      public Message createMessage(Session session) throws JMSException {
+        return session.createTextMessage(cargo.trackingId().stringValue());
       }
     });
   }
@@ -44,7 +52,7 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
     logger.info("Cargo was misdirected " + cargo);
     jmsOperations.send(misdirectedCargoQueue, new MessageCreator() {
       public Message createMessage(Session session) throws JMSException {
-        return session.createTextMessage(cargo.trackingId().idString());
+        return session.createTextMessage(cargo.trackingId().stringValue());
       }
     });
   }
@@ -54,17 +62,7 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
     logger.info("Cargo has arrived " + cargo);
     jmsOperations.send(deliveredCargoQueue, new MessageCreator() {
       public Message createMessage(Session session) throws JMSException {
-        return session.createTextMessage(cargo.trackingId().idString());
-      }
-    });
-  }
-
-  @Override
-  public void receivedHandlingEventRegistrationAttempt(final HandlingEventRegistrationAttempt attempt) {
-    logger.info("Received handling event registration attempt " + attempt);
-    jmsOperations.send(handlingEventQueue, new MessageCreator() {
-      public Message createMessage(Session session) throws JMSException {
-        return session.createObjectMessage(attempt);
+        return session.createTextMessage(cargo.trackingId().stringValue());
       }
     });
   }
@@ -85,11 +83,7 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
     this.deliveredCargoQueue = destination;
   }
 
-  public void setRejectedRegistrationAttemptsQueue(Destination destination) {
-    this.rejectedRegistrationAttemptsQueue = destination;
-  }
-
-  public void setHandlingEventQueue(Destination destination) {
-    this.handlingEventQueue = destination;
+  public void setCargoDeliveryUpdateQueue(Destination cargoDeliveryUpdateQueue) {
+    this.cargoDeliveryUpdateQueue = cargoDeliveryUpdateQueue;
   }
 }

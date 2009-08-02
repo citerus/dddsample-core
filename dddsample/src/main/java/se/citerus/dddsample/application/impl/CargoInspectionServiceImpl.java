@@ -51,6 +51,9 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
     }
 
     cargoRepository.store(cargo);
+
+    // TODO replace the inspections above with subscribers to this event
+    //applicationEvents.cargoDeliveryWasUpdated(cargo);
   }
 
 }

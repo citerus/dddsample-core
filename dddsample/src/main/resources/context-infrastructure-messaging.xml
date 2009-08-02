@@ -16,12 +16,10 @@
   <amq:queue id="cargoHandledQueue" name="CargoHandledQueue" physicalName="CargoHandledQueue"/>
   <amq:queue id="misdirectedCargoQueue" name="MisdirectedCargoQueue" physicalName="MisdirectedCargoQueue"/>
   <amq:queue id="deliveredCargoQueue" name="DeliveredCargoQueue" physicalName="DeliveredCargoQueue"/>
-  <amq:queue id="handlingEventRegistrationAttemptQueue" name="HandlingEventRegistrationAttemptQueue" physicalName="HandlingEventRegistrationAttemptQueue"/>
-  <amq:queue id="rejectedRegistrationAttemptsQueue" name="RejectedRegistrationAttemptsQueue" physicalName="RejectedRegistrationAttemptsQueue"/>
+  <amq:queue id="cargoDeliveryUpdateQueue" name="CargoDeliveryUpdateQueue" physicalName="CargoDeliveryUpdateQueue"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
     <jms:listener destination="CargoHandledQueue" ref="cargoHandledConsumer" />
-    <jms:listener destination="HandlingEventRegistrationAttemptQueue" ref="handlingEventRegistrationAttemptConsumer" />
     <jms:listener destination="MisdirectedCargoQueue" ref="simpleLoggingConsumer"/>
     <jms:listener destination="DeliveredCargoQueue" ref="simpleLoggingConsumer"/>
     <jms:listener destination="RejectedRegistrationAttemptsQueue" ref="simpleLoggingConsumer"/>
@@ -36,16 +34,11 @@
     <property name="cargoHandledQueue" ref="cargoHandledQueue"/>
     <property name="misdirectedCargoQueue" ref="misdirectedCargoQueue"/>
     <property name="deliveredCargoQueue" ref="deliveredCargoQueue"/>
-    <property name="rejectedRegistrationAttemptsQueue" ref="rejectedRegistrationAttemptsQueue"/>
-    <property name="handlingEventQueue" ref="handlingEventRegistrationAttemptQueue"/>
+    <property name="cargoDeliveryUpdateQueue" ref="cargoDeliveryUpdateQueue"/>
   </bean>
 
   <bean id="cargoHandledConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.CargoHandledConsumer">
     <property name="cargoInspectionService" ref="cargoInspectionService"/>
-  </bean>
-
-  <bean id="handlingEventRegistrationAttemptConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.HandlingEventRegistrationAttemptConsumer">
-    <property name="handlingEventService" ref="handlingEventService"/>
   </bean>
 
   <bean id="simpleLoggingConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.SimpleLoggingConsumer"/>
