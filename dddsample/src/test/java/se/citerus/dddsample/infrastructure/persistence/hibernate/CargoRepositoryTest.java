@@ -121,7 +121,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     flush();
 
     Map<String, Object> map = sjt.queryForMap(
-      "select * from Cargo where tracking_id = ?", trackingId.idString());
+      "select * from Cargo where tracking_id = ?", trackingId.stringValue());
 
     assertEquals("AAA", map.get("TRACKING_ID"));
 

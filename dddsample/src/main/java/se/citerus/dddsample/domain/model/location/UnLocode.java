@@ -35,7 +35,7 @@ public final class UnLocode implements ValueObject<UnLocode> {
   /**
    * @return country code and location code concatenated, always upper case.
    */
-  public String idString() {
+  public String stringValue() {
     return unlocode;
   }
 
@@ -61,7 +61,7 @@ public final class UnLocode implements ValueObject<UnLocode> {
 
   @Override
   public String toString() {
-    return idString();
+    return stringValue();
   }
 
   UnLocode() {

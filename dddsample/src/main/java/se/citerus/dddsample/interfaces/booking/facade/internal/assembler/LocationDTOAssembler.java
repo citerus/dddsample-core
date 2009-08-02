@@ -9,7 +9,7 @@ import java.util.List;
 public class LocationDTOAssembler {
 
   public LocationDTO toDTO(Location location) {
-    return new LocationDTO(location.unLocode().idString(), location.name());
+    return new LocationDTO(location.unLocode().stringValue(), location.name());
   }
 
   public List<LocationDTO> toDTOList(List<Location> allLocations) {

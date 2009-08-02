@@ -32,11 +32,11 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public Cargo find(final TrackingId trackingId) {
-    return cargoDb.get(trackingId.idString());
+    return cargoDb.get(trackingId.stringValue());
   }
 
   public void store(final Cargo cargo) {
-    cargoDb.put(cargo.trackingId().idString(), cargo);
+    cargoDb.put(cargo.trackingId().stringValue(), cargo);
   }
 
   public TrackingId nextTrackingId() {
@@ -53,19 +53,19 @@ public class CargoRepositoryInMem implements CargoRepository {
   public void init() throws Exception {
     final TrackingId xyz = new TrackingId("XYZ");
     final Cargo cargoXYZ = createCargoWithDeliveryHistory(xyz, STOCKHOLM, MELBOURNE);
-    cargoDb.put(xyz.idString(), cargoXYZ);
+    cargoDb.put(xyz.stringValue(), cargoXYZ);
 
     final TrackingId zyx = new TrackingId("ZYX");
     final Cargo cargoZYX = createCargoWithDeliveryHistory(zyx, MELBOURNE, STOCKHOLM);
-    cargoDb.put(zyx.idString(), cargoZYX);
+    cargoDb.put(zyx.stringValue(), cargoZYX);
 
     final TrackingId abc = new TrackingId("ABC");
     final Cargo cargoABC = createCargoWithDeliveryHistory(abc, STOCKHOLM, HELSINKI);
-    cargoDb.put(abc.idString(), cargoABC);
+    cargoDb.put(abc.stringValue(), cargoABC);
 
     final TrackingId cba = new TrackingId("CBA");
     final Cargo cargoCBA = createCargoWithDeliveryHistory(cba, HELSINKI, STOCKHOLM);
-    cargoDb.put(cba.idString(), cargoCBA);
+    cargoDb.put(cba.stringValue(), cargoCBA);
   }
 
   public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {

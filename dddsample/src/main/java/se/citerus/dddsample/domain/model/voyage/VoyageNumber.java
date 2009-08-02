@@ -43,12 +43,12 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
     return number;
   }
 
-  public String idString() {
+  public String stringValue() {
     return number;
   }
 
   VoyageNumber() {
     // Needed by Hibernate
   }
-  
+
 }

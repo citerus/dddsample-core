@@ -24,7 +24,7 @@ public final class TrackingId implements ValueObject<TrackingId> {
   /**
    * @return String representation of this tracking id.
    */
-  public String idString() {
+  public String stringValue() {
     return id;
   }
 

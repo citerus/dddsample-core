@@ -40,7 +40,7 @@ public final class BookingServiceImpl implements BookingService {
                                  final Date arrivalDeadline) {
     final Cargo cargo = cargoFactory.newCargo(originUnLocode, destinationUnLocode, arrivalDeadline);
     cargoRepository.store(cargo);
-    logger.info("Booked new cargo with tracking id " + cargo.trackingId().idString());
+    logger.info("Booked new cargo with tracking id " + cargo.trackingId().stringValue());
 
     return cargo.trackingId();
   }
