@@ -14,15 +14,12 @@
   <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost?broker.persistent=false&amp;broker.useJmx=false"/>
 
   <amq:queue id="cargoHandledQueue" name="CargoHandledQueue" physicalName="CargoHandledQueue"/>
-  <amq:queue id="misdirectedCargoQueue" name="MisdirectedCargoQueue" physicalName="MisdirectedCargoQueue"/>
-  <amq:queue id="deliveredCargoQueue" name="DeliveredCargoQueue" physicalName="DeliveredCargoQueue"/>
-  <amq:queue id="cargoDeliveryUpdateQueue" name="CargoDeliveryUpdateQueue" physicalName="CargoDeliveryUpdateQueue"/>
+  <amq:topic id="cargoDeliveryUpdateTopic" name="CargoDeliveryUpdateTopic" physicalName="CargoDeliveryUpdateTopic"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
-    <jms:listener destination="CargoHandledQueue" ref="cargoHandledConsumer" />
-    <jms:listener destination="MisdirectedCargoQueue" ref="simpleLoggingConsumer"/>
-    <jms:listener destination="DeliveredCargoQueue" ref="simpleLoggingConsumer"/>
-    <jms:listener destination="RejectedRegistrationAttemptsQueue" ref="simpleLoggingConsumer"/>
+    <jms:listener destination="CargoHandledQueue" ref="listener3"/>
+    <jms:listener destination="CargoDeliveryUpdateTopic" ref="listener1"/>
+    <jms:listener destination="CargoDeliveryUpdateTopic" ref="listener2"/>
   </jms:listener-container>
 
   <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
@@ -31,16 +28,23 @@
 
   <bean id="applicationEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsApplicationEventsImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
-    <property name="cargoHandledQueue" ref="cargoHandledQueue"/>
-    <property name="misdirectedCargoQueue" ref="misdirectedCargoQueue"/>
-    <property name="deliveredCargoQueue" ref="deliveredCargoQueue"/>
-    <property name="cargoDeliveryUpdateQueue" ref="cargoDeliveryUpdateQueue"/>
+    <property name="cargoHandledDestination" ref="cargoHandledQueue"/>
+    <property name="cargoDeliveryUpdateDestination" ref="cargoDeliveryUpdateTopic"/>
   </bean>
 
-  <bean id="cargoHandledConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.CargoHandledConsumer">
-    <property name="cargoInspectionService" ref="cargoInspectionService"/>
+  <bean id="listener1" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <constructor-arg ref="misdirectedNotifier"/>
+    <property name="defaultListenerMethod" value="alertIfMisdirected"/>
   </bean>
 
-  <bean id="simpleLoggingConsumer" class="se.citerus.dddsample.infrastructure.messaging.jms.SimpleLoggingConsumer"/>
+  <bean id="listener2" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <constructor-arg ref="readyToClaimNotfier"/>
+    <property name="defaultListenerMethod" value="alertIfReadyToClaim"/>
+  </bean>
+
+  <bean id="listener3" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <constructor-arg ref="cargoInspectionService"/>
+    <property name="defaultListenerMethod" value="inspectCargo"/>
+  </bean>
 
 </beans>

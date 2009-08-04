@@ -21,24 +21,9 @@ public interface ApplicationEvents {
 
   /**
    * Cargo delivery has been updated.
+   *
    * @param cargo cargo
    */
   void cargoDeliveryWasUpdated(Cargo cargo);
-
-  // TODO remove the two below 
-
-  /**
-   * A cargo has been misdirected.
-   *
-   * @param cargo cargo
-   */
-  void cargoWasMisdirected(Cargo cargo);
-
-  /**
-   * A cargo has arrived at its final destination.
-   *
-   * @param cargo cargo
-   */
-  void cargoHasArrived(Cargo cargo);
 
 }

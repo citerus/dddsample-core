@@ -39,21 +39,10 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
     }
 
     final HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(cargo);
-
     cargo.deriveDeliveryProgress(handlingHistory);
 
-    if (cargo.delivery().isMisdirected()) {
-      applicationEvents.cargoWasMisdirected(cargo);
-    }
-
-    if (cargo.delivery().isUnloadedAtDestination()) {
-      applicationEvents.cargoHasArrived(cargo);
-    }
-
     cargoRepository.store(cargo);
-
-    // TODO replace the inspections above with subscribers to this event
-    //applicationEvents.cargoDeliveryWasUpdated(cargo);
+    applicationEvents.cargoDeliveryWasUpdated(cargo);
   }
 
 }
