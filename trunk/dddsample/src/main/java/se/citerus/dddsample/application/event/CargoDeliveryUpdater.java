@@ -1,48 +1,41 @@
-package se.citerus.dddsample.application.impl;
+package se.citerus.dddsample.application.event;
 
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
-import se.citerus.dddsample.application.ApplicationEvents;
-import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
-public class CargoInspectionServiceImpl implements CargoInspectionService {
+public class CargoDeliveryUpdater {
 
-  private final ApplicationEvents applicationEvents;
-  private final CargoRepository cargoRepository;
-  private final HandlingEventRepository handlingEventRepository;
+  private ApplicationEvents applicationEvents;
+  private CargoRepository cargoRepository;
+  private HandlingEventRepository handlingEventRepository;
   private final Log logger = LogFactory.getLog(getClass());
 
-  public CargoInspectionServiceImpl(final ApplicationEvents applicationEvents,
-                                    final CargoRepository cargoRepository,
-                                    final HandlingEventRepository handlingEventRepository) {
+  public CargoDeliveryUpdater(final ApplicationEvents applicationEvents,
+                              final CargoRepository cargoRepository,
+                              final HandlingEventRepository handlingEventRepository) {
     this.applicationEvents = applicationEvents;
     this.cargoRepository = cargoRepository;
     this.handlingEventRepository = handlingEventRepository;
   }
 
-  @Override
   @Transactional
-  public void inspectCargo(final TrackingId trackingId) {
-    Validate.notNull(trackingId, "Tracking ID is required");
-
+  public void updateDelivery(final TrackingId trackingId) {
     final Cargo cargo = cargoRepository.find(trackingId);
-    if (cargo == null) {
-      logger.warn("Can't inspect non-existing cargo " + trackingId);
-      return;
-    }
-
     final HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(cargo);
     cargo.deriveDeliveryProgress(handlingHistory);
 
     cargoRepository.store(cargo);
     applicationEvents.cargoDeliveryWasUpdated(cargo);
+    logger.info("Updated delivery of cargo " + cargo + ": " + cargo.delivery());
+  }
+
+  CargoDeliveryUpdater() {
   }
 
 }

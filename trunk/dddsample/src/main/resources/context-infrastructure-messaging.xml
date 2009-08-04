@@ -43,8 +43,8 @@
   </bean>
 
   <bean id="listener3" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
-    <constructor-arg ref="cargoInspectionService"/>
-    <property name="defaultListenerMethod" value="inspectCargo"/>
+    <constructor-arg ref="cargoDeliveryUpdater"/>
+    <property name="defaultListenerMethod" value="updateDelivery"/>
   </bean>
 
 </beans>
