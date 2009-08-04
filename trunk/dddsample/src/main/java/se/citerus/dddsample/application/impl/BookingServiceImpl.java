@@ -60,6 +60,7 @@ public final class BookingServiceImpl implements BookingService {
   @Override
   @Transactional
   public void assignCargoToRoute(final Itinerary itinerary, final TrackingId trackingId) {
+    // TODO locking semantics
     final Cargo cargo = cargoRepository.find(trackingId);
     Validate.notNull(cargo, "Can't assign itinerary to non-existing cargo " + trackingId);
     cargo.assignToRoute(itinerary);
@@ -71,6 +72,7 @@ public final class BookingServiceImpl implements BookingService {
   @Override
   @Transactional
   public void changeDestination(final TrackingId trackingId, final UnLocode unLocode) {
+    // TODO locking semantics
     final Cargo cargo = cargoRepository.find(trackingId);
     Validate.notNull(cargo, "Can't change destination of non-existing cargo " + trackingId);
     final Location newDestination = locationRepository.find(unLocode);
@@ -80,6 +82,14 @@ public final class BookingServiceImpl implements BookingService {
 
     cargoRepository.store(cargo);
     logger.info("Changed destination for cargo " + trackingId + " to " + routeSpecification.destination());
+  }
+
+  @Override
+  @Transactional
+  public Cargo loadCargoForRouting(TrackingId trackingId) {
+    // TODO locking semantics
+    final Cargo cargo = cargoRepository.find(trackingId);
+    return cargo;
   }
 
 }
