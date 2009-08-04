@@ -1,5 +1,6 @@
 package se.citerus.dddsample.application;
 
+import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -43,5 +44,14 @@ public interface BookingService {
    * @param unLocode UN locode of new destination
    */
   void changeDestination(TrackingId trackingId, UnLocode unLocode);
+
+  /**
+   * Loads a cargo for (re-) routing.
+   * Locks the cargo for exclusive modification.
+   *
+   * @param trackingId tracking id
+   * @return The cargo.
+   */
+  Cargo loadCargoForRouting(TrackingId trackingId);
 
 }

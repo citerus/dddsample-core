@@ -1,6 +1,5 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal;
 
-import org.apache.log4j.Logger;
 import se.citerus.dddsample.application.BookingService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -36,7 +35,6 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private LocationRepository locationRepository;
   private CargoRepository cargoRepository;
   private VoyageRepository voyageRepository;
-  private final Logger logger = Logger.getLogger(BookingServiceFacadeImpl.class);
 
   @Override
   public List<LocationDTO> listShippingLocations() {
@@ -57,7 +55,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
   @Override
   public CargoRoutingDTO loadCargoForRouting(String trackingId) {
-    final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
+    final Cargo cargo = bookingService.loadCargoForRouting(new TrackingId(trackingId));
     final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     return assembler.toDTO(cargo);
   }
