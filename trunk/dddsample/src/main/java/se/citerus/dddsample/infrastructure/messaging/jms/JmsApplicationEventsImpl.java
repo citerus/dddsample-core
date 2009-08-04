@@ -2,7 +2,7 @@ package se.citerus.dddsample.infrastructure.messaging.jms;
 
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
-import se.citerus.dddsample.application.ApplicationEvents;
+import se.citerus.dddsample.application.event.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
