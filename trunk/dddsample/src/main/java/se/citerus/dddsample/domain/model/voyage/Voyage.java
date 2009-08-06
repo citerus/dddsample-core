@@ -43,6 +43,25 @@ public class Voyage implements Entity<Voyage> {
     return schedule;
   }
 
+  /**
+   * @param location location from where the rescheduled departure happens.
+   * @param newDepartureTime new departure time
+   */
+  public void departureRescheduled(final Location location, final Date newDepartureTime) {
+    final int size = schedule.carrierMovements().size();
+    final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>(size);
+
+    for (CarrierMovement carrierMovement : schedule.carrierMovements()) {
+      if (carrierMovement.departureLocation().sameIdentityAs(location)) {
+        carrierMovements.add(carrierMovement.withDepartureTime(newDepartureTime));
+      } else {
+        carrierMovements.add(carrierMovement);
+      }
+    }
+
+    this.schedule = new Schedule(carrierMovements);
+  }
+
   @Override
   public int hashCode() {
     return voyageNumber.hashCode();
@@ -75,6 +94,7 @@ public class Voyage implements Entity<Voyage> {
 
   // Needed by Hibernate
   private Long id;
+
 
   /**
    * Builder pattern is used for incremental construction

@@ -3,7 +3,6 @@ package se.citerus.dddsample.domain.model.cargo;
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
@@ -13,10 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ItineraryTest extends TestCase {
-  private final CarrierMovement abc = new CarrierMovement(SHANGHAI, ROTTERDAM, new Date(), new Date());
-  private final CarrierMovement def = new CarrierMovement(ROTTERDAM, GOTHENBURG, new Date(), new Date());
-  private final CarrierMovement ghi = new CarrierMovement(ROTTERDAM, NEWYORK, new Date(), new Date());
-  private final CarrierMovement jkl = new CarrierMovement(SHANGHAI, HELSINKI, new Date(), new Date());
+
 
   Voyage voyage, wrongVoyage;
 
@@ -90,10 +86,6 @@ public class ItineraryTest extends TestCase {
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
     assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(event));
     
-  }
-
-  public void testNextExpectedEvent() throws Exception {
-
   }
 
   public void testCreateItinerary() throws Exception {
