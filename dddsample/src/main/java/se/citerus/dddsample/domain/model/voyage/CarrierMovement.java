@@ -73,6 +73,19 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
     return new Date(arrivalTime.getTime());
   }
 
+  /**
+   * @param newDepartureTime new departure time
+   * @return A new CarrierMovement which is a copy of the old one but with a new departure time
+   */
+  CarrierMovement withDepartureTime(final Date newDepartureTime) {
+    return new CarrierMovement(
+      departureLocation,
+      arrivalLocation,
+      newDepartureTime,
+      arrivalTime
+    );
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
@@ -109,5 +122,4 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
 
   // Auto-generated surrogate key
   private Long id;
-
 }

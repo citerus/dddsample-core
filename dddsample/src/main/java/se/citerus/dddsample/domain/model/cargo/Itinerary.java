@@ -3,8 +3,10 @@ package se.citerus.dddsample.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +30,10 @@ public class Itinerary implements ValueObject<Itinerary> {
   public Itinerary(final List<Leg> legs) {
     Validate.notEmpty(legs);
     Validate.noNullElements(legs);
+
+    // TODO
+    // Validate that legs are in proper order, connected
+    // and that load/unload times are doable?
 
     this.legs = legs;
   }
@@ -141,6 +147,24 @@ public class Itinerary implements ValueObject<Itinerary> {
     } else {
       return legs.get(0);
     }
+  }
+
+  /**
+   * @param rescheduledVoyage the voyage that has been rescheduled
+   * @return A new itinerary which is a copy of the old one, adjusted for the delay of the given voyage.
+   */
+  public Itinerary withRescheduledVoyage(final Voyage rescheduledVoyage) {
+    final List<Leg> newLegsList = new ArrayList<Leg>(this.legs.size());
+
+    for (Leg leg : this.legs) {
+      if (leg.voyage().sameIdentityAs(rescheduledVoyage)) {
+        newLegsList.add(leg.withRescheduledVoyage(rescheduledVoyage));
+      } else {
+        newLegsList.add(leg);
+      }
+    }
+
+    return new Itinerary(newLegsList);
   }
 
   /**
