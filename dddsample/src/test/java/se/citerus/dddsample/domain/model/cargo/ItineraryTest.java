@@ -2,6 +2,7 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
@@ -13,10 +14,19 @@ import java.util.List;
 
 public class ItineraryTest extends TestCase {
 
-
-  Voyage voyage, wrongVoyage;
+  Voyage voyage, wrongVoyage, pacific, transcontinental;
 
   protected void setUp() throws Exception {
+
+    pacific = new Voyage.Builder(new VoyageNumber("4567"), SHANGHAI).
+      addMovement(LONGBEACH, new Date(), new Date()).
+      build();
+
+    transcontinental = new Voyage.Builder(new VoyageNumber("4567"), LONGBEACH).
+      addMovement(CHICAGO, new Date(), new Date()).
+      addMovement(NEWYORK, new Date(), new Date()).
+      build();
+
     voyage = new Voyage.Builder(new VoyageNumber("0123"), SHANGHAI).
       addMovement(ROTTERDAM, new Date(), new Date()).
       addMovement(GOTHENBURG, new Date(), new Date()).
@@ -28,7 +38,7 @@ public class ItineraryTest extends TestCase {
       build();
   }
 
-  public void testCargoOnTrack() {
+  public void testIfCargoIsOnTrack() {
 
     TrackingId trackingId = new TrackingId("CARGO1");
     RouteSpecification routeSpecification = new RouteSpecification(SHANGHAI, GOTHENBURG, new Date());
@@ -41,51 +51,53 @@ public class ItineraryTest extends TestCase {
       )
     );
 
+    // HandlingEvent.Load(cargo, RECEIVE, SHANGHAI, toDate("2009-05-03"))
     //Happy path
-    HandlingEvent event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, SHANGHAI);
-    assertTrue(itinerary.isExpected(event));
+    HandlingEvent receiveShanghai = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, SHANGHAI);
+    assertTrue(itinerary.isExpected(receiveShanghai));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
-    assertTrue(itinerary.isExpected(event));
+    HandlingEvent loadShanghai = new HandlingEvent(cargo, new Date(), new Date(), LOAD, SHANGHAI, voyage);
+    assertTrue(itinerary.isExpected(loadShanghai));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, ROTTERDAM, voyage);
-    assertTrue(itinerary.isExpected(event));
+    HandlingEvent unloadRotterdam = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, ROTTERDAM, voyage);
+    assertTrue(itinerary.isExpected(unloadRotterdam));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, ROTTERDAM, voyage);
-    assertTrue(itinerary.isExpected(event));
+    HandlingEvent loadRotterdam = new HandlingEvent(cargo, new Date(), new Date(), LOAD, ROTTERDAM, voyage);
+    assertTrue(itinerary.isExpected(loadRotterdam));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, GOTHENBURG, voyage);
-    assertTrue(itinerary.isExpected(event));
+    HandlingEvent unloadGothenburg = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, GOTHENBURG, voyage);
+    assertTrue(itinerary.isExpected(unloadGothenburg));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, GOTHENBURG);
-    assertTrue(itinerary.isExpected(event));
+    HandlingEvent claimGothenburg = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, GOTHENBURG);
+    assertTrue(itinerary.isExpected(claimGothenburg));
 
-    //Customs event changes nothing
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CUSTOMS, GOTHENBURG);
-    assertTrue(itinerary.isExpected(event));
+    //TODO Customs event can only be interpreted properly by knowing the destination of the cargo.
+    // This can be inferred from the Itinerary, but it isn't definitive. So, do we answer based on
+    // the end of the itinerary (even though this would probably not be used in the app) or do we
+    // ignore this at itinerary level somehow and leave it purely as a cargo responsibility.
+    // (See customsClearancePoint tests in CargoTest)
+//    HandlingEvent customsGothenburg = new HandlingEvent(cargo, new Date(), new Date(), CUSTOMS, GOTHENBURG);
+//    assertTrue(itinerary.isExpected(customsGothenburg));
 
     //Received at the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU);
-    assertFalse(itinerary.isExpected(event));
+    HandlingEvent receiveHangzou = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, HANGZOU);
+    assertFalse(itinerary.isExpected(receiveHangzou));
 
     //Loaded to onto the wrong ship, correct location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, ROTTERDAM, wrongVoyage);
-    assertFalse(itinerary.isExpected(event));
+    HandlingEvent loadRotterdam666 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, ROTTERDAM, wrongVoyage);
+    assertFalse(itinerary.isExpected(loadRotterdam666));
 
     //Unloaded from the wrong ship in the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.UNLOAD, HELSINKI, wrongVoyage);
-    assertFalse(itinerary.isExpected(event));
+    HandlingEvent unloadHelsinki = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HELSINKI, wrongVoyage);
+    assertFalse(itinerary.isExpected(unloadHelsinki));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM);
-    assertFalse(itinerary.isExpected(event));
+    HandlingEvent claimRotterdam = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, ROTTERDAM);
+    assertFalse(itinerary.isExpected(claimRotterdam));
 
     //Unrouted Cargo shouldn't go anywhere or do anything
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, SHANGHAI);
-    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(event));
+    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(receiveShanghai));
+    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(loadShanghai));
 
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
-    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(event));
-    
   }
 
   public void testCreateItinerary() throws Exception {

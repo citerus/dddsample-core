@@ -13,12 +13,12 @@ public class LegTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructor() throws Exception {
-    new Leg(null, null, null);
+    Leg.deriveLeg(null, null, null);
   }
 
   @Test
   public void legThatFollowsPartOfAVoyage() {
-    Leg chicagoToDallas = new Leg(voyage, CHICAGO, DALLAS);
+    Leg chicagoToDallas = Leg.deriveLeg(voyage, CHICAGO, DALLAS);
 
     assertEquals(chicagoToDallas.loadTime(), toDate("2008-10-24", "21:25"));
     assertEquals(chicagoToDallas.loadLocation(), CHICAGO);
@@ -28,7 +28,7 @@ public class LegTest {
 
   @Test
   public void legThatFollowsAnEntireVoyage() {
-    Leg chicagoToDallas = new Leg(voyage, NEWYORK, DALLAS);
+    Leg chicagoToDallas = Leg.deriveLeg(voyage, NEWYORK, DALLAS);
 
     assertEquals(chicagoToDallas.loadTime(), toDate("2008-10-24", "07:00"));
     assertEquals(chicagoToDallas.loadLocation(), NEWYORK);
@@ -38,17 +38,17 @@ public class LegTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void locationsInWrongOrder() {
-    new Leg(voyage, DALLAS, CHICAGO);
+    Leg.deriveLeg(voyage, DALLAS, CHICAGO);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void endLocationNotOnVoyage() {
-    new Leg(voyage, CHICAGO, HELSINKI);
+    Leg.deriveLeg(voyage, CHICAGO, HELSINKI);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void startLocationNotOnVoyage() {
-    new Leg(voyage, HONGKONG, DALLAS);
+    Leg.deriveLeg(voyage, HONGKONG, DALLAS);
   }
 
 }

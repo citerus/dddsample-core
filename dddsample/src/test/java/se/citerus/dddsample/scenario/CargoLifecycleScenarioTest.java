@@ -45,7 +45,7 @@ public class CargoLifecycleScenarioTest {
   /**
    * This is a domain service interface, whose implementation
    * is part of the infrastructure layer (remote call to external system).
-   *
+   * <p/>
    * It is stubbed in this test.
    */
   RoutingService routingService = new ScenarioStubRoutingService();
@@ -60,7 +60,7 @@ public class CargoLifecycleScenarioTest {
     // Route: Hongkong - Long Beach - New York - Stockholm
     routeCargoFromHongkongToStockholm();
     checkDeliveryAfterRouting();
-                                
+
 
     receiveInHongkong();
     checkDeliveryAfterReceiveInHongkong();
@@ -88,28 +88,28 @@ public class CargoLifecycleScenarioTest {
   }
 
   private void unloadInLongBeach() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-06"), v100, LONG_BEACH, UNLOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-06"), v100, LONGBEACH, UNLOAD);
   }
 
   private void checkDeliveryAfterUnloadInLongBeach() {
     Cargo cargo = cargoRepository.find(trackingId);
 
     assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(LONG_BEACH));
+    assertThat(cargo.delivery().lastKnownLocation(), is(LONGBEACH));
     assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertThat(cargo.delivery().nextExpectedActivity(), is(new HandlingActivity(LOAD, LONG_BEACH, v250)));
+    assertThat(cargo.delivery().nextExpectedActivity(), is(new HandlingActivity(LOAD, LONGBEACH, v250)));
     assertFalse(cargo.delivery().isMisdirected());
   }
 
   private void loadInLongBeach() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-07"), v250, LONG_BEACH, LOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-07"), v250, LONGBEACH, LOAD);
   }
 
   private void checkDeliveryAfterLoadInLongBeach() {
     Cargo cargo = cargoRepository.find(trackingId);
 
     assertThat(cargo.delivery().currentVoyage(), is(v250));
-    assertThat(cargo.delivery().lastKnownLocation(), is(LONG_BEACH));
+    assertThat(cargo.delivery().lastKnownLocation(), is(LONGBEACH));
     assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
     assertThat(cargo.delivery().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, NEWYORK, v250)));
     assertFalse(cargo.delivery().isMisdirected());
@@ -244,7 +244,7 @@ public class CargoLifecycleScenarioTest {
     assertThat(cargo.delivery().currentVoyage(), is(v100));
     assertThat(cargo.delivery().lastKnownLocation(), is(HONGKONG));
     assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.delivery().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, LONG_BEACH, v100)));
+    assertThat(cargo.delivery().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, LONGBEACH, v100)));
     assertFalse(cargo.delivery().isMisdirected());
   }
 
@@ -395,8 +395,8 @@ public class CargoLifecycleScenarioTest {
         // Hongkong - NYC - Chicago - Stockholm, initial routing
         return Arrays.asList(
           new Itinerary(Arrays.asList(
-            new Leg(v100, HONGKONG, LONG_BEACH, toDate("2009-03-03"), toDate("2009-03-09")),
-            new Leg(v250, LONG_BEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
+            new Leg(v100, HONGKONG, LONGBEACH, toDate("2009-03-03"), toDate("2009-03-09")),
+            new Leg(v250, LONGBEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
             new Leg(v200, NEWYORK, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
           ))
         );

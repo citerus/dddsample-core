@@ -6,14 +6,10 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * An itinerary.
- *
  */
 public class Itinerary implements ValueObject<Itinerary> {
 
@@ -38,6 +34,10 @@ public class Itinerary implements ValueObject<Itinerary> {
     this.legs = legs;
   }
 
+  public Itinerary(Leg... legs) {
+    this(Arrays.asList(legs));
+  }
+
   /**
    * @return the legs of this itinerary, as an <b>immutable</b> list.
    */
@@ -52,31 +52,29 @@ public class Itinerary implements ValueObject<Itinerary> {
    * @return <code>true</code> if the event is expected
    */
   public boolean isExpected(final HandlingEvent event) {
-    if (legs.isEmpty()) {
+    if (isEmpty()) {
       return false;
     }
 
     if (event.type() == HandlingEvent.Type.RECEIVE) {
-      //Check that the first leg's origin is the event's location
-      final Leg leg = legs.get(0);
-      return (leg.loadLocation().equals(event.location()));
+      return (firstLeg().loadLocation().equals(event.location()));
     }
 
     if (event.type() == HandlingEvent.Type.LOAD) {
-      //Check that the there is one leg with same load location and voyage
+      //Check that the there is a leg with same load location and voyage
       for (Leg leg : legs) {
         if (leg.loadLocation().sameIdentityAs(event.location()) &&
-            leg.voyage().sameIdentityAs(event.voyage()))
+          leg.voyage().sameIdentityAs(event.voyage()))
           return true;
       }
       return false;
     }
 
     if (event.type() == HandlingEvent.Type.UNLOAD) {
-      //Check that the there is one leg with same unload location and voyage
+      //Check that the there is a leg with same unload location and voyage
       for (Leg leg : legs) {
-        if (leg.unloadLocation().equals(event.location()) &&
-            leg.voyage().equals(event.voyage()))
+        if (leg.unloadLocation().sameIdentityAs(event.location()) &&
+          leg.voyage().sameIdentityAs(event.voyage()))
           return true;
       }
       return false;
@@ -88,19 +86,23 @@ public class Itinerary implements ValueObject<Itinerary> {
       return (leg.unloadLocation().equals(event.location()));
     }
 
-    //HandlingEvent.Type.CUSTOMS;
-    return true;
+    if (event.type() == HandlingEvent.Type.CUSTOMS) {
+      //Check that the customs location fits the rule of the customs zone
+      //TODO Answering this properly requires Cargo's destination. Can't be answered at itinerary level.
+    }
+    return false;
+
   }
 
   /**
    * @return The initial departure location.
    */
   Location initialDepartureLocation() {
-     if (legs.isEmpty()) {
-       return Location.UNKNOWN;
-     } else {
-       return legs.get(0).loadLocation();
-     }
+    if (legs.isEmpty()) {
+      return Location.UNKNOWN;
+    } else {
+      return legs.get(0).loadLocation();
+    }
   }
 
   /**
@@ -118,35 +120,28 @@ public class Itinerary implements ValueObject<Itinerary> {
    * @return Date when cargo arrives at final destination.
    */
   Date finalArrivalDate() {
-    final Leg lastLeg = lastLeg();
-
-    if (lastLeg == null) {
-      return new Date(END_OF_DAYS.getTime());
-    } else {
-      return new Date(lastLeg.unloadTime().getTime());
-    }
+    if (isEmpty()) return new Date(END_OF_DAYS.getTime());
+    return new Date(lastLeg().unloadTime().getTime());
   }
 
-  /**
-   * @return The last leg on the itinerary.
-   */
-  Leg lastLeg() {
-    if (legs.isEmpty()) {
-      return null;
-    } else {
-      return legs.get(legs.size() - 1);
-    }
+  private boolean isEmpty() {
+    return legs.isEmpty();
   }
 
   /**
    * @return The first leg on the itinerary.
    */
   Leg firstLeg() {
-    if (legs.isEmpty()) {
-      return null;
-    } else {
-      return legs.get(0);
-    }
+    if (isEmpty()) return null;
+    return legs.get(0);
+  }
+
+  /**
+   * @return The last leg on the itinerary.
+   */
+  Leg lastLeg() {
+    if (isEmpty()) return null;
+    return legs.get(legs.size() - 1);
   }
 
   /**
@@ -165,6 +160,15 @@ public class Itinerary implements ValueObject<Itinerary> {
     }
 
     return new Itinerary(newLegsList);
+  }
+
+  public List<Location> locations() {
+    List<Location> result = new ArrayList<Location>();
+    result.add(firstLeg().loadLocation());
+    for (Leg leg : legs) {
+      result.add(leg.unloadLocation());
+    }
+    return result;
   }
 
   /**
