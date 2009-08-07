@@ -9,7 +9,6 @@ import java.util.*;
 
 /**
  * Sample carrier movements, for test purposes.
- *
  */
 public class SampleVoyages {
 
@@ -19,6 +18,7 @@ public class SampleVoyages {
   public static final Voyage CM004 = createVoyage("CM004", NEWYORK, CHICAGO);
   public static final Voyage CM005 = createVoyage("CM005", CHICAGO, HAMBURG);
   public static final Voyage CM006 = createVoyage("CM006", HAMBURG, HANGZOU);
+
   private static Voyage createVoyage(String id, Location from, Location to) {
     return new Voyage(new VoyageNumber(id), new Schedule(Arrays.asList(
       new CarrierMovement(from, to, new Date(), new Date())
@@ -29,32 +29,32 @@ public class SampleVoyages {
 
   public final static Voyage v100 = new Voyage.Builder(new VoyageNumber("V100"), HONGKONG).
     addMovement(TOKYO, toDate("2009-03-03"), toDate("2009-03-05")).
-    addMovement(LONG_BEACH, toDate("2009-03-06"), toDate("2009-03-09")).
+    addMovement(LONGBEACH, toDate("2009-03-06"), toDate("2009-03-09")).
     build();
   public final static Voyage v200 = new Voyage.Builder(new VoyageNumber("V200"), SHANGHAI).
-      addMovement(NEWYORK, toDate("2009-03-06"), toDate("2009-03-08")).
-      addMovement(ROTTERDAM, toDate("2009-03-10"), toDate("2009-03-14")).
-      addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-16")).
-      build();
-  public final static Voyage v250 = new Voyage.Builder(new VoyageNumber("V250"), LONG_BEACH).
-      addMovement(DALLAS, toDate("2009-03-06"), toDate("2009-03-08")).
-      addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
-      build();
+    addMovement(NEWYORK, toDate("2009-03-06"), toDate("2009-03-08")).
+    addMovement(ROTTERDAM, toDate("2009-03-10"), toDate("2009-03-14")).
+    addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-16")).
+    build();
+  public final static Voyage v250 = new Voyage.Builder(new VoyageNumber("V250"), LONGBEACH).
+    addMovement(DALLAS, toDate("2009-03-06"), toDate("2009-03-08")).
+    addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
+    build();
   public final static Voyage v300 = new Voyage.Builder(new VoyageNumber("V300"), TOKYO).
-        addMovement(ROTTERDAM, toDate("2009-03-08"), toDate("2009-03-11")).
-        addMovement(HAMBURG, toDate("2009-03-11"), toDate("2009-03-12")).
-        addMovement(MELBOURNE, toDate("2009-03-14"), toDate("2009-03-18")).
-        addMovement(TOKYO, toDate("2009-03-19"), toDate("2009-03-21")).
-        build();
+    addMovement(ROTTERDAM, toDate("2009-03-08"), toDate("2009-03-11")).
+    addMovement(HAMBURG, toDate("2009-03-11"), toDate("2009-03-12")).
+    addMovement(MELBOURNE, toDate("2009-03-14"), toDate("2009-03-18")).
+    addMovement(TOKYO, toDate("2009-03-19"), toDate("2009-03-21")).
+    build();
   public final static Voyage v400 = new Voyage.Builder(new VoyageNumber("V400"), HAMBURG).
-          addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15")).
-          addMovement(HELSINKI, toDate("2009-03-15"), toDate("2009-03-16")).
-          addMovement(HAMBURG, toDate("2009-03-20"), toDate("2009-03-22")).
-          build();
+    addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15")).
+    addMovement(HELSINKI, toDate("2009-03-15"), toDate("2009-03-16")).
+    addMovement(HAMBURG, toDate("2009-03-20"), toDate("2009-03-22")).
+    build();
 
   /**
    * Voyage number 0100S (by ship)
-   *
+   * <p/>
    * Hongkong - Hangzou - Tokyo - Melbourne - New York
    */
   public static final Voyage HONGKONG_TO_NEW_YORK =
@@ -68,7 +68,7 @@ public class SampleVoyages {
 
   /**
    * Voyage number 0200T (by train)
-   *
+   * <p/>
    * New York - Chicago - Dallas
    */
   public static final Voyage NEW_YORK_TO_DALLAS =
@@ -79,7 +79,7 @@ public class SampleVoyages {
 
   /**
    * Voyage number 0300A (by airplane)
-   *
+   * <p/>
    * Dallas - Hamburg - Stockholm - Helsinki
    */
   public static final Voyage DALLAS_TO_HELSINKI =
@@ -91,7 +91,7 @@ public class SampleVoyages {
 
   /**
    * Voyage number 0301S (by ship)
-   *
+   * <p/>
    * Dallas - Hamburg - Stockholm - Helsinki, alternate route
    */
   public static final Voyage DALLAS_TO_HELSINKI_ALT =
@@ -101,9 +101,8 @@ public class SampleVoyages {
 
   /**
    * Voyage number 0400S (by ship)
-   *
+   * <p/>
    * Helsinki - Rotterdam - Shanghai - Hongkong
-   *
    */
   public static final Voyage HELSINKI_TO_HONGKONG =
     new Voyage.Builder(new VoyageNumber("0400S"), HELSINKI).
@@ -128,11 +127,11 @@ public class SampleVoyages {
   }
 
   public static List<Voyage> getAll() {
-    return new ArrayList(ALL.values());
+    return new ArrayList<Voyage>(ALL.values());
   }
 
   public static Voyage lookup(VoyageNumber voyageNumber) {
     return ALL.get(voyageNumber);
   }
-  
+
 }

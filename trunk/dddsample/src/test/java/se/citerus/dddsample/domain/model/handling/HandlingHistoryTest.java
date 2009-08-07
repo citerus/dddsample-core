@@ -26,7 +26,7 @@ public class HandlingHistoryTest extends TestCase {
   protected void setUp() throws Exception {
     cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(SHANGHAI, DALLAS, toDate("2009-04-01")));
     cargo2 = new Cargo(new TrackingId("DEF"), new RouteSpecification(SHANGHAI, NEWYORK, toDate("2009-04-15")));
-    
+
     voyage = new Voyage.Builder(new VoyageNumber("X25"), HONGKONG).
       addMovement(SHANGHAI, new Date(), new Date()).
       addMovement(DALLAS, new Date(), new Date()).
@@ -39,14 +39,23 @@ public class HandlingHistoryTest extends TestCase {
 
   public void testDistinctEventsByCompletionTime() {
     handlingHistory = HandlingHistory.fromEvents(asList(event2, event1, event1duplicate));
-    
+
     assertEquals(asList(event1, event2), handlingHistory.distinctEventsByCompletionTime());
   }
 
   public void testMostRecentlyCompletedEvent() {
     handlingHistory = HandlingHistory.fromEvents(asList(event2, event1, event1duplicate));
-    
+
     assertEquals(event2, handlingHistory.mostRecentlyCompletedEvent());
+  }
+
+  public void testMostRecentLoadOrUnload() {
+    // TODO
+    HandlingEvent event3Customs = new HandlingEvent(cargo, toDate("2009-03-11"), toDate("2009-03-11"), HandlingEvent.Type.CUSTOMS, DALLAS);
+    handlingHistory = HandlingHistory.fromEvents(asList(event2, event1, event1duplicate, event3Customs));
+
+    assertEquals(event3Customs, handlingHistory.mostRecentlyCompletedEvent());
+    assertEquals(event2, handlingHistory.mostRecentPhysicalHandling());
   }
 
   public void testUniqueCargoOfEvents() {

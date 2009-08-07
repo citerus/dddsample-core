@@ -15,7 +15,6 @@ import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
-import static java.util.Arrays.asList;
 import java.util.Date;
 
 public class VoyageRescheduledScenarioTest extends TestCase {
@@ -26,11 +25,11 @@ public class VoyageRescheduledScenarioTest extends TestCase {
     Voyage voyage2 = new Voyage(new VoyageNumber("V2"), NEW_YORK_TO_DALLAS.schedule());
     Voyage voyage3 = new Voyage(new VoyageNumber("V3"), DALLAS_TO_HELSINKI.schedule());
 
-    Itinerary itinerary = new Itinerary(asList(
-      new Leg(voyage1, HANGZOU, NEWYORK),
-      new Leg(voyage2, NEWYORK, DALLAS),
-      new Leg(voyage3, DALLAS, STOCKHOLM)
-    ));
+    Itinerary itinerary = new Itinerary(
+      Leg.deriveLeg(voyage1, HANGZOU, NEWYORK),
+      Leg.deriveLeg(voyage2, NEWYORK, DALLAS),
+      Leg.deriveLeg(voyage3, DALLAS, STOCKHOLM)
+    );
 
     Date oldDepartureTime = toDate("2008-10-24", "07:00");
 

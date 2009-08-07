@@ -17,8 +17,7 @@ import java.util.Iterator;
 
 /**
  * The actual transportation of the cargo, as opposed to
- * the customer requirement (RouteSpecification) and the plan (Itinerary). 
- *
+ * the customer requirement (RouteSpecification) and the plan (Itinerary).
  */
 public class Delivery implements ValueObject<Delivery> {
 
@@ -31,7 +30,7 @@ public class Delivery implements ValueObject<Delivery> {
   private boolean isUnloadedAtDestination;
   private RoutingStatus routingStatus;
   private Date calculatedAt;
-  private HandlingEvent lastEvent;
+  private HandlingEvent lastEvent; //TODO This field would be better named lastPhysicalHandling
 
   private static final Date ETA_UNKOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;
@@ -42,7 +41,7 @@ public class Delivery implements ValueObject<Delivery> {
    * but no additional handling of the cargo has been performed.
    *
    * @param routeSpecification route specification
-   * @param itinerary itinerary
+   * @param itinerary          itinerary
    * @return An up to date delivery
    */
   Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
@@ -59,29 +58,27 @@ public class Delivery implements ValueObject<Delivery> {
    * as well as its route specification and itinerary.
    *
    * @param routeSpecification route specification
-   * @param itinerary itinerary
-   * @param handlingHistory delivery history
+   * @param itinerary          itinerary
+   * @param handlingHistory    delivery history
    * @return An up to date delivery.
    */
   static Delivery derivedFrom(RouteSpecification routeSpecification, Itinerary itinerary, HandlingHistory handlingHistory) {
     Validate.notNull(routeSpecification, "Route specification is required");
     Validate.notNull(handlingHistory, "Delivery history is required");
 
-    final HandlingEvent lastEvent = handlingHistory.mostRecentlyCompletedEvent();
-
-    return new Delivery(lastEvent, itinerary, routeSpecification);
+    return new Delivery(handlingHistory.mostRecentPhysicalHandling(), itinerary, routeSpecification);
   }
 
   /**
    * Internal constructor.
    *
-   * @param lastEvent last event
-   * @param itinerary itinerary
-   * @param routeSpecification route specification
+   * @param lastPhysicalHandling last event
+   * @param itinerary            itinerary
+   * @param routeSpecification   route specification
    */
-  private Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
+  private Delivery(HandlingEvent lastPhysicalHandling, Itinerary itinerary, RouteSpecification routeSpecification) {
     this.calculatedAt = new Date();
-    this.lastEvent = lastEvent;
+    this.lastEvent = lastPhysicalHandling;
 
     this.misdirected = calculateMisdirectionStatus(itinerary);
     this.routingStatus = calculateRoutingStatus(itinerary, routeSpecification);
@@ -184,7 +181,6 @@ public class Delivery implements ValueObject<Delivery> {
         return ONBOARD_CARRIER;
       case UNLOAD:
       case RECEIVE:
-      case CUSTOMS:
         return IN_PORT;
       case CLAIM:
         return CLAIMED;

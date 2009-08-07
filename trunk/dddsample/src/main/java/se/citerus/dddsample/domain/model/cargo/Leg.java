@@ -4,7 +4,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
@@ -21,9 +20,10 @@ public class Leg implements ValueObject<Leg> {
   private Date loadTime;
   private Date unloadTime;
 
+  // TODO remove this ctor
   public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
-    Validate.noNullElements(new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
-    
+    Validate.noNullElements(new Object[]{voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+
     this.voyage = voyage;
     this.loadLocation = loadLocation;
     this.unloadLocation = unloadLocation;
@@ -31,30 +31,27 @@ public class Leg implements ValueObject<Leg> {
     this.unloadTime = unloadTime;
   }
 
-  public Leg(final Voyage voyage, final Location loadLocation, final Location unloadLocation) {
+  /**
+   * This simple factory takes the Leg's times from the state of the
+   * Voyage as of the time of construction.
+   * A fuller version might also factor operational time
+   * in the port. For example, average unload time of the
+   * unloadLocation could be added to the eta of the vessel
+   * schedule, providing an estimated unload time.
+   * In a real system, the estimation of the unload time
+   * might be more complex.
+   *
+   * @param voyage         voyage
+   * @param loadLocation   load location
+   * @param unloadLocation unload location
+   * @return A leg on this voyage between the given locations.
+   */
+  public static Leg deriveLeg(Voyage voyage, Location loadLocation, Location unloadLocation) {
     Validate.notNull(voyage, "Voyage is required");
     Validate.notNull(loadLocation, "Load location is required");
     Validate.notNull(unloadLocation, "Unload location is required");
     Validate.isTrue(!loadLocation.sameIdentityAs(unloadLocation));
-
-    CarrierMovement loadCm = null, unloadCm = null;
-    for (CarrierMovement carrierMovement : voyage.schedule().carrierMovements()) {
-      if (unloadCm == null && carrierMovement.departureLocation().sameIdentityAs(loadLocation)) {
-        loadCm = carrierMovement;
-      }
-      if (loadCm != null && carrierMovement.arrivalLocation().sameIdentityAs(unloadLocation)) {
-        unloadCm = carrierMovement;
-      }
-    }
-
-    Validate.notNull(loadCm, "Load location is not valid for this voyage");
-    Validate.notNull(unloadCm, "Unload location is not valid for this voyage");
-
-    this.voyage = voyage;
-    this.loadLocation = loadCm.departureLocation();
-    this.loadTime = loadCm.departureTime();
-    this.unloadLocation = unloadCm.arrivalLocation();
-    this.unloadTime = unloadCm.arrivalTime();
+    return new Leg(voyage, loadLocation, unloadLocation, voyage.schedule().departureTimeAt(loadLocation), voyage.schedule().arrivalTimeAt(unloadLocation));
   }
 
   public Voyage voyage() {
@@ -82,7 +79,7 @@ public class Leg implements ValueObject<Leg> {
    * @return A new leg with the same load and unload locations, but with updated load/unload times.
    */
   Leg withRescheduledVoyage(final Voyage voyage) {
-    return new Leg(voyage, loadLocation, unloadLocation);
+    return Leg.deriveLeg(voyage, loadLocation, unloadLocation);
   }
 
   @Override
@@ -120,7 +117,7 @@ public class Leg implements ValueObject<Leg> {
   @Override
   public String toString() {
     return "Load in " + loadLocation + " at " + loadTime +
-           ", unload in " + unloadLocation + " at " + unloadTime;
+      ", unload in " + unloadLocation + " at " + unloadTime;
   }
 
   Leg() {

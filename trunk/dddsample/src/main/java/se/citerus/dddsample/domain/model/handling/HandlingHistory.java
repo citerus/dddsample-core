@@ -9,7 +9,6 @@ import static java.util.Collections.sort;
 
 /**
  * The handling history of a cargo.
- *
  */
 public class HandlingHistory implements ValueObject<HandlingHistory> {
 
@@ -46,7 +45,7 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
       final Cargo nextCargo = it.next().cargo();
       Validate.isTrue(firstCargo.sameIdentityAs(nextCargo),
         "A handling history can only contain handling events for a unique cargo. " +
-        "First event is for cargo " + firstCargo + ", also discovered cargo " + nextCargo
+          "First event is for cargo " + firstCargo + ", also discovered cargo " + nextCargo
       );
     }
 
@@ -65,6 +64,20 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
   }
 
   /**
+   * @return Filter a list of handling events, returning only the LOAD and UNLOAD events.
+   */
+  public List<HandlingEvent> physicalHandlingEvents(List<HandlingEvent> unfilteredEvents) {
+    final List<HandlingEvent> filtered = new ArrayList<HandlingEvent>();
+    for (HandlingEvent event : unfilteredEvents) {
+      if (event.type().equals(HandlingEvent.Type.RECEIVE)) filtered.add(event);
+      if (event.type().equals(HandlingEvent.Type.LOAD)) filtered.add(event);
+      if (event.type().equals(HandlingEvent.Type.UNLOAD)) filtered.add(event);
+      if (event.type().equals(HandlingEvent.Type.CLAIM)) filtered.add(event);
+    }
+    return Collections.unmodifiableList(filtered);
+  }
+
+  /**
    * @return Most recently completed event, or null if the handling history is empty.
    */
   public HandlingEvent mostRecentlyCompletedEvent() {
@@ -73,6 +86,18 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
       return null;
     } else {
       return distinctEvents.get(distinctEvents.size() - 1);
+    }
+  }
+
+  /**
+   * @return Most recently completed load or unload, or null if there have been none.
+   */
+  public HandlingEvent mostRecentPhysicalHandling() {
+    final List<HandlingEvent> loadsAndUnloads = physicalHandlingEvents(distinctEventsByCompletionTime());
+    if (loadsAndUnloads.isEmpty()) {
+      return null;
+    } else {
+      return loadsAndUnloads.get(loadsAndUnloads.size() - 1);
     }
   }
 

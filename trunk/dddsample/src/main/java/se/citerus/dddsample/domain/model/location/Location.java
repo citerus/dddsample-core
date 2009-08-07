@@ -1,46 +1,49 @@
 package se.citerus.dddsample.domain.model.location;
 
-import java.util.TimeZone;
-
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.shared.Entity;
+
+import java.util.TimeZone;
 
 /**
  * A location is our model is stops on a journey, such as cargo
  * origin or destination, or carrier movement endpoints.
- *
+ * <p/>
  * It is uniquely identified by a UN Locode.
- *
  */
 public final class Location implements Entity<Location> {
 
   private UnLocode unLocode;
   private String name;
   private TimeZone timeZone;
+  private CustomsZone customsZone;
 
   /**
    * Special Location object that marks an unknown location.
    */
   public static final Location UNKNOWN = new Location(
-    new UnLocode("XXXXX"), "Unknown location", TimeZone.getTimeZone("Zulu")
+    new UnLocode("XXXXX"), "Unknown location", TimeZone.getTimeZone("Zulu"), null
   );
 
   /**
    * Package-level constructor, visible for test only.
    *
-   * @param unLocode UN Locode
- * @param name     location name
- * @param timeZone TODO
+   * @param unLocode    UN Locode
+   * @param name        location name
+   * @param timeZone
+   * @param customsZone
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  Location(final UnLocode unLocode, final String name, TimeZone timeZone) {
-	Validate.notNull(unLocode);
+  Location(final UnLocode unLocode, final String name, final TimeZone timeZone, final CustomsZone customsZone) {
+    Validate.notNull(unLocode);
     Validate.notNull(name);
     Validate.notNull(timeZone);
-    
+//    Validate.notNull(customsZone);
+
     this.unLocode = unLocode;
     this.name = name;
     this.timeZone = timeZone;
+    this.customsZone = customsZone;
   }
 
   /**
@@ -58,8 +61,15 @@ public final class Location implements Entity<Location> {
   }
 
   /**
+   * @return Customs zone of this location.
+   */
+  public CustomsZone customsZone() {
+    return customsZone;
+  }
+
+  /**
    * @param object to compare
-   * @return Since this is an entiy this will be true iff UN locodes are equal.
+   * @return Since this is an entity this will be true iff UN locodes are equal.
    */
   @Override
   public boolean equals(final Object object) {
@@ -100,8 +110,8 @@ public final class Location implements Entity<Location> {
 
   private Long id;
 
-public TimeZone timeZone() {
-	return timeZone;
-}
+  public TimeZone timeZone() {
+    return timeZone;
+  }
 
 }
