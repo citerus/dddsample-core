@@ -16,9 +16,8 @@ import java.util.List;
 
 /**
  * Utility methods for parsing various forms of handling report formats.
- *
+ * <p/>
  * Supports the notification pattern for incremental error reporting.
- *
  */
 public class HandlingReportParser {
 

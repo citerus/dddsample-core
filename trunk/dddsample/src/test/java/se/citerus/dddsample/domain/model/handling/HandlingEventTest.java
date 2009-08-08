@@ -30,20 +30,22 @@ public class HandlingEventTest extends TestCase {
     HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, NEWYORK, CM003);
     assertEquals(NEWYORK, e2.location());
 
-      // These event types prohibit a carrier movement association
+    // These event types prohibit a carrier movement association
     for (HandlingEvent.Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
       try {
         new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, CM003);
         fail("Handling event type " + type + " prohibits carrier movement");
-      } catch (IllegalArgumentException expected) {}
+      } catch (IllegalArgumentException expected) {
+      }
     }
 
-      // These event types requires a carrier movement association
+    // These event types requires a carrier movement association
     for (HandlingEvent.Type type : asList(LOAD, UNLOAD)) {
-        try {
-          new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null);
-            fail("Handling event type " + type + " requires carrier movement");
-        } catch (IllegalArgumentException expected) {}
+      try {
+        new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null);
+        fail("Handling event type " + type + " requires carrier movement");
+      } catch (IllegalArgumentException expected) {
+      }
     }
   }
 
@@ -55,34 +57,35 @@ public class HandlingEventTest extends TestCase {
   public void testCurrentLocationLoadEvent() throws Exception {
 
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), LOAD, CHICAGO, CM004);
-    
+
     assertEquals(CHICAGO, ev.location());
   }
-  
+
   public void testCurrentLocationUnloadEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HAMBURG, CM004);
-    
+
     assertEquals(HAMBURG, ev.location());
   }
-  
+
   public void testCurrentLocationReceivedEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, CHICAGO);
 
     assertEquals(CHICAGO, ev.location());
   }
+
   public void testCurrentLocationClaimedEvent() throws Exception {
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, CHICAGO);
 
     assertEquals(CHICAGO, ev.location());
   }
-  
+
   public void testParseType() throws Exception {
     assertEquals(CLAIM, valueOf("CLAIM"));
     assertEquals(LOAD, valueOf("LOAD"));
     assertEquals(UNLOAD, valueOf("UNLOAD"));
     assertEquals(RECEIVE, valueOf("RECEIVE"));
   }
-  
+
   public void testParseTypeIllegal() throws Exception {
     try {
       valueOf("NOT_A_HANDLING_EVENT_TYPE");
@@ -91,7 +94,7 @@ public class HandlingEventTest extends TestCase {
       // All's well
     }
   }
-  
+
   public void testEqualsAndSameAs() throws Exception {
     Date timeOccured = new Date();
     Date timeRegistered = new Date();

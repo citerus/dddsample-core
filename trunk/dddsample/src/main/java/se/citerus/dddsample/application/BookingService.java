@@ -16,8 +16,8 @@ public interface BookingService {
   /**
    * Registers a new cargo in the tracking system, not yet routed.
    *
-   * @param origin      cargo origin
-   * @param destination cargo destination
+   * @param origin          cargo origin
+   * @param destination     cargo destination
    * @param arrivalDeadline arrival deadline
    * @return Cargo tracking id
    */
@@ -32,7 +32,7 @@ public interface BookingService {
   List<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId);
 
   /**
-   * @param itinerary itinerary describing the selected route
+   * @param itinerary  itinerary describing the selected route
    * @param trackingId cargo tracking id
    */
   void assignCargoToRoute(Itinerary itinerary, TrackingId trackingId);
@@ -41,7 +41,7 @@ public interface BookingService {
    * Changes the destination of a cargo.
    *
    * @param trackingId cargo tracking id
-   * @param unLocode UN locode of new destination
+   * @param unLocode   UN locode of new destination
    */
   void changeDestination(TrackingId trackingId, UnLocode unLocode);
 

@@ -12,7 +12,6 @@ import java.util.Date;
 /**
  * Route specification. Describes where a cargo orign and destination is,
  * and the arrival deadline.
- * 
  */
 public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
 
@@ -21,8 +20,8 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   private Date arrivalDeadline;
 
   /**
-   * @param origin origin location - can't be the same as the destination
-   * @param destination destination location - can't be the same as the origin
+   * @param origin          origin location - can't be the same as the destination
+   * @param destination     destination location - can't be the same as the origin
    * @param arrivalDeadline arrival deadline
    */
   public RouteSpecification(final Location origin, final Location destination, final Date arrivalDeadline) {
@@ -62,7 +61,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    * @return A copy of this route specification but with new destination
    */
   public RouteSpecification withDestination(Location newDestination) {
-	  return new RouteSpecification(origin, newDestination, arrivalDeadline);
+    return new RouteSpecification(origin, newDestination, arrivalDeadline);
   }
 
   /**
@@ -84,9 +83,9 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   @Override
   public boolean isSatisfiedBy(final Itinerary itinerary) {
     return itinerary != null &&
-           origin().sameIdentityAs(itinerary.initialDepartureLocation()) &&
-           destination().sameIdentityAs(itinerary.finalArrivalLocation()) &&
-           arrivalDeadline().after(itinerary.finalArrivalDate());
+      origin().sameIdentityAs(itinerary.initialDepartureLocation()) &&
+      destination().sameIdentityAs(itinerary.finalArrivalLocation()) &&
+      arrivalDeadline().after(itinerary.finalArrivalDate());
   }
 
   @Override

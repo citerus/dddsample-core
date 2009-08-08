@@ -23,7 +23,7 @@ public class CargoTrackingViewAdapterTest extends TestCase {
 //  Itinerary, which previously said than an empty itinerary considered all
 //  events as "expected", whereas an empty itinerary should actually consider
 //  any event unexpected. (ie empty itinerary means nothing happens.)
-    
+
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZOU));
 

@@ -25,7 +25,6 @@ import java.util.Properties;
  * Our end of the routing service. This is basically a data model
  * translation layer between our domain model and the API put forward
  * by the routing team, which operates in a different context from us.
- *
  */
 public class ExternalRoutingService implements RoutingService {
 
@@ -47,10 +46,10 @@ public class ExternalRoutingService implements RoutingService {
     final List<TransitPath> transitPaths;
     try {
       transitPaths = graphTraversalService.findShortestPath(
-      origin.unLocode().stringValue(),
-      destination.unLocode().stringValue(),
-      limitations
-    );
+        origin.unLocode().stringValue(),
+        destination.unLocode().stringValue(),
+        limitations
+      );
     } catch (RemoteException e) {
       log.error(e, e);
       return Collections.EMPTY_LIST;
@@ -102,5 +101,5 @@ public class ExternalRoutingService implements RoutingService {
   public void setVoyageRepository(VoyageRepository voyageRepository) {
     this.voyageRepository = voyageRepository;
   }
-  
+
 }

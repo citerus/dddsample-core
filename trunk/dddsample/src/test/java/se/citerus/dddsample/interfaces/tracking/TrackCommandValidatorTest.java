@@ -26,7 +26,7 @@ public class TrackCommandValidatorTest extends TestCase {
     assertNull(error.getRejectedValue());
     assertEquals("error.required", error.getCode());
   }
-    
+
   public void testValidateSuccess() throws Exception {
     command.setTrackingId("non-empty");
     validator.validate(command, errors);

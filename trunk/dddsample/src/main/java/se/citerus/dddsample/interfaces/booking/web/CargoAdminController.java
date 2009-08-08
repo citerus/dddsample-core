@@ -22,7 +22,7 @@ import java.util.*;
  * In order to successfully keep the domain model shielded from user interface considerations,
  * this approach is generally preferred to the one taken in the tracking controller. However,
  * there is never any one perfect solution for all situations, so we've chosen to demonstrate
- * two polarized ways to build user interfaces.   
+ * two polarized ways to build user interfaces.
  *
  * @see se.citerus.dddsample.interfaces.tracking.CargoTrackingController
  */

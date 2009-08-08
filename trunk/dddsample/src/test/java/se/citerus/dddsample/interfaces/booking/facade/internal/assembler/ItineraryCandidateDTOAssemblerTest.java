@@ -68,7 +68,7 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     // Tested call
     final Itinerary itinerary = assembler.fromDTO(new RouteCandidateDTO(legs), voyageRepository, locationRepository);
 
-    
+
     assertNotNull(itinerary);
     assertNotNull(itinerary.legs());
     assertEquals(2, itinerary.legs().size());

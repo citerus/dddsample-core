@@ -50,7 +50,7 @@ public class ExternalRoutingServiceTest extends TestCase {
     Cargo cargo = new Cargo(trackingId, routeSpecification);
 
     expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
-    
+
     replay(voyageRepository);
 
     List<Itinerary> candidates = externalRoutingService.fetchRoutesForSpecification(routeSpecification);

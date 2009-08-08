@@ -1,4 +1,3 @@
-
 package com.aggregator;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -12,9 +11,9 @@ import java.util.List;
 
 /**
  * <p>Java class for handlingReport complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="handlingReport">
  *   &lt;complexContent>
@@ -30,152 +29,132 @@ import java.util.List;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "handlingReport", propOrder = {
-    "completionTime",
-    "trackingIds",
-    "type",
-    "unLocode",
-    "voyageNumber"
+  "completionTime",
+  "trackingIds",
+  "type",
+  "unLocode",
+  "voyageNumber"
 })
 public class HandlingReport {
 
-    @XmlElement(required = true)
-    protected XMLGregorianCalendar completionTime;
-    @XmlElement(required = true)
-    protected List<String> trackingIds;
-    @XmlElement(required = true)
-    protected String type;
-    @XmlElement(required = true)
-    protected String unLocode;
-    protected String voyageNumber;
+  @XmlElement(required = true)
+  protected XMLGregorianCalendar completionTime;
+  @XmlElement(required = true)
+  protected List<String> trackingIds;
+  @XmlElement(required = true)
+  protected String type;
+  @XmlElement(required = true)
+  protected String unLocode;
+  protected String voyageNumber;
 
-    /**
-     * Gets the value of the completionTime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getCompletionTime() {
-        return completionTime;
-    }
+  /**
+   * Gets the value of the completionTime property.
+   *
+   * @return possible object is
+   *         {@link XMLGregorianCalendar }
+   */
+  public XMLGregorianCalendar getCompletionTime() {
+    return completionTime;
+  }
 
-    /**
-     * Sets the value of the completionTime property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setCompletionTime(XMLGregorianCalendar value) {
-        this.completionTime = value;
-    }
+  /**
+   * Sets the value of the completionTime property.
+   *
+   * @param value allowed object is
+   *              {@link XMLGregorianCalendar }
+   */
+  public void setCompletionTime(XMLGregorianCalendar value) {
+    this.completionTime = value;
+  }
 
-    /**
-     * Gets the value of the trackingIds property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the trackingIds property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTrackingIds().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    public List<String> getTrackingIds() {
-        if (trackingIds == null) {
-            trackingIds = new ArrayList<String>();
-        }
-        return this.trackingIds;
+  /**
+   * Gets the value of the trackingIds property.
+   * <p/>
+   * <p/>
+   * This accessor method returns a reference to the live list,
+   * not a snapshot. Therefore any modification you make to the
+   * returned list will be present inside the JAXB object.
+   * This is why there is not a <CODE>set</CODE> method for the trackingIds property.
+   * <p/>
+   * <p/>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   *    getTrackingIds().add(newItem);
+   * </pre>
+   * <p/>
+   * <p/>
+   * <p/>
+   * Objects of the following type(s) are allowed in the list
+   * {@link String }
+   */
+  public List<String> getTrackingIds() {
+    if (trackingIds == null) {
+      trackingIds = new ArrayList<String>();
     }
+    return this.trackingIds;
+  }
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is
+   *         {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is
+   *              {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    /**
-     * Gets the value of the unLocode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUnLocode() {
-        return unLocode;
-    }
+  /**
+   * Gets the value of the unLocode property.
+   *
+   * @return possible object is
+   *         {@link String }
+   */
+  public String getUnLocode() {
+    return unLocode;
+  }
 
-    /**
-     * Sets the value of the unLocode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUnLocode(String value) {
-        this.unLocode = value;
-    }
+  /**
+   * Sets the value of the unLocode property.
+   *
+   * @param value allowed object is
+   *              {@link String }
+   */
+  public void setUnLocode(String value) {
+    this.unLocode = value;
+  }
 
-    /**
-     * Gets the value of the voyageNumber property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getVoyageNumber() {
-        return voyageNumber;
-    }
+  /**
+   * Gets the value of the voyageNumber property.
+   *
+   * @return possible object is
+   *         {@link String }
+   */
+  public String getVoyageNumber() {
+    return voyageNumber;
+  }
 
-    /**
-     * Sets the value of the voyageNumber property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setVoyageNumber(String value) {
-        this.voyageNumber = value;
-    }
+  /**
+   * Sets the value of the voyageNumber property.
+   *
+   * @param value allowed object is
+   *              {@link String }
+   */
+  public void setVoyageNumber(String value) {
+    this.voyageNumber = value;
+  }
 
 }

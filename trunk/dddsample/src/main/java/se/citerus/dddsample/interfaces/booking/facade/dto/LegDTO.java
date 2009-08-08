@@ -50,5 +50,5 @@ public final class LegDTO implements Serializable {
   public Date getUnloadTime() {
     return unloadTime;
   }
-  
+
 }

@@ -28,7 +28,7 @@ public class HandlingEventServiceTest extends TestCase {
 
   private final Cargo cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, new Date()));
 
-  protected void setUp() throws Exception{
+  protected void setUp() throws Exception {
     cargoRepository = createMock(CargoRepository.class);
     voyageRepository = createMock(VoyageRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);

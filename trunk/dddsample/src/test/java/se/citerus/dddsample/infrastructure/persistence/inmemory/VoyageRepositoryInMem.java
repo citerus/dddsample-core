@@ -10,5 +10,5 @@ public final class VoyageRepositoryInMem implements VoyageRepository {
   public Voyage find(VoyageNumber voyageNumber) {
     return SampleVoyages.lookup(voyageNumber);
   }
-  
+
 }

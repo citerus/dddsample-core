@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * Routing service.
- *
  */
 public interface RoutingService {
 

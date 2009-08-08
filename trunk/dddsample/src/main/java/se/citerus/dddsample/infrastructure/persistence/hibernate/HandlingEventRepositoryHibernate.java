@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * Hibernate implementation of HandlingEventRepository.
- *
  */
 @Repository
 public class HandlingEventRepositoryHibernate extends HibernateRepository implements HandlingEventRepository {

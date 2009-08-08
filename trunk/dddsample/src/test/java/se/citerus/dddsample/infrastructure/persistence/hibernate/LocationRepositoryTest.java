@@ -8,7 +8,7 @@ import java.util.List;
 
 public class LocationRepositoryTest extends AbstractRepositoryTest {
   private LocationRepository locationRepository;
-  
+
   public void testFind() throws Exception {
     final UnLocode melbourne = new UnLocode("AUMEL");
     Location location = locationRepository.find(melbourne);
