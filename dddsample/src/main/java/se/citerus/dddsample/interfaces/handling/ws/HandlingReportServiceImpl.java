@@ -38,7 +38,7 @@ public class HandlingReportServiceImpl implements HandlingReportService {
     final HandlingEvent.Type type = parseEventType(handlingReport.getType(), validationErrors);
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), validationErrors);
 
-    final Map<String,String> allErrors = new HashMap<String, String>();
+    final Map<String, String> allErrors = new HashMap<String, String>();
     for (String trackingIdStr : handlingReport.getTrackingIds()) {
       final TrackingId trackingId = parseTrackingId(trackingIdStr, validationErrors);
 

@@ -12,17 +12,20 @@ public class CarrierMovementTest extends TestCase {
     try {
       new CarrierMovement(null, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
-    } catch (IllegalArgumentException expected) {}
+    } catch (IllegalArgumentException expected) {
+    }
 
     try {
       new CarrierMovement(null, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
-    } catch (IllegalArgumentException expected) {}
+    } catch (IllegalArgumentException expected) {
+    }
 
     try {
       new CarrierMovement(STOCKHOLM, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
-    } catch (IllegalArgumentException expected) {}
+    } catch (IllegalArgumentException expected) {
+    }
 
     // Legal
     new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
@@ -37,7 +40,7 @@ public class CarrierMovementTest extends TestCase {
     assertTrue(cm1.sameValueAs(cm2));
     assertFalse(cm2.sameValueAs(cm3));
     assertTrue(cm3.sameValueAs(cm4));
-    
+
     assertTrue(cm1.equals(cm2));
     assertFalse(cm2.equals(cm3));
     assertTrue(cm3.equals(cm4));

@@ -27,10 +27,10 @@ public class RouteSpecificationTest extends TestCase {
   // it shouldn't be possible to create Legs that have load/unload locations
   // and/or dates that don't match the voyage's carrier movements.
   final Itinerary itinerary = new Itinerary(Arrays.asList(
-      new Leg(hongKongTokyoNewYork, HONGKONG, NEWYORK,
-              toDate("2009-02-01"), toDate("2009-02-10")),
-      new Leg(dallasNewYorkChicago, NEWYORK, CHICAGO,
-              toDate("2009-02-12"), toDate("2009-02-20")))
+    new Leg(hongKongTokyoNewYork, HONGKONG, NEWYORK,
+      toDate("2009-02-01"), toDate("2009-02-10")),
+    new Leg(dallasNewYorkChicago, NEWYORK, CHICAGO,
+      toDate("2009-02-12"), toDate("2009-02-20")))
   );
 
   public void testIsSatisfiedBy_Success() {
@@ -64,38 +64,38 @@ public class RouteSpecificationTest extends TestCase {
 
     assertFalse(routeSpecification.isSatisfiedBy(itinerary));
   }
-  
+
   public void testEquals() {
-	   RouteSpecification HKG_DAL = new RouteSpecification(
-			      HONGKONG, DALLAS, toDate("2009-03-01")
-			    );
-	   RouteSpecification HKG_DAL_AGAIN = new RouteSpecification(
-			      HONGKONG, DALLAS, toDate("2009-03-01")
-			    );
-	   RouteSpecification SHA_DAL = new RouteSpecification(
-			      SHANGHAI, DALLAS, toDate("2009-03-01")
-			    );
-	   RouteSpecification HKG_CHI = new RouteSpecification(
-			      HONGKONG, CHICAGO, toDate("2009-03-01")
-			    );
-	   RouteSpecification HKG_DAL_LATERARRIVAL = new RouteSpecification(
-			      HONGKONG, DALLAS, toDate("2009-03-15")
-			    );
-	   
-	   assertEquals(HKG_DAL, HKG_DAL_AGAIN);
-	   assertFalse(HKG_DAL.equals(SHA_DAL));
-	   assertFalse(HKG_DAL.equals(HKG_CHI));
-	   assertFalse(HKG_DAL.equals(HKG_DAL_LATERARRIVAL));
-}
-  
+    RouteSpecification HKG_DAL = new RouteSpecification(
+      HONGKONG, DALLAS, toDate("2009-03-01")
+    );
+    RouteSpecification HKG_DAL_AGAIN = new RouteSpecification(
+      HONGKONG, DALLAS, toDate("2009-03-01")
+    );
+    RouteSpecification SHA_DAL = new RouteSpecification(
+      SHANGHAI, DALLAS, toDate("2009-03-01")
+    );
+    RouteSpecification HKG_CHI = new RouteSpecification(
+      HONGKONG, CHICAGO, toDate("2009-03-01")
+    );
+    RouteSpecification HKG_DAL_LATERARRIVAL = new RouteSpecification(
+      HONGKONG, DALLAS, toDate("2009-03-15")
+    );
+
+    assertEquals(HKG_DAL, HKG_DAL_AGAIN);
+    assertFalse(HKG_DAL.equals(SHA_DAL));
+    assertFalse(HKG_DAL.equals(HKG_CHI));
+    assertFalse(HKG_DAL.equals(HKG_DAL_LATERARRIVAL));
+  }
+
   public void testDeriveWithNewDestination() {
-	   RouteSpecification original = new RouteSpecification(
-			      HONGKONG, DALLAS, toDate("2009-03-01")
-			    );
-	   RouteSpecification desired = new RouteSpecification(
-			      HONGKONG, CHICAGO, toDate("2009-03-01")
-			    );
-	assertEquals(desired, original.withDestination(CHICAGO));
+    RouteSpecification original = new RouteSpecification(
+      HONGKONG, DALLAS, toDate("2009-03-01")
+    );
+    RouteSpecification desired = new RouteSpecification(
+      HONGKONG, CHICAGO, toDate("2009-03-01")
+    );
+    assertEquals(desired, original.withDestination(CHICAGO));
   }
 
 }

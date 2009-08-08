@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions name="HandlingReportServiceService" targetNamespace="http://ws.handling.interfaces.dddsample.citerus.se/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.handling.interfaces.dddsample.citerus.se/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+<wsdl:definitions name="HandlingReportServiceService"
+                  targetNamespace="http://ws.handling.interfaces.dddsample.citerus.se/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://ws.handling.interfaces.dddsample.citerus.se/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
   <wsdl:types>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws.handling.interfaces.dddsample.citerus.se/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://ws.handling.interfaces.dddsample.citerus.se/">
-    <xs:element name="submitReport" type="tns:submitReport"/>
-    <xs:element name="submitReportResponse" type="tns:submitReportResponse"/>
-    <xs:complexType name="submitReport">
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:tns="http://ws.handling.interfaces.dddsample.citerus.se/" attributeFormDefault="unqualified"
+               elementFormDefault="unqualified" targetNamespace="http://ws.handling.interfaces.dddsample.citerus.se/">
+      <xs:element name="submitReport" type="tns:submitReport"/>
+      <xs:element name="submitReportResponse" type="tns:submitReportResponse"/>
+      <xs:complexType name="submitReport">
         <xs:sequence>
-            <xs:element minOccurs="0" name="arg0" type="tns:handlingReport"/>
+          <xs:element minOccurs="0" name="arg0" type="tns:handlingReport"/>
         </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="handlingReport">
+      </xs:complexType>
+      <xs:complexType name="handlingReport">
         <xs:sequence>
-            <xs:element name="completionTime" type="xs:dateTime"/>
-            <xs:element maxOccurs="unbounded" name="trackingIds" type="xs:string"/>
-            <xs:element name="type" type="xs:string"/>
-            <xs:element name="unLocode" type="xs:string"/>
-            <xs:element minOccurs="0" name="voyageNumber" type="xs:string"/>
+          <xs:element name="completionTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="trackingIds" type="xs:string"/>
+          <xs:element name="type" type="xs:string"/>
+          <xs:element name="unLocode" type="xs:string"/>
+          <xs:element minOccurs="0" name="voyageNumber" type="xs:string"/>
         </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="submitReportResponse">
+      </xs:complexType>
+      <xs:complexType name="submitReportResponse">
         <xs:sequence/>
-    </xs:complexType>
-    <xs:element name="HandlingReportErrors" type="tns:HandlingReportErrors"/>
-    <xs:complexType name="HandlingReportErrors">
+      </xs:complexType>
+      <xs:element name="HandlingReportErrors" type="tns:HandlingReportErrors"/>
+      <xs:complexType name="HandlingReportErrors">
         <xs:sequence/>
-    </xs:complexType>
-</xs:schema>
+      </xs:complexType>
+    </xs:schema>
   </wsdl:types>
   <wsdl:message name="HandlingReportErrors">
     <wsdl:part name="HandlingReportErrors" element="tns:HandlingReportErrors">
@@ -42,11 +48,11 @@
   <wsdl:portType name="HandlingReportService">
     <wsdl:operation name="submitReport">
       <wsdl:input name="submitReport" message="tns:submitReport">
-    </wsdl:input>
+      </wsdl:input>
       <wsdl:output name="submitReportResponse" message="tns:submitReportResponse">
-    </wsdl:output>
+      </wsdl:output>
       <wsdl:fault name="HandlingReportErrors" message="tns:HandlingReportErrors">
-    </wsdl:fault>
+      </wsdl:fault>
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="HandlingReportServiceServiceSoapBinding" type="tns:HandlingReportService">

@@ -5,7 +5,6 @@ import se.citerus.dddsample.domain.shared.ValueObject;
 
 /**
  * Identifies a voyage.
- * 
  */
 public class VoyageNumber implements ValueObject<VoyageNumber> {
 
@@ -13,7 +12,7 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
 
   public VoyageNumber(String number) {
     Validate.notNull(number);
-    
+
     this.number = number;
   }
 
@@ -24,7 +23,7 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
     if (!(o instanceof VoyageNumber)) return false;
 
     final VoyageNumber other = (VoyageNumber) o;
-    
+
     return sameValueAs(other);
   }
 

@@ -13,7 +13,7 @@ public class DeliveryTest extends TestCase {
   public void testToSilenceWarnings() throws Exception {
     assertTrue(true);
   }
-  
+
   /*
   public void testEvensOrderedByTimeOccured() throws Exception {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -71,5 +71,5 @@ public class DeliveryTest extends TestCase {
     assertEquals(HAMBURG, delivery.lastKnownLocation());
   }
   */
-  
+
 }

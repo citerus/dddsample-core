@@ -36,7 +36,6 @@ public class HandlingEventFactoryTest extends TestCase {
     factory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
 
 
-
     trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(TOKYO, HELSINKI, new Date());
     cargo = new Cargo(trackingId, routeSpecification);
@@ -90,7 +89,8 @@ public class HandlingEventFactoryTest extends TestCase {
         new Date(), new Date(100), trackingId, CM001.voyageNumber(), invalid, Type.LOAD
       );
       fail("Expected UnknownLocationException");
-    } catch (UnknownLocationException expected) {}
+    } catch (UnknownLocationException expected) {
+    }
   }
 
   public void testCreateHandlingEventUnknownCarrierMovement() throws Exception {
@@ -104,7 +104,8 @@ public class HandlingEventFactoryTest extends TestCase {
         new Date(), new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), Type.LOAD
       );
       fail("Expected UnknownVoyageException");
-    } catch (UnknownVoyageException expected) {}
+    } catch (UnknownVoyageException expected) {
+    }
   }
 
   public void testCreateHandlingEventUnknownTrackingId() throws Exception {
@@ -117,7 +118,8 @@ public class HandlingEventFactoryTest extends TestCase {
         new Date(), new Date(100), trackingId, CM001.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD
       );
       fail("Expected UnknownCargoException");
-    } catch (UnknownCargoException expected) {}
+    } catch (UnknownCargoException expected) {
+    }
   }
 
   protected void tearDown() throws Exception {

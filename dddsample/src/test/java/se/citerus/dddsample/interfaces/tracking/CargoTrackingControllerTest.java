@@ -75,7 +75,7 @@ public class CargoTrackingControllerTest extends TestCase {
     CargoRepository cargoRepository = EasyMock.createNiceMock(CargoRepository.class);
     EasyMock.replay(cargoRepository);
     controller.setCargoRepository(cargoRepository);
-    
+
     request.setMethod("POST");
     request.setParameter("trackingId", "unknown-id");
 

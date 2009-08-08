@@ -20,7 +20,7 @@ public class CargoAdminControllerTest extends TestCase {
   }
 
   public void testAssignItinerary() throws Exception {
-    request = new MockHttpServletRequest("GET","assignItinerary.html");
+    request = new MockHttpServletRequest("GET", "assignItinerary.html");
     response = new MockHttpServletResponse();
 
     controller.handleRequest(request, response);

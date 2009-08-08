@@ -6,7 +6,6 @@ import java.util.Date;
 /**
  * Represents an edge in a path through a graph,
  * describing the route of a cargo.
- *  
  */
 public final class TransitEdge implements Serializable {
 

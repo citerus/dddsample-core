@@ -6,7 +6,6 @@ import java.util.Date;
 
 /**
  * A few utils for working with Date in tests.
- *
  */
 public final class DateTestUtil {
 

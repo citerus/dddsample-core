@@ -18,6 +18,7 @@ public interface Specification<T> {
 
   /**
    * Create a new specification that is the AND operation of {@code this} specification and another specification.
+   *
    * @param specification Specification to AND.
    * @return A new specification.
    */
@@ -25,6 +26,7 @@ public interface Specification<T> {
 
   /**
    * Create a new specification that is the OR operation of {@code this} specification and another specification.
+   *
    * @param specification Specification to OR.
    * @return A new specification.
    */
@@ -32,6 +34,7 @@ public interface Specification<T> {
 
   /**
    * Create a new specification that is the NOT operation of {@code this} specification.
+   *
    * @param specification Specification to NOT.
    * @return A new specification.
    */

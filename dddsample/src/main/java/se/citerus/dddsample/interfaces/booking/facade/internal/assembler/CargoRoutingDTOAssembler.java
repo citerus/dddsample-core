@@ -11,7 +11,6 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
 public class CargoRoutingDTOAssembler {
 
   /**
-   *
    * @param cargo cargo
    * @return A cargo routing DTO
    */

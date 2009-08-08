@@ -27,7 +27,6 @@ import java.util.List;
  * This implementation has additional support from the infrastructure, for exposing as an RMI
  * service and for keeping the OR-mapper unit-of-work open during DTO assembly,
  * analogous to the view rendering for web interfaces.
- *
  */
 public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
@@ -46,7 +45,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   @Override
   public String bookNewCargo(String origin, String destination, Date arrivalDeadline) {
     TrackingId trackingId = bookingService.bookNewCargo(
-      new UnLocode(origin), 
+      new UnLocode(origin),
       new UnLocode(destination),
       arrivalDeadline
     );

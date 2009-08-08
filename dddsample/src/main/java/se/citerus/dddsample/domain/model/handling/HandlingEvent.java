@@ -21,7 +21,7 @@ import java.util.Date;
  * {@link se.citerus.dddsample.domain.model.cargo.TrackingId}, {@link se.citerus.dddsample.domain.model.location.Location}, timestamp of the completion of the event,
  * and possibly, if applicable a {@link se.citerus.dddsample.domain.model.voyage.Voyage}.
  * <p/>
- * This class is the only member, and consequently the root, of the HandlingEvent aggregate. 
+ * This class is the only member, and consequently the root, of the HandlingEvent aggregate.
  * <p/>
  * HandlingEvent's could contain information about a {@link Voyage} and if so,
  * the event type must be either {@link Type#LOAD} or {@link Type#UNLOAD}.
@@ -207,7 +207,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       append("Location: ").append(location.name()).append("\n").
       append("Completed on: ").append(completionTime).append("\n").
       append("Registered on: ").append(registrationTime).append("\n");
-    
+
     if (voyage != null) {
       builder.append("Voyage: ").append(voyage.voyageNumber()).append("\n");
     }

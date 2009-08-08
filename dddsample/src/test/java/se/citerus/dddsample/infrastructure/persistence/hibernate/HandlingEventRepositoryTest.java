@@ -43,7 +43,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
     flush();
 
-    Map<String,Object> result = sjt.queryForMap("select * from HandlingEvent where id = ?", getLongId(event));
+    Map<String, Object> result = sjt.queryForMap("select * from HandlingEvent where id = ?", getLongId(event));
     assertEquals(1L, result.get("CARGO_ID"));
     assertEquals(new Date(10), result.get("COMPLETIONTIME"));
     assertEquals(new Date(20), result.get("REGISTRATIONTIME"));

@@ -43,8 +43,8 @@ public class ItineraryCandidateDTOAssembler {
   }
 
   /**
-   * @param routeCandidateDTO route candidate DTO
-   * @param voyageRepository voyage repository
+   * @param routeCandidateDTO  route candidate DTO
+   * @param voyageRepository   voyage repository
    * @param locationRepository location repository
    * @return An itinerary
    */

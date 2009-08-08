@@ -1,4 +1,3 @@
-
 package com.aggregator;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for submitReport complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="submitReport">
  *   &lt;complexContent>
@@ -22,39 +21,33 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "submitReport", propOrder = {
-    "arg0"
+  "arg0"
 })
 public class SubmitReport {
 
-    protected HandlingReport arg0;
+  protected HandlingReport arg0;
 
-    /**
-     * Gets the value of the arg0 property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link HandlingReport }
-     *     
-     */
-    public HandlingReport getArg0() {
-        return arg0;
-    }
+  /**
+   * Gets the value of the arg0 property.
+   *
+   * @return possible object is
+   *         {@link HandlingReport }
+   */
+  public HandlingReport getArg0() {
+    return arg0;
+  }
 
-    /**
-     * Sets the value of the arg0 property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link HandlingReport }
-     *     
-     */
-    public void setArg0(HandlingReport value) {
-        this.arg0 = value;
-    }
+  /**
+   * Sets the value of the arg0 property.
+   *
+   * @param value allowed object is
+   *              {@link HandlingReport }
+   */
+  public void setArg0(HandlingReport value) {
+    this.arg0 = value;
+  }
 
 }

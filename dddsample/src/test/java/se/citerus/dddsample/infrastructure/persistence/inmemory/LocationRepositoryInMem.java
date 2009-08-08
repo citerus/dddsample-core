@@ -21,5 +21,5 @@ public class LocationRepositoryInMem implements LocationRepository {
   public List<Location> findAll() {
     return SampleLocations.getAll();
   }
-  
+
 }

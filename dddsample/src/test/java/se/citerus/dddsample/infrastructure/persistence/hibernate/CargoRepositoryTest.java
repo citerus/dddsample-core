@@ -62,7 +62,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
       addMovement(TOKYO, new Date(), new Date()).
       addMovement(HONGKONG, new Date(), new Date()).
       build();
-    
+
     assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, 150, 110, hongkongMelbourneTokyoAndBack);
 
     List<Leg> legs = cargo.itinerary().legs();
@@ -117,7 +117,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
         locationRepository.find(MELBOURNE.unLocode()),
         new Date(), new Date())
     )));
-    
+
     flush();
 
     Map<String, Object> map = sjt.queryForMap(

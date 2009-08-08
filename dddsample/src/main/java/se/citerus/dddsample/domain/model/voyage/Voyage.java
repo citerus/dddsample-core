@@ -44,7 +44,7 @@ public class Voyage implements Entity<Voyage> {
   }
 
   /**
-   * @param location location from where the rescheduled departure happens.
+   * @param location         location from where the rescheduled departure happens.
    * @param newDepartureTime new departure time
    */
   public void departureRescheduled(final Location location, final Date newDepartureTime) {
@@ -98,7 +98,7 @@ public class Voyage implements Entity<Voyage> {
 
   /**
    * Builder pattern is used for incremental construction
-   * of a Voyage aggregate. This serves as an aggregate factory. 
+   * of a Voyage aggregate. This serves as an aggregate factory.
    */
   public static final class Builder {
 

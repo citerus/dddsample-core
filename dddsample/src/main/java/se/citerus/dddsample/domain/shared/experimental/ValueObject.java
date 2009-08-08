@@ -2,7 +2,6 @@ package se.citerus.dddsample.domain.shared.experimental;
 
 /**
  * A value object.
- *
  */
 public interface ValueObject<T> {
 

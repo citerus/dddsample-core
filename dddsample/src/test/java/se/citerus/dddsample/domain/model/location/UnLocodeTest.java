@@ -8,7 +8,7 @@ public class UnLocodeTest extends TestCase {
     assertValid("AA234");
     assertValid("AAA9B");
     assertValid("AAAAA");
-    
+
     assertInvalid("AAAA");
     assertInvalid("AAAAAA");
     assertInvalid("AAAA");
@@ -38,9 +38,9 @@ public class UnLocodeTest extends TestCase {
     UnLocode allCaps = new UnLocode("ABCDE");
     UnLocode mixedCase = new UnLocode("aBcDe");
 
-    assertEquals(allCaps.hashCode(), mixedCase.hashCode());  
+    assertEquals(allCaps.hashCode(), mixedCase.hashCode());
   }
-  
+
   private void assertValid(String unlocode) {
     new UnLocode(unlocode);
   }
@@ -49,7 +49,8 @@ public class UnLocodeTest extends TestCase {
     try {
       new UnLocode(unlocode);
       fail("The combination [" + unlocode + "] is not a valid UnLocode");
-    } catch (IllegalArgumentException expected) {}
+    } catch (IllegalArgumentException expected) {
+    }
   }
 
 }

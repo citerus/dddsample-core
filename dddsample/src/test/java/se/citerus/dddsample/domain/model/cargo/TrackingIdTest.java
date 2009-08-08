@@ -8,7 +8,8 @@ public class TrackingIdTest extends TestCase {
     try {
       new TrackingId(null);
       fail("Should not accept null constructor arguments");
-    } catch (IllegalArgumentException expected) {}
+    } catch (IllegalArgumentException expected) {
+    }
   }
 
 }
