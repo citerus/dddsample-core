@@ -3,9 +3,9 @@ package se.citerus.dddsample.interfaces.tracking;
 import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Delivery;
-import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.text.SimpleDateFormat;

@@ -116,6 +116,11 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
       toHashCode();
   }
 
+  @Override
+  public String toString() {
+    return origin + " to " + destination + " by " + arrivalDeadline;
+  }
+
   RouteSpecification() {
     // Needed by Hibernate
   }

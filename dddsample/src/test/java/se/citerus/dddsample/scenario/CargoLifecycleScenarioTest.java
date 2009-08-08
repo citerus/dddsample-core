@@ -13,6 +13,7 @@ import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import static se.citerus.dddsample.domain.model.voyage.Voyage.NONE;

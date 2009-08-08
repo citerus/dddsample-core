@@ -176,12 +176,12 @@ public class Cargo implements Entity<Cargo> {
    */
   @Override
   public int hashCode() {
-    return trackingId().hashCode();
+    return trackingId.hashCode();
   }
 
   @Override
   public String toString() {
-    return trackingId().toString();
+    return trackingId + " (" + routeSpecification + ")";
   }
 
   Cargo() {

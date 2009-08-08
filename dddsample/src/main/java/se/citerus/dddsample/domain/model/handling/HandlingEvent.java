@@ -5,6 +5,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainEvent;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
@@ -30,9 +31,7 @@ import java.util.Date;
  */
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
-  private Type type;
-  private Voyage voyage;
-  private Location location;
+  private HandlingActivity handlingActivity;
   private Date completionTime;
   private Date registrationTime;
   private Cargo cargo;
@@ -105,12 +104,10 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
     }
 
-    this.voyage = voyage;
     this.completionTime = (Date) completionTime.clone();
     this.registrationTime = (Date) registrationTime.clone();
-    this.type = type;
-    this.location = location;
     this.cargo = cargo;
+    this.handlingActivity = new HandlingActivity(type, location, voyage);
   }
 
   /**
@@ -137,18 +134,16 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
     this.completionTime = (Date) completionTime.clone();
     this.registrationTime = (Date) registrationTime.clone();
-    this.type = type;
-    this.location = location;
     this.cargo = cargo;
-    this.voyage = null;
+    this.handlingActivity = new HandlingActivity(type, location);
   }
 
   public Type type() {
-    return this.type;
+    return handlingActivity.type();
   }
 
   public Voyage voyage() {
-    return DomainObjectUtils.nullSafe(this.voyage, Voyage.NONE);
+    return DomainObjectUtils.nullSafe(handlingActivity.voyage(), Voyage.NONE);
   }
 
   public Date completionTime() {
@@ -160,7 +155,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public Location location() {
-    return this.location;
+    return handlingActivity.location();
   }
 
   public Cargo cargo() {
@@ -181,10 +176,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public boolean sameEventAs(final HandlingEvent other) {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
-      append(this.voyage, other.voyage).
       append(this.completionTime, other.completionTime).
-      append(this.location, other.location).
-      append(this.type, other.type).
+      append(this.handlingActivity, other.handlingActivity).
       isEquals();
   }
 
@@ -192,27 +185,17 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public int hashCode() {
     return new HashCodeBuilder().
       append(cargo).
-      append(voyage).
       append(completionTime).
-      append(location).
-      append(type).
+      append(handlingActivity).
       toHashCode();
   }
 
   @Override
   public String toString() {
-    final StringBuilder builder = new StringBuilder("\n--- Handling event ---\n").
-      append("Cargo: ").append(cargo.trackingId()).append("\n").
-      append("Type: ").append(type).append("\n").
-      append("Location: ").append(location.name()).append("\n").
-      append("Completed on: ").append(completionTime).append("\n").
-      append("Registered on: ").append(registrationTime).append("\n");
-
-    if (voyage != null) {
-      builder.append("Voyage: ").append(voyage.voyageNumber()).append("\n");
-    }
-
-    return builder.toString();
+    return "Cargo: " + cargo +
+      "\nActivity: " + handlingActivity +
+      "\nCompleted on: " + completionTime +
+      "\nRegistered on: " + registrationTime;
   }
 
   HandlingEvent() {

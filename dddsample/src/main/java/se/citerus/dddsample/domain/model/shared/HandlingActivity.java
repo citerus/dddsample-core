@@ -1,4 +1,4 @@
-package se.citerus.dddsample.domain.model.cargo;
+package se.citerus.dddsample.domain.model.shared;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -12,11 +12,8 @@ import se.citerus.dddsample.domain.shared.ValueObject;
  * A handling activity represents how and where a cargo can be handled,
  * and can be used to express predictions about what is expected to
  * happen to a cargo in the future.
- *
  */
 public class HandlingActivity implements ValueObject<HandlingActivity> {
-
-  // TODO make HandlingActivity a part of HandlingEvent too? There is some overlap. 
 
   private HandlingEvent.Type type;
   private Location location;
@@ -89,5 +86,5 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
   HandlingActivity() {
     // Needed by Hibernate
   }
-  
+
 }
