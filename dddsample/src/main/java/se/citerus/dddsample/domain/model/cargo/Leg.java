@@ -20,9 +20,14 @@ public class Leg implements ValueObject<Leg> {
   private Date loadTime;
   private Date unloadTime;
 
-  // TODO remove this ctor
+  // TODO hide this, use factory
   public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
-    Validate.noNullElements(new Object[]{voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+    Validate.notNull(voyage, "Voyage is required");
+    Validate.notNull(loadLocation, "Load location is required");
+    Validate.notNull(unloadLocation, "Unload location is required");
+    Validate.isTrue(!loadLocation.sameIdentityAs(unloadLocation));
+    // TODO use a minimum time between unloading and loading?
+    Validate.isTrue(unloadTime.after(loadTime));
 
     this.voyage = voyage;
     this.loadLocation = loadLocation;
@@ -47,10 +52,6 @@ public class Leg implements ValueObject<Leg> {
    * @return A leg on this voyage between the given locations.
    */
   public static Leg deriveLeg(Voyage voyage, Location loadLocation, Location unloadLocation) {
-    Validate.notNull(voyage, "Voyage is required");
-    Validate.notNull(loadLocation, "Load location is required");
-    Validate.notNull(unloadLocation, "Unload location is required");
-    Validate.isTrue(!loadLocation.sameIdentityAs(unloadLocation));
     return new Leg(voyage, loadLocation, unloadLocation, voyage.schedule().departureTimeAt(loadLocation), voyage.schedule().arrivalTimeAt(unloadLocation));
   }
 
