@@ -48,6 +48,8 @@ public class Voyage implements Entity<Voyage> {
    * @param newDepartureTime new departure time
    */
   public void departureRescheduled(final Location location, final Date newDepartureTime) {
+    // TODO Change departure/arrival by diffs instead of absolute times
+
     final int size = schedule.carrierMovements().size();
     final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>(size);
 

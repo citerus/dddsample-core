@@ -131,7 +131,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The first leg on the itinerary.
    */
-  Leg firstLeg() {
+  public Leg firstLeg() {
     if (isEmpty()) return null;
     return legs.get(0);
   }
@@ -139,7 +139,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The last leg on the itinerary.
    */
-  Leg lastLeg() {
+  public Leg lastLeg() {
     if (isEmpty()) return null;
     return legs.get(legs.size() - 1);
   }
@@ -151,25 +151,63 @@ public class Itinerary implements ValueObject<Itinerary> {
   public Itinerary withRescheduledVoyage(final Voyage rescheduledVoyage) {
     final List<Leg> newLegsList = new ArrayList<Leg>(this.legs.size());
 
+    Leg lastAdded = null;
     for (Leg leg : this.legs) {
       if (leg.voyage().sameIdentityAs(rescheduledVoyage)) {
-        newLegsList.add(leg.withRescheduledVoyage(rescheduledVoyage));
+        Leg modifiedLeg = leg.withRescheduledVoyage(rescheduledVoyage);
+        // This truncates the itinerary if the voyage rescheduling makes
+        // it impossible to maintain the old unload-load chain.
+        if (lastAdded != null && modifiedLeg.loadTime().before(lastAdded.unloadTime())) {
+          break;
+        }
+        newLegsList.add(modifiedLeg);
       } else {
         newLegsList.add(leg);
       }
+      lastAdded = leg;
     }
 
     return new Itinerary(newLegsList);
   }
 
+  /**
+   * @return A list of all locations on this itinerary.
+   */
   public List<Location> locations() {
-    List<Location> result = new ArrayList<Location>();
+    final List<Location> result = new ArrayList<Location>();
     result.add(firstLeg().loadLocation());
     for (Leg leg : legs) {
       result.add(leg.unloadLocation());
     }
     return result;
   }
+
+  /**
+   * @param location a location
+   * @return Load time at this location, or null if the location isn't on this itinerary.
+   */
+  public Date loadTimeAt(final Location location) {
+    for (Leg leg : legs) {
+      if (leg.loadLocation().sameIdentityAs(location)) {
+        return leg.loadTime();
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param location a location
+   * @return Unload time at this location, or null if the location isn't on this itinerary.
+   */
+  public Date unloadTimeAt(final Location location) {
+    for (Leg leg : legs) {
+      if (leg.unloadLocation().sameIdentityAs(location)) {
+        return leg.unloadTime();
+      }
+    }
+    return null;
+  }
+
 
   /**
    * @param other itinerary to compare
