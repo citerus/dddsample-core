@@ -216,7 +216,7 @@ public class Delivery implements ValueObject<Delivery> {
 
   private Date calculateEta(Itinerary itinerary) {
     if (onTrack()) {
-      return itinerary.finalArrivalDate();
+      return itinerary.finalUnloadTime();
     } else {
       return ETA_UNKOWN;
     }
