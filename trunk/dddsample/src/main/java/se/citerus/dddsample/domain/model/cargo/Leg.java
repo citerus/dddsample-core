@@ -29,7 +29,7 @@ public class Leg implements ValueObject<Leg> {
     Validate.notNull(unloadTime, "Unload time is required");
     Validate.isTrue(!loadLocation.sameIdentityAs(unloadLocation));
     // TODO use a minimum time between unloading and loading?
-    Validate.isTrue(unloadTime.after(loadTime));
+    //Validate.isTrue(unloadTime.after(loadTime));
 
     this.voyage = voyage;
     this.loadLocation = loadLocation;
