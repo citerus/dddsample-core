@@ -83,9 +83,9 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   @Override
   public boolean isSatisfiedBy(final Itinerary itinerary) {
     return itinerary != null &&
-      origin().sameIdentityAs(itinerary.initialDepartureLocation()) &&
-      destination().sameIdentityAs(itinerary.finalArrivalLocation()) &&
-      arrivalDeadline().after(itinerary.finalArrivalDate());
+      origin().sameIdentityAs(itinerary.initialLoadLocation()) &&
+      destination().sameIdentityAs(itinerary.finalUnloadLocation()) &&
+      arrivalDeadline().after(itinerary.finalUnloadTime());
   }
 
   @Override

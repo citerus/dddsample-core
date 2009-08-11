@@ -34,7 +34,7 @@ public class Itinerary implements ValueObject<Itinerary> {
     this.legs = legs;
   }
 
-  public Itinerary(Leg... legs) {
+  public Itinerary(final Leg... legs) {
     this(Arrays.asList(legs));
   }
 
@@ -97,8 +97,8 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The initial departure location.
    */
-  Location initialDepartureLocation() {
-    if (legs.isEmpty()) {
+  Location initialLoadLocation() {
+    if (isEmpty()) {
       return Location.UNKNOWN;
     } else {
       return legs.get(0).loadLocation();
@@ -108,8 +108,8 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return The final arrival location.
    */
-  Location finalArrivalLocation() {
-    if (legs.isEmpty()) {
+  Location finalUnloadLocation() {
+    if (isEmpty()) {
       return Location.UNKNOWN;
     } else {
       return lastLeg().unloadLocation();
@@ -119,7 +119,7 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * @return Date when cargo arrives at final destination.
    */
-  Date finalArrivalDate() {
+  Date finalUnloadTime() {
     if (isEmpty()) return new Date(END_OF_DAYS.getTime());
     return new Date(lastLeg().unloadTime().getTime());
   }
