@@ -5,6 +5,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.CustomsZone;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.Entity;
 
@@ -49,6 +50,7 @@ public class Cargo implements Entity<Cargo> {
   private RouteSpecification routeSpecification;
   private Itinerary itinerary;
   private Delivery delivery;
+  private Projections projections;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
     Validate.notNull(trackingId, "Tracking ID is required");
@@ -56,10 +58,8 @@ public class Cargo implements Entity<Cargo> {
 
     this.trackingId = trackingId;
     this.routeSpecification = routeSpecification;
-
-    this.delivery = Delivery.derivedFrom(
-      this.routeSpecification, this.itinerary, HandlingHistory.emptyForCargo(this)
-    );
+    this.delivery = Delivery.initial(routeSpecification, itinerary);
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -93,6 +93,13 @@ public class Cargo implements Entity<Cargo> {
   }
 
   /**
+   * @return The projections for this cargo.
+   */
+  public Projections projections() {
+    return projections;
+  }
+
+  /**
    * Specifies a new route for this cargo.
    *
    * @param routeSpecification route specification.
@@ -102,7 +109,8 @@ public class Cargo implements Entity<Cargo> {
 
     this.routeSpecification = routeSpecification;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
+    this.delivery = delivery.withRoutingChange(this.routeSpecification, this.itinerary);
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -111,21 +119,22 @@ public class Cargo implements Entity<Cargo> {
    * @param itinerary an itinerary. May not be null.
    */
   public void assignToRoute(final Itinerary itinerary) {
-    Validate.notNull(itinerary, "Itinerary is required for assignment");
+    Validate.notNull(itinerary, "Itinerary is required");
 
     this.itinerary = itinerary;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
+    this.delivery = delivery.withRoutingChange(this.routeSpecification, this.itinerary);
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   public CustomsZone customsZone() {
     return routeSpecification.destination().customsZone();
   }
 
+
   public Location customsClearancePoint() {
     return customsZone().entryPoint(itinerary.locations());
   }
-
 
   /**
    * Updates all aspects of the cargo aggregate status
@@ -142,14 +151,25 @@ public class Cargo implements Entity<Cargo> {
    *
    * @param handlingHistory handling history
    */
+  // TODO Under migration, this method will be removed and replaced with the handled() method
   public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
     Validate.isTrue(this.sameIdentityAs(handlingHistory.cargo()),
       "Handling history must refer to this cargo, " + this + ". " +
         "Given handlig history refers to cargo " + handlingHistory.cargo());
 
-    // Delivery is a value object, so we can simply discard the old one
-    // and replace it with a new
-    this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory);
+    final HandlingEvent handlingEvent = handlingHistory.mostRecentPhysicalHandling();
+    if (handlingEvent != null) {
+      HandlingActivity handlingActivity = handlingEvent.handlingActivity();
+      handled(handlingActivity);
+    }
+  }
+
+  public void handled(final HandlingActivity handlingActivity) {
+    Validate.notNull(handlingActivity, "Handling activity is required");
+
+    // Delivery and Projections are value object, so they are replaced with new or derived ones
+    this.delivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
+    this.projections = new Projections(delivery, itinerary, routeSpecification, handlingActivity);
   }
 
   @Override
@@ -190,5 +210,4 @@ public class Cargo implements Entity<Cargo> {
 
   // Auto-generated surrogate key
   private Long id;
-
 }

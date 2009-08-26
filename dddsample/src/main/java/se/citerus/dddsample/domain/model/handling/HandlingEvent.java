@@ -117,6 +117,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param type             type of event
    * @param location         where the event took place
    */
+  // TODO make package local
   public HandlingEvent(final Cargo cargo,
                        final Date completionTime,
                        final Date registrationTime,
@@ -132,10 +133,14 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
-    this.completionTime = (Date) completionTime.clone();
-    this.registrationTime = (Date) registrationTime.clone();
+    this.completionTime = new Date(completionTime.getTime());
+    this.registrationTime = new Date(registrationTime.getTime());
     this.cargo = cargo;
     this.handlingActivity = new HandlingActivity(type, location);
+  }
+
+  public HandlingActivity handlingActivity() {
+    return handlingActivity;
   }
 
   public Type type() {

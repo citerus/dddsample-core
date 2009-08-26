@@ -1,58 +1,17 @@
 package se.citerus.dddsample.domain.shared.experimental;
 
-import java.lang.reflect.Field;
-
 /**
  * Base class for entities.
  */
 public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, ID> {
 
-  private static volatile Field identityField;
-
   @Override
-  public final boolean sameIdentityAs(final T other) {
+  public final boolean sameAs(final T other) {
     return other != null && this.identity().equals(other.identity());
   }
 
   @Override
-  public final ID identity() {
-    if (identityField == null) {
-      identityField = identityFieldLazyDetermination(this.getClass());
-    }
-
-    try {
-      return (ID) identityField.get(this);
-    } catch (IllegalAccessException e) {
-      throw new AssertionError(e);
-    }
-  }
-
-  private static Field identityFieldLazyDetermination(final Class cls) {
-    Field identityField = null;
-
-    for (Field field : cls.getDeclaredFields()) {
-      if (field.getAnnotation(Identity.class) != null) {
-        field.setAccessible(true);
-        if (identityField != null) {
-          throw new IllegalStateException("Only one field can be annotated with " + Identity.class);
-        } else {
-          identityField = field;
-        }
-      }
-    }
-
-    if (identityField == null) {
-      if (cls == Object.class) {
-        throw new IllegalStateException(
-          "This class, or one of its superclasses, " +
-            "must have a unique field annotated with " + Identity.class);
-      } else {
-        return identityFieldLazyDetermination(cls.getSuperclass());
-      }
-    }
-
-    return identityField;
-  }
+  public abstract ID identity();
 
   @Override
   public final int hashCode() {
@@ -64,7 +23,7 @@ public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, I
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    return sameIdentityAs((T) o);
+    return sameAs((T) o);
   }
 
 }

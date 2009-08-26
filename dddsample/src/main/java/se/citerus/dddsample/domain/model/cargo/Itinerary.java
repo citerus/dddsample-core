@@ -1,9 +1,11 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.StringUtils;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.*;
@@ -48,45 +50,45 @@ public class Itinerary implements ValueObject<Itinerary> {
   /**
    * Test if the given handling event is expected when executing this itinerary.
    *
-   * @param event Event to test.
+   * @param handlingActivity Event to test.
    * @return <code>true</code> if the event is expected
    */
-  public boolean isExpected(final HandlingEvent event) {
+  public boolean isExpected(final HandlingActivity handlingActivity) {
     if (isEmpty()) {
       return false;
     }
 
-    if (event.type() == HandlingEvent.Type.RECEIVE) {
-      return (firstLeg().loadLocation().equals(event.location()));
+    if (handlingActivity.type() == HandlingEvent.Type.RECEIVE) {
+      return (firstLeg().loadLocation().equals(handlingActivity.location()));
     }
 
-    if (event.type() == HandlingEvent.Type.LOAD) {
+    if (handlingActivity.type() == HandlingEvent.Type.LOAD) {
       //Check that the there is a leg with same load location and voyage
       for (Leg leg : legs) {
-        if (leg.loadLocation().sameIdentityAs(event.location()) &&
-          leg.voyage().sameIdentityAs(event.voyage()))
+        if (leg.loadLocation().sameIdentityAs(handlingActivity.location()) &&
+          leg.voyage().sameIdentityAs(handlingActivity.voyage()))
           return true;
       }
       return false;
     }
 
-    if (event.type() == HandlingEvent.Type.UNLOAD) {
+    if (handlingActivity.type() == HandlingEvent.Type.UNLOAD) {
       //Check that the there is a leg with same unload location and voyage
       for (Leg leg : legs) {
-        if (leg.unloadLocation().sameIdentityAs(event.location()) &&
-          leg.voyage().sameIdentityAs(event.voyage()))
+        if (leg.unloadLocation().sameIdentityAs(handlingActivity.location()) &&
+          leg.voyage().sameIdentityAs(handlingActivity.voyage()))
           return true;
       }
       return false;
     }
 
-    if (event.type() == HandlingEvent.Type.CLAIM) {
-      //Check that the last leg's destination is from the event's location
+    if (handlingActivity.type() == HandlingEvent.Type.CLAIM) {
+      //Check that the last leg's destination is from the handling activity's location
       final Leg leg = lastLeg();
-      return (leg.unloadLocation().equals(event.location()));
+      return (leg.unloadLocation().equals(handlingActivity.location()));
     }
 
-    if (event.type() == HandlingEvent.Type.CUSTOMS) {
+    if (handlingActivity.type() == HandlingEvent.Type.CUSTOMS) {
       //Check that the customs location fits the rule of the customs zone
       //TODO Answering this properly requires Cargo's destination. Can't be answered at itinerary level.
     }
@@ -231,6 +233,11 @@ public class Itinerary implements ValueObject<Itinerary> {
   @Override
   public int hashCode() {
     return legs.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return StringUtils.join(legs, "\n");
   }
 
   Itinerary() {

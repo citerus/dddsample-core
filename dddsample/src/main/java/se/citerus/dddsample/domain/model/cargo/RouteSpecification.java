@@ -4,10 +4,13 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.location.SampleLocations;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.shared.AbstractSpecification;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
+import java.lang.reflect.Field;
 
 /**
  * Route specification. Describes where a cargo orign and destination is,
@@ -32,7 +35,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
 
     this.origin = origin;
     this.destination = destination;
-    this.arrivalDeadline = (Date) arrivalDeadline.clone();
+    this.arrivalDeadline = new Date(arrivalDeadline.getTime());
   }
 
   /**
@@ -60,7 +63,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    * @param newDestination destination of new route specification
    * @return A copy of this route specification but with new destination
    */
-  public RouteSpecification withDestination(Location newDestination) {
+  public RouteSpecification withDestination(final Location newDestination) {
     return new RouteSpecification(origin, newDestination, arrivalDeadline);
   }
 
@@ -68,7 +71,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    * @param newOrigin origin of new route specification
    * @return A copy of this route specification but with the new origin
    */
-  public RouteSpecification withOrigin(Location newOrigin) {
+  public RouteSpecification withOrigin(final Location newOrigin) {
     return new RouteSpecification(newOrigin, destination, arrivalDeadline);
   }
 
@@ -76,7 +79,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    * @param newArrivalDeadline arrival deadline of new route specification
    * @return A copy of this route specification but with the new arrival deadline
    */
-  public RouteSpecification withArrivalDeadline(Date newArrivalDeadline) {
+  public RouteSpecification withArrivalDeadline(final Date newArrivalDeadline) {
     return new RouteSpecification(origin, destination, newArrivalDeadline);
   }
 
@@ -124,4 +127,5 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   RouteSpecification() {
     // Needed by Hibernate
   }
+
 }
