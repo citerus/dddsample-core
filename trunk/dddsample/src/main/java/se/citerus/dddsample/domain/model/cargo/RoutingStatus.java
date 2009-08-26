@@ -3,7 +3,7 @@ package se.citerus.dddsample.domain.model.cargo;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 /**
- * Routing status.
+ * The different routing statuses of a cargo.
  */
 public enum RoutingStatus implements ValueObject<RoutingStatus> {
   NOT_ROUTED, ROUTED, MISROUTED;
@@ -11,6 +11,18 @@ public enum RoutingStatus implements ValueObject<RoutingStatus> {
   @Override
   public boolean sameValueAs(final RoutingStatus other) {
     return this.equals(other);
+  }
+
+  public static RoutingStatus derivedFrom(final Itinerary itinerary, final RouteSpecification routeSpecification) {
+    if (itinerary == null) {
+      return NOT_ROUTED;
+    } else {
+      if (routeSpecification.isSatisfiedBy(itinerary)) {
+        return ROUTED;
+      } else {
+        return MISROUTED;
+      }
+    }
   }
 
 }

@@ -35,8 +35,9 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
     );
   }
 
+  @SuppressWarnings("unchecked")
   public List<Cargo> findAll() {
-    return getSession().createQuery("from Cargo").list();
+      return getSession().createQuery("from Cargo").list();
   }
 
 }

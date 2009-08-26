@@ -4,7 +4,6 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -22,7 +21,6 @@ import java.util.*;
 public class CargoRepositoryInMem implements CargoRepository {
 
   private Map<String, Cargo> cargoDb;
-  private HandlingEventRepository handlingEventRepository;
 
   /**
    * Constructor.
@@ -47,7 +45,7 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public List<Cargo> findAll() {
-    return new ArrayList(cargoDb.values());
+    return new ArrayList<Cargo>(cargoDb.values());
   }
 
   public void init() throws Exception {
@@ -66,10 +64,6 @@ public class CargoRepositoryInMem implements CargoRepository {
     final TrackingId cba = new TrackingId("CBA");
     final Cargo cargoCBA = createCargoWithDeliveryHistory(cba, HELSINKI, STOCKHOLM);
     cargoDb.put(cba.stringValue(), cargoCBA);
-  }
-
-  public void setHandlingEventRepository(final HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
   }
 
   public static Cargo createCargoWithDeliveryHistory(TrackingId trackingId,

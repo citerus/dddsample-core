@@ -60,8 +60,8 @@ public class CargoTest extends TestCase {
 
   public void testRoutingStatus() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
-    final Itinerary good = new Itinerary();
-    final Itinerary bad = new Itinerary();
+    final Itinerary good = new Itinerary(Leg.deriveLeg(northernRail, SEATTLE, NEWYORK));
+    final Itinerary bad = new Itinerary(Leg.deriveLeg(crazyVoyage, HAMBURG, HONGKONG));
     final RouteSpecification acceptOnlyGood = new RouteSpecification(cargo.routeSpecification().origin(), cargo.routeSpecification().destination(), new Date()) {
       @Override
       public boolean isSatisfiedBy(Itinerary itinerary) {
@@ -159,29 +159,9 @@ public class CargoTest extends TestCase {
     assertTrue(cargo.delivery().isUnloadedAtDestination());
   }
 
-  public void testDeriveDeliveryFromHandlingHistory() throws Exception {
-    RouteSpecification sharedRouteSpec = new RouteSpecification(SHANGHAI, GOTHENBURG, toDate("2009-04-01"));
-    Cargo cargo1 = new Cargo(new TrackingId("ABC"), sharedRouteSpec);
-    Cargo cargo2 = new Cargo(new TrackingId("DEF"), sharedRouteSpec);
-    assertFalse(cargo1.sameIdentityAs(cargo2));
-
-    HandlingHistory handlingHistoryOfCargo1 = HandlingHistory.fromEvents(Arrays.asList(
-      new HandlingEvent(cargo1, toDate("2009-03-10"), toDate("2009-03-12"), HandlingEvent.Type.RECEIVE, HANGZOU)
-    ));
-
-    // This is ok
-    cargo1.deriveDeliveryProgress(handlingHistoryOfCargo1);
-
-    try {
-      cargo2.deriveDeliveryProgress(handlingHistoryOfCargo1);
-      fail("A cargo should not be able to derive its delivery progress from a handling history of a different cargo");
-    } catch (IllegalArgumentException expected) {
-    }
-  }
-
   // TODO: Generate test data some better way
   private Cargo populateCargoReceivedStockholm() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
     HandlingEvent he = new HandlingEvent(cargo, toDate("2007-12-01"), new Date(), HandlingEvent.Type.RECEIVE, STOCKHOLM);
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
@@ -201,7 +181,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOffHongKong() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, toDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, crazyVoyage));
@@ -215,7 +195,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOnHamburg() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, toDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, crazyVoyage));
@@ -227,7 +207,7 @@ public class CargoTest extends TestCase {
   }
 
   private Cargo populateCargoOffMelbourne() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, toDate("2007-12-01"), new Date(), HandlingEvent.Type.LOAD, STOCKHOLM, crazyVoyage));
@@ -290,7 +270,6 @@ public class CargoTest extends TestCase {
 
     assertTrue(cargo.delivery().isMisdirected());
 
-
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
 
     events.add(new HandlingEvent(cargo, new Date(10), new Date(20), HandlingEvent.Type.RECEIVE, SHANGHAI));
@@ -301,7 +280,6 @@ public class CargoTest extends TestCase {
     cargo.deriveDeliveryProgress(HandlingHistory.fromEvents(events));
 
     assertTrue(cargo.delivery().isMisdirected());
-
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
 

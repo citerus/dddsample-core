@@ -104,7 +104,7 @@ public final class CargoTrackingViewAdapter {
   }
 
   public String getEta() {
-    Date eta = cargo.delivery().estimatedTimeOfArrival();
+    Date eta = cargo.projections().estimatedTimeOfArrival();
 
     if (eta == null) return "?";
     else {
@@ -116,7 +116,7 @@ public final class CargoTrackingViewAdapter {
   }
 
   public String getNextExpectedActivity() {
-    HandlingActivity activity = cargo.delivery().nextExpectedActivity();
+    HandlingActivity activity = cargo.projections().nextExpectedActivity();
     if (activity == null) {
       return "";
     }
@@ -195,7 +195,7 @@ public final class CargoTrackingViewAdapter {
      * @return True if the event was expected, according to the cargo's itinerary.
      */
     public boolean isExpected() {
-      return cargo.itinerary().isExpected(handlingEvent);
+      return cargo.itinerary().isExpected(handlingEvent.handlingActivity());
     }
 
     public String getDescription() {

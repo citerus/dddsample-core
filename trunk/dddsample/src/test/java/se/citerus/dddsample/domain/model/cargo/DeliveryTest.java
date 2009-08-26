@@ -1,75 +1,183 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
+import static se.citerus.dddsample.application.util.DateTestUtil.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.DALLAS;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 
 import java.util.Date;
 
 public class DeliveryTest extends TestCase {
 
-  private Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, NEWYORK, new Date()));
+  Delivery delivery;
+  Projections projections;
+  Itinerary itinerary;
+  RouteSpecification routeSpecification;
 
-  public void testToSilenceWarnings() throws Exception {
-    assertTrue(true);
+  @Override
+  protected void setUp() throws Exception {
+    routeSpecification = new RouteSpecification(HANGZOU, STOCKHOLM, toDate("2008-11-03"));
+    itinerary = new Itinerary(
+      Leg.deriveLeg(HONGKONG_TO_NEW_YORK, HANGZOU, NEWYORK),
+      Leg.deriveLeg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS),
+      Leg.deriveLeg(DALLAS_TO_HELSINKI, DALLAS, STOCKHOLM)
+    );
+    delivery = Delivery.initial(routeSpecification, itinerary);
+    projections = new Projections(delivery, itinerary, routeSpecification);
+    Thread.sleep(1);
   }
 
-  /*
-  public void testEvensOrderedByTimeOccured() throws Exception {
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    HandlingEvent he1 = new HandlingEvent(cargo, df.parse("2010-01-03"), new Date(), HandlingEvent.Type.RECEIVE, NEWYORK);
-    HandlingEvent he2 = new HandlingEvent(cargo, df.parse("2010-01-01"), new Date(), HandlingEvent.Type.LOAD, NEWYORK, CM003);
-    HandlingEvent he3 = new HandlingEvent(cargo, df.parse("2010-01-04"), new Date(), HandlingEvent.Type.CLAIM, HONGKONG);
-    HandlingEvent he4 = new HandlingEvent(cargo, df.parse("2010-01-02"), new Date(), HandlingEvent.Type.UNLOAD, HONGKONG, CM004);
-    Delivery dh = new Delivery(Arrays.asList(he1, he2, he3, he4));
-
-    List<HandlingEvent> orderEvents = dh.history();
-    assertEquals(4, orderEvents.size());
-    assertSame(he2, orderEvents.get(0));
-    assertSame(he4, orderEvents.get(1));
-    assertSame(he1, orderEvents.get(2));
-    assertSame(he3, orderEvents.get(3));
-  }
-
-  public void testCargoStatusFromLastHandlingEvent() {
-    Set<HandlingEvent> events = new HashSet<HandlingEvent>();
-    Delivery delivery = new Delivery(events);
-
-    assertEquals(TransportStatus.NOT_RECEIVED, delivery.transportStatus());
-
-    events.add(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG));
-    delivery = new Delivery(events);
-    assertEquals(TransportStatus.IN_PORT, delivery.transportStatus());
-
-    events.add(new HandlingEvent(cargo, new Date(20), new Date(21), HandlingEvent.Type.LOAD, HAMBURG, CM005));
-    delivery = new Delivery(events);
-    assertEquals(TransportStatus.ONBOARD_CARRIER, delivery.transportStatus());
-
-    events.add(new HandlingEvent(cargo, new Date(30), new Date(31), HandlingEvent.Type.UNLOAD, HAMBURG, CM006));
-    delivery = new Delivery(events);
-    assertEquals(TransportStatus.IN_PORT, delivery.transportStatus());
-
-    events.add(new HandlingEvent(cargo, new Date(40), new Date(41), HandlingEvent.Type.CLAIM, HAMBURG));
-    delivery = new Delivery(events);
-    assertEquals(TransportStatus.CLAIMED, delivery.transportStatus());
-  }
-
-  public void testLastKnownLocation() throws Exception {
-    Set<HandlingEvent> events = new HashSet<HandlingEvent>();
-    Delivery delivery = new Delivery(events);
-
+  public void testDerivedFromRouteSpecificationAndItinerary() throws Exception {
+    assertEquals(ROUTED, delivery.routingStatus());
+    assertEquals(Voyage.NONE, delivery.currentVoyage());
+    assertFalse(delivery.isMisdirected());
+    assertFalse(delivery.isUnloadedAtDestination());
     assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
+    assertEquals(NOT_RECEIVED, delivery.transportStatus());
+    assertTrue(delivery.calculatedAt().before(new Date()));
 
-    events.add(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG));
-    delivery = new Delivery(events);
-
-    assertEquals(HAMBURG, delivery.lastKnownLocation());
-
-    events.add(new HandlingEvent(cargo, new Date(20), new Date(21), HandlingEvent.Type.LOAD, HAMBURG, CM003));
-    delivery = new Delivery(events);
-
-    assertEquals(HAMBURG, delivery.lastKnownLocation());
+    assertEquals(new HandlingActivity(RECEIVE, HANGZOU), projections.nextExpectedActivity());
+    assertEquals(DALLAS_TO_HELSINKI.schedule().arrivalTimeAt(STOCKHOLM), projections.estimatedTimeOfArrival());
   }
-  */
+
+  public void testUpdateOnHandlingHappyPath() {
+    // 1. Receive
+
+    HandlingActivity handlingActivity = new HandlingActivity(RECEIVE, HANGZOU);
+    Delivery newDelivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
+    Projections newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+
+    // Changed on handling
+    assertEquals(Voyage.NONE, newDelivery.currentVoyage());
+    assertEquals(HANGZOU, newDelivery.lastKnownLocation());
+    assertEquals(IN_PORT, newDelivery.transportStatus());
+
+    // Changed on handling and/or (re-)routing
+    assertEquals(new HandlingActivity(LOAD, HANGZOU, HONGKONG_TO_NEW_YORK), newProjections.nextExpectedActivity());
+    assertFalse(newDelivery.isMisdirected());
+    assertFalse(newDelivery.isUnloadedAtDestination());
+
+    // Changed on (re-)routing
+    assertEquals(ROUTED, newDelivery.routingStatus());
+    assertEquals(DALLAS_TO_HELSINKI.schedule().arrivalTimeAt(STOCKHOLM), newProjections.estimatedTimeOfArrival());
+
+    // Updated on every calculation
+    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+
+    // 2. Load
+
+    handlingActivity = new HandlingActivity(LOAD, HANGZOU, HONGKONG_TO_NEW_YORK);
+    newDelivery = newDelivery.whenHandled(routeSpecification, itinerary, handlingActivity);
+    newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+
+    assertEquals(HONGKONG_TO_NEW_YORK, newDelivery.currentVoyage());
+    assertEquals(HANGZOU, newDelivery.lastKnownLocation());
+    assertEquals(ONBOARD_CARRIER, newDelivery.transportStatus());
+
+    assertEquals(new HandlingActivity(UNLOAD, NEWYORK, HONGKONG_TO_NEW_YORK), newProjections.nextExpectedActivity());
+    assertFalse(newDelivery.isMisdirected());
+    assertFalse(newDelivery.isUnloadedAtDestination());
+
+    assertEquals(ROUTED, newDelivery.routingStatus());
+    assertEquals(DALLAS_TO_HELSINKI.schedule().arrivalTimeAt(STOCKHOLM), newProjections.estimatedTimeOfArrival());
+
+    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+
+    // Skipping intermediate load/unloads
+
+    // 3. Unload
+
+    handlingActivity = new HandlingActivity(UNLOAD, STOCKHOLM, DALLAS_TO_HELSINKI);
+    newDelivery = newDelivery.whenHandled(routeSpecification, itinerary, handlingActivity);
+    newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+
+    assertEquals(Voyage.NONE, newDelivery.currentVoyage());
+    assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
+    assertEquals(IN_PORT, newDelivery.transportStatus());
+
+    assertEquals(new HandlingActivity(CLAIM, STOCKHOLM), newProjections.nextExpectedActivity());
+    assertFalse(newDelivery.isMisdirected());
+    assertTrue(newDelivery.isUnloadedAtDestination());
+
+    assertEquals(ROUTED, newDelivery.routingStatus());
+    assertEquals(DALLAS_TO_HELSINKI.schedule().arrivalTimeAt(STOCKHOLM), newProjections.estimatedTimeOfArrival());
+
+    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+
+    // 4. Claim
+
+    handlingActivity = new HandlingActivity(CLAIM, STOCKHOLM);
+    newDelivery = newDelivery.whenHandled(routeSpecification, itinerary, handlingActivity);
+    newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+
+    assertEquals(Voyage.NONE, newDelivery.currentVoyage());
+    assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
+    assertEquals(CLAIMED, newDelivery.transportStatus());
+
+    assertNull(newProjections.nextExpectedActivity());
+    assertFalse(newDelivery.isMisdirected());
+    assertTrue(newDelivery.isUnloadedAtDestination());
+
+    assertEquals(ROUTED, newDelivery.routingStatus());
+    assertEquals(DALLAS_TO_HELSINKI.schedule().arrivalTimeAt(STOCKHOLM), newProjections.estimatedTimeOfArrival());
+
+    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+  }
+
+  public void testUpdateOnHandlingWhenMisdirected() {
+    // Unload in Hamburg, which is the wrong location
+    HandlingActivity handlingActivity = new HandlingActivity(UNLOAD, HAMBURG, DALLAS_TO_HELSINKI);
+    Delivery newDelivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
+    Projections newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+
+    assertEquals(Voyage.NONE, newDelivery.currentVoyage());
+    assertEquals(HAMBURG, newDelivery.lastKnownLocation());
+    assertEquals(IN_PORT, newDelivery.transportStatus());
+
+    // Next handling activity is undefined. Need a new itinerary to know what to do.
+    assertNull(newProjections.nextExpectedActivity());
+    
+    assertTrue(newDelivery.isMisdirected());
+    assertFalse(newDelivery.isUnloadedAtDestination());
+
+    assertEquals(ROUTED, newDelivery.routingStatus());
+
+    // ETA is undefined at this time
+    assertNull(newProjections.estimatedTimeOfArrival());
+
+    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+
+    // New route specification, old itinerary
+    RouteSpecification newRouteSpecification = routeSpecification.withOrigin(HAMBURG);
+    newDelivery = newDelivery.withRoutingChange(newRouteSpecification, itinerary);
+    newProjections = new Projections(newDelivery, itinerary, newRouteSpecification);
+    assertEquals(MISROUTED, newDelivery.routingStatus());
+
+    // TODO is it misdirected at this point?
+    //assertTrue(newDelivery.isMisdirected());
+    assertFalse(newDelivery.isMisdirected());
+
+    assertNull(newProjections.nextExpectedActivity());
+
+    Itinerary newItinerary = new Itinerary(
+      Leg.deriveLeg(DALLAS_TO_HELSINKI, HAMBURG, STOCKHOLM)
+    );
+
+    newDelivery = newDelivery.withRoutingChange(newRouteSpecification, newItinerary);
+    newProjections = new Projections(newDelivery, newItinerary, newRouteSpecification);
+
+    assertEquals(ROUTED, newDelivery.routingStatus());
+    assertFalse(newDelivery.isMisdirected());
+    assertEquals(IN_PORT, newDelivery.transportStatus());
+    assertEquals(new HandlingActivity(LOAD, HAMBURG, DALLAS_TO_HELSINKI), newProjections.nextExpectedActivity());
+  }
 
 }

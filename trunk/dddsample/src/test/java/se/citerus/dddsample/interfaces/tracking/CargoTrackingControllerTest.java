@@ -39,7 +39,6 @@ public class CargoTrackingControllerTest extends TestCase {
     controller.setSuccessView("test-success");
     controller.setCommandName("test-command-name");
     cargoRepository = new CargoRepositoryInMem();
-    cargoRepository.setHandlingEventRepository(new HandlingEventRepositoryInMem());
     cargoRepository.init();
 
     handlingEventRepository = new HandlingEventRepositoryInMem();

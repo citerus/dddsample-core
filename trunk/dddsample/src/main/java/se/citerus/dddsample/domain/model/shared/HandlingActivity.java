@@ -15,6 +15,10 @@ import se.citerus.dddsample.domain.shared.ValueObject;
  */
 public class HandlingActivity implements ValueObject<HandlingActivity> {
 
+  // TODO introduce something like this (?):
+  // HandlingActivity.loadOnto(voyage).in(location)
+  // HandlingActivity.claimIn(location)
+
   private HandlingEvent.Type type;
   private Location location;
   private Voyage voyage;

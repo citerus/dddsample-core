@@ -15,19 +15,8 @@
       <property name="id" column="tracking_id"/>
     </component>
 
-    <component name="delivery" lazy="true">
-      <property name="misdirected" column="is_misdirected" not-null="true"/>
-      <property name="eta" column="eta" not-null="false"/>
-      <property name="calculatedAt" column="calculated_at" not-null="true"/>
-      <property name="isUnloadedAtDestination" column="unloaded_at_dest" not-null="true"/>
-
-      <property name="routingStatus" column="routing_status" not-null="true">
-        <type name="org.hibernate.type.EnumType">
-          <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
-          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
-        </type>
-      </property>
-
+    <component name="projections">
+      <property name="estimatedTimeOfArrival" column="eta" not-null="false"/>
       <component name="nextExpectedActivity" update="true">
         <many-to-one name="location" column="next_expected_location_id" foreign-key="next_expected_location_fk" cascade="none"/>
         <property name="type" column="next_expected_handling_event_type">
@@ -38,6 +27,19 @@
         </property>
         <many-to-one name="voyage" column="next_expected_voyage_id" foreign-key="next_expected_voyage_fk" cascade="none"/>
       </component>
+    </component>
+
+    <component name="delivery" lazy="true">
+      <property name="misdirected" column="is_misdirected" not-null="true"/>
+      <property name="calculatedAt" column="calculated_at" not-null="true"/>
+      <property name="isUnloadedAtDestination" column="unloaded_at_dest" not-null="true"/>
+
+      <property name="routingStatus" column="routing_status" not-null="true">
+        <type name="org.hibernate.type.EnumType">
+          <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
+          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+        </type>
+      </property>
 
       <property name="transportStatus" column="transport_status" not-null="true">
         <type name="org.hibernate.type.EnumType">
@@ -47,7 +49,6 @@
       </property>
       <many-to-one name="currentVoyage" column="current_voyage_id" not-null="false" cascade="none" foreign-key="current_voyage_fk"/>
       <many-to-one name="lastKnownLocation" column="last_known_location_id" not-null="false" cascade="none" foreign-key="last_known_location_fk"/>
-      <many-to-one name="lastEvent" column="last_event_id" not-null="false" cascade="none" foreign-key="last_event_fk"/>
     </component>
 
     <component name="routeSpecification">
