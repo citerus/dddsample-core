@@ -86,7 +86,7 @@ public final class BookingServiceImpl implements BookingService {
 
   @Override
   @Transactional
-  public Cargo loadCargoForRouting(TrackingId trackingId) {
+  public Cargo loadCargoForRouting(final TrackingId trackingId) {
     // TODO locking semantics
     final Cargo cargo = cargoRepository.find(trackingId);
     return cargo;

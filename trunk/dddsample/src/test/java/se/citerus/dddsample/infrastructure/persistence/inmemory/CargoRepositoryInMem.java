@@ -7,6 +7,7 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.util.*;
 
@@ -33,10 +34,23 @@ public class CargoRepositoryInMem implements CargoRepository {
     return cargoDb.get(trackingId.stringValue());
   }
 
-  public void store(final Cargo cargo) {
+  @Override
+  public List<Cargo> findCargosOnVoyage(Voyage voyage) {
+    List<Cargo> onVoyage = new ArrayList<Cargo>();
+    for (Cargo cargo : cargoDb.values()) {
+      if (voyage.sameIdentityAs(cargo.delivery().currentVoyage())) {
+        onVoyage.add(cargo);
+      }
+    }
+    return onVoyage;
+  }
+
+  @Override
+  public void store(Cargo cargo) {
     cargoDb.put(cargo.trackingId().stringValue(), cargo);
   }
 
+  @Override
   public TrackingId nextTrackingId() {
     String random = UUID.randomUUID().toString().toUpperCase();
     return new TrackingId(
@@ -44,6 +58,7 @@ public class CargoRepositoryInMem implements CargoRepository {
     );
   }
 
+  @Override
   public List<Cargo> findAll() {
     return new ArrayList<Cargo>(cargoDb.values());
   }

@@ -16,7 +16,6 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 public class ReadyToClaimNotfier {
 
   private CargoRepository cargoRepository;
-
   private static final Log LOG = LogFactory.getLog(ReadyToClaimNotfier.class);
 
   public ReadyToClaimNotfier(final CargoRepository cargoRepository) {
@@ -26,7 +25,7 @@ public class ReadyToClaimNotfier {
   @Transactional
   public void alertIfReadyToClaim(final TrackingId trackingId) {
     final Cargo cargo = cargoRepository.find(trackingId);
-
+                                                      
     if (cargo.delivery().isUnloadedAtDestination()) {
       LOG.info("Cargo " + cargo + " is ready to be claimed");
     }

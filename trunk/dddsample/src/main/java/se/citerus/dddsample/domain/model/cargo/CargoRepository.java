@@ -1,5 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+
 import java.util.List;
 
 public interface CargoRepository {
@@ -11,6 +13,13 @@ public interface CargoRepository {
    * @return Cargo if found, else {@code null}
    */
   Cargo find(TrackingId trackingId);
+
+  /**
+   *
+   * @param voyage
+   * @return
+   */
+  List<Cargo> findCargosOnVoyage(Voyage voyage);
 
   /**
    * Finds all cargo.
@@ -30,5 +39,4 @@ public interface CargoRepository {
    * @return A unique, generated tracking Id.
    */
   TrackingId nextTrackingId();
-
 }
