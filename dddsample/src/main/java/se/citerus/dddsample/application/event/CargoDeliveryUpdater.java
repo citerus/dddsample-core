@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
-import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
 public class CargoDeliveryUpdater {
 
@@ -27,8 +27,10 @@ public class CargoDeliveryUpdater {
   @Transactional
   public void updateDelivery(final TrackingId trackingId) {
     final Cargo cargo = cargoRepository.find(trackingId);
-    final HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(cargo);
-    cargo.deriveDeliveryProgress(handlingHistory);
+    final HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
+
+    // TODO still doesn't sound right...cargo.updateDelivery()?
+    cargo.handled(handlingEvent.handlingActivity());
 
     cargoRepository.store(cargo);
     applicationEvents.cargoDeliveryWasUpdated(cargo);

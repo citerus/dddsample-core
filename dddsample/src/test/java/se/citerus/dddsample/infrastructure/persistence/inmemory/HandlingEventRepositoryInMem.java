@@ -6,14 +6,18 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HandlingEventRepositoryInMem implements HandlingEventRepository {
 
   private Map<TrackingId, List<HandlingEvent>> eventMap = new HashMap<TrackingId, List<HandlingEvent>>();
+  private static final Comparator<HandlingEvent> BY_COMPLETION_TIME_DESC = new Comparator<HandlingEvent>() {
+    @Override
+    public int compare(HandlingEvent o1, HandlingEvent o2) {
+      // Newest first
+      return o2.completionTime().compareTo(o1.completionTime());
+    }
+  };
 
   @Override
   public void store(HandlingEvent event) {
@@ -35,6 +39,17 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
     } else {
       return HandlingHistory.fromEvents(events);
     }
+  }
+
+  @Override
+  public HandlingEvent mostRecentHandling(Cargo cargo) {
+    List<HandlingEvent> handlingEvents = eventMap.get(cargo.trackingId());
+    if (handlingEvents == null) {
+      return null;
+    }
+
+    Collections.sort(handlingEvents, BY_COMPLETION_TIME_DESC);
+    return handlingEvents.get(0);
   }
 
 }

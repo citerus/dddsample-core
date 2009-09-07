@@ -8,8 +8,11 @@ import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.domain.model.cargo.*;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
-import se.citerus.dddsample.domain.model.handling.*;
+import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -375,16 +378,20 @@ public class CargoLifecycleScenarioTest {
   }
 
   private void createHandlingEventAndUpdateAggregates(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
+    updateHandlingEventAggregate(completionTime, voyage, location, type);
+    updateCargoAggregate();
+  }
+
+  private void updateHandlingEventAggregate(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
     VoyageNumber voyageNumber = voyage != null ? voyage.voyageNumber() : null;
     HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(new Date(), completionTime, trackingId, voyageNumber, location.unLocode(), type);
     handlingEventRepository.store(handlingEvent);
-    updateCargoAggregate();
   }
 
   private void updateCargoAggregate() {
     Cargo cargo = cargoRepository.find(trackingId);
-    HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(cargo);
-    cargo.deriveDeliveryProgress(handlingHistory);
+    HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
+    cargo.handled(handlingEvent.handlingActivity());
     cargoRepository.store(cargo);
   }
 

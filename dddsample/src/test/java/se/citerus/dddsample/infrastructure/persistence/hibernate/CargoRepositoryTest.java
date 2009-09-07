@@ -170,4 +170,22 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertFalse(trackingId.equals(trackingId2));
   }
 
+  public void testFindCargosOnVoyage() {
+    Voyage voyage = voyageRepository.find(new VoyageNumber("0101"));
+    List<Cargo> cargos = cargoRepository.findCargosOnVoyage(voyage);
+    assertEquals(3, cargos.size());
+    for (Cargo cargo : cargos) {
+      boolean found = false;
+      for (Leg leg : cargo.itinerary().legs()) {
+        if (leg.voyage().sameIdentityAs(voyage)) {
+          found = true;
+        }
+      }
+      assertTrue("Cargo " + cargo + " has no leg on voyage " + voyage, found);
+    }
+    
+    Voyage voyage2 = voyageRepository.find(new VoyageNumber("0100S"));
+    assertTrue(cargoRepository.findCargosOnVoyage(voyage2).isEmpty());
+  }
+
 }

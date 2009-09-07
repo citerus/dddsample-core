@@ -33,4 +33,13 @@ public class HandlingEventRepositoryHibernate extends HibernateRepository implem
     }
   }
 
+  @Override
+  public HandlingEvent mostRecentHandling(Cargo cargo) {
+      return (HandlingEvent) getSession().createQuery(
+        "from HandlingEvent where cargo = :cargo order by completionTime desc").
+        setParameter("cargo", cargo).
+        setMaxResults(1).
+        uniqueResult();
+  }
+
 }

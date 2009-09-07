@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,17 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
       createQuery("from Cargo where trackingId = :tid").
       setParameter("tid", tid).
       uniqueResult();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Cargo> findCargosOnVoyage(Voyage voyage) {
+    return getSession().createQuery(
+      "select cargo from Cargo as cargo " +
+        "left join cargo.itinerary.legs as leg " +
+        "where leg.voyage = :voyage").
+      setParameter("voyage", voyage).
+      list();
   }
 
   public void store(Cargo cargo) {
@@ -37,7 +49,7 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
 
   @SuppressWarnings("unchecked")
   public List<Cargo> findAll() {
-      return getSession().createQuery("from Cargo").list();
+    return getSession().createQuery("from Cargo").list();
   }
 
 }

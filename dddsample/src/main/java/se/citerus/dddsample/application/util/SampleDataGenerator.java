@@ -12,7 +12,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.domain.model.cargo.*;
-import se.citerus.dddsample.domain.model.handling.*;
+import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.SampleLocations;
@@ -250,9 +253,8 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(abc123);
-        abc123.deriveDeliveryProgress(handlingHistory);
-
+        final HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(abc123);
+        abc123.handled(handlingEvent.handlingActivity());
         session.update(abc123);
 
         // Cargo JKL567
@@ -295,9 +297,8 @@ public class SampleDataGenerator implements ServletContextListener {
           throw new RuntimeException(e);
         }
 
-        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(jkl567);
-        jkl567.deriveDeliveryProgress(handlingHistory1);
-
+        HandlingEvent handlingEvent1 = handlingEventRepository.mostRecentHandling(jkl567);
+        jkl567.handled(handlingEvent1.handlingActivity());
         session.update(jkl567);
       }
     });

@@ -21,4 +21,11 @@ public interface HandlingEventRepository {
    */
   HandlingHistory lookupHandlingHistoryOfCargo(Cargo cargo);
 
+  /**
+   *
+   * @param cargo cargo
+   * @return The most recent handling of the cargo, or null if it has never been handled.
+   */
+  HandlingEvent mostRecentHandling(Cargo cargo);
+
 }
