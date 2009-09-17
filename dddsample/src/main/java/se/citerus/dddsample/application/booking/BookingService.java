@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application;
+package se.citerus.dddsample.application.booking;
 
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;

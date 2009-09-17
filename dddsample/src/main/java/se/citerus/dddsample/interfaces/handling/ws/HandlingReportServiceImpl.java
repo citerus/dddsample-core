@@ -6,7 +6,7 @@ import com.aggregator.HandlingReportErrors_Exception;
 import com.aggregator.HandlingReportService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import se.citerus.dddsample.application.HandlingEventService;
+import se.citerus.dddsample.application.handling.HandlingEventService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;

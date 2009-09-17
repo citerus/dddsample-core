@@ -10,7 +10,7 @@
   <!--context:component-scan base-package="se.citerus.dddsample"/>
   <context:annotation-config/-->
 
-  <bean id="bookingService" class="se.citerus.dddsample.application.impl.BookingServiceImpl">
+  <bean id="bookingService" class="se.citerus.dddsample.application.booking.BookingServiceImpl">
     <constructor-arg ref="cargoFactory"/>
     <constructor-arg ref="routingService"/>
     <constructor-arg ref="cargoRepository"/>
@@ -23,7 +23,7 @@
     <constructor-arg ref="handlingEventRepository"/>
   </bean>
 
-  <bean id="handlingEventService" class="se.citerus.dddsample.application.impl.HandlingEventServiceImpl">
+  <bean id="handlingEventService" class="se.citerus.dddsample.application.handling.HandlingEventServiceImpl">
     <constructor-arg ref="handlingEventRepository"/>
     <constructor-arg ref="handlingEventFactory"/>
     <constructor-arg ref="applicationEvents"/>

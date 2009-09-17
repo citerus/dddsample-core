@@ -1,6 +1,6 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal;
 
-import se.citerus.dddsample.application.BookingService;
+import se.citerus.dddsample.application.booking.BookingService;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
