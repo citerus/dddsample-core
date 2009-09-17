@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.HandlingEventService;
-import se.citerus.dddsample.application.event.ApplicationEvents;
+import se.citerus.dddsample.application.event.SystemEvents;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -17,16 +17,16 @@ import java.util.Date;
 
 public final class HandlingEventServiceImpl implements HandlingEventService {
 
-  private final ApplicationEvents applicationEvents;
+  private final SystemEvents systemEvents;
   private final HandlingEventRepository handlingEventRepository;
   private final HandlingEventFactory handlingEventFactory;
   private final Log logger = LogFactory.getLog(HandlingEventServiceImpl.class);
 
   public HandlingEventServiceImpl(final HandlingEventRepository handlingEventRepository,
-                                  final ApplicationEvents applicationEvents,
+                                  final SystemEvents systemEvents,
                                   final HandlingEventFactory handlingEventFactory) {
     this.handlingEventRepository = handlingEventRepository;
-    this.applicationEvents = applicationEvents;
+    this.systemEvents = systemEvents;
     this.handlingEventFactory = handlingEventFactory;
   }
 
@@ -53,7 +53,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     handlingEventRepository.store(event);
 
     /* Publish an event stating that a cargo has been handled. */
-    applicationEvents.notifyOfHandlingEvent(event);
+    systemEvents.notifyOfHandlingEvent(event);
 
     logger.info("Registered handling event");
   }

@@ -2,7 +2,7 @@ package se.citerus.dddsample.application;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.application.event.ApplicationEvents;
+import se.citerus.dddsample.application.event.SystemEvents;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
-  private ApplicationEvents applicationEvents;
+  private SystemEvents systemEvents;
   private CargoRepository cargoRepository;
   private VoyageRepository voyageRepository;
   private HandlingEventRepository handlingEventRepository;
@@ -33,14 +33,14 @@ public class HandlingEventServiceTest extends TestCase {
     voyageRepository = createMock(VoyageRepository.class);
     handlingEventRepository = createMock(HandlingEventRepository.class);
     locationRepository = createMock(LocationRepository.class);
-    applicationEvents = createMock(ApplicationEvents.class);
+    systemEvents = createMock(SystemEvents.class);
 
     HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
-    service = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
+    service = new HandlingEventServiceImpl(handlingEventRepository, systemEvents, handlingEventFactory);
   }
 
   protected void tearDown() throws Exception {
-    verify(cargoRepository, voyageRepository, handlingEventRepository, applicationEvents);
+    verify(cargoRepository, voyageRepository, handlingEventRepository, systemEvents);
   }
 
   public void testRegisterEvent() throws Exception {
@@ -48,9 +48,9 @@ public class HandlingEventServiceTest extends TestCase {
     expect(voyageRepository.find(CM001.voyageNumber())).andReturn(CM001);
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
     handlingEventRepository.store(isA(HandlingEvent.class));
-    applicationEvents.notifyOfHandlingEvent(isA(HandlingEvent.class));
+    systemEvents.notifyOfHandlingEvent(isA(HandlingEvent.class));
 
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
+    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
 
     service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
   }

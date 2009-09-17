@@ -26,7 +26,7 @@
     <property name="connectionFactory" ref="jmsConnectionFactory"/>
   </bean>
 
-  <bean id="applicationEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsApplicationEventsImpl">
+  <bean id="applicationEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsSystemEventsImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="cargoHandledDestination" ref="cargoHandledQueue"/>
     <property name="cargoUpdateDestination" ref="cargoUpdateTopic"/>
