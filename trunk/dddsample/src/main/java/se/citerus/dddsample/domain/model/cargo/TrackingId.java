@@ -1,5 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
@@ -20,6 +21,11 @@ public final class TrackingId implements ValueObject<TrackingId>, Serializable {
   public TrackingId(final String id) {
     Validate.notNull(id);
     this.id = id;
+  }
+
+  public TrackingId(final long sequenceValue) {
+    Validate.isTrue(sequenceValue > 0, "Sequence value must be larger than 0");
+    this.id = "C" + StringUtils.leftPad(String.valueOf(sequenceValue), 8, "0");
   }
 
   /**

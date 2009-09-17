@@ -1,17 +1,16 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.application.util.DateTestUtil.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.DALLAS;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.voyage.Voyage;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
-import se.citerus.dddsample.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.MISROUTED;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.ROUTED;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import se.citerus.dddsample.domain.model.location.Location;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.util.Date;
 
@@ -31,7 +30,7 @@ public class DeliveryTest extends TestCase {
       Leg.deriveLeg(DALLAS_TO_HELSINKI, DALLAS, STOCKHOLM)
     );
     delivery = Delivery.initial(routeSpecification, itinerary);
-    projections = new Projections(delivery, itinerary, routeSpecification);
+    projections = new Projections(delivery, itinerary);
     Thread.sleep(1);
   }
 
@@ -53,7 +52,7 @@ public class DeliveryTest extends TestCase {
 
     HandlingActivity handlingActivity = new HandlingActivity(RECEIVE, HANGZOU);
     Delivery newDelivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    Projections newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+    Projections newProjections = new Projections(newDelivery, itinerary);
 
     // Changed on handling
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
@@ -76,7 +75,7 @@ public class DeliveryTest extends TestCase {
 
     handlingActivity = new HandlingActivity(LOAD, HANGZOU, HONGKONG_TO_NEW_YORK);
     newDelivery = newDelivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+    newProjections = new Projections(newDelivery, itinerary);
 
     assertEquals(HONGKONG_TO_NEW_YORK, newDelivery.currentVoyage());
     assertEquals(HANGZOU, newDelivery.lastKnownLocation());
@@ -97,7 +96,7 @@ public class DeliveryTest extends TestCase {
 
     handlingActivity = new HandlingActivity(UNLOAD, STOCKHOLM, DALLAS_TO_HELSINKI);
     newDelivery = newDelivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+    newProjections = new Projections(newDelivery, itinerary);
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
@@ -116,7 +115,7 @@ public class DeliveryTest extends TestCase {
 
     handlingActivity = new HandlingActivity(CLAIM, STOCKHOLM);
     newDelivery = newDelivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+    newProjections = new Projections(newDelivery, itinerary);
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
@@ -136,7 +135,7 @@ public class DeliveryTest extends TestCase {
     // Unload in Hamburg, which is the wrong location
     HandlingActivity handlingActivity = new HandlingActivity(UNLOAD, HAMBURG, DALLAS_TO_HELSINKI);
     Delivery newDelivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    Projections newProjections = new Projections(newDelivery, itinerary, routeSpecification, handlingActivity);
+    Projections newProjections = new Projections(newDelivery, itinerary);
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(HAMBURG, newDelivery.lastKnownLocation());
@@ -158,7 +157,7 @@ public class DeliveryTest extends TestCase {
     // New route specification, old itinerary
     RouteSpecification newRouteSpecification = routeSpecification.withOrigin(HAMBURG);
     newDelivery = newDelivery.withRoutingChange(newRouteSpecification, itinerary);
-    newProjections = new Projections(newDelivery, itinerary, newRouteSpecification);
+    newProjections = new Projections(newDelivery, itinerary);
     assertEquals(MISROUTED, newDelivery.routingStatus());
 
     // TODO is it misdirected at this point?
@@ -172,7 +171,7 @@ public class DeliveryTest extends TestCase {
     );
 
     newDelivery = newDelivery.withRoutingChange(newRouteSpecification, newItinerary);
-    newProjections = new Projections(newDelivery, newItinerary, newRouteSpecification);
+    newProjections = new Projections(newDelivery, newItinerary);
 
     assertEquals(ROUTED, newDelivery.routingStatus());
     assertFalse(newDelivery.isMisdirected());

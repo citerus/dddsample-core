@@ -46,8 +46,6 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals(HONGKONG, cargo.routeSpecification().origin());
     assertEquals(HELSINKI, cargo.routeSpecification().destination());
 
-    assertNotNull(cargo.delivery());
-
     final List<HandlingEvent> events = handlingEventRepository.lookupHandlingHistoryOfCargo(cargo).distinctEventsByCompletionTime();
     assertEquals(2, events.size());
 
@@ -159,15 +157,6 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     List<Cargo> all = cargoRepository.findAll();
     assertNotNull(all);
     assertEquals(6, all.size());
-  }
-
-  public void testNextTrackingId() {
-    TrackingId trackingId = cargoRepository.nextTrackingId();
-    assertNotNull(trackingId);
-
-    TrackingId trackingId2 = cargoRepository.nextTrackingId();
-    assertNotNull(trackingId2);
-    assertFalse(trackingId.equals(trackingId2));
   }
 
   public void testFindCargosOnVoyage() {

@@ -17,7 +17,7 @@
     <constructor-arg ref="locationRepository"/>
   </bean>
 
-  <bean id="cargoDeliveryUpdater" class="se.citerus.dddsample.application.event.CargoDeliveryUpdater">
+  <bean id="cargoUpdater" class="se.citerus.dddsample.application.event.CargoUpdater">
     <constructor-arg ref="cargoRepository"/>
     <constructor-arg ref="applicationEvents"/>
     <constructor-arg ref="handlingEventRepository"/>

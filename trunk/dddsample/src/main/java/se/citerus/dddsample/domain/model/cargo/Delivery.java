@@ -3,13 +3,14 @@ package se.citerus.dddsample.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingHistory;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.ROUTED;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.derivedFrom;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
-import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
@@ -20,13 +21,13 @@ import java.util.Date;
  */
 public class Delivery implements ValueObject<Delivery> {
 
-  private TransportStatus transportStatus;
-  private Location lastKnownLocation;
-  private Voyage currentVoyage;
+  private HandlingActivity mostRecentHandlingActivity;
+  private Date calculatedAt;
+
+  // TODO these will be replaced by domain events
   private boolean misdirected;
   private boolean isUnloadedAtDestination;
   private RoutingStatus routingStatus;
-  private Date calculatedAt;
 
   /**
    * Derives a new delivery snapshot to reflect changes in routing, i.e.
@@ -40,10 +41,10 @@ public class Delivery implements ValueObject<Delivery> {
   Delivery withRoutingChange(final RouteSpecification routeSpecification, final Itinerary itinerary) {
     Validate.notNull(routeSpecification, "Route specification is required");
 
-    final RoutingStatus newRoutingStatus = RoutingStatus.derivedFrom(itinerary, routeSpecification);
+    final RoutingStatus newRoutingStatus = derivedFrom(itinerary, routeSpecification);
     boolean misdirected = false;
 
-    return new Delivery(transportStatus, lastKnownLocation, currentVoyage, misdirected, isUnloadedAtDestination, newRoutingStatus);
+    return new Delivery(mostRecentHandlingActivity, misdirected, isUnloadedAtDestination, newRoutingStatus);
   }
 
   /**
@@ -58,44 +59,33 @@ public class Delivery implements ValueObject<Delivery> {
     Validate.notNull(routeSpecification, "Route specification is required");
     Validate.notNull(itinerary, "Itinerary is required");
 
+    final boolean newMisdirected = misdirectionStatus(itinerary, handlingActivity);
+    final boolean newUnloadedAtDestination = unloadedAtDestination(routeSpecification, handlingActivity);
     final RoutingStatus newRoutingStatus = this.routingStatus;
-    final TransportStatus newTransportStatus = TransportStatus.derivedFrom(handlingActivity);
-    final boolean newMisdirected = Calculate.misdirectionStatus(itinerary, handlingActivity);
-    final Location newLastKnownLocation = Calculate.lastKnownLocation(handlingActivity);
-    final Voyage newCurrentVoyage = Calculate.currentVoyage(handlingActivity, newTransportStatus);
-    final boolean newUnloadedAtDestination = Calculate.unloadedAtDestination(routeSpecification, handlingActivity);
 
-    return new Delivery(newTransportStatus, newLastKnownLocation, newCurrentVoyage, newMisdirected, newUnloadedAtDestination, newRoutingStatus);
+    return new Delivery(handlingActivity, newMisdirected, newUnloadedAtDestination, newRoutingStatus);
   }
 
   /**
-   *
-   * @param routeSpecification
-   * @param itinerary
-   * @return
+   * @param routeSpecification route specification
+   * @param itinerary itinerary
+   * @return Initial delivery, before any handling has taken place
    */
   static Delivery initial(final RouteSpecification routeSpecification, final Itinerary itinerary) {
     Validate.notNull(routeSpecification, "Route specification is required");
 
-    final TransportStatus newTransportStatus = TransportStatus.derivedFrom(null);
-    final Location newLastKnownLocation = Calculate.lastKnownLocation(null);
-    final Voyage newCurrentVoyage = Calculate.currentVoyage(null, newTransportStatus);
-    final boolean newMisdirected = Calculate.misdirectionStatus(itinerary, null);
-    final boolean newUnloadedAtDestination = Calculate.unloadedAtDestination(routeSpecification, null);
-    final RoutingStatus newRoutingStatus = RoutingStatus.derivedFrom(itinerary, routeSpecification);
+    final boolean newMisdirected = misdirectionStatus(itinerary, null);
+    final boolean newUnloadedAtDestination = unloadedAtDestination(routeSpecification, null);
+    final RoutingStatus newRoutingStatus = derivedFrom(itinerary, routeSpecification);
 
-    return new Delivery(newTransportStatus, newLastKnownLocation, newCurrentVoyage, newMisdirected, newUnloadedAtDestination, newRoutingStatus);
+    return new Delivery(null, newMisdirected, newUnloadedAtDestination, newRoutingStatus);
   }
 
-  private Delivery(final TransportStatus transportStatus,
-                   final Location lastKnownLocation,
-                   final Voyage currentVoyage,
+  private Delivery(final HandlingActivity mostRecentHandlingActivity,
                    final boolean misdirected,
                    final boolean unloadedAtDestination,
                    final RoutingStatus routingStatus) {
-    this.transportStatus = transportStatus;
-    this.lastKnownLocation = lastKnownLocation;
-    this.currentVoyage = currentVoyage;
+    this.mostRecentHandlingActivity = mostRecentHandlingActivity;
     this.misdirected = misdirected;
     this.isUnloadedAtDestination = unloadedAtDestination;
     this.routingStatus = routingStatus;
@@ -106,21 +96,29 @@ public class Delivery implements ValueObject<Delivery> {
    * @return Transport status
    */
   public TransportStatus transportStatus() {
-    return transportStatus;
+    return TransportStatus.derivedFrom(mostRecentHandlingActivity);
   }
 
   /**
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {
-    return DomainObjectUtils.nullSafe(lastKnownLocation, Location.UNKNOWN);
+    if (mostRecentHandlingActivity != null) {
+      return mostRecentHandlingActivity.location();
+    } else {
+      return Location.UNKNOWN;
+    }
   }
 
   /**
    * @return Current voyage.
    */
   public Voyage currentVoyage() {
-    return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE);
+    if (mostRecentHandlingActivity != null && transportStatus().equals(ONBOARD_CARRIER)) {
+      return mostRecentHandlingActivity.voyage();
+    } else {
+      return Voyage.NONE;
+    }
   }
 
   /**
@@ -159,12 +157,30 @@ public class Delivery implements ValueObject<Delivery> {
     return new Date(calculatedAt.getTime());
   }
 
+  /**
+   * @return True if the cargo is routed and not misdirected
+   */
+  boolean onTrack() {
+    return routingStatus().sameValueAs(ROUTED) && !isMisdirected();
+  }
+
+  private static boolean misdirectionStatus(Itinerary itinerary, HandlingActivity handlingActivity) {
+    return handlingActivity != null &&
+           handlingActivity.type().isPhysical() &&
+           !itinerary.isExpected(handlingActivity);
+  }
+
+  // TODO name this: "arrived" or something
+  private static boolean unloadedAtDestination(RouteSpecification routeSpecification, HandlingActivity handlingActivity) {
+    return handlingActivity != null &&
+          (CLAIM.sameValueAs(handlingActivity.type()) || UNLOAD.sameValueAs(handlingActivity.type()) &&
+           routeSpecification.destination().sameIdentityAs(handlingActivity.location()));
+  }
+
   @Override
   public boolean sameValueAs(final Delivery other) {
     return other != null && new EqualsBuilder().
-      append(this.transportStatus, other.transportStatus).
-      append(this.lastKnownLocation, other.lastKnownLocation).
-      append(this.currentVoyage, other.currentVoyage).
+      append(this.mostRecentHandlingActivity, other.mostRecentHandlingActivity).
       append(this.misdirected, other.misdirected).
       append(this.isUnloadedAtDestination, other.isUnloadedAtDestination).
       append(this.routingStatus, other.routingStatus).
@@ -185,9 +201,7 @@ public class Delivery implements ValueObject<Delivery> {
   @Override
   public int hashCode() {
     return new HashCodeBuilder().
-      append(transportStatus).
-      append(lastKnownLocation).
-      append(currentVoyage).
+      append(mostRecentHandlingActivity).
       append(misdirected).
       append(isUnloadedAtDestination).
       append(routingStatus).
@@ -197,41 +211,6 @@ public class Delivery implements ValueObject<Delivery> {
 
   Delivery() {
     // Needed by Hibernate
-  }
-
-  private static class Calculate {
-
-    private static Location lastKnownLocation(HandlingActivity handlingActivity) {
-      if (handlingActivity != null) {
-        return handlingActivity.location();
-      } else {
-        return null;
-      }
-    }
-
-    private static Voyage currentVoyage(HandlingActivity handlingActivity, TransportStatus transportStatus) {
-      if (transportStatus.equals(ONBOARD_CARRIER) && handlingActivity != null) {
-        return handlingActivity.voyage();
-      } else {
-        return null;
-      }
-    }
-
-    private static boolean misdirectionStatus(Itinerary itinerary, HandlingActivity handlingActivity) {
-      if (handlingActivity == null) {
-        return false;
-      } else {
-        return !itinerary.isExpected(handlingActivity);
-      }
-    }
-
-    private static boolean unloadedAtDestination(RouteSpecification routeSpecification, HandlingActivity handlingActivity) {
-      return handlingActivity != null &&
-        (HandlingEvent.Type.CLAIM.sameValueAs(handlingActivity.type()) ||
-          HandlingEvent.Type.UNLOAD.sameValueAs(handlingActivity.type()) &&
-            routeSpecification.destination().sameIdentityAs(handlingActivity.location()));
-    }
-
   }
 
 }

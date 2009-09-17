@@ -11,7 +11,7 @@
   </bean>
 
   <bean id="cargoFactory" class="se.citerus.dddsample.domain.model.cargo.CargoFactory">
-    <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="trackingIdGenerator"/>
     <constructor-arg ref="locationRepository"/>
   </bean>
 

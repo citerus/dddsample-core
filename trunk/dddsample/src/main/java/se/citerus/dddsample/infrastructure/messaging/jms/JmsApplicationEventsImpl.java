@@ -18,10 +18,10 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
 
   private JmsOperations jmsOperations;
   private Destination cargoHandledDestination;
-  private Destination cargoDeliveryUpdateDestination;
+  private Destination cargoUpdateDestination;
 
   @Override
-  public void cargoWasHandled(final HandlingEvent event) {
+  public void notifyOfHandlingEvent(final HandlingEvent event) {
     final Cargo cargo = event.cargo();
     jmsOperations.send(cargoHandledDestination, new MessageCreator() {
       public Message createMessage(final Session session) throws JMSException {
@@ -31,8 +31,8 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
   }
 
   @Override
-  public void cargoDeliveryWasUpdated(final Cargo cargo) {
-    jmsOperations.send(cargoDeliveryUpdateDestination, new MessageCreator() {
+  public void notifyOfCargoUpdate(final Cargo cargo) {
+    jmsOperations.send(cargoUpdateDestination, new MessageCreator() {
       public Message createMessage(Session session) throws JMSException {
         return session.createObjectMessage(cargo.trackingId());
       }
@@ -47,8 +47,8 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
     this.cargoHandledDestination = cargoHandledDestination;
   }
 
-  public void setCargoDeliveryUpdateDestination(Destination cargoDeliveryUpdateDestination) {
-    this.cargoDeliveryUpdateDestination = cargoDeliveryUpdateDestination;
+  public void setCargoUpdateDestination(Destination cargoUpdateDestination) {
+    this.cargoUpdateDestination = cargoUpdateDestination;
   }
 
 }

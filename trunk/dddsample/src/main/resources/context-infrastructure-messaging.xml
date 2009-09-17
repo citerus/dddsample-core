@@ -14,12 +14,12 @@
   <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost?broker.persistent=false&amp;broker.useJmx=false"/>
 
   <amq:queue id="cargoHandledQueue" name="CargoHandledQueue" physicalName="CargoHandledQueue"/>
-  <amq:topic id="cargoDeliveryUpdateTopic" name="CargoDeliveryUpdateTopic" physicalName="CargoDeliveryUpdateTopic"/>
+  <amq:topic id="cargoUpdateTopic" name="CargUpdateTopic" physicalName="CargoUpdateTopic"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
     <jms:listener destination="CargoHandledQueue" ref="listener3"/>
-    <jms:listener destination="CargoDeliveryUpdateTopic" ref="listener1"/>
-    <jms:listener destination="CargoDeliveryUpdateTopic" ref="listener2"/>
+    <jms:listener destination="CargoUpdateTopic" ref="listener1"/>
+    <jms:listener destination="CargoUpdateTopic" ref="listener2"/>
   </jms:listener-container>
 
   <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
@@ -29,7 +29,7 @@
   <bean id="applicationEvents" class="se.citerus.dddsample.infrastructure.messaging.jms.JmsApplicationEventsImpl">
     <property name="jmsOperations" ref="jmsOperations"/>
     <property name="cargoHandledDestination" ref="cargoHandledQueue"/>
-    <property name="cargoDeliveryUpdateDestination" ref="cargoDeliveryUpdateTopic"/>
+    <property name="cargoUpdateDestination" ref="cargoUpdateTopic"/>
   </bean>
 
   <bean id="listener1" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
@@ -43,8 +43,8 @@
   </bean>
 
   <bean id="listener3" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
-    <constructor-arg ref="cargoDeliveryUpdater"/>
-    <property name="defaultListenerMethod" value="updateDelivery"/>
+    <constructor-arg ref="cargoUpdater"/>
+    <property name="defaultListenerMethod" value="updateCargo"/>
   </bean>
 
 </beans>

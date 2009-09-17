@@ -5,6 +5,7 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
+import se.citerus.dddsample.domain.model.shared.EventSequenceNumber;
 
 import java.util.List;
 
@@ -15,14 +16,22 @@ import java.util.List;
 public class HandlingEventRepositoryHibernate extends HibernateRepository implements HandlingEventRepository {
 
   @Override
+  public HandlingEvent find(EventSequenceNumber eventSequenceNumber) {
+    return (HandlingEvent) getSession().
+      createQuery("from HandlingEvent where sequenceNumber = :sn").
+      setParameter("sn", eventSequenceNumber).
+      uniqueResult();
+  }
+
+  @Override
   public void store(final HandlingEvent event) {
     getSession().save(event);
   }
 
   @Override
   public HandlingHistory lookupHandlingHistoryOfCargo(final Cargo cargo) {
-    final List handlingEvents = getSession().createQuery(
-      "from HandlingEvent where cargo.trackingId = :tid").
+    final List handlingEvents = getSession().
+      createQuery("from HandlingEvent where cargo.trackingId = :tid").
       setParameter("tid", cargo.trackingId()).
       list();
 
@@ -35,8 +44,8 @@ public class HandlingEventRepositoryHibernate extends HibernateRepository implem
 
   @Override
   public HandlingEvent mostRecentHandling(Cargo cargo) {
-      return (HandlingEvent) getSession().createQuery(
-        "from HandlingEvent where cargo = :cargo order by completionTime desc").
+      return (HandlingEvent) getSession().
+        createQuery("from HandlingEvent where cargo = :cargo order by completionTime desc").
         setParameter("cargo", cargo).
         setMaxResults(1).
         uniqueResult();

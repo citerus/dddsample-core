@@ -17,13 +17,13 @@ public interface ApplicationEvents {
    *
    * @param event handling event
    */
-  void cargoWasHandled(HandlingEvent event);
+  void notifyOfHandlingEvent(HandlingEvent event);
 
   /**
    * Cargo delivery has been updated.
    *
    * @param cargo cargo
    */
-  void cargoDeliveryWasUpdated(Cargo cargo);
+  void notifyOfCargoUpdate(Cargo cargo);
 
 }

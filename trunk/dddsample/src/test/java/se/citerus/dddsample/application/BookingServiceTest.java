@@ -3,10 +3,7 @@ package se.citerus.dddsample.application;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoFactory;
-import se.citerus.dddsample.domain.model.cargo.CargoRepository;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
@@ -21,12 +18,15 @@ public class BookingServiceTest extends TestCase {
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
   RoutingService routingService;
+  TrackingIdGenerator trackingIdGenerator;
 
   protected void setUp() throws Exception {
     cargoRepository = createMock(CargoRepository.class);
     locationRepository = createMock(LocationRepository.class);
     routingService = createMock(RoutingService.class);
-    bookingService = new BookingServiceImpl(routingService, new CargoFactory(cargoRepository, locationRepository), cargoRepository, locationRepository);
+    trackingIdGenerator = createMock(TrackingIdGenerator.class);
+    CargoFactory cargoFactory = new CargoFactory(locationRepository, trackingIdGenerator);
+    bookingService = new BookingServiceImpl(routingService, cargoFactory, cargoRepository, locationRepository);
   }
 
   public void testRegisterNew() {
@@ -34,19 +34,19 @@ public class BookingServiceTest extends TestCase {
     UnLocode fromUnlocode = new UnLocode("USCHI");
     UnLocode toUnlocode = new UnLocode("SESTO");
 
-    expect(cargoRepository.nextTrackingId()).andReturn(expectedTrackingId);
+    expect(trackingIdGenerator.nextTrackingId()).andReturn(expectedTrackingId);
     expect(locationRepository.find(fromUnlocode)).andReturn(CHICAGO);
     expect(locationRepository.find(toUnlocode)).andReturn(STOCKHOLM);
 
     cargoRepository.store(isA(Cargo.class));
 
-    replay(cargoRepository, locationRepository);
+    replay(cargoRepository, locationRepository, trackingIdGenerator);
 
     TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
     assertEquals(expectedTrackingId, trackingId);
   }
 
   protected void tearDown() throws Exception {
-    verify(cargoRepository, locationRepository);
+    verify(cargoRepository, locationRepository, trackingIdGenerator);
   }
 }

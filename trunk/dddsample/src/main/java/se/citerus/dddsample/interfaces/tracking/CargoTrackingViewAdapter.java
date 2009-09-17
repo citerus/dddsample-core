@@ -2,7 +2,6 @@ package se.citerus.dddsample.interfaces.tracking;
 
 import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.Delivery;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.shared.HandlingActivity;
@@ -60,16 +59,15 @@ public final class CargoTrackingViewAdapter {
    * @return A translated string describing the cargo status.
    */
   public String getStatusText() {
-    final Delivery delivery = cargo.delivery();
-    final String code = "cargo.status." + delivery.transportStatus().name();
+    final String code = "cargo.status." + cargo.transportStatus().name();
 
     final Object[] args;
-    switch (delivery.transportStatus()) {
+    switch (cargo.transportStatus()) {
       case IN_PORT:
-        args = new Object[]{getDisplayText(delivery.lastKnownLocation())};
+        args = new Object[]{getDisplayText(cargo.lastKnownLocation())};
         break;
       case ONBOARD_CARRIER:
-        args = new Object[]{delivery.currentVoyage().voyageNumber().stringValue()};
+        args = new Object[]{cargo.currentVoyage().voyageNumber().stringValue()};
         break;
       case CLAIMED:
       case NOT_RECEIVED:
@@ -104,7 +102,7 @@ public final class CargoTrackingViewAdapter {
   }
 
   public String getEta() {
-    Date eta = cargo.projections().estimatedTimeOfArrival();
+    Date eta = cargo.estimatedTimeOfArrival();
 
     if (eta == null) return "?";
     else {
@@ -116,7 +114,7 @@ public final class CargoTrackingViewAdapter {
   }
 
   public String getNextExpectedActivity() {
-    HandlingActivity activity = cargo.projections().nextExpectedActivity();
+    HandlingActivity activity = cargo.nextExpectedActivity();
     if (activity == null) {
       return "";
     }
@@ -140,7 +138,7 @@ public final class CargoTrackingViewAdapter {
    * @return True if cargo is misdirected.
    */
   public boolean isMisdirected() {
-    return cargo.delivery().isMisdirected();
+    return cargo.isMisdirected();
   }
 
   /**
@@ -195,7 +193,7 @@ public final class CargoTrackingViewAdapter {
      * @return True if the event was expected, according to the cargo's itinerary.
      */
     public boolean isExpected() {
-      return cargo.itinerary().isExpected(handlingEvent.handlingActivity());
+      return cargo.itinerary().isExpected(handlingEvent.activity());
     }
 
     public String getDescription() {

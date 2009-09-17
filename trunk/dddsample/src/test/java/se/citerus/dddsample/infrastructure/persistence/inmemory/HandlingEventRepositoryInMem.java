@@ -5,6 +5,7 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
+import se.citerus.dddsample.domain.model.shared.EventSequenceNumber;
 
 import java.util.*;
 
@@ -18,6 +19,19 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
       return o2.completionTime().compareTo(o1.completionTime());
     }
   };
+
+  @Override
+  public HandlingEvent find(EventSequenceNumber eventSequenceNumber) {
+    for (List<HandlingEvent> handlingEvents : eventMap.values()) {
+      for (HandlingEvent handlingEvent : handlingEvents) {
+        if (handlingEvent.sequenceNumber().sameValueAs(eventSequenceNumber)) {
+          return handlingEvent;
+        }
+      }
+    }
+
+    return null;
+  }
 
   @Override
   public void store(HandlingEvent event) {
