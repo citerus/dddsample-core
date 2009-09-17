@@ -10,7 +10,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
  * It may be implemented synchronously or asynchronously, using
  * for example JMS.
  */
-public interface ApplicationEvents {
+public interface SystemEvents {
 
   /**
    * A cargo has been handled.

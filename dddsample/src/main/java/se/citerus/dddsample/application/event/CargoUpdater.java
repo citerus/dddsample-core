@@ -12,15 +12,15 @@ import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 
 public class CargoUpdater {
 
-  private ApplicationEvents applicationEvents;
+  private SystemEvents systemEvents;
   private CargoRepository cargoRepository;
   private HandlingEventRepository handlingEventRepository;
   private final Log logger = LogFactory.getLog(getClass());
 
-  public CargoUpdater(final ApplicationEvents applicationEvents,
+  public CargoUpdater(final SystemEvents systemEvents,
                       final CargoRepository cargoRepository,
                       final HandlingEventRepository handlingEventRepository) {
-    this.applicationEvents = applicationEvents;
+    this.systemEvents = systemEvents;
     this.cargoRepository = cargoRepository;
     this.handlingEventRepository = handlingEventRepository;
   }
@@ -49,7 +49,7 @@ public class CargoUpdater {
     */
 
     cargoRepository.store(cargo);
-    applicationEvents.notifyOfCargoUpdate(cargo);
+    systemEvents.notifyOfCargoUpdate(cargo);
     logger.info("Updated delivery of cargo " + cargo);
   }
 
