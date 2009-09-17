@@ -1,4 +1,4 @@
-package se.citerus.dddsample.application;
+package se.citerus.dddsample.application.handling;
 
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
