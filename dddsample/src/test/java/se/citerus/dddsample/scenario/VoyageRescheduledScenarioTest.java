@@ -21,7 +21,7 @@ import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
+import se.citerus.dddsample.infrastructure.persistence.TrackingIdGeneratorInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
 import java.util.Date;
@@ -39,7 +39,7 @@ public class VoyageRescheduledScenarioTest {
     voyage1 = new Voyage(new VoyageNumber("V1"), HONGKONG_TO_NEW_YORK.schedule());
     voyage2 = new Voyage(new VoyageNumber("V2"), NEW_YORK_TO_DALLAS.schedule());
     voyage3 = new Voyage(new VoyageNumber("V3"), DALLAS_TO_HELSINKI.schedule());
-    CargoFactory cargoFactory = new CargoFactory(new CargoRepositoryInMem(), new LocationRepositoryInMem());
+    CargoFactory cargoFactory = new CargoFactory(new LocationRepositoryInMem(), new TrackingIdGeneratorInMem());
     cargo = cargoFactory.newCargo(HANGZOU.unLocode(), STOCKHOLM.unLocode(), toDate("2008-12-23"));
     Itinerary itinerary = new Itinerary(
       Leg.deriveLeg(voyage1, HANGZOU, NEWYORK),
@@ -51,7 +51,7 @@ public class VoyageRescheduledScenarioTest {
 
   @Test
   public void voyageIsRescheduledWithMaintainableRoute() {
-    assertThat(cargo.delivery().routingStatus(), is(ROUTED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
 
     Date oldDepartureTime = toDate("2008-10-24", "07:00");
 
@@ -73,18 +73,20 @@ public class VoyageRescheduledScenarioTest {
 
     // Now the cargo aggregate is updated to reflect the scheduling change!
     assertThat(cargo.itinerary().loadTimeAt(NEWYORK), is(newDepartureTime));
-    assertThat(cargo.delivery().routingStatus(), is(ROUTED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
   }
 
   @Test
   public void voyageIsRescheduledWithUnmaintainableRoute() {
-    assertThat(cargo.delivery().routingStatus(), is(ROUTED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
 
     // Voyage1 arrives in NYC at 2008-10-23 23:10
     // Now rescheduling the departure of voyage2 to BEFORE
     // voyage1 arrives in NYC. This makes it impossible to
     // keep the latter part of the old itinerary, and the new itinerary
     // is therefore truncated after unload in NYC.
+
+    // TODO delay the arrival instead of advancing the departure
 
     Date newDepartureTime = toDate("2008-10-23", "18:30");
     voyage2.departureRescheduled(NEWYORK, newDepartureTime);
@@ -93,9 +95,13 @@ public class VoyageRescheduledScenarioTest {
     Itinerary truncatedItinerary = cargo.itinerary().withRescheduledVoyage(voyage2);
     assertThat(truncatedItinerary.lastLeg().unloadLocation(), is(NEWYORK));
 
+    //Or... The Itinerary is created with an 'Illegal Connection' based on a coomparison of
+    //each transfer with a Location.minimumAllowedConnectionTime(). Since Loation is an entity
+    //we don't allow Itinerary to dynamically use the property directly because it is not immutable.
+    
     // The cargo enters MISROUTED state
     cargo.assignToRoute(truncatedItinerary);
-    assertThat(cargo.delivery().routingStatus(), is(MISROUTED));
+    assertThat(cargo.routingStatus(), is(MISROUTED));
   }
 
 }

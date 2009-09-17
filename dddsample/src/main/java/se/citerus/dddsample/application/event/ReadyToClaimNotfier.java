@@ -26,7 +26,11 @@ public class ReadyToClaimNotfier {
   public void alertIfReadyToClaim(final TrackingId trackingId) {
     final Cargo cargo = cargoRepository.find(trackingId);
                                                       
-    if (cargo.delivery().isUnloadedAtDestination()) {
+    if (cargo.isReadyToClaim()) {
+      /**
+       * At this point, a real system would probably send an email or SMS
+       * or something, but we simply log a message.
+       */
       LOG.info("Cargo " + cargo + " is ready to be claimed");
     }
   }

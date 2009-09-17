@@ -50,48 +50,48 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
     String handlingEventSql =
-      "insert into HandlingEvent (completionTime, registrationTime, type, location_id, voyage_id, cargo_id) " +
-        "values (?, ?, ?, ?, ?, ?)";
+      "insert into HandlingEvent (sequence_number, completionTime, registrationTime, type, location_id, voyage_id, cargo_id) " +
+        "values (?, ?, ?, ?, ?, ?, ?)";
 
     Object[][] handlingEventArgs = {
       //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
-      {ts(0), ts((0)), "RECEIVE", 1, null, 1},
-      {ts((4)), ts((5)), "LOAD", 1, 1, 1},
-      {ts((14)), ts((14)), "UNLOAD", 5, 1, 1},
-      {ts((15)), ts((15)), "LOAD", 5, 1, 1},
-      {ts((30)), ts((30)), "UNLOAD", 6, 1, 1},
-      {ts((33)), ts((33)), "LOAD", 6, 1, 1},
-      {ts((34)), ts((34)), "UNLOAD", 3, 1, 1},
-      {ts((60)), ts((60)), "LOAD", 3, 1, 1},
-      {ts((70)), ts((71)), "UNLOAD", 4, 1, 1},
-      {ts((75)), ts((75)), "LOAD", 4, 1, 1},
-      {ts((88)), ts((88)), "UNLOAD", 2, 1, 1},
-      {ts((100)), ts((102)), "CLAIM", 2, null, 1},
+      {1, ts(0), ts((0)), "RECEIVE", 1, null, 1},
+      {2, ts((4)), ts((5)), "LOAD", 1, 1, 1},
+      {3, ts((14)), ts((14)), "UNLOAD", 5, 1, 1},
+      {4, ts((15)), ts((15)), "LOAD", 5, 1, 1},
+      {5, ts((30)), ts((30)), "UNLOAD", 6, 1, 1},
+      {6, ts((33)), ts((33)), "LOAD", 6, 1, 1},
+      {7, ts((34)), ts((34)), "UNLOAD", 3, 1, 1},
+      {8, ts((60)), ts((60)), "LOAD", 3, 1, 1},
+      {9, ts((70)), ts((71)), "UNLOAD", 4, 1, 1},
+      {10, ts((75)), ts((75)), "LOAD", 4, 1, 1},
+      {11, ts((88)), ts((88)), "UNLOAD", 2, 1, 1},
+      {12, ts((100)), ts((102)), "CLAIM", 2, null, 1},
 
       //ZYX (AUMEL - USCHI - DEHAM -)
-      {ts((200)), ts((201)), "RECEIVE", 2, null, 3},
-      {ts((202)), ts((202)), "LOAD", 2, 2, 3},
-      {ts((208)), ts((208)), "UNLOAD", 7, 2, 3},
-      {ts((212)), ts((212)), "LOAD", 7, 2, 3},
-      {ts((230)), ts((230)), "UNLOAD", 6, 2, 3},
-      {ts((235)), ts((235)), "LOAD", 6, 2, 3},
+      {13, ts((200)), ts((201)), "RECEIVE", 2, null, 3},
+      {14, ts((202)), ts((202)), "LOAD", 2, 2, 3},
+      {15, ts((208)), ts((208)), "UNLOAD", 7, 2, 3},
+      {16, ts((212)), ts((212)), "LOAD", 7, 2, 3},
+      {17, ts((230)), ts((230)), "UNLOAD", 6, 2, 3},
+      {18, ts((235)), ts((235)), "LOAD", 6, 2, 3},
 
       //ABC
-      {ts((20)), ts((21)), "CLAIM", 2, null, 2},
+      {19, ts((20)), ts((21)), "CLAIM", 2, null, 2},
 
       //CBA
-      {ts((0)), ts((1)), "RECEIVE", 2, null, 4},
-      {ts((10)), ts((11)), "LOAD", 2, 2, 4},
-      {ts((20)), ts((21)), "UNLOAD", 7, 2, 4},
+      {20, ts((0)), ts((1)), "RECEIVE", 2, null, 4},
+      {21, ts((10)), ts((11)), "LOAD", 2, 2, 4},
+      {22, ts((20)), ts((21)), "UNLOAD", 7, 2, 4},
 
       //FGH
-      {ts(100), ts(160), "RECEIVE", 3, null, 5},
-      {ts(150), ts(110), "LOAD", 3, 3, 5},
+      {23, ts(100), ts(160), "RECEIVE", 3, null, 5},
+      {24, ts(150), ts(110), "LOAD", 3, 3, 5},
 
       // JKL
-      {ts(200), ts(220), "RECEIVE", 6, null, 6},
-      {ts(300), ts(330), "LOAD", 6, 3, 6},
-      {ts(400), ts(440), "UNLOAD", 5, 3, 6}  // Unexpected event
+      {25, ts(200), ts(220), "RECEIVE", 6, null, 6},
+      {26, ts(300), ts(330), "LOAD", 6, 3, 6},
+      {27, ts(400), ts(440), "UNLOAD", 5, 3, 6}  // Unexpected event
     };
     executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
   }
@@ -136,16 +136,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, transport_status, current_voyage_id, last_known_location_id, is_misdirected, routing_status, calculated_at, unloaded_at_dest) " +
-        "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, is_misdirected, routing_status, calculated_at, unloaded_at_dest) " +
+        "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 2, ts(10), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},
-      {2, "ABC", 1, 5, ts(20), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},
-      {3, "ZYX", 2, 1, ts(30), "IN_PORT", null, 1, false, "NOT_ROUTED", ts(100), false},
-      {4, "CBA", 5, 1, ts(40), "IN_PORT", null, 1, false, "MISROUTED", ts(100), false},
-      {5, "FGH", 3, 5, ts(50), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},  // Cargo origin differs from spec origin
-      {6, "JKL", 6, 4, ts(60), "IN_PORT", null, 1, true, "ROUTED", ts(100), false}
+      {1, "XYZ", 1, 2, ts(10), false, "ROUTED", ts(100), false},
+      {2, "ABC", 1, 5, ts(20), false, "ROUTED", ts(100), false},
+      {3, "ZYX", 2, 1, ts(30), false, "NOT_ROUTED", ts(100), false},
+      {4, "CBA", 5, 1, ts(40), false, "MISROUTED", ts(100), false},
+      {5, "FGH", 3, 5, ts(50), false, "ROUTED", ts(100), false},  // Cargo origin differs from spec origin
+      {6, "JKL", 6, 4, ts(60), true, "ROUTED", ts(100), false}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }
@@ -254,7 +254,7 @@ public class SampleDataGenerator implements ServletContextListener {
         }
 
         final HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(abc123);
-        abc123.handled(handlingEvent.handlingActivity());
+        abc123.handled(handlingEvent.activity());
         session.update(abc123);
 
         // Cargo JKL567
@@ -298,7 +298,7 @@ public class SampleDataGenerator implements ServletContextListener {
         }
 
         HandlingEvent handlingEvent1 = handlingEventRepository.mostRecentHandling(jkl567);
-        jkl567.handled(handlingEvent1.handlingActivity());
+        jkl567.handled(handlingEvent1.activity());
         session.update(jkl567);
       }
     });

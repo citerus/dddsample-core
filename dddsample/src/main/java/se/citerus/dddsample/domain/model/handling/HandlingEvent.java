@@ -5,6 +5,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.shared.EventSequenceNumber;
 import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainEvent;
@@ -31,7 +32,8 @@ import java.util.Date;
  */
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
-  private HandlingActivity handlingActivity;
+  private EventSequenceNumber sequenceNumber;
+  private HandlingActivity activity;
   private Date completionTime;
   private Date registrationTime;
   private Cargo cargo;
@@ -41,21 +43,24 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * association, it's never optional.
    */
   public enum Type implements ValueObject<Type> {
-    LOAD(true),
-    UNLOAD(true),
-    RECEIVE(false),
-    CLAIM(false),
-    CUSTOMS(false);
+    LOAD(true, true),
+    UNLOAD(true, true),
+    RECEIVE(false, true),
+    CLAIM(false, true),
+    CUSTOMS(false, false);
 
     private final boolean voyageRequired;
+    private final boolean physical;
 
     /**
      * Private enum constructor.
      *
      * @param voyageRequired whether or not a voyage is associated with this event type
+     * @param physical whether or not this event type is physical
      */
-    private Type(final boolean voyageRequired) {
+    private Type(final boolean voyageRequired, boolean physical) {
       this.voyageRequired = voyageRequired;
+      this.physical = physical;
     }
 
     /**
@@ -70,6 +75,13 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
      */
     public boolean prohibitsVoyage() {
       return !requiresVoyage();
+    }
+
+    /**
+     * @return True if this is a physical handling.
+     */
+    public boolean isPhysical() {
+      return physical;
     }
 
     @Override
@@ -104,10 +116,11 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
     }
 
-    this.completionTime = (Date) completionTime.clone();
-    this.registrationTime = (Date) registrationTime.clone();
+    this.sequenceNumber = EventSequenceNumber.next();
+    this.completionTime = new Date(completionTime.getTime());
+    this.registrationTime = new Date(registrationTime.getTime());
     this.cargo = cargo;
-    this.handlingActivity = new HandlingActivity(type, location, voyage);
+    this.activity = new HandlingActivity(type, location, voyage);
   }
 
   /**
@@ -133,22 +146,27 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
+    this.sequenceNumber = EventSequenceNumber.next();
     this.completionTime = new Date(completionTime.getTime());
     this.registrationTime = new Date(registrationTime.getTime());
     this.cargo = cargo;
-    this.handlingActivity = new HandlingActivity(type, location);
+    this.activity = new HandlingActivity(type, location);
   }
 
-  public HandlingActivity handlingActivity() {
-    return handlingActivity;
+  public EventSequenceNumber sequenceNumber() {
+    return sequenceNumber;
+  }
+
+  public HandlingActivity activity() {
+    return activity;
   }
 
   public Type type() {
-    return handlingActivity.type();
+    return activity.type();
   }
 
   public Voyage voyage() {
-    return DomainObjectUtils.nullSafe(handlingActivity.voyage(), Voyage.NONE);
+    return DomainObjectUtils.nullSafe(activity.voyage(), Voyage.NONE);
   }
 
   public Date completionTime() {
@@ -160,7 +178,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public Location location() {
-    return handlingActivity.location();
+    return activity.location();
   }
 
   public Cargo cargo() {
@@ -182,7 +200,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return other != null && new EqualsBuilder().
       append(this.cargo, other.cargo).
       append(this.completionTime, other.completionTime).
-      append(this.handlingActivity, other.handlingActivity).
+      append(this.activity, other.activity).
       isEquals();
   }
 
@@ -191,14 +209,14 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return new HashCodeBuilder().
       append(cargo).
       append(completionTime).
-      append(handlingActivity).
+      append(activity).
       toHashCode();
   }
 
   @Override
   public String toString() {
     return "Cargo: " + cargo +
-      "\nActivity: " + handlingActivity +
+      "\nActivity: " + activity +
       "\nCompleted on: " + completionTime +
       "\nRegistered on: " + registrationTime;
   }

@@ -1,6 +1,7 @@
 package se.citerus.dddsample.domain.model.handling;
 
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.shared.EventSequenceNumber;
 
 /**
  * Handling event repository.
@@ -8,12 +9,17 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 public interface HandlingEventRepository {
 
   /**
+   * @param eventSequenceNumber event sequence number
+   * @return The handling event with this sequence number, or null if not found
+   */
+  HandlingEvent find(EventSequenceNumber eventSequenceNumber);
+
+  /**
    * Stores a (new) handling event.
    *
    * @param event handling event to save
    */
   void store(HandlingEvent event);
-
 
   /**
    * @param cargo cargo
@@ -27,5 +33,4 @@ public interface HandlingEventRepository {
    * @return The most recent handling of the cargo, or null if it has never been handled.
    */
   HandlingEvent mostRecentHandling(Cargo cargo);
-
 }

@@ -65,7 +65,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
     assertEquals(cargo, handlingEvent.cargo());
     assertEquals(toDate("2007-09-27", "05:00"), handlingEvent.completionTime());
-    assertEquals(new HandlingActivity(HandlingEvent.Type.CLAIM, MELBOURNE), handlingEvent.handlingActivity());
+    assertEquals(new HandlingActivity(HandlingEvent.Type.CLAIM, MELBOURNE), handlingEvent.activity());
   }
 
 }

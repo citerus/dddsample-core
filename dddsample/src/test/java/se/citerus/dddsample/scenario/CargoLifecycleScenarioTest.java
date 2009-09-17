@@ -23,6 +23,7 @@ import static se.citerus.dddsample.domain.model.voyage.Voyage.NONE;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.domain.service.RoutingService;
+import se.citerus.dddsample.infrastructure.persistence.TrackingIdGeneratorInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
@@ -44,11 +45,11 @@ public class CargoLifecycleScenarioTest {
   VoyageRepository voyageRepository = new VoyageRepositoryInMem();
 
   HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
-  CargoFactory cargoFactory = new CargoFactory(cargoRepository, locationRepository);
+  CargoFactory cargoFactory = new CargoFactory(locationRepository, new TrackingIdGeneratorInMem());
 
   /**
    * This is a domain service interface, whose implementation
-   * is part of the infrastructure layer (remote call to external system).
+   * is part of the infrastructure layer (re mote call to external system).
    * <p/>
    * It is stubbed in this test.
    */
@@ -98,11 +99,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterUnloadInLongBeach() {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(LONGBEACH));
-    assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertFalse(cargo.delivery().isMisdirected());
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(LOAD, LONGBEACH, v250)));
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, LONGBEACH, v250)));
   }
 
   private void loadInLongBeach() throws CannotCreateHandlingEventException {
@@ -112,11 +113,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterLoadInLongBeach() {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().currentVoyage(), is(v250));
-    assertThat(cargo.delivery().lastKnownLocation(), is(LONGBEACH));
-    assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
-    assertFalse(cargo.delivery().isMisdirected());
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, NEWYORK, v250)));
+    assertThat(cargo.currentVoyage(), is(v250));
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, NEWYORK, v250)));
   }
 
   private void unloadInNewYork() throws CannotCreateHandlingEventException {
@@ -126,11 +127,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterUnloadInNewYork() {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(NEWYORK));
-    assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(LOAD, NEWYORK, v200)));
-    assertFalse(cargo.delivery().isMisdirected());
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(NEWYORK));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, NEWYORK, v200)));
+    assertFalse(cargo.isMisdirected());
   }
 
   private void loadInNewYork() throws CannotCreateHandlingEventException {
@@ -140,11 +141,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterLoadInNewYork() {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().currentVoyage(), is(v200));
-    assertThat(cargo.delivery().lastKnownLocation(), is(NEWYORK));
-    assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
-    assertFalse(cargo.delivery().isMisdirected());
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, STOCKHOLM, v200)));
+    assertThat(cargo.currentVoyage(), is(v200));
+    assertThat(cargo.lastKnownLocation(), is(NEWYORK));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, STOCKHOLM, v200)));
   }
 
   @Test
@@ -211,20 +212,20 @@ public class CargoLifecycleScenarioTest {
   public void checkDeliveryAfterBooking() throws Exception {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().transportStatus(), is(NOT_RECEIVED));
-    assertThat(cargo.delivery().routingStatus(), is(NOT_ROUTED));
-    assertFalse(cargo.delivery().isMisdirected());
-    assertNull(cargo.projections().estimatedTimeOfArrival());
-    assertNull(cargo.projections().nextExpectedActivity());
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(NOT_ROUTED));
+    assertFalse(cargo.isMisdirected());
+    assertNull(cargo.estimatedTimeOfArrival());
+    assertNull(cargo.nextExpectedActivity());
   }
 
   public void checkDeliveryAfterRouting() throws Exception {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().transportStatus(), is(NOT_RECEIVED));
-    assertThat(cargo.delivery().routingStatus(), is(ROUTED));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(RECEIVE, HONGKONG)));
-    assertNotNull(cargo.projections().estimatedTimeOfArrival());
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(RECEIVE, HONGKONG)));
+    assertNotNull(cargo.estimatedTimeOfArrival());
   }
 
   public void receiveInHongkong() throws CannotCreateHandlingEventException {
@@ -233,8 +234,8 @@ public class CargoLifecycleScenarioTest {
 
   private void checkDeliveryAfterReceiveInHongkong() {
     Cargo cargo = cargoRepository.find(trackingId);
-    assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertThat(cargo.delivery().lastKnownLocation(), is(HONGKONG));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
   }
 
   public void loadInHongkong() throws CannotCreateHandlingEventException {
@@ -245,11 +246,11 @@ public class CargoLifecycleScenarioTest {
     // Check current state - should be ok
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.delivery().currentVoyage(), is(v100));
-    assertThat(cargo.delivery().lastKnownLocation(), is(HONGKONG));
-    assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, LONGBEACH, v100)));
-    assertFalse(cargo.delivery().isMisdirected());
+    assertThat(cargo.currentVoyage(), is(v100));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, LONGBEACH, v100)));
+    assertFalse(cargo.isMisdirected());
   }
 
   public void unloadInTokyo() throws CannotCreateHandlingEventException {
@@ -260,11 +261,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterUnloadInTokyo() {
     Cargo cargo = cargoRepository.find(trackingId);
     // Check current state - cargo is misdirected!
-    assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(TOKYO));
-    assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertTrue(cargo.delivery().isMisdirected());
-    assertNull(cargo.projections().nextExpectedActivity());
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(TOKYO));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertTrue(cargo.isMisdirected());
+    assertNull(cargo.nextExpectedActivity());
   }
 
   public void specifyNewRouteFromTokyoToStockholm() {
@@ -281,8 +282,8 @@ public class CargoLifecycleScenarioTest {
     Cargo cargo = cargoRepository.find(trackingId);
 
     // The old itinerary does not satisfy the new specification
-    assertThat(cargo.delivery().routingStatus(), is(MISROUTED));
-    assertNull(cargo.projections().nextExpectedActivity());
+    assertThat(cargo.routingStatus(), is(MISROUTED));
+    assertNull(cargo.nextExpectedActivity());
   }
 
   public void assignToNewRouteFromTokyoToStockholm() {
@@ -300,9 +301,9 @@ public class CargoLifecycleScenarioTest {
     Cargo cargo = cargoRepository.find(trackingId);
 
     // New itinerary should satisfy new route
-    assertThat(cargo.delivery().routingStatus(), is(ROUTED));
-    assertFalse(cargo.delivery().isMisdirected());
-    assertEquals(new HandlingActivity(LOAD, TOKYO, v300), cargo.projections().nextExpectedActivity());
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertFalse(cargo.isMisdirected());
+    assertEquals(new HandlingActivity(LOAD, TOKYO, v300), cargo.nextExpectedActivity());
   }
 
   public void loadInTokyo() throws CannotCreateHandlingEventException {
@@ -312,11 +313,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterLoadInTokyo() {
     Cargo cargo = cargoRepository.find(trackingId);
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage(), is(v300));
-    assertThat(cargo.delivery().lastKnownLocation(), is(TOKYO));
-    assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, HAMBURG, v300)));
-    assertFalse(cargo.delivery().isMisdirected());
+    assertThat(cargo.currentVoyage(), is(v300));
+    assertThat(cargo.lastKnownLocation(), is(TOKYO));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, HAMBURG, v300)));
+    assertFalse(cargo.isMisdirected());
   }
 
   public void unloadInHamburg() throws CannotCreateHandlingEventException {
@@ -327,11 +328,11 @@ public class CargoLifecycleScenarioTest {
     Cargo cargo = cargoRepository.find(trackingId);
     // Check current state - should be ok
 
-    assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(HAMBURG));
-    assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(LOAD, HAMBURG, v400)));
-    assertFalse(cargo.delivery().isMisdirected());
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(HAMBURG));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, HAMBURG, v400)));
+    assertFalse(cargo.isMisdirected());
   }
 
   public void loadInHamburg() throws CannotCreateHandlingEventException {
@@ -342,11 +343,11 @@ public class CargoLifecycleScenarioTest {
     Cargo cargo = cargoRepository.find(trackingId);
     // Check current state - should be ok
 
-    assertThat(cargo.delivery().currentVoyage(), is(v400));
-    assertThat(cargo.delivery().lastKnownLocation(), is(HAMBURG));
-    assertThat(cargo.delivery().transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(UNLOAD, STOCKHOLM, v400)));
-    assertFalse(cargo.delivery().isMisdirected());
+    assertThat(cargo.currentVoyage(), is(v400));
+    assertThat(cargo.lastKnownLocation(), is(HAMBURG));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, STOCKHOLM, v400)));
+    assertFalse(cargo.isMisdirected());
   }
 
   public void unloadInStockholmOffOf(Voyage voyage) throws CannotCreateHandlingEventException {
@@ -356,11 +357,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterUnloadInStockholm() {
     Cargo cargo = cargoRepository.find(trackingId);
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(STOCKHOLM));
-    assertThat(cargo.delivery().transportStatus(), is(IN_PORT));
-    assertThat(cargo.projections().nextExpectedActivity(), is(new HandlingActivity(CLAIM, STOCKHOLM)));
-    assertFalse(cargo.delivery().isMisdirected());
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(CLAIM, STOCKHOLM)));
+    assertFalse(cargo.isMisdirected());
   }
 
   private void claimInStockholm() throws CannotCreateHandlingEventException {
@@ -370,11 +371,11 @@ public class CargoLifecycleScenarioTest {
   private void checkDeliveryAfterClaimInStockholm() {
     Cargo cargo = cargoRepository.find(trackingId);
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage(), is(NONE));
-    assertThat(cargo.delivery().lastKnownLocation(), is(STOCKHOLM));
-    assertThat(cargo.delivery().transportStatus(), is(CLAIMED));
-    assertFalse(cargo.delivery().isMisdirected());
-    assertNull(cargo.projections().nextExpectedActivity());
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
+    assertThat(cargo.transportStatus(), is(CLAIMED));
+    assertFalse(cargo.isMisdirected());
+    assertNull(cargo.nextExpectedActivity());
   }
 
   private void createHandlingEventAndUpdateAggregates(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
@@ -391,7 +392,7 @@ public class CargoLifecycleScenarioTest {
   private void updateCargoAggregate() {
     Cargo cargo = cargoRepository.find(trackingId);
     HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
-    cargo.handled(handlingEvent.handlingActivity());
+    cargo.handled(handlingEvent.activity());
     cargoRepository.store(cargo);
   }
 

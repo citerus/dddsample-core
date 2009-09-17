@@ -48,7 +48,7 @@ public class HandlingEventServiceTest extends TestCase {
     expect(voyageRepository.find(CM001.voyageNumber())).andReturn(CM001);
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
     handlingEventRepository.store(isA(HandlingEvent.class));
-    applicationEvents.cargoWasHandled(isA(HandlingEvent.class));
+    applicationEvents.notifyOfHandlingEvent(isA(HandlingEvent.class));
 
     replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
 

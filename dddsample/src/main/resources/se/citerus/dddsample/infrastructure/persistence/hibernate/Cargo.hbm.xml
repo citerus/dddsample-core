@@ -30,25 +30,27 @@
     </component>
 
     <component name="delivery" lazy="true">
-      <property name="misdirected" column="is_misdirected" not-null="true"/>
       <property name="calculatedAt" column="calculated_at" not-null="true"/>
-      <property name="isUnloadedAtDestination" column="unloaded_at_dest" not-null="true"/>
 
+      <property name="misdirected" column="is_misdirected" not-null="true"/>
       <property name="routingStatus" column="routing_status" not-null="true">
         <type name="org.hibernate.type.EnumType">
           <param name="enumClass">se.citerus.dddsample.domain.model.cargo.RoutingStatus</param>
           <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
         </type>
       </property>
+      <property name="isUnloadedAtDestination" column="unloaded_at_dest" not-null="true"/>
 
-      <property name="transportStatus" column="transport_status" not-null="true">
-        <type name="org.hibernate.type.EnumType">
-          <param name="enumClass">se.citerus.dddsample.domain.model.cargo.TransportStatus</param>
-          <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
-        </type>
-      </property>
-      <many-to-one name="currentVoyage" column="current_voyage_id" not-null="false" cascade="none" foreign-key="current_voyage_fk"/>
-      <many-to-one name="lastKnownLocation" column="last_known_location_id" not-null="false" cascade="none" foreign-key="last_known_location_fk"/>
+      <component name="mostRecentHandlingActivity">
+        <many-to-one name="location" column="most_recent_location_id" foreign-key="most_recent_location_fk" cascade="none"/>
+        <property name="type" column="most_recent_handling_event_type">
+          <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">se.citerus.dddsample.domain.model.handling.HandlingEvent$Type</param>
+            <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
+          </type>
+        </property>
+        <many-to-one name="voyage" column="most_recent_voyage_id" foreign-key="most_recent_voyage_fk" cascade="none"/>
+      </component>
     </component>
 
     <component name="routeSpecification">

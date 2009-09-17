@@ -14,16 +14,16 @@ import java.util.Date;
 
 public class CargoFactory {
 
-  private final CargoRepository cargoRepository;
   private final LocationRepository locationRepository;
+  private final TrackingIdGenerator trackingIdGenerator;
 
-  public CargoFactory(CargoRepository cargoRepository, LocationRepository locationRepository) {
-    this.cargoRepository = cargoRepository;
+  public CargoFactory(LocationRepository locationRepository, TrackingIdGenerator trackingIdGenerator) {
     this.locationRepository = locationRepository;
+    this.trackingIdGenerator = trackingIdGenerator;
   }
 
   public Cargo newCargo(UnLocode originUnLocode, UnLocode destinationUnLocode, Date arrivalDeadline) {
-    final TrackingId trackingId = cargoRepository.nextTrackingId();
+    final TrackingId trackingId = trackingIdGenerator.nextTrackingId();
     final Location origin = locationRepository.find(originUnLocode);
     final Location destination = locationRepository.find(destinationUnLocode);
     final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);

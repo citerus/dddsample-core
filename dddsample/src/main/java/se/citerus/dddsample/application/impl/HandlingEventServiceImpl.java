@@ -37,6 +37,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
                                     final VoyageNumber voyageNumber,
                                     final UnLocode unLocode,
                                     final HandlingEvent.Type type) throws CannotCreateHandlingEventException {
+
     final Date registrationTime = new Date();
     /* Using a factory to create a HandlingEvent (aggregate). This is where
        it is determined wether the incoming data, the attempt, actually is capable
@@ -52,7 +53,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     handlingEventRepository.store(event);
 
     /* Publish an event stating that a cargo has been handled. */
-    applicationEvents.cargoWasHandled(event);
+    applicationEvents.notifyOfHandlingEvent(event);
 
     logger.info("Registered handling event");
   }

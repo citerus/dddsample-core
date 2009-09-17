@@ -7,7 +7,6 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Hibernate implementation of CargoRepository.
@@ -15,6 +14,7 @@ import java.util.UUID;
 @Repository
 public class CargoRepositoryHibernate extends HibernateRepository implements CargoRepository {
 
+  @Override
   public Cargo find(TrackingId tid) {
     return (Cargo) getSession().
       createQuery("from Cargo where trackingId = :tid").
@@ -33,21 +33,15 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
       list();
   }
 
+  @Override
   public void store(Cargo cargo) {
     getSession().saveOrUpdate(cargo);
     // Delete-orphan does not seem to work correctly when the parent is a component
     getSession().createSQLQuery("delete from Leg where cargo_id = null").executeUpdate();
   }
 
-  public TrackingId nextTrackingId() {
-    // TODO use an actual DB sequence here, UUID is for in-mem
-    final String random = UUID.randomUUID().toString().toUpperCase();
-    return new TrackingId(
-      random.substring(0, random.indexOf("-"))
-    );
-  }
-
   @SuppressWarnings("unchecked")
+  @Override
   public List<Cargo> findAll() {
     return getSession().createQuery("from Cargo").list();
   }

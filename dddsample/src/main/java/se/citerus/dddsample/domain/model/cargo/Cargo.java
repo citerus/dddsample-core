@@ -2,12 +2,14 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.CustomsZone;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.shared.HandlingActivity;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.Entity;
+
+import java.util.Date;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -59,7 +61,7 @@ public class Cargo implements Entity<Cargo> {
     this.trackingId = trackingId;
     this.routeSpecification = routeSpecification;
     this.delivery = Delivery.initial(routeSpecification, itinerary);
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
+    this.projections = new Projections(delivery, itinerary);
   }
 
   /**
@@ -69,13 +71,6 @@ public class Cargo implements Entity<Cargo> {
    */
   public TrackingId trackingId() {
     return trackingId;
-  }
-
-  /**
-   * @return The delivery. Never null.
-   */
-  public Delivery delivery() {
-    return delivery;
   }
 
   /**
@@ -92,11 +87,32 @@ public class Cargo implements Entity<Cargo> {
     return routeSpecification;
   }
 
-  /**
-   * @return The projections for this cargo.
-   */
-  public Projections projections() {
-    return projections;
+  public Date estimatedTimeOfArrival() {
+    return projections.estimatedTimeOfArrival();
+  }
+
+  public HandlingActivity nextExpectedActivity() {
+    return projections.nextExpectedActivity();
+  }
+
+  public boolean isMisdirected() {
+    return delivery.isMisdirected();
+  }
+
+  public TransportStatus transportStatus() {
+    return delivery.transportStatus();
+  }
+
+  public RoutingStatus routingStatus() {
+    return delivery.routingStatus();
+  }
+
+  public Voyage currentVoyage() {
+    return delivery.currentVoyage();
+  }
+
+  public Location lastKnownLocation() {
+    return delivery.lastKnownLocation();
   }
 
   /**
@@ -109,8 +125,8 @@ public class Cargo implements Entity<Cargo> {
 
     this.routeSpecification = routeSpecification;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.withRoutingChange(this.routeSpecification, this.itinerary);
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
+    this.delivery = delivery.withRoutingChange(routeSpecification, itinerary);
+    this.projections = new Projections(delivery, itinerary);
   }
 
   /**
@@ -123,8 +139,8 @@ public class Cargo implements Entity<Cargo> {
 
     this.itinerary = itinerary;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.withRoutingChange(this.routeSpecification, this.itinerary);
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
+    this.delivery = delivery.withRoutingChange(routeSpecification, itinerary);
+    this.projections = new Projections(delivery, itinerary);
   }
 
   public CustomsZone customsZone() {
@@ -134,6 +150,10 @@ public class Cargo implements Entity<Cargo> {
 
   public Location customsClearancePoint() {
     return customsZone().entryPoint(itinerary.locations());
+  }
+
+  public boolean isReadyToClaim() {
+    return delivery.isUnloadedAtDestination();
   }
 
   /**
@@ -146,30 +166,17 @@ public class Cargo implements Entity<Cargo> {
    * <p/>
    * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
    * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
-   * but changes to the delivery history (when a cargo is handled) cause the status update
-   * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
+   * but handling cause the status update to happen <b>asynchronously</b>
+   * since {@link HandlingEvent} is in a different aggregate.
    *
-   * @param handlingHistory handling history
+   * @param handlingActivity handling activity
    */
-  // TODO Under migration, this method will be removed and replaced with the handled() method
-  public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
-    Validate.isTrue(this.sameIdentityAs(handlingHistory.cargo()),
-      "Handling history must refer to this cargo, " + this + ". " +
-        "Given handlig history refers to cargo " + handlingHistory.cargo());
-
-    final HandlingEvent handlingEvent = handlingHistory.mostRecentPhysicalHandling();
-    if (handlingEvent != null) {
-      HandlingActivity handlingActivity = handlingEvent.handlingActivity();
-      handled(handlingActivity);
-    }
-  }
-
   public void handled(final HandlingActivity handlingActivity) {
     Validate.notNull(handlingActivity, "Handling activity is required");
 
     // Delivery and Projections are value object, so they are replaced with new or derived ones
     this.delivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    this.projections = new Projections(delivery, itinerary, routeSpecification, handlingActivity);
+    this.projections = new Projections(delivery, itinerary);
   }
 
   @Override

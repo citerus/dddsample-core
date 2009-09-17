@@ -4,7 +4,7 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-public class CarrierMovementRepositoryTest extends AbstractRepositoryTest {
+public class VoyageRepositoryTest extends AbstractRepositoryTest {
 
   VoyageRepository voyageRepository;
 

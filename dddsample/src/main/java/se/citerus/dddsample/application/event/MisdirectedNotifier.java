@@ -27,7 +27,7 @@ public class MisdirectedNotifier {
   public void alertIfMisdirected(final TrackingId trackingId) {
     final Cargo cargo = cargoRepository.find(trackingId);
 
-    if (cargo.delivery().isMisdirected()) {
+    if (cargo.isMisdirected()) {
       LOG.info("Cargo " + cargo + " is misdirected!");
     }
   }
