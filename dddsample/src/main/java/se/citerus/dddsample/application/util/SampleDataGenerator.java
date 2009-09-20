@@ -25,7 +25,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -136,16 +135,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, is_misdirected, routing_status, calculated_at, unloaded_at_dest) " +
-        "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, calculated_at) " +
+        "values (?, ?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 2, ts(10), false, "ROUTED", ts(100), false},
-      {2, "ABC", 1, 5, ts(20), false, "ROUTED", ts(100), false},
-      {3, "ZYX", 2, 1, ts(30), false, "NOT_ROUTED", ts(100), false},
-      {4, "CBA", 5, 1, ts(40), false, "MISROUTED", ts(100), false},
-      {5, "FGH", 3, 5, ts(50), false, "ROUTED", ts(100), false},  // Cargo origin differs from spec origin
-      {6, "JKL", 6, 4, ts(60), true, "ROUTED", ts(100), false}
+      {1, "XYZ", 1, 2, ts(10), ts(100)},
+      {2, "ABC", 1, 5, ts(20), ts(100)},
+      {3, "ZYX", 2, 1, ts(30), ts(100)},
+      {4, "CBA", 5, 1, ts(40), ts(100)},
+      {5, "FGH", 3, 5, ts(50), ts(100)},  // Cargo origin differs from spec origin
+      {6, "JKL", 6, 4, ts(60), ts(100)}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }
@@ -187,7 +186,6 @@ public class SampleDataGenerator implements ServletContextListener {
 
   public void contextInitialized(ServletContextEvent event) {
     WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext());
-    DataSource dataSource = (DataSource) BeanFactoryUtils.beanOfType(context, DataSource.class);
     PlatformTransactionManager transactionManager = (PlatformTransactionManager) BeanFactoryUtils.beanOfType(context, PlatformTransactionManager.class);
     TransactionTemplate tt = new TransactionTemplate(transactionManager);
     //loadSampleData(new JdbcTemplate(dataSource), tt);
@@ -202,6 +200,7 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   private <T> T getBean(WebApplicationContext context, Class<T> cls) {
+    //noinspection unchecked
     return (T) BeanFactoryUtils.beanOfType(context, cls);
   }
 

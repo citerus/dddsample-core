@@ -1,11 +1,11 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.shared.HandlingActivity;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.*;
@@ -176,7 +176,7 @@ public class Itinerary implements ValueObject<Itinerary> {
    * @return A list of all locations on this itinerary.
    */
   public List<Location> locations() {
-    final List<Location> result = new ArrayList<Location>();
+    final List<Location> result = new ArrayList<Location>(legs.size() + 1);
     result.add(firstLeg().loadLocation());
     for (Leg leg : legs) {
       result.add(leg.unloadLocation());
@@ -245,5 +245,6 @@ public class Itinerary implements ValueObject<Itinerary> {
   }
 
   // Auto-generated surrogate key
+  @SuppressWarnings("UnusedDeclaration")
   private Long id;
 }
