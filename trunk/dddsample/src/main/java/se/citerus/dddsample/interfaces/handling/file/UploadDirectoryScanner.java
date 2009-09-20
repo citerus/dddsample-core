@@ -48,6 +48,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
   }
 
   private void parse(final File file) throws IOException {
+    @SuppressWarnings("unchecked")
     final List<String> lines = FileUtils.readLines(file);
     final List<String> rejectedLines = new ArrayList<String>();
     for (String line : lines) {
@@ -120,9 +121,11 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
       throw new Exception("Upload and parse failed directories must not be the same directory: " + uploadDirectory);
     }
     if (!uploadDirectory.exists()) {
+      //noinspection ResultOfMethodCallIgnored
       uploadDirectory.mkdirs();
     }
     if (!parseFailureDirectory.exists()) {
+      //noinspection ResultOfMethodCallIgnored
       parseFailureDirectory.mkdirs();
     }
   }

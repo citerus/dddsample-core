@@ -31,9 +31,9 @@ public class CargoUpdater {
     final HandlingActivity activity = handlingEvent.activity();
     final Cargo cargo = handlingEvent.cargo();
 
-    // TODO create domain events and deal with them as a result of the handling
     cargo.handled(activity);
 
+    // TODO create domain events and deal with them as a result of the handling
     /*
     Here's an idea:
 
@@ -50,7 +50,7 @@ public class CargoUpdater {
 
     cargoRepository.store(cargo);
     systemEvents.notifyOfCargoUpdate(cargo);
-    logger.info("Updated delivery of cargo " + cargo);
+    logger.info("Updated cargo " + cargo);
   }
 
   CargoUpdater() {

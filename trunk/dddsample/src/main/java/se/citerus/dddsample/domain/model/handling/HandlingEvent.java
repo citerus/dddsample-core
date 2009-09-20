@@ -49,32 +49,25 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     CLAIM(false, true),
     CUSTOMS(false, false);
 
-    private final boolean voyageRequired;
+    private final boolean voyageRelated;
     private final boolean physical;
 
     /**
      * Private enum constructor.
      *
-     * @param voyageRequired whether or not a voyage is associated with this event type
+     * @param voyageRelated whether or not a voyage is associated with this event type
      * @param physical whether or not this event type is physical
      */
-    private Type(final boolean voyageRequired, boolean physical) {
-      this.voyageRequired = voyageRequired;
+    private Type(final boolean voyageRelated, final boolean physical) {
+      this.voyageRelated = voyageRelated;
       this.physical = physical;
     }
 
     /**
      * @return True if a voyage association is required for this event type.
      */
-    public boolean requiresVoyage() {
-      return voyageRequired;
-    }
-
-    /**
-     * @return True if a voyage association is prohibited for this event type.
-     */
-    public boolean prohibitsVoyage() {
-      return !requiresVoyage();
+    public boolean isVoyageRelated() {
+      return voyageRelated;
     }
 
     /**
@@ -99,6 +92,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param location         where the event took place
    * @param voyage           the voyage
    */
+  // TODO make package local
   public HandlingEvent(final Cargo cargo,
                        final Date completionTime,
                        final Date registrationTime,
@@ -112,14 +106,14 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     Validate.notNull(location, "Location is required");
     Validate.notNull(voyage, "Voyage is required");
 
-    if (type.prohibitsVoyage()) {
+    if (!type.isVoyageRelated()) {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
     }
 
     this.sequenceNumber = EventSequenceNumber.next();
+    this.cargo = cargo;
     this.completionTime = new Date(completionTime.getTime());
     this.registrationTime = new Date(registrationTime.getTime());
-    this.cargo = cargo;
     this.activity = new HandlingActivity(type, location, voyage);
   }
 
@@ -142,7 +136,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     Validate.notNull(type, "Handling event type is required");
     Validate.notNull(location, "Location is required");
 
-    if (type.requiresVoyage()) {
+    if (type.isVoyageRelated()) {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
@@ -227,6 +221,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
 
   // Auto-generated surrogate key
+  @SuppressWarnings("UnusedDeclaration")
   private Long id;
 
 }

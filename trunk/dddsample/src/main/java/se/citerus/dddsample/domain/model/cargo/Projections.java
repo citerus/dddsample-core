@@ -24,9 +24,9 @@ class Projections implements ValueObject<Projections> {
   private static final Date ETA_UNKOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;
 
-  Projections(final Delivery delivery, final Itinerary itinerary) {
-    this.estimatedTimeOfArrival = calculateEstimatedTimeOfArrival(delivery, itinerary);
-    this.nextExpectedActivity = calculateNextExpectedActivity(delivery, itinerary);
+  Projections(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
+    this.estimatedTimeOfArrival = calculateEstimatedTimeOfArrival(delivery, itinerary, routeSpecification);
+    this.nextExpectedActivity = calculateNextExpectedActivity(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -47,18 +47,18 @@ class Projections implements ValueObject<Projections> {
     return nextExpectedActivity;
   }
 
-  private Date calculateEstimatedTimeOfArrival(final Delivery delivery, final Itinerary itinerary) {
-    if (delivery.onTrack()) {
+  private Date calculateEstimatedTimeOfArrival(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
+    if (delivery.onTrack(itinerary, routeSpecification)) {
       return itinerary.finalUnloadTime();
     } else {
       return ETA_UNKOWN;
     }
   }
 
-  private HandlingActivity calculateNextExpectedActivity(final Delivery delivery, final Itinerary itinerary) {
+  private HandlingActivity calculateNextExpectedActivity(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
 
     /*
-     Capture:
+     TODO Capture:
 
      Cargo is misdirected but has been rerouted. Next expected acivity should be to load according to first leg
      of new itinerary.
@@ -68,7 +68,9 @@ class Projections implements ValueObject<Projections> {
      even if a cargo is misdirected, we expect it to be unloaded at next stop.
 
     */
-    if (!delivery.onTrack()) return NO_ACTIVITY;
+    if (!delivery.onTrack(itinerary, routeSpecification)) {
+      return NO_ACTIVITY;
+    }
 
     final Location lastKnownLocation = delivery.lastKnownLocation();
     switch (delivery.transportStatus()) {

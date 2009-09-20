@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -12,10 +11,8 @@ import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class CargoTest extends TestCase {
 
@@ -206,8 +203,6 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isMisdirected());
 
     //Happy path
-    List<HandlingEvent> events = new ArrayList<HandlingEvent>();
-
     cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
     cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
     cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));

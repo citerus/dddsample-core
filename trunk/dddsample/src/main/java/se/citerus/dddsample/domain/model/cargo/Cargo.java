@@ -60,8 +60,8 @@ public class Cargo implements Entity<Cargo> {
 
     this.trackingId = trackingId;
     this.routeSpecification = routeSpecification;
-    this.delivery = Delivery.initial(routeSpecification, itinerary);
-    this.projections = new Projections(delivery, itinerary);
+    this.delivery = Delivery.initial();
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -96,7 +96,7 @@ public class Cargo implements Entity<Cargo> {
   }
 
   public boolean isMisdirected() {
-    return delivery.isMisdirected();
+    return delivery.isMisdirected(itinerary, routeSpecification);
   }
 
   public TransportStatus transportStatus() {
@@ -104,7 +104,7 @@ public class Cargo implements Entity<Cargo> {
   }
 
   public RoutingStatus routingStatus() {
-    return delivery.routingStatus();
+    return delivery.routingStatus(itinerary, routeSpecification);
   }
 
   public Voyage currentVoyage() {
@@ -125,8 +125,7 @@ public class Cargo implements Entity<Cargo> {
 
     this.routeSpecification = routeSpecification;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.withRoutingChange(routeSpecification, itinerary);
-    this.projections = new Projections(delivery, itinerary);
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -139,8 +138,7 @@ public class Cargo implements Entity<Cargo> {
 
     this.itinerary = itinerary;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.withRoutingChange(routeSpecification, itinerary);
-    this.projections = new Projections(delivery, itinerary);
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   public CustomsZone customsZone() {
@@ -153,7 +151,7 @@ public class Cargo implements Entity<Cargo> {
   }
 
   public boolean isReadyToClaim() {
-    return delivery.isUnloadedAtDestination();
+    return delivery.isUnloadedAtDestination(routeSpecification);
   }
 
   /**
@@ -175,8 +173,8 @@ public class Cargo implements Entity<Cargo> {
     Validate.notNull(handlingActivity, "Handling activity is required");
 
     // Delivery and Projections are value object, so they are replaced with new or derived ones
-    this.delivery = delivery.whenHandled(routeSpecification, itinerary, handlingActivity);
-    this.projections = new Projections(delivery, itinerary);
+    this.delivery = Delivery.whenHandled(handlingActivity);
+    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   @Override
@@ -216,5 +214,7 @@ public class Cargo implements Entity<Cargo> {
   }
 
   // Auto-generated surrogate key
+  @SuppressWarnings("UnusedDeclaration")
   private Long id;
+  
 }
