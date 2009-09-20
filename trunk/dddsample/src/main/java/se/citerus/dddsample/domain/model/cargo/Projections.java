@@ -75,7 +75,7 @@ class Projections implements ValueObject<Projections> {
     final Location lastKnownLocation = delivery.lastKnownLocation();
     switch (delivery.transportStatus()) {
       case IN_PORT:
-        if (itinerary.firstLeg().loadLocation().sameIdentityAs(lastKnownLocation)) {
+        if (itinerary.firstLeg().loadLocation().sameAs(lastKnownLocation)) {
           return loadInFirstLocation(itinerary);
         } else {
           return loadOrClaimInNextLocation(itinerary, lastKnownLocation);
@@ -106,7 +106,7 @@ class Projections implements ValueObject<Projections> {
   private HandlingActivity loadOrClaimInNextLocation(final Itinerary itinerary, final Location activityLocation) {
     for (final Iterator<Leg> it = itinerary.legs().iterator(); it.hasNext();) {
       final Leg leg = it.next();
-      if (leg.unloadLocation().sameIdentityAs(activityLocation)) {
+      if (leg.unloadLocation().sameAs(activityLocation)) {
         if (it.hasNext()) {
           final Leg nextLeg = it.next();
 
@@ -126,7 +126,7 @@ class Projections implements ValueObject<Projections> {
 
   private HandlingActivity unloadInNextLocation(final Itinerary itinerary, final Location activityLocation) {
     for (final Leg leg : itinerary.legs()) {
-      if (leg.loadLocation().sameIdentityAs(activityLocation)) {
+      if (leg.loadLocation().sameAs(activityLocation)) {
         return new HandlingActivity(UNLOAD, leg.unloadLocation(), leg.voyage());
       }
     }

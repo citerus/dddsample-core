@@ -54,7 +54,7 @@ public class Voyage implements Entity<Voyage> {
     final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>(size);
 
     for (CarrierMovement carrierMovement : schedule.carrierMovements()) {
-      if (carrierMovement.departureLocation().sameIdentityAs(location)) {
+      if (carrierMovement.departureLocation().sameAs(location)) {
         carrierMovements.add(carrierMovement.withDepartureTime(newDepartureTime));
       } else {
         carrierMovements.add(carrierMovement);
@@ -77,11 +77,11 @@ public class Voyage implements Entity<Voyage> {
 
     final Voyage that = (Voyage) o;
 
-    return sameIdentityAs(that);
+    return sameAs(that);
   }
 
   @Override
-  public boolean sameIdentityAs(Voyage other) {
+  public boolean sameAs(Voyage other) {
     return other != null && this.voyageNumber().sameValueAs(other.voyageNumber());
   }
 
