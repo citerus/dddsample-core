@@ -83,11 +83,11 @@ public final class Location implements Entity<Location> {
       return false;
     }
     Location other = (Location) object;
-    return sameIdentityAs(other);
+    return sameAs(other);
   }
 
   @Override
-  public boolean sameIdentityAs(final Location other) {
+  public boolean sameAs(final Location other) {
     return this.unLocode.sameValueAs(other.unLocode);
   }
 

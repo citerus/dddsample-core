@@ -39,7 +39,7 @@ public class Schedule implements ValueObject<Schedule> {
    */
   public Date departureTimeAt(final Location location) {
     for (CarrierMovement movement : carrierMovements) {
-      if (movement.departureLocation().sameIdentityAs(location)) {
+      if (movement.departureLocation().sameAs(location)) {
         return movement.departureTime();
       }
     }
@@ -52,7 +52,7 @@ public class Schedule implements ValueObject<Schedule> {
    */
   public Date arrivalTimeAt(final Location location) {
     for (CarrierMovement movement : carrierMovements) {
-      if (movement.arrivalLocation().sameIdentityAs(location)) {
+      if (movement.arrivalLocation().sameAs(location)) {
         return movement.arrivalTime();
       }
     }

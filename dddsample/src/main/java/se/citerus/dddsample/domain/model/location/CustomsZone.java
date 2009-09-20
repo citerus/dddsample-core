@@ -108,7 +108,7 @@ public class CustomsZone implements Entity<CustomsZone> {
   }
 
   @Override
-  public boolean sameIdentityAs(CustomsZone other) {
+  public boolean sameAs(CustomsZone other) {
     return code.equals(other.code);
   }
 
@@ -117,7 +117,7 @@ public class CustomsZone implements Entity<CustomsZone> {
   }
 
   public boolean includes(Location location) {
-    return this.sameIdentityAs(location.customsZone());
+    return this.sameAs(location.customsZone());
   }
 
 

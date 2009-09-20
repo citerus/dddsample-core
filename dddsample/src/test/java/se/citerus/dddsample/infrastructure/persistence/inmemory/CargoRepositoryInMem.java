@@ -37,7 +37,7 @@ public class CargoRepositoryInMem implements CargoRepository {
   public List<Cargo> findCargosOnVoyage(Voyage voyage) {
     List<Cargo> onVoyage = new ArrayList<Cargo>();
     for (Cargo cargo : cargoDb.values()) {
-      if (voyage.sameIdentityAs(cargo.currentVoyage())) {
+      if (voyage.sameAs(cargo.currentVoyage())) {
         onVoyage.add(cargo);
       }
     }
