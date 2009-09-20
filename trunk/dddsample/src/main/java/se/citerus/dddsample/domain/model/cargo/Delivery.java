@@ -5,9 +5,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
@@ -95,7 +93,7 @@ public class Delivery implements ValueObject<Delivery> {
       return false;
     }
 
-    if (mostRecentHandlingActivity.type().sameValueAs(HandlingEvent.Type.CUSTOMS)) {
+    if (CUSTOMS.sameValueAs(mostRecentHandlingActivity.type())) {
       return !routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
     } else {
       return !itinerary.isExpected(mostRecentHandlingActivity);

@@ -166,7 +166,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     for (Cargo cargo : cargos) {
       boolean found = false;
       for (Leg leg : cargo.itinerary().legs()) {
-        if (leg.voyage().sameIdentityAs(voyage)) {
+        if (leg.voyage().sameAs(voyage)) {
           found = true;
         }
       }

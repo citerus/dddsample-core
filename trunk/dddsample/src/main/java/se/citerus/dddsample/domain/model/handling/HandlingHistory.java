@@ -43,7 +43,7 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
 
     while (it.hasNext()) {
       final Cargo nextCargo = it.next().cargo();
-      Validate.isTrue(firstCargo.sameIdentityAs(nextCargo),
+      Validate.isTrue(firstCargo.sameAs(nextCargo),
         "A handling history can only contain handling events for a unique cargo. " +
           "First event is for cargo " + firstCargo + ", also discovered cargo " + nextCargo
       );
