@@ -96,7 +96,7 @@ public class Delivery implements ValueObject<Delivery> {
     }
 
     if (mostRecentHandlingActivity.type().sameValueAs(HandlingEvent.Type.CUSTOMS)) {
-      return !routeSpecification.destination().sameIdentityAs(mostRecentHandlingActivity.location());
+      return !routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
     } else {
       return !itinerary.isExpected(mostRecentHandlingActivity);
     }
@@ -109,7 +109,7 @@ public class Delivery implements ValueObject<Delivery> {
   boolean isUnloadedAtDestination(final RouteSpecification routeSpecification) {
     return mostRecentHandlingActivity != null &&
           (CLAIM.sameValueAs(mostRecentHandlingActivity.type()) || UNLOAD.sameValueAs(mostRecentHandlingActivity.type()) &&
-           routeSpecification.destination().sameIdentityAs(mostRecentHandlingActivity.location()));
+           routeSpecification.destination().sameAs(mostRecentHandlingActivity.location()));
   }
 
   /**

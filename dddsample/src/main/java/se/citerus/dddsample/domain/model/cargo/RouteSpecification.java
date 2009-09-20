@@ -4,13 +4,10 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.location.SampleLocations;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.shared.AbstractSpecification;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
-import java.lang.reflect.Field;
 
 /**
  * Route specification. Describes where a cargo orign and destination is,
@@ -31,7 +28,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     Validate.notNull(origin, "Origin is required");
     Validate.notNull(destination, "Destination is required");
     Validate.notNull(arrivalDeadline, "Arrival deadline is required");
-    Validate.isTrue(!origin.sameIdentityAs(destination), "Origin and destination can't be the same: " + origin);
+    Validate.isTrue(!origin.sameAs(destination), "Origin and destination can't be the same: " + origin);
 
     this.origin = origin;
     this.destination = destination;
@@ -86,8 +83,8 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   @Override
   public boolean isSatisfiedBy(final Itinerary itinerary) {
     return itinerary != null &&
-      origin().sameIdentityAs(itinerary.initialLoadLocation()) &&
-      destination().sameIdentityAs(itinerary.finalUnloadLocation()) &&
+      origin().sameAs(itinerary.initialLoadLocation()) &&
+      destination().sameAs(itinerary.finalUnloadLocation()) &&
       arrivalDeadline().after(itinerary.finalUnloadTime());
   }
 

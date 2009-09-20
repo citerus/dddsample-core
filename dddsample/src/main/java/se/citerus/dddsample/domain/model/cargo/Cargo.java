@@ -178,14 +178,14 @@ public class Cargo implements Entity<Cargo> {
   }
 
   @Override
-  public boolean sameIdentityAs(final Cargo other) {
+  public boolean sameAs(final Cargo other) {
     return other != null && trackingId().sameValueAs(other.trackingId());
   }
 
   /**
    * @param object to compare
    * @return True if they have the same identity
-   * @see #sameIdentityAs(Cargo)
+   * @see #sameAs(Cargo)
    */
   @Override
   public boolean equals(final Object object) {
@@ -193,7 +193,7 @@ public class Cargo implements Entity<Cargo> {
     if (object == null || getClass() != object.getClass()) return false;
 
     final Cargo other = (Cargo) object;
-    return sameIdentityAs(other);
+    return sameAs(other);
   }
 
   /**
@@ -216,5 +216,5 @@ public class Cargo implements Entity<Cargo> {
   // Auto-generated surrogate key
   @SuppressWarnings("UnusedDeclaration")
   private Long id;
-  
+
 }

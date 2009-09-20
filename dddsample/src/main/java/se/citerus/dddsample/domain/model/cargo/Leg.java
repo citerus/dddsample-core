@@ -27,7 +27,7 @@ public class Leg implements ValueObject<Leg> {
     Validate.notNull(unloadLocation, "Unload location is required");
     Validate.notNull(loadTime, "Load time is required");
     Validate.notNull(unloadTime, "Unload time is required");
-    Validate.isTrue(!loadLocation.sameIdentityAs(unloadLocation));
+    Validate.isTrue(!loadLocation.sameAs(unloadLocation));
     // TODO use a minimum time between unloading and loading?
     //Validate.isTrue(unloadTime.after(loadTime));
 

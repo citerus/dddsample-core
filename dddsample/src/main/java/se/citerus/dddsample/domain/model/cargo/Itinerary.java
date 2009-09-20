@@ -65,8 +65,8 @@ public class Itinerary implements ValueObject<Itinerary> {
     if (handlingActivity.type() == HandlingEvent.Type.LOAD) {
       //Check that the there is a leg with same load location and voyage
       for (Leg leg : legs) {
-        if (leg.loadLocation().sameIdentityAs(handlingActivity.location()) &&
-          leg.voyage().sameIdentityAs(handlingActivity.voyage()))
+        if (leg.loadLocation().sameAs(handlingActivity.location()) &&
+          leg.voyage().sameAs(handlingActivity.voyage()))
           return true;
       }
       return false;
@@ -75,8 +75,8 @@ public class Itinerary implements ValueObject<Itinerary> {
     if (handlingActivity.type() == HandlingEvent.Type.UNLOAD) {
       //Check that the there is a leg with same unload location and voyage
       for (Leg leg : legs) {
-        if (leg.unloadLocation().sameIdentityAs(handlingActivity.location()) &&
-          leg.voyage().sameIdentityAs(handlingActivity.voyage()))
+        if (leg.unloadLocation().sameAs(handlingActivity.location()) &&
+          leg.voyage().sameAs(handlingActivity.voyage()))
           return true;
       }
       return false;
@@ -155,7 +155,7 @@ public class Itinerary implements ValueObject<Itinerary> {
 
     Leg lastAdded = null;
     for (Leg leg : this.legs) {
-      if (leg.voyage().sameIdentityAs(rescheduledVoyage)) {
+      if (leg.voyage().sameAs(rescheduledVoyage)) {
         Leg modifiedLeg = leg.withRescheduledVoyage(rescheduledVoyage);
         // This truncates the itinerary if the voyage rescheduling makes
         // it impossible to maintain the old unload-load chain.
@@ -190,7 +190,7 @@ public class Itinerary implements ValueObject<Itinerary> {
    */
   public Date loadTimeAt(final Location location) {
     for (Leg leg : legs) {
-      if (leg.loadLocation().sameIdentityAs(location)) {
+      if (leg.loadLocation().sameAs(location)) {
         return leg.loadTime();
       }
     }
@@ -203,7 +203,7 @@ public class Itinerary implements ValueObject<Itinerary> {
    */
   public Date unloadTimeAt(final Location location) {
     for (Leg leg : legs) {
-      if (leg.unloadLocation().sameIdentityAs(location)) {
+      if (leg.unloadLocation().sameAs(location)) {
         return leg.unloadTime();
       }
     }
