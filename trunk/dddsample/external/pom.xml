@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>se.citerus.dddsample</groupId>
+  <artifactId>external</artifactId>
+  <parent>
+    <groupId>se.citerus</groupId>
+    <artifactId>dddsample</artifactId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+  <modules>
+    <module>ila</module>
+    <module>reporting</module>
+    <module>pathfinder</module>
+    <module>pathfinder-api</module>
+    <module>aggregator</module>
+  </modules>
+  <packaging>pom</packaging>
+  <name>External</name>
+  <version>1.2-SNAPSHOT</version>
+  <description>External components</description>
+  <build>
+    <defaultGoal>package</defaultGoal>
+  </build>
+</project>
