@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
+        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+  <!-- JMS messaging -->
+
+  <amq:connectionFactory id="jmsConnectionFactory" brokerURL="vm://localhost?broker.persistent=false&amp;broker.useJmx=false"/>
+
+  <amq:queue id="cargoHandledQueue" name="CargoHandledQueue" physicalName="CargoHandledQueue"/>
+  <amq:topic id="cargoUpdateTopic" name="CargUpdateTopic" physicalName="CargoUpdateTopic"/>
+
+  <jms:listener-container connection-factory="jmsConnectionFactory">
+    <jms:listener destination="CargoHandledQueue" ref="listener3"/>
+    <jms:listener destination="CargoUpdateTopic" ref="listener1"/>
+    <jms:listener destination="CargoUpdateTopic" ref="listener2"/>
+  </jms:listener-container>
+
+  <bean id="jmsOperations" class="org.springframework.jms.core.JmsTemplate">
+    <property name="connectionFactory" ref="jmsConnectionFactory"/>
+  </bean>
+
+  <bean id="applicationEvents" class="se.citerus.dddsample.tracking.core.infrastructure.messaging.jms.JmsSystemEventsImpl">
+    <property name="jmsOperations" ref="jmsOperations"/>
+    <property name="cargoHandledDestination" ref="cargoHandledQueue"/>
+    <property name="cargoUpdateDestination" ref="cargoUpdateTopic"/>
+  </bean>
+
+  <bean id="listener1" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <constructor-arg ref="misdirectedNotifier"/>
+    <property name="defaultListenerMethod" value="alertIfMisdirected"/>
+  </bean>
+
+  <bean id="listener2" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <constructor-arg ref="readyToClaimNotfier"/>
+    <property name="defaultListenerMethod" value="alertIfReadyToClaim"/>
+  </bean>
+
+  <bean id="listener3" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <constructor-arg ref="cargoUpdater"/>
+    <property name="defaultListenerMethod" value="updateCargo"/>
+  </bean>
+
+</beans>

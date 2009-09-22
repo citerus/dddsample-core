@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>se.citerus.dddsample.tracking</groupId>
+  <artifactId>bookingui</artifactId>
+  <parent>
+    <groupId>se.citerus.dddsample</groupId>
+    <artifactId>tracking</artifactId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+  <packaging>war</packaging>
+  <name>Tracking context: Booking UI</name>
+  <version>${project.parent.version}</version>
+  <description>Booking UI</description>
+  <dependencies>
+    <dependency>
+      <groupId>se.citerus.dddsample.tracking</groupId>
+      <artifactId>booking-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>opensymphony</groupId>
+      <artifactId>sitemesh</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <defaultGoal>package</defaultGoal>
+  </build>
+</project>

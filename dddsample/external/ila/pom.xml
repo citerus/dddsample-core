@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>se.citerus.dddsample.external</groupId>
+  <artifactId>ila</artifactId>
+  <parent>
+    <groupId>se.citerus.dddsample</groupId>
+    <artifactId>external</artifactId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+  <packaging>jar</packaging>
+  <name>External: Incident logging application</name>
+  <version>${project.parent.version}</version>
+  <description>Incident logging application</description>
+  <dependencies>
+    <dependency>
+      <groupId>se.citerus.dddsample.external</groupId>
+      <artifactId>aggregator</artifactId>
+      <version>${project.version}</version>  
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>forms</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>looks</artifactId>
+      <version>2.1.2</version>
+    </dependency>
+  </dependencies>
+</project>

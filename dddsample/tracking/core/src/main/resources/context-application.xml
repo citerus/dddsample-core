@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!--context:component-scan base-package="se.citerus.dddsample"/>
+  <context:annotation-config/-->
+
+  <bean id="bookingService" class="se.citerus.dddsample.tracking.core.application.booking.BookingServiceImpl">
+    <constructor-arg ref="cargoFactory"/>
+    <constructor-arg ref="routingService"/>
+    <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="locationRepository"/>
+  </bean>
+
+  <bean id="cargoUpdater" class="se.citerus.dddsample.tracking.core.application.event.CargoUpdater">
+    <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="applicationEvents"/>
+    <constructor-arg ref="handlingEventRepository"/>
+  </bean>
+
+  <bean id="handlingEventService" class="se.citerus.dddsample.tracking.core.application.handling.HandlingEventServiceImpl">
+    <constructor-arg ref="handlingEventRepository"/>
+    <constructor-arg ref="handlingEventFactory"/>
+    <constructor-arg ref="applicationEvents"/>
+  </bean>
+
+  <bean id="misdirectedNotifier" class="se.citerus.dddsample.tracking.core.application.event.MisdirectedNotifier">
+    <constructor-arg ref="cargoRepository"/>
+  </bean>
+
+  <bean id="readyToClaimNotfier" class="se.citerus.dddsample.tracking.core.application.event.ReadyToClaimNotfier">
+    <constructor-arg ref="cargoRepository"/>
+  </bean>
+
+</beans>
