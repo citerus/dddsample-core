@@ -1,9 +1,5 @@
-package se.citerus.dddsample.tracking.core.interfaces.booking.facade.internal;
+package se.citerus.dddsample.tracking.core.interfaces.booking.facade;
 
-import se.citerus.dddsample.tracking.booking.api.BookingServiceFacade;
-import se.citerus.dddsample.tracking.booking.api.dto.CargoRoutingDTO;
-import se.citerus.dddsample.tracking.booking.api.dto.LocationDTO;
-import se.citerus.dddsample.tracking.booking.api.dto.RouteCandidateDTO;
 import se.citerus.dddsample.tracking.core.application.booking.BookingService;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
@@ -13,14 +9,16 @@ import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
-import se.citerus.dddsample.tracking.core.interfaces.booking.facade.internal.assembler.CargoRoutingDTOAssembler;
-import se.citerus.dddsample.tracking.core.interfaces.booking.facade.internal.assembler.ItineraryCandidateDTOAssembler;
-import se.citerus.dddsample.tracking.core.interfaces.booking.facade.internal.assembler.LocationDTOAssembler;
+import static se.citerus.dddsample.tracking.core.interfaces.booking.facade.DTOAssembler.*;
+import se.citerus.dddsample.temp.BookingServiceFacade;
+import se.citerus.dddsample.temp.LocationDTO;
+import se.citerus.dddsample.temp.CargoRoutingDTO;
+import se.citerus.dddsample.temp.RouteCandidateDTO;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -30,16 +28,23 @@ import java.util.List;
  */
 public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
-  private BookingService bookingService;
-  private LocationRepository locationRepository;
-  private CargoRepository cargoRepository;
-  private VoyageRepository voyageRepository;
+  private final BookingService bookingService;
+  private final LocationRepository locationRepository;
+  private final CargoRepository cargoRepository;
+  private final VoyageRepository voyageRepository;
+
+  public BookingServiceFacadeImpl(final BookingService bookingService, final LocationRepository locationRepository,
+                                  final CargoRepository cargoRepository, final VoyageRepository voyageRepository) {
+    this.bookingService = bookingService;
+    this.locationRepository = locationRepository;
+    this.cargoRepository = cargoRepository;
+    this.voyageRepository = voyageRepository;
+  }
 
   @Override
   public List<LocationDTO> listShippingLocations() {
     final List<Location> allLocations = locationRepository.findAll();
-    final LocationDTOAssembler assembler = new LocationDTOAssembler();
-    return assembler.toDTOList(allLocations);
+    return toDTOList(allLocations);
   }
 
   @Override
@@ -55,13 +60,12 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   @Override
   public CargoRoutingDTO loadCargoForRouting(String trackingId) {
     final Cargo cargo = bookingService.loadCargoForRouting(new TrackingId(trackingId));
-    final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
-    return assembler.toDTO(cargo);
+    return toDTO(cargo);
   }
 
   @Override
   public void assignCargoToRoute(String trackingIdStr, RouteCandidateDTO routeCandidateDTO) {
-    final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(routeCandidateDTO, voyageRepository, locationRepository);
+    final Itinerary itinerary = fromDTO(routeCandidateDTO, voyageRepository, locationRepository);
     final TrackingId trackingId = new TrackingId(trackingIdStr);
 
     bookingService.assignCargoToRoute(itinerary, trackingId);
@@ -76,9 +80,8 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   public List<CargoRoutingDTO> listAllCargos() {
     final List<Cargo> cargoList = cargoRepository.findAll();
     final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(cargoList.size());
-    final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     for (Cargo cargo : cargoList) {
-      dtoList.add(assembler.toDTO(cargo));
+      dtoList.add(toDTO(cargo));
     }
     return dtoList;
   }
@@ -88,27 +91,11 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     final List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
 
     final List<RouteCandidateDTO> routeCandidates = new ArrayList<RouteCandidateDTO>(itineraries.size());
-    final ItineraryCandidateDTOAssembler dtoAssembler = new ItineraryCandidateDTOAssembler();
     for (Itinerary itinerary : itineraries) {
-      routeCandidates.add(dtoAssembler.toDTO(itinerary));
+      routeCandidates.add(toDTO(itinerary));
     }
 
     return routeCandidates;
   }
 
-  public void setBookingService(BookingService bookingService) {
-    this.bookingService = bookingService;
-  }
-
-  public void setLocationRepository(LocationRepository locationRepository) {
-    this.locationRepository = locationRepository;
-  }
-
-  public void setCargoRepository(CargoRepository cargoRepository) {
-    this.cargoRepository = cargoRepository;
-  }
-
-  public void setVoyageRepository(VoyageRepository voyageRepository) {
-    this.voyageRepository = voyageRepository;
-  }
 }

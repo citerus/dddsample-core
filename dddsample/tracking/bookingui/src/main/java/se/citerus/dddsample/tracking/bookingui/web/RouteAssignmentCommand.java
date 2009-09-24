@@ -2,6 +2,7 @@ package se.citerus.dddsample.tracking.bookingui.web;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
+import static org.apache.commons.collections.ListUtils.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,9 +11,9 @@ import java.util.List;
 public class RouteAssignmentCommand {
 
   private String trackingId;
-  private List<LegCommand> legs = ListUtils.lazyList(
-    new ArrayList(), LegCommand.factory()
-  );
+
+  @SuppressWarnings("unchecked")
+  private List<LegCommand> legs = lazyList(new ArrayList<LegCommand>(), LegCommand.factory());
 
   public String getTrackingId() {
     return trackingId;
