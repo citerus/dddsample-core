@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.booking.api.dto;
+package se.citerus.dddsample.temp;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,14 +26,16 @@ public final class CargoRoutingDTO implements Serializable {
    * @param finalDestination
    * @param arrivalDeadline
    * @param misrouted
+   * @param legs
    */
-  public CargoRoutingDTO(String trackingId, String origin, String finalDestination, Date arrivalDeadline, boolean misrouted) {
+  public CargoRoutingDTO(final String trackingId, final String origin, final String finalDestination,
+                         final Date arrivalDeadline, final boolean misrouted, final List<LegDTO> legs) {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
     this.arrivalDeadline = arrivalDeadline;
     this.misrouted = misrouted;
-    this.legs = new ArrayList<LegDTO>();
+    this.legs = legs;
   }
 
   public String getTrackingId() {
@@ -46,10 +48,6 @@ public final class CargoRoutingDTO implements Serializable {
 
   public String getFinalDestination() {
     return finalDestination;
-  }
-
-  public void addLeg(String voyageNumber, String from, String to, Date loadTime, Date unloadTime) {
-    legs.add(new LegDTO(voyageNumber, from, to, loadTime, unloadTime));
   }
 
   /**

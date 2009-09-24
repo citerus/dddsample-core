@@ -64,15 +64,15 @@
     </property>
   </bean>
 
-  <bean id="bookingServiceFacadeTarget" class="se.citerus.dddsample.tracking.core.interfaces.booking.facade.internal.BookingServiceFacadeImpl">
-    <property name="bookingService" ref="bookingService"/>
-    <property name="cargoRepository" ref="cargoRepository"/>
-    <property name="locationRepository" ref="locationRepository"/>
-    <property name="voyageRepository" ref="voyageRepository"/>
+  <bean id="bookingServiceFacadeTarget" class="se.citerus.dddsample.tracking.core.interfaces.booking.facade.BookingServiceFacadeImpl">
+    <constructor-arg ref="bookingService"/>
+    <constructor-arg ref="locationRepository"/>
+    <constructor-arg ref="cargoRepository"/>
+    <constructor-arg ref="voyageRepository"/>
   </bean>
   
   <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
-    <property name="serviceInterface" value="se.citerus.dddsample.tracking.booking.api.BookingServiceFacade"/>
+    <property name="serviceInterface" value="se.citerus.dddsample.temp.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
     <property name="serviceName" value="BookingService"/>
   </bean>

@@ -1,8 +1,4 @@
-package se.citerus.dddsample.tracking.booking.api;
-
-import se.citerus.dddsample.tracking.booking.api.dto.CargoRoutingDTO;
-import se.citerus.dddsample.tracking.booking.api.dto.LocationDTO;
-import se.citerus.dddsample.tracking.booking.api.dto.RouteCandidateDTO;
+package se.citerus.dddsample.temp;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
