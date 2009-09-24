@@ -5,7 +5,7 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingHistory;
-import se.citerus.dddsample.tracking.core.domain.model.shared.EventSequenceNumber;
+import se.citerus.dddsample.tracking.core.domain.model.handling.EventSequenceNumber;
 
 import java.util.List;
 

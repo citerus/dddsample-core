@@ -8,6 +8,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLoc
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.service.RoutingService;
+import se.citerus.dddsample.tracking.core.domain.service.TrackingIdGenerator;
 
 import java.util.Date;
 
