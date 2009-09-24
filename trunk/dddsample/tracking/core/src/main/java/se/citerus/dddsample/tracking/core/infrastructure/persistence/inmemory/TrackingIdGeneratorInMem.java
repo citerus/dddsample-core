@@ -4,7 +4,7 @@
  * @created 2009-sep-07
  * $Id$
  */
-package se.citerus.dddsample.tracking.core.infrastructure.persistence;
+package se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory;
 
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingIdGenerator;

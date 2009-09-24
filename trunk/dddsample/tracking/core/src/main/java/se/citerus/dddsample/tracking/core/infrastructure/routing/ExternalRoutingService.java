@@ -28,12 +28,20 @@ import java.util.Properties;
  */
 public class ExternalRoutingService implements RoutingService {
 
-  private GraphTraversalService graphTraversalService;
-  private LocationRepository locationRepository;
-  private VoyageRepository voyageRepository;
+  private final GraphTraversalService graphTraversalService;
+  private final LocationRepository locationRepository;
+  private final VoyageRepository voyageRepository;
   private static final Log log = LogFactory.getLog(ExternalRoutingService.class);
 
-  public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
+  public ExternalRoutingService(final GraphTraversalService graphTraversalService,
+                                final LocationRepository locationRepository,
+                                final VoyageRepository voyageRepository) {
+    this.graphTraversalService = graphTraversalService;
+    this.locationRepository = locationRepository;
+    this.voyageRepository = voyageRepository;
+  }
+
+  public List<Itinerary> fetchRoutesForSpecification(final RouteSpecification routeSpecification) {
     /*
       The RouteSpecification is picked apart and adapted to the external API.
      */
@@ -81,25 +89,13 @@ public class ExternalRoutingService implements RoutingService {
     return new Itinerary(legs);
   }
 
-  private Leg toLeg(TransitEdge edge) {
+  private Leg toLeg(final TransitEdge edge) {
     return new Leg(
       voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
       locationRepository.find(new UnLocode(edge.getFromUnLocode())),
       locationRepository.find(new UnLocode(edge.getToUnLocode())),
       edge.getFromDate(), edge.getToDate()
     );
-  }
-
-  public void setGraphTraversalService(GraphTraversalService graphTraversalService) {
-    this.graphTraversalService = graphTraversalService;
-  }
-
-  public void setLocationRepository(LocationRepository locationRepository) {
-    this.locationRepository = locationRepository;
-  }
-
-  public void setVoyageRepository(VoyageRepository voyageRepository) {
-    this.voyageRepository = voyageRepository;
   }
 
 }

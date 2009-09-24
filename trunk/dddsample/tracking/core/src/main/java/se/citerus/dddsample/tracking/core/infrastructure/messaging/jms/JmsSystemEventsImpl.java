@@ -16,9 +16,15 @@ import javax.jms.Session;
  */
 public final class JmsSystemEventsImpl implements SystemEvents {
 
-  private JmsOperations jmsOperations;
-  private Destination cargoHandledDestination;
-  private Destination cargoUpdateDestination;
+  private final JmsOperations jmsOperations;
+  private final Destination cargoHandledDestination;
+  private final Destination cargoUpdateDestination;
+
+  public JmsSystemEventsImpl(final JmsOperations jmsOperations, final Destination cargoHandledDestination, final Destination cargoUpdateDestination) {
+    this.jmsOperations = jmsOperations;
+    this.cargoHandledDestination = cargoHandledDestination;
+    this.cargoUpdateDestination = cargoUpdateDestination;
+  }
 
   @Override
   public void notifyOfHandlingEvent(final HandlingEvent event) {
@@ -33,22 +39,10 @@ public final class JmsSystemEventsImpl implements SystemEvents {
   @Override
   public void notifyOfCargoUpdate(final Cargo cargo) {
     jmsOperations.send(cargoUpdateDestination, new MessageCreator() {
-      public Message createMessage(Session session) throws JMSException {
+      public Message createMessage(final Session session) throws JMSException {
         return session.createObjectMessage(cargo.trackingId());
       }
     });
-  }
-
-  public void setJmsOperations(JmsOperations jmsOperations) {
-    this.jmsOperations = jmsOperations;
-  }
-
-  public void setCargoHandledDestination(Destination cargoHandledDestination) {
-    this.cargoHandledDestination = cargoHandledDestination;
-  }
-
-  public void setCargoUpdateDestination(Destination cargoUpdateDestination) {
-    this.cargoUpdateDestination = cargoUpdateDestination;
   }
 
 }
