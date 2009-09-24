@@ -1,4 +1,4 @@
-package se.citerus.dddsample.temp;
+package se.citerus.dddsample.tracking.booking.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -10,10 +10,10 @@ import se.citerus.dddsample.tracking.core.domain.model.location.LocationReposito
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import static se.citerus.dddsample.tracking.core.interfaces.booking.facade.DTOAssembler.*;
-import se.citerus.dddsample.temp.BookingServiceFacade;
-import se.citerus.dddsample.temp.LocationDTO;
-import se.citerus.dddsample.temp.CargoRoutingDTO;
-import se.citerus.dddsample.temp.RouteCandidateDTO;
+import se.citerus.dddsample.tracking.booking.api.BookingServiceFacade;
+import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
+import se.citerus.dddsample.tracking.booking.api.LocationDTO;
+import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
 
 import java.rmi.RemoteException;
 import java.util.Date;

@@ -10,10 +10,10 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
-import se.citerus.dddsample.temp.LegDTO;
-import se.citerus.dddsample.temp.CargoRoutingDTO;
-import se.citerus.dddsample.temp.RouteCandidateDTO;
-import se.citerus.dddsample.temp.LocationDTO;
+import se.citerus.dddsample.tracking.booking.api.LegDTO;
+import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
+import se.citerus.dddsample.tracking.booking.api.LocationDTO;
+import se.citerus.dddsample.tracking.booking.api.*;
 
 import java.util.Date;
 import java.util.Arrays;

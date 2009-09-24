@@ -72,7 +72,7 @@
   </bean>
   
   <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
-    <property name="serviceInterface" value="se.citerus.dddsample.temp.BookingServiceFacade"/>
+    <property name="serviceInterface" value="se.citerus.dddsample.tracking.booking.api.BookingServiceFacade"/>
     <property name="service" ref="bookingServiceFacade"/>
     <property name="serviceName" value="BookingService"/>
   </bean>

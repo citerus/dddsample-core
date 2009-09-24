@@ -3,7 +3,7 @@ package se.citerus.dddsample.tracking.bookingui.web;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-import se.citerus.dddsample.temp.*;
+import se.citerus.dddsample.tracking.booking.api.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
