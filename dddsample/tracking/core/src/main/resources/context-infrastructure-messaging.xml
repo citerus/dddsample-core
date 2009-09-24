@@ -27,9 +27,9 @@
   </bean>
 
   <bean id="applicationEvents" class="se.citerus.dddsample.tracking.core.infrastructure.messaging.jms.JmsSystemEventsImpl">
-    <property name="jmsOperations" ref="jmsOperations"/>
-    <property name="cargoHandledDestination" ref="cargoHandledQueue"/>
-    <property name="cargoUpdateDestination" ref="cargoUpdateTopic"/>
+    <constructor-arg ref="jmsOperations"/>
+    <constructor-arg ref="cargoHandledQueue"/>
+    <constructor-arg ref="cargoUpdateTopic"/>
   </bean>
 
   <bean id="listener1" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">

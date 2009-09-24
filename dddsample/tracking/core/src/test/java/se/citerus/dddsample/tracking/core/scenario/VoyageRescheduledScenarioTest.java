@@ -21,7 +21,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLoc
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.TrackingIdGeneratorInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
 import java.util.Date;

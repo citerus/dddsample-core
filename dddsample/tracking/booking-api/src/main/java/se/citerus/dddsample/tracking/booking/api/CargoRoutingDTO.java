@@ -60,10 +60,6 @@ public final class CargoRoutingDTO implements Serializable {
     return misrouted;
   }
 
-  public boolean isRouted() {
-    return !legs.isEmpty();
-  }
-
   public Date getArrivalDeadline() {
     return arrivalDeadline;
   }

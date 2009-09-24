@@ -23,7 +23,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage.NONE
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.tracking.core.domain.service.RoutingService;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.TrackingIdGeneratorInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;

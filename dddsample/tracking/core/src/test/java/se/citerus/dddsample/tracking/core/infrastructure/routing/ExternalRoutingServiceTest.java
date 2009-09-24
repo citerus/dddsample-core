@@ -26,12 +26,8 @@ public class ExternalRoutingServiceTest extends TestCase {
   private VoyageRepository voyageRepository;
 
   protected void setUp() throws Exception {
-    externalRoutingService = new ExternalRoutingService();
     LocationRepository locationRepository = new LocationRepositoryInMem();
-    externalRoutingService.setLocationRepository(locationRepository);
-
     voyageRepository = createMock(VoyageRepository.class);
-    externalRoutingService.setVoyageRepository(voyageRepository);
 
     GraphTraversalService graphTraversalService = EasyMock.createMock(GraphTraversalService.class);
     expect(
@@ -40,7 +36,8 @@ public class ExternalRoutingServiceTest extends TestCase {
     
     EasyMock.replay(graphTraversalService);
     // TODO expectations on GTS
-    externalRoutingService.setGraphTraversalService(graphTraversalService);
+    externalRoutingService = new ExternalRoutingService(graphTraversalService, locationRepository, voyageRepository);
+
       /*new GraphTraversalServiceImpl(new GraphDAO() {
       public List<String> listLocations() {
         return Arrays.asList(TOKYO.unLocode().stringValue(), STOCKHOLM.unLocode().stringValue(), GOTHENBURG.unLocode().stringValue());

@@ -10,9 +10,9 @@
   <!-- External graph traversal routing service  -->
 
   <bean id="routingService" class="se.citerus.dddsample.tracking.core.infrastructure.routing.ExternalRoutingService">
-    <property name="graphTraversalService" ref="internalGraphTraversalService"/>
-    <property name="locationRepository" ref="locationRepository"/>
-    <property name="voyageRepository" ref="voyageRepository"/>
+    <constructor-arg ref="graphTraversalService"/>
+    <constructor-arg ref="locationRepository"/>
+    <constructor-arg ref="voyageRepository"/>
   </bean>
 
   <bean id="graphTraversalService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">

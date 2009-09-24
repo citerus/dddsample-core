@@ -12,7 +12,7 @@ import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.ROTTERDAM;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.TrackingIdGeneratorInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
 public class CargoFactoryTest {

@@ -4,7 +4,7 @@
  * @created 2009-sep-17
  * $Id$
  */
-package se.citerus.dddsample.tracking.core.infrastructure.persistence;
+package se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate;
 
 import org.hibernate.SessionFactory;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;

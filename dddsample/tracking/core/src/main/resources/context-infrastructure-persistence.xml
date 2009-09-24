@@ -52,6 +52,6 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="trackingIdGenerator" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.TrackingIdGeneratorInMem"/>
+  <bean id="trackingIdGenerator" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem"/>
   
 </beans>

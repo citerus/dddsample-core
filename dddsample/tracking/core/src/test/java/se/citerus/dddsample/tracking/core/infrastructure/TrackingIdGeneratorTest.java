@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingIdGenerator;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.TrackingIdGeneratorInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
 
 public class TrackingIdGeneratorTest extends TestCase {
 
