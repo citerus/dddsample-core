@@ -31,10 +31,8 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
 
   @Override
   @Transactional(rollbackFor = CannotCreateHandlingEventException.class)
-  public void registerHandlingEvent(final Date completionTime,
-                                    final TrackingId trackingId,
-                                    final VoyageNumber voyageNumber,
-                                    final UnLocode unLocode,
+  public void registerHandlingEvent(final Date completionTime, final TrackingId trackingId,
+                                    final VoyageNumber voyageNumber, final UnLocode unLocode,
                                     final HandlingEvent.Type type) throws CannotCreateHandlingEventException {
 
     final Date registrationTime = new Date();

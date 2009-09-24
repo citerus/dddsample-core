@@ -1,7 +1,6 @@
-package se.citerus.dddsample.temp;
+package se.citerus.dddsample.tracking.booking.api;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

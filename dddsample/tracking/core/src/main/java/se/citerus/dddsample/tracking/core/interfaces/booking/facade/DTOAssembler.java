@@ -10,10 +10,10 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.temp.CargoRoutingDTO;
-import se.citerus.dddsample.temp.LegDTO;
-import se.citerus.dddsample.temp.RouteCandidateDTO;
-import se.citerus.dddsample.temp.LocationDTO;
+import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
+import se.citerus.dddsample.tracking.booking.api.LegDTO;
+import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
+import se.citerus.dddsample.tracking.booking.api.*;
 
 import java.util.List;
 import java.util.ArrayList;

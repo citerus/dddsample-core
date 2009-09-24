@@ -5,7 +5,7 @@
 
   <bean id="remoteBookingService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
     <property name="serviceUrl" value="rmi://localhost:1099/BookingService"/>
-    <property name="serviceInterface" value="se.citerus.dddsample.temp.BookingServiceFacade"/>
+    <property name="serviceInterface" value="se.citerus.dddsample.tracking.booking.api.BookingServiceFacade"/>
   </bean>
 
 </beans>
