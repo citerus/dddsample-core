@@ -9,6 +9,7 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.service.TrackingIdGenerator;
 
 import java.util.Date;
 
