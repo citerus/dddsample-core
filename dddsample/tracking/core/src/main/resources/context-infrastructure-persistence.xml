@@ -34,22 +34,19 @@
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
   <bean id="cargoRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.CargoRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
+    <constructor-arg ref="sessionFactory"/>
   </bean>
 
-  <bean id="handlingEventRepository"
-        class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.HandlingEventRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
+  <bean id="handlingEventRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.HandlingEventRepositoryHibernate">
+    <constructor-arg ref="sessionFactory"/>
   </bean>
 
-  <bean id="voyageRepository"
-        class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.VoyageRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
+  <bean id="voyageRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.VoyageRepositoryHibernate">
+    <constructor-arg ref="sessionFactory"/>
   </bean>
 
-  <bean id="locationRepository"
-        class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.LocationRepositoryHibernate">
-    <property name="sessionFactory" ref="sessionFactory"/>
+  <bean id="locationRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.LocationRepositoryHibernate">
+    <constructor-arg ref="sessionFactory"/>
   </bean>
 
   <bean id="trackingIdGenerator" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem"/>

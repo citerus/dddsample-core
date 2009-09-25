@@ -5,6 +5,8 @@ import com.pathfinder.api.TransitEdge;
 import com.pathfinder.api.TransitPath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Leg;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
@@ -26,6 +28,7 @@ import java.util.Properties;
  * translation layer between our domain model and the API put forward
  * by the routing team, which operates in a different context from us.
  */
+@Service
 public class ExternalRoutingService implements RoutingService {
 
   private final GraphTraversalService graphTraversalService;
@@ -33,6 +36,7 @@ public class ExternalRoutingService implements RoutingService {
   private final VoyageRepository voyageRepository;
   private static final Log log = LogFactory.getLog(ExternalRoutingService.class);
 
+  @Autowired
   public ExternalRoutingService(final GraphTraversalService graphTraversalService,
                                 final LocationRepository locationRepository,
                                 final VoyageRepository voyageRepository) {
@@ -81,8 +85,8 @@ public class ExternalRoutingService implements RoutingService {
     return itineraries;
   }
 
-  private Itinerary toItinerary(TransitPath transitPath) {
-    List<Leg> legs = new ArrayList<Leg>(transitPath.getTransitEdges().size());
+  private Itinerary toItinerary(final TransitPath transitPath) {
+    final List<Leg> legs = new ArrayList<Leg>(transitPath.getTransitEdges().size());
     for (TransitEdge edge : transitPath.getTransitEdges()) {
       legs.add(toLeg(edge));
     }

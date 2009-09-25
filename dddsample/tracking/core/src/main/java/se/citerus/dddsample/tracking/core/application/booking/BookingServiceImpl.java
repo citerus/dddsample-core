@@ -4,6 +4,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
@@ -14,6 +16,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public final class BookingServiceImpl implements BookingService {
 
   private final RoutingService routingService;
@@ -22,6 +25,7 @@ public final class BookingServiceImpl implements BookingService {
   private final LocationRepository locationRepository;
   private final Log logger = LogFactory.getLog(getClass());
 
+  @Autowired
   public BookingServiceImpl(final RoutingService routingService,
                             final CargoFactory cargoFactory,
                             final CargoRepository cargoRepository,
