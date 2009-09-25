@@ -3,6 +3,8 @@ package se.citerus.dddsample.tracking.core.application.handling;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import se.citerus.dddsample.tracking.core.application.event.SystemEvents;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
@@ -14,6 +16,7 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
 import java.util.Date;
 
+@Service
 public final class HandlingEventServiceImpl implements HandlingEventService {
 
   private final SystemEvents systemEvents;
@@ -21,6 +24,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   private final HandlingEventFactory handlingEventFactory;
   private final Log logger = LogFactory.getLog(HandlingEventServiceImpl.class);
 
+  @Autowired
   public HandlingEventServiceImpl(final HandlingEventRepository handlingEventRepository,
                                   final SystemEvents systemEvents,
                                   final HandlingEventFactory handlingEventFactory) {

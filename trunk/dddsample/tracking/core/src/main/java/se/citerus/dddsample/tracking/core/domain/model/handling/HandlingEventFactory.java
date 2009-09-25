@@ -12,15 +12,20 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Creates handling events.
  */
+@Service
 public class HandlingEventFactory {
 
   private final CargoRepository cargoRepository;
   private final VoyageRepository voyageRepository;
   private final LocationRepository locationRepository;
 
+  @Autowired
   public HandlingEventFactory(final CargoRepository cargoRepository,
                               final VoyageRepository voyageRepository,
                               final LocationRepository locationRepository) {
@@ -41,8 +46,10 @@ public class HandlingEventFactory {
    * @throws UnknownCargoException    if there's no cargo with this tracking id
    * @throws UnknownLocationException if there's no location with this UN Locode
    */
-  public HandlingEvent createHandlingEvent(Date registrationTime, Date completionTime, TrackingId trackingId, VoyageNumber voyageNumber, UnLocode unlocode, HandlingEvent.Type type)
+  public HandlingEvent createHandlingEvent(final Date registrationTime, final Date completionTime, final TrackingId trackingId,
+                                           final VoyageNumber voyageNumber, final UnLocode unlocode, final HandlingEvent.Type type)
     throws CannotCreateHandlingEventException {
+
     final Cargo cargo = findCargo(trackingId);
     final Voyage voyage = findVoyage(voyageNumber);
     final Location location = findLocation(unlocode);
@@ -58,13 +65,13 @@ public class HandlingEventFactory {
     }
   }
 
-  private Cargo findCargo(TrackingId trackingId) throws UnknownCargoException {
+  private Cargo findCargo(final TrackingId trackingId) throws UnknownCargoException {
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) throw new UnknownCargoException(trackingId);
     return cargo;
   }
 
-  private Voyage findVoyage(VoyageNumber voyageNumber) throws UnknownVoyageException {
+  private Voyage findVoyage(final VoyageNumber voyageNumber) throws UnknownVoyageException {
     if (voyageNumber == null) {
       return null;
     }

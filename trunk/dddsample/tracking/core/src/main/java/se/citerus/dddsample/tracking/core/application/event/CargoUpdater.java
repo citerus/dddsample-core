@@ -3,6 +3,8 @@ package se.citerus.dddsample.tracking.core.application.event;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
@@ -10,6 +12,7 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRep
 import se.citerus.dddsample.tracking.core.domain.model.handling.EventSequenceNumber;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 
+@Service
 public class CargoUpdater {
 
   private SystemEvents systemEvents;
@@ -17,6 +20,7 @@ public class CargoUpdater {
   private HandlingEventRepository handlingEventRepository;
   private final Log logger = LogFactory.getLog(getClass());
 
+  @Autowired
   public CargoUpdater(final SystemEvents systemEvents,
                       final CargoRepository cargoRepository,
                       final HandlingEventRepository handlingEventRepository) {
