@@ -6,10 +6,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-  <context:component-scan base-package="se.citerus.dddsample.tracking.core.domain"/>
+  <import resource="context-infrastructure.xml"/>
+  <import resource="context-domain.xml"/>
+  <import resource="context-application.xml"/>
+  <import resource="context-interfaces.xml"/>
 
-  <bean class="se.citerus.dddsample.tracking.core.domain.model.cargo.CargoFactory" autowire="constructor"/>
+  <context:annotation-config/>
 
-  <bean class="se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory" autowire="constructor"/>
-  
 </beans>

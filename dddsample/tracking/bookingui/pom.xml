@@ -20,6 +20,10 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
     </dependency>
     <dependency>
@@ -44,6 +48,19 @@
     </dependency>
   </dependencies>
   <build>
-    <defaultGoal>package</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <systemProperty>
+              <name>jetty.port</name>
+              <value>8081</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

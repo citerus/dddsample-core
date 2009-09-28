@@ -1,17 +1,16 @@
 <?xml version="1.0"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-  <!-- Persistence - database, Hibernate, transactions, repository implementations -->
+  <context:property-placeholder location="classpath:jdbc.properties"/>
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:/jdbc.properties"/>
-  </bean>
+  <context:component-scan base-package="se.citerus.dddsample.tracking.core.infrastructure.persistence"/>
 
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="url" value="${hibernate.connection.url}"/>
@@ -24,7 +23,7 @@
 
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
-    <property name="configLocation" value="classpath:/hibernate.cfg.xml"/>
+    <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
   </bean>
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -33,22 +32,4 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="cargoRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.CargoRepositoryHibernate">
-    <constructor-arg ref="sessionFactory"/>
-  </bean>
-
-  <bean id="handlingEventRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.HandlingEventRepositoryHibernate">
-    <constructor-arg ref="sessionFactory"/>
-  </bean>
-
-  <bean id="voyageRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.VoyageRepositoryHibernate">
-    <constructor-arg ref="sessionFactory"/>
-  </bean>
-
-  <bean id="locationRepository" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.LocationRepositoryHibernate">
-    <constructor-arg ref="sessionFactory"/>
-  </bean>
-
-  <bean id="trackingIdGenerator" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem"/>
-  
 </beans>

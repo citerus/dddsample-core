@@ -6,6 +6,7 @@ import com.aggregator.HandlingReportErrors_Exception;
 import com.aggregator.HandlingReportService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
 import se.citerus.dddsample.tracking.core.application.handling.HandlingEventService;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
@@ -24,6 +25,7 @@ import java.util.*;
  * by calling the application layer.
  */
 @WebService(endpointInterface = "com.aggregator.HandlingReportService")
+@Service
 public class HandlingReportServiceImpl implements HandlingReportService {
 
   private HandlingEventService handlingEventService;

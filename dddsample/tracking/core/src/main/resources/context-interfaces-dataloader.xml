@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+    <property name="period" value="5000"/>
+    <property name="delay" value="5000"/>
+    <property name="timerTask" ref="uploadDirectoryScanner"/>
+  </bean>
+
+  <bean id="uploadDirectoryScanner" class="se.citerus.dddsample.tracking.core.interfaces.handling.file.UploadDirectoryScanner">
+    <property name="uploadDirectory" value="/tmp/upload"/>
+    <property name="parseFailureDirectory" value="/tmp/failed"/>
+    <property name="handlingEventService" ref="handlingEventServiceImpl"/>
+  </bean>
+
+  <bean id="handlingReportConsumptionSupport" class="se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser"/>
+
+  <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+      <list>
+        <ref bean="scheduledTask"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>
