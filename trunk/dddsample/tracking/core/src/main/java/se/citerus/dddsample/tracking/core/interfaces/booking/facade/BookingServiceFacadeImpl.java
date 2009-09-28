@@ -1,5 +1,11 @@
 package se.citerus.dddsample.tracking.core.interfaces.booking.facade;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import se.citerus.dddsample.tracking.booking.api.BookingServiceFacade;
+import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
+import se.citerus.dddsample.tracking.booking.api.LocationDTO;
+import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
 import se.citerus.dddsample.tracking.core.application.booking.BookingService;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
@@ -10,15 +16,11 @@ import se.citerus.dddsample.tracking.core.domain.model.location.LocationReposito
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import static se.citerus.dddsample.tracking.core.interfaces.booking.facade.DTOAssembler.*;
-import se.citerus.dddsample.tracking.booking.api.BookingServiceFacade;
-import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
-import se.citerus.dddsample.tracking.booking.api.LocationDTO;
-import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 
 /**
@@ -26,6 +28,7 @@ import java.util.ArrayList;
  * service and for keeping the OR-mapper unit-of-work open during DTO assembly,
  * analogous to the view rendering for web interfaces.
  */
+@Service
 public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
   private final BookingService bookingService;
@@ -33,6 +36,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private final CargoRepository cargoRepository;
   private final VoyageRepository voyageRepository;
 
+  @Autowired
   public BookingServiceFacadeImpl(final BookingService bookingService, final LocationRepository locationRepository,
                                   final CargoRepository cargoRepository, final VoyageRepository voyageRepository) {
     this.bookingService = bookingService;

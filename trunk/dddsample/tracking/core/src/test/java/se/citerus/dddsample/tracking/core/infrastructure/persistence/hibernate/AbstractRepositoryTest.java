@@ -3,7 +3,6 @@ package se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
 import org.springframework.transaction.support.TransactionTemplate;
 import se.citerus.dddsample.tracking.core.application.util.SampleDataGenerator;
@@ -27,14 +26,14 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
     this.handlingEventRepository = handlingEventRepository;
   }
 
-  protected AbstractRepositoryTest() {
+  /*protected AbstractRepositoryTest() {
     setAutowireMode(AUTOWIRE_BY_NAME);
     setDependencyCheck(false);
-  }
+  }*/
 
   public void setSessionFactory(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
-    transactionManager = new HibernateTransactionManager(sessionFactory);
+    //transactionManager = new HibernateTransactionManager(sessionFactory);
   }
 
   public SessionFactory getSessionFactory() {
@@ -47,7 +46,10 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
 
   @Override
   protected String[] getConfigLocations() {
-    return new String[]{"/context-infrastructure-persistence.xml", "context-domain.xml"};
+    return new String[] {
+      "context-infrastructure-persistence.xml",
+      "context-domain.xml"
+    };
   }
 
   @Override

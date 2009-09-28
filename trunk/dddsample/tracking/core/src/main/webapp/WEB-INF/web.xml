@@ -21,12 +21,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>
-      classpath:context-infrastructure.xml
-      classpath:context-application.xml
-      classpath:context-domain.xml
-      classpath:context-interfaces.xml
-    </param-value>
+    <param-value>classpath:context.xml</param-value>
   </context-param>
 
   <listener>

@@ -6,18 +6,6 @@
 
   <import resource="context-infrastructure-persistence.xml"/>
   <import resource="context-infrastructure-messaging.xml"/>
-
-  <!-- External graph traversal routing service  -->
-
-  <bean id="routingService" class="se.citerus.dddsample.tracking.core.infrastructure.routing.ExternalRoutingService">
-    <constructor-arg ref="graphTraversalService"/>
-    <constructor-arg ref="locationRepository"/>
-    <constructor-arg ref="voyageRepository"/>
-  </bean>
-
-  <bean id="graphTraversalService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-    <property name="serviceUrl" value="rmi://localhost:1099/PathFinder"/>
-    <property name="serviceInterface" value="com.pathfinder.api.GraphTraversalService"/>
-  </bean>
+  <import resource="context-infrastructure-routing.xml"/>
 
 </beans>

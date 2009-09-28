@@ -12,20 +12,15 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * Creates handling events.
  */
-@Service
 public class HandlingEventFactory {
 
   private final CargoRepository cargoRepository;
   private final VoyageRepository voyageRepository;
   private final LocationRepository locationRepository;
 
-  @Autowired
   public HandlingEventFactory(final CargoRepository cargoRepository,
                               final VoyageRepository voyageRepository,
                               final LocationRepository locationRepository) {
