@@ -2,7 +2,6 @@ package se.citerus.dddsample.tracking.core.domain.shared.experimental;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
 
 /**
  * Base class for value objects.
@@ -12,6 +11,8 @@ import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
 public abstract class ValueObjectSupport<T extends ValueObject> implements ValueObject<T> {
 
   private transient int cachedHashCode = 0;
+  @SuppressWarnings("UnusedDeclaration")
+  private final Long id = null;
 
   /**
    * @param other The other value object.
@@ -49,6 +50,7 @@ public abstract class ValueObjectSupport<T extends ValueObject> implements Value
    * @param o other object
    * @return True if other object has the same value as this value object.
    */
+  @SuppressWarnings({"SimplifiableIfStatement", "unchecked"})
   @Override
   public final boolean equals(final Object o) {
     if (this == o) return true;

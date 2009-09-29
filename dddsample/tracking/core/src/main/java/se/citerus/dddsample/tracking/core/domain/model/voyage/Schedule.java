@@ -1,9 +1,8 @@
 package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.Collections;
 import java.util.Date;
@@ -12,9 +11,9 @@ import java.util.List;
 /**
  * A voyage schedule.
  */
-public class Schedule implements ValueObject<Schedule> {
+public class Schedule extends ValueObjectSupport<Schedule> {
 
-  private List<CarrierMovement> carrierMovements;
+  private final List<CarrierMovement> carrierMovements;
 
   public static final Schedule EMPTY = new Schedule();
 
@@ -59,27 +58,8 @@ public class Schedule implements ValueObject<Schedule> {
     return null;
   }
 
-  @Override
-  public boolean sameValueAs(final Schedule other) {
-    return other != null && this.carrierMovements.equals(other.carrierMovements);
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    final Schedule that = (Schedule) o;
-
-    return sameValueAs(that);
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().append(this.carrierMovements).toHashCode();
-  }
-
   Schedule() {
     // Needed by Hibernate
+    carrierMovements = null;
   }
 }

@@ -1,7 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.regex.Pattern;
 
@@ -11,9 +11,9 @@ import java.util.regex.Pattern;
  * http://www.unece.org/cefact/locode/
  * http://www.unece.org/cefact/locode/DocColumnDescription.htm#LOCODE
  */
-public final class UnLocode implements ValueObject<UnLocode> {
+public final class UnLocode extends ValueObjectSupport<UnLocode> {
 
-  private String unlocode;
+  private final String unlocode;
 
   // Country code is exactly two letters.
   // Location code is usually three letters, but may contain the numbers 2-9 as well
@@ -40,32 +40,13 @@ public final class UnLocode implements ValueObject<UnLocode> {
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    UnLocode other = (UnLocode) o;
-
-    return sameValueAs(other);
-  }
-
-  @Override
-  public int hashCode() {
-    return unlocode.hashCode();
-  }
-
-  @Override
-  public boolean sameValueAs(UnLocode other) {
-    return other != null && this.unlocode.equals(other.unlocode);
-  }
-
-  @Override
   public String toString() {
     return stringValue();
   }
 
   UnLocode() {
     // Needed by Hibernate
+    unlocode = null;
   }
 
 }

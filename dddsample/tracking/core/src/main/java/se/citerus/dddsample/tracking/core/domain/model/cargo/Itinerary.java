@@ -6,18 +6,16 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.*;
 
 /**
  * An itinerary.
  */
-public class Itinerary implements ValueObject<Itinerary> {
+public class Itinerary extends ValueObjectSupport<Itinerary> {
 
-  private List<Leg> legs = Collections.emptyList();
-
-  static final Itinerary EMPTY_ITINERARY = new Itinerary();
+  private final List<Leg> legs;
   private static final Date END_OF_DAYS = new Date(Long.MAX_VALUE);
 
   /**
@@ -210,31 +208,6 @@ public class Itinerary implements ValueObject<Itinerary> {
     return null;
   }
 
-
-  /**
-   * @param other itinerary to compare
-   * @return <code>true</code> if the legs in this and the other itinerary are all equal.
-   */
-  @Override
-  public boolean sameValueAs(final Itinerary other) {
-    return other != null && legs.equals(other.legs);
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    final Itinerary itinerary = (Itinerary) o;
-
-    return sameValueAs(itinerary);
-  }
-
-  @Override
-  public int hashCode() {
-    return legs.hashCode();
-  }
-
   @Override
   public String toString() {
     return StringUtils.join(legs, "\n");
@@ -242,9 +215,7 @@ public class Itinerary implements ValueObject<Itinerary> {
 
   Itinerary() {
     // Needed by Hibernate
+    legs = null;
   }
 
-  // Auto-generated surrogate key
-  @SuppressWarnings("UnusedDeclaration")
-  private Long id;
 }

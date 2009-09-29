@@ -18,12 +18,19 @@ public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, I
     return identity().hashCode();
   }
 
+  @SuppressWarnings({"SimplifiableIfStatement", "unchecked"})
   @Override
   public final boolean equals(final Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    // TODO class comparision is too strict for ORM proxies
+    if (o == null || !(o instanceof EntitySupport)) return false;
+    //if (o == null || getClass() != o.getClass()) return false;
 
     return sameAs((T) o);
   }
+
+  @SuppressWarnings("UnusedDeclaration")
+  // Surrogate primary key
+  private Long id;
 
 }

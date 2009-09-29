@@ -13,11 +13,4 @@ public interface ValueObject<T> {
    */
   boolean sameValueAs(T other);
 
-  /**
-   * Value objects can be freely copied.
-   *
-   * @return A safe, deep copy of this value object.
-   */
-  T copy();
-
 }

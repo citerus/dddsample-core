@@ -1,22 +1,23 @@
 package se.citerus.dddsample.tracking.core.interfaces.booking.facade;
 
-import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.Leg;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
 import se.citerus.dddsample.tracking.booking.api.LegDTO;
+import se.citerus.dddsample.tracking.booking.api.LocationDTO;
 import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
-import se.citerus.dddsample.tracking.booking.api.*;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.Itinerary;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.Leg;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus;
+import se.citerus.dddsample.tracking.core.domain.model.location.Location;
+import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
+import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 final class DTOAssembler {
 
@@ -25,17 +26,22 @@ final class DTOAssembler {
    * @return A cargo routing DTO
    */
   static CargoRoutingDTO toDTO(final Cargo cargo) {
-    final List<Leg> legs = cargo.itinerary().legs();
+    final Itinerary itinerary = cargo.itinerary();
 
-    final List<LegDTO> legDTOList = new ArrayList<LegDTO>(legs.size());
-    for (Leg leg : legs) {
-      final LegDTO legDTO = new LegDTO(
-        leg.voyage().voyageNumber().stringValue(),
-        leg.loadLocation().unLocode().stringValue(),
-        leg.unloadLocation().unLocode().stringValue(),
-        leg.loadTime(),
-        leg.unloadTime());
-      legDTOList.add(legDTO);
+    List<LegDTO> legDTOList = Collections.emptyList();
+    if (itinerary != null) {
+      final List<Leg> legs = itinerary.legs();
+
+      legDTOList = new ArrayList<LegDTO>(legs.size());
+      for (Leg leg : legs) {
+        final LegDTO legDTO = new LegDTO(
+          leg.voyage().voyageNumber().stringValue(),
+          leg.loadLocation().unLocode().stringValue(),
+          leg.unloadLocation().unLocode().stringValue(),
+          leg.loadTime(),
+          leg.unloadTime());
+        legDTOList.add(legDTO);
+      }
     }
 
     return new CargoRoutingDTO(

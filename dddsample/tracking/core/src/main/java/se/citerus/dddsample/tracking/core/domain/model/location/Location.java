@@ -1,7 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.shared.Entity;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
 
 import java.util.TimeZone;
 
@@ -11,9 +11,9 @@ import java.util.TimeZone;
  * <p/>
  * It is uniquely identified by a UN Locode.
  */
-public final class Location implements Entity<Location> {
+public final class Location extends EntitySupport<Location, UnLocode> {
 
-  private UnLocode unLocode;
+  private final UnLocode unLocode;
   private String name;
   private TimeZone timeZone;
   private CustomsZone customsZone;
@@ -30,8 +30,8 @@ public final class Location implements Entity<Location> {
    *
    * @param unLocode    UN Locode
    * @param name        location name
-   * @param timeZone
-   * @param customsZone
+   * @param timeZone    time zone
+   * @param customsZone customs zone
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
   Location(final UnLocode unLocode, final String name, final TimeZone timeZone, final CustomsZone customsZone) {
@@ -44,6 +44,11 @@ public final class Location implements Entity<Location> {
     this.name = name;
     this.timeZone = timeZone;
     this.customsZone = customsZone;
+  }
+
+  @Override
+  public UnLocode identity() {
+    return unLocode;
   }
 
   /**
@@ -68,35 +73,10 @@ public final class Location implements Entity<Location> {
   }
 
   /**
-   * @param object to compare
-   * @return Since this is an entity this will be true iff UN locodes are equal.
+   * @return Time zone of this location.
    */
-  @Override
-  public boolean equals(final Object object) {
-    if (object == null) {
-      return false;
-    }
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof Location)) {
-      return false;
-    }
-    Location other = (Location) object;
-    return sameAs(other);
-  }
-
-  @Override
-  public boolean sameAs(final Location other) {
-    return this.unLocode.sameValueAs(other.unLocode);
-  }
-
-  /**
-   * @return Hash code of UN locode.
-   */
-  @Override
-  public int hashCode() {
-    return unLocode.hashCode();
+  public TimeZone timeZone() {
+    return timeZone;
   }
 
   @Override
@@ -106,12 +86,7 @@ public final class Location implements Entity<Location> {
 
   Location() {
     // Needed by Hibernate
-  }
-
-  private Long id;
-
-  public TimeZone timeZone() {
-    return timeZone;
+    unLocode = null;
   }
 
 }

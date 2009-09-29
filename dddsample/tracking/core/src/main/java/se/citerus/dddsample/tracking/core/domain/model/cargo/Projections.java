@@ -1,11 +1,9 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -16,10 +14,10 @@ import java.util.Iterator;
  * <p/>
  * It is updated on routing changes as well as handling.
  */
-class Projections implements ValueObject<Projections> {
+class Projections extends ValueObjectSupport<Projections> {
 
-  private Date estimatedTimeOfArrival;
-  private HandlingActivity nextExpectedActivity;
+  private final Date estimatedTimeOfArrival;
+  private final HandlingActivity nextExpectedActivity;
 
   private static final Date ETA_UNKOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;
@@ -134,34 +132,10 @@ class Projections implements ValueObject<Projections> {
     return NO_ACTIVITY;
   }
 
-
-  @Override
-  public boolean sameValueAs(final Projections other) {
-    return other != null && new EqualsBuilder().
-      append(this.estimatedTimeOfArrival, other.estimatedTimeOfArrival).
-      append(this.nextExpectedActivity, other.nextExpectedActivity).
-      isEquals();
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    final Projections other = (Projections) o;
-    return sameValueAs(other);
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-      append(estimatedTimeOfArrival).
-      append(nextExpectedActivity).
-      toHashCode();
-  }
-
   Projections() {
     // Needed by Hibernate
+    estimatedTimeOfArrival = null;
+    nextExpectedActivity = null;
   }
 
 }

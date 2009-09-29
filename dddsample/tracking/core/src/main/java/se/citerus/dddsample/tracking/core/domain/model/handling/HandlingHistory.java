@@ -2,7 +2,7 @@ package se.citerus.dddsample.tracking.core.domain.model.handling;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObject;
 
 import java.util.*;
 import static java.util.Collections.sort;

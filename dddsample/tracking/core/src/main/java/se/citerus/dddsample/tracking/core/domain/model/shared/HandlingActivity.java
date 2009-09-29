@@ -1,27 +1,25 @@
 package se.citerus.dddsample.tracking.core.domain.model.shared;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 /**
  * A handling activity represents how and where a cargo can be handled,
  * and can be used to express predictions about what is expected to
  * happen to a cargo in the future.
  */
-public class HandlingActivity implements ValueObject<HandlingActivity> {
+public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
 
   // TODO introduce something like this (?):
   // HandlingActivity.loadOnto(voyage).in(location)
   // HandlingActivity.claimIn(location)
 
-  private HandlingEvent.Type type;
-  private Location location;
-  private Voyage voyage;
+  private final HandlingEvent.Type type;
+  private final Location location;
+  private final Voyage voyage;
 
   public HandlingActivity(final HandlingEvent.Type type, final Location location) {
     Validate.notNull(type, "Handling event type is required");
@@ -29,12 +27,13 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
 
     this.type = type;
     this.location = location;
+    this.voyage = null;
   }
 
   public HandlingActivity(final HandlingEvent.Type type, final Location location, final Voyage voyage) {
     Validate.notNull(type, "Handling event type is required");
     Validate.notNull(location, "Location is required");
-    Validate.notNull(location, "Voyage is required");
+    Validate.notNull(voyage, "Voyage is required");
 
     this.type = type;
     this.location = location;
@@ -54,41 +53,15 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
   }
 
   @Override
-  public boolean sameValueAs(final HandlingActivity other) {
-    return other != null && new EqualsBuilder().
-      append(this.type, other.type).
-      append(this.location, other.location).
-      append(this.voyage, other.voyage).
-      isEquals();
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-      append(this.type).
-      append(this.location).
-      append(this.voyage).
-      toHashCode();
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (obj == this) return true;
-    if (obj == null) return false;
-    if (obj.getClass() != this.getClass()) return false;
-
-    HandlingActivity other = (HandlingActivity) obj;
-
-    return sameValueAs(other);
-  }
-
-  @Override
   public String toString() {
     return type + " in " + location + (voyage != null ? ", " + voyage : "");
   }
 
   HandlingActivity() {
     // Needed by Hibernate
+    type = null;
+    location = null;
+    voyage = null;
   }
 
 }

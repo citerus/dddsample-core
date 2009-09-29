@@ -1,7 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.shared.Entity;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 /**
  * A geographical zone within which there are no customs restrictions or checks.
  */
-public class CustomsZone implements Entity<CustomsZone> {
+public class CustomsZone extends EntitySupport<CustomsZone,String> {
 
-  private String code;
-  private String name;
+  private final String code;
+  private final String name;
 
   // TODO: Find out what the standards are for this, if any. For now:
   // For CustomsZone code, we are using the "country code" portion of the UnLocode,
@@ -36,6 +36,11 @@ public class CustomsZone implements Entity<CustomsZone> {
     this.name = name;
   }
 
+  @Override
+  public String identity() {
+    return code;
+  }
+
   /**
    * Where would a Cargo enter this CustomsZone if it were
    * following this route. Note that specific voyages, etc do not
@@ -44,9 +49,11 @@ public class CustomsZone implements Entity<CustomsZone> {
    * @param route
    * @return
    */
-  public Location entryPoint(List<Location> route) {
+  public Location entryPoint(final List<Location> route) {
     for (Location location : route) {
-      if (this.includes(location)) return location;
+      if (this.includes(location)) {
+        return location;
+      }
     }
     return null; //The route does not enter this CustomsZone
   }
@@ -58,7 +65,7 @@ public class CustomsZone implements Entity<CustomsZone> {
    * @param route
    * @return
    */
-  public Location entryPoint(Location... route) {
+  public Location entryPoint(final Location... route) {
     return entryPoint(Arrays.asList(route));
   }
 
@@ -102,23 +109,18 @@ public class CustomsZone implements Entity<CustomsZone> {
     return name;
   }
 
+  public boolean includes(final Location location) {
+    return this.sameAs(location.customsZone());
+  }
+
   @Override
   public String toString() {
     return code + "[" + name + "]";
   }
 
-  @Override
-  public boolean sameAs(CustomsZone other) {
-    return code.equals(other.code);
-  }
-
   CustomsZone() {
     // Needed by Hibernate
+    code = name = null;
   }
-
-  public boolean includes(Location location) {
-    return this.sameAs(location.customsZone());
-  }
-
 
 }

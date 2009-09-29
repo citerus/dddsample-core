@@ -6,8 +6,7 @@ import se.citerus.dddsample.tracking.core.domain.model.location.CustomsZone;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.DomainObjectUtils;
-import se.citerus.dddsample.tracking.core.domain.shared.Entity;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
 
 import java.util.Date;
 
@@ -46,9 +45,9 @@ import java.util.Date;
  * or not a cargo is misdirected, what the current status of the cargo is (on board carrier,
  * in port etc), are captured in this aggregate.
  */
-public class Cargo implements Entity<Cargo> {
+public class Cargo extends EntitySupport<Cargo,TrackingId> {
 
-  private TrackingId trackingId;
+  private final TrackingId trackingId;
   private RouteSpecification routeSpecification;
   private Itinerary itinerary;
   private Delivery delivery;
@@ -64,6 +63,11 @@ public class Cargo implements Entity<Cargo> {
     this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
+  @Override
+  public TrackingId identity() {
+    return trackingId;
+  }
+
   /**
    * The tracking id is the identity of this entity, and is unique.
    *
@@ -77,7 +81,7 @@ public class Cargo implements Entity<Cargo> {
    * @return The itinerary. Never null.
    */
   public Itinerary itinerary() {
-    return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+    return itinerary;
   }
 
   /**
@@ -87,30 +91,51 @@ public class Cargo implements Entity<Cargo> {
     return routeSpecification;
   }
 
+  /**
+   * @return Estimated time of arrival.
+   */
   public Date estimatedTimeOfArrival() {
     return projections.estimatedTimeOfArrival();
   }
 
+  /**
+   * @return Next expected activity.
+   */
   public HandlingActivity nextExpectedActivity() {
     return projections.nextExpectedActivity();
   }
 
+  /**
+   * @return True if cargo is misdirected.
+   */
   public boolean isMisdirected() {
     return delivery.isMisdirected(itinerary, routeSpecification);
   }
 
+  /**
+   * @return Transport status.
+   */
   public TransportStatus transportStatus() {
     return delivery.transportStatus();
   }
 
+  /**
+   * @return Routing status.
+   */
   public RoutingStatus routingStatus() {
     return delivery.routingStatus(itinerary, routeSpecification);
   }
 
+  /**
+   * @return Current voyage.
+   */
   public Voyage currentVoyage() {
     return delivery.currentVoyage();
   }
 
+  /**
+   * @return Last known location.
+   */
   public Location lastKnownLocation() {
     return delivery.lastKnownLocation();
   }
@@ -141,15 +166,24 @@ public class Cargo implements Entity<Cargo> {
     this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
+  /**
+   * @return Customs zone.
+   */
   public CustomsZone customsZone() {
     return routeSpecification.destination().customsZone();
   }
 
 
+  /**
+   * @return Customs clearance point.
+   */
   public Location customsClearancePoint() {
     return customsZone().entryPoint(itinerary.locations());
   }
 
+  /**
+   * @return True if the cargo is ready to be claimed.
+   */
   public boolean isReadyToClaim() {
     return delivery.isUnloadedAtDestination(routeSpecification);
   }
@@ -178,43 +212,13 @@ public class Cargo implements Entity<Cargo> {
   }
 
   @Override
-  public boolean sameAs(final Cargo other) {
-    return other != null && trackingId().sameValueAs(other.trackingId());
-  }
-
-  /**
-   * @param object to compare
-   * @return True if they have the same identity
-   * @see #sameAs(Cargo)
-   */
-  @Override
-  public boolean equals(final Object object) {
-    if (this == object) return true;
-    if (object == null || getClass() != object.getClass()) return false;
-
-    final Cargo other = (Cargo) object;
-    return sameAs(other);
-  }
-
-  /**
-   * @return Hash code of tracking id.
-   */
-  @Override
-  public int hashCode() {
-    return trackingId.hashCode();
-  }
-
-  @Override
   public String toString() {
     return trackingId + " (" + routeSpecification + ")";
   }
 
   Cargo() {
     // Needed by Hibernate
+    trackingId = null;
   }
-
-  // Auto-generated surrogate key
-  @SuppressWarnings("UnusedDeclaration")
-  private Long id;
 
 }

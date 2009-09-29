@@ -1,6 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObject;
+
 
 /**
  * The different routing statuses of a cargo.
