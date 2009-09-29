@@ -89,11 +89,6 @@ public class ItineraryTest extends TestCase {
 
     HandlingActivity claimRotterdam = new HandlingActivity(CLAIM, ROTTERDAM);
     assertFalse(itinerary.isExpected(claimRotterdam));
-
-    //Unrouted Cargo shouldn't go anywhere or do anything
-    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(receiveShanghai));
-    assertFalse(Itinerary.EMPTY_ITINERARY.isExpected(loadShanghai));
-
   }
 
   public void testCreateItinerary() throws Exception {

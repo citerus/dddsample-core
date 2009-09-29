@@ -1,15 +1,13 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.Date;
 
@@ -17,10 +15,10 @@ import java.util.Date;
  * Everything about the delivery of the cargo, i.e. where the cargo is
  * right now, whether or not it's routed, misdirected and so on.
  */
-public class Delivery implements ValueObject<Delivery> {
+public class Delivery extends ValueObjectSupport<Delivery> {
 
-  private HandlingActivity mostRecentHandlingActivity;
-  private Date calculatedAt;
+  private final HandlingActivity mostRecentHandlingActivity;
+  private final Date calculatedAt;
 
   /**
    * Derives a new delivery when a cargo has been handled.
@@ -57,7 +55,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   Location lastKnownLocation() {
-    if (mostRecentHandlingActivity != null) {
+    if (isHandled()) {
       return mostRecentHandlingActivity.location();
     } else {
       return Location.UNKNOWN;
@@ -68,11 +66,15 @@ public class Delivery implements ValueObject<Delivery> {
    * @return Current voyage.
    */
   Voyage currentVoyage() {
-    if (mostRecentHandlingActivity != null && transportStatus().equals(ONBOARD_CARRIER)) {
+    if (isHandled() && transportStatus().equals(ONBOARD_CARRIER)) {
       return mostRecentHandlingActivity.voyage();
     } else {
       return Voyage.NONE;
     }
+  }
+
+  private boolean isHandled() {
+    return mostRecentHandlingActivity != null;
   }
 
   /**
@@ -105,7 +107,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @param routeSpecification route specification
    */
   boolean isUnloadedAtDestination(final RouteSpecification routeSpecification) {
-    return mostRecentHandlingActivity != null &&
+    return isHandled() &&
           (CLAIM.sameValueAs(mostRecentHandlingActivity.type()) || UNLOAD.sameValueAs(mostRecentHandlingActivity.type()) &&
            routeSpecification.destination().sameAs(mostRecentHandlingActivity.location()));
   }
@@ -144,34 +146,10 @@ public class Delivery implements ValueObject<Delivery> {
            !isMisdirected(itinerary, routeSpecification);
   }
 
-  @Override
-  public boolean sameValueAs(final Delivery other) {
-    return other != null && new EqualsBuilder().
-      append(this.mostRecentHandlingActivity, other.mostRecentHandlingActivity).
-      append(this.calculatedAt, other.calculatedAt).
-      isEquals();
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    final Delivery other = (Delivery) o;
-
-    return sameValueAs(other);
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-      append(mostRecentHandlingActivity).
-      append(calculatedAt).
-      toHashCode();
-  }
-
   Delivery() {
     // Needed by Hibernate
+    calculatedAt = null;
+    mostRecentHandlingActivity = null;
   }
 
 }

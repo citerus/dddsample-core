@@ -1,26 +1,24 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.Date;
 
 /**
  * An itinerary consists of one or more legs.
  */
-public class Leg implements ValueObject<Leg> {
+public class Leg extends ValueObjectSupport<Leg> {
 
-  private Voyage voyage;
-  private Location loadLocation;
-  private Location unloadLocation;
-  private Date loadTime;
-  private Date unloadTime;
+  private final Voyage voyage;
+  private final Location loadLocation;
+  private final Location unloadLocation;
+  private final Date loadTime;
+  private final Date unloadTime;
 
-  // TODO hide this, use factory
+  // TODO hide this, use factory only
   public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
     Validate.notNull(voyage, "Voyage is required");
     Validate.notNull(loadLocation, "Load location is required");
@@ -86,38 +84,6 @@ public class Leg implements ValueObject<Leg> {
   }
 
   @Override
-  public boolean sameValueAs(final Leg other) {
-    return other != null && new EqualsBuilder().
-      append(this.voyage, other.voyage).
-      append(this.loadLocation, other.loadLocation).
-      append(this.unloadLocation, other.unloadLocation).
-      append(this.loadTime, other.loadTime).
-      append(this.unloadTime, other.unloadTime).
-      isEquals();
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    Leg leg = (Leg) o;
-
-    return sameValueAs(leg);
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-      append(voyage).
-      append(loadLocation).
-      append(unloadLocation).
-      append(loadTime).
-      append(unloadTime).
-      toHashCode();
-  }
-
-  @Override
   public String toString() {
     return "Load in " + loadLocation + " at " + loadTime +
       " --- Unload in " + unloadLocation + " at " + unloadTime;
@@ -125,9 +91,9 @@ public class Leg implements ValueObject<Leg> {
 
   Leg() {
     // Needed by Hibernate
+    voyage = null;
+    loadLocation = unloadLocation = null;
+    loadTime = unloadTime = null;
   }
-
-  // Auto-generated surrogate key
-  private Long id;
 
 }

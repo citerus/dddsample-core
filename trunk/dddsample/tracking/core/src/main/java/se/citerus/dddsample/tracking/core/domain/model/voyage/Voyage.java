@@ -2,7 +2,7 @@ package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.tracking.core.domain.shared.Entity;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,9 +11,9 @@ import java.util.List;
 /**
  * A Voyage.
  */
-public class Voyage implements Entity<Voyage> {
+public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
 
-  private VoyageNumber voyageNumber;
+  private final VoyageNumber voyageNumber;
   private Schedule schedule;
 
   // Null object pattern
@@ -29,6 +29,11 @@ public class Voyage implements Entity<Voyage> {
     this.schedule = schedule;
   }
 
+  @Override
+  public VoyageNumber identity() {
+    return voyageNumber;
+  }
+  
   /**
    * @return Voyage number.
    */
@@ -65,38 +70,14 @@ public class Voyage implements Entity<Voyage> {
   }
 
   @Override
-  public int hashCode() {
-    return voyageNumber.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null) return false;
-    if (!(o instanceof Voyage)) return false;
-
-    final Voyage that = (Voyage) o;
-
-    return sameAs(that);
-  }
-
-  @Override
-  public boolean sameAs(Voyage other) {
-    return other != null && this.voyageNumber().sameValueAs(other.voyageNumber());
-  }
-
-  @Override
   public String toString() {
     return "Voyage " + voyageNumber;
   }
 
   Voyage() {
     // Needed by Hibernate
+    voyageNumber = null;
   }
-
-  // Needed by Hibernate
-  private Long id;
-
 
   /**
    * Builder pattern is used for incremental construction

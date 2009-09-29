@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.shared.AbstractSpecification;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObject;
 
 import java.util.Date;
 
@@ -13,11 +13,12 @@ import java.util.Date;
  * Route specification. Describes where a cargo orign and destination is,
  * and the arrival deadline.
  */
+// TODO use composition instead of inheritance
 public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
 
-  private Location origin;
-  private Location destination;
-  private Date arrivalDeadline;
+  private final Location origin;
+  private final Location destination;
+  private final Date arrivalDeadline;
 
   /**
    * @param origin          origin location - can't be the same as the destination
@@ -123,6 +124,8 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
 
   RouteSpecification() {
     // Needed by Hibernate
+    origin = destination = null;
+    arrivalDeadline = null;
   }
 
 }

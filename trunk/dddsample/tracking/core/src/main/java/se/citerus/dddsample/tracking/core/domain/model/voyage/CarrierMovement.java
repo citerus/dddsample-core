@@ -1,10 +1,8 @@
 package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.tracking.core.domain.shared.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
 
 import java.util.Date;
 
@@ -12,12 +10,12 @@ import java.util.Date;
 /**
  * A carrier movement is a vessel voyage from one location to another.
  */
-public final class CarrierMovement implements ValueObject<CarrierMovement> {
+public final class CarrierMovement extends ValueObjectSupport<CarrierMovement> {
 
-  private Location departureLocation;
-  private Location arrivalLocation;
-  private Date departureTime;
-  private Date arrivalTime;
+  private final Location departureLocation;
+  private final Location arrivalLocation;
+  private final Date departureTime;
+  private final Date arrivalTime;
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
@@ -86,40 +84,10 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
     );
   }
 
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    final CarrierMovement that = (CarrierMovement) o;
-
-    return sameValueAs(that);
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-      append(this.departureLocation).
-      append(this.departureTime).
-      append(this.arrivalLocation).
-      append(this.arrivalTime).
-      toHashCode();
-  }
-
-  @Override
-  public boolean sameValueAs(CarrierMovement other) {
-    return other != null && new EqualsBuilder().
-      append(this.departureLocation, other.departureLocation).
-      append(this.departureTime, other.departureTime).
-      append(this.arrivalLocation, other.arrivalLocation).
-      append(this.arrivalTime, other.arrivalTime).
-      isEquals();
-  }
-
   CarrierMovement() {
     // Needed by Hibernate
+    arrivalLocation = departureLocation = null;
+    arrivalTime = departureTime = null;
   }
 
-  // Auto-generated surrogate key
-  private Long id;
 }
