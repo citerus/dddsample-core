@@ -1,6 +1,6 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
 
 
 /**

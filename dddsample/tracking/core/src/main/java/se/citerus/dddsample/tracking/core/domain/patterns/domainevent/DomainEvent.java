@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared.experimental;
+package se.citerus.dddsample.tracking.core.domain.patterns.domainevent;
 
 /**
  * A domain event is something that is unique, but does not have a lifecycle.

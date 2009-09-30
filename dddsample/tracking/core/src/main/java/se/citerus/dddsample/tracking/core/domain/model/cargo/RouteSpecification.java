@@ -4,8 +4,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.tracking.core.domain.shared.AbstractSpecification;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.patterns.specification.AbstractSpecification;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
 
 import java.util.Date;
 

@@ -4,7 +4,7 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 /**
  * A handling activity represents how and where a cargo can be handled,

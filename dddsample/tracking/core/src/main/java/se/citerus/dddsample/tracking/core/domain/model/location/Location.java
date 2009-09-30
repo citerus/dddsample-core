@@ -1,7 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 import java.util.TimeZone;
 

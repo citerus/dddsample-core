@@ -6,7 +6,7 @@ import se.citerus.dddsample.tracking.core.domain.model.location.CustomsZone;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 import java.util.Date;
 

@@ -1,9 +1,9 @@
-package se.citerus.dddsample.tracking.core.domain.shared;
+package se.citerus.dddsample.tracking.core.domain.patterns.specification;
 
 /**
  * Specificaiton interface.
  * <p/>
- * Use {@link se.citerus.dddsample.tracking.core.domain.shared.AbstractSpecification} as base for creating specifications, and
+ * Use {@link se.citerus.dddsample.tracking.core.domain.patterns.specification.AbstractSpecification} as base for creating specifications, and
  * only the method {@link #isSatisfiedBy(Object)} must be implemented.
  */
 public interface Specification<T> {

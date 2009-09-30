@@ -1,6 +1,7 @@
-package se.citerus.dddsample.tracking.core.domain.shared.experimental;
+package se.citerus.dddsample.tracking.core.domain.patterns.experimental;
 
 import junit.framework.TestCase;
+import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 public class EntitySupportTest extends TestCase {
 

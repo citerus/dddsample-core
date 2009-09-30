@@ -1,6 +1,7 @@
-package se.citerus.dddsample.tracking.core.domain.shared.experimental;
+package se.citerus.dddsample.tracking.core.domain.patterns.experimental;
 
 import junit.framework.TestCase;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 
 public class ValueObjectSupportTest extends TestCase {
