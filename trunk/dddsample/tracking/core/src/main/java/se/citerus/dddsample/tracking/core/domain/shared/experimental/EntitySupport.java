@@ -11,9 +11,6 @@ public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, I
   }
 
   @Override
-  public abstract ID identity();
-
-  @Override
   public final int hashCode() {
     return identity().hashCode();
   }
