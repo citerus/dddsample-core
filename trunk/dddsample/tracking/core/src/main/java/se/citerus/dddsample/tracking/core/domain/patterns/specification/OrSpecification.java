@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared;
+package se.citerus.dddsample.tracking.core.domain.patterns.specification;
 
 /**
  * OR specification, used to create a new specifcation that is the OR of two other specifications.

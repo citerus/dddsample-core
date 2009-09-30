@@ -1,7 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 /**
  * Identifies a voyage.

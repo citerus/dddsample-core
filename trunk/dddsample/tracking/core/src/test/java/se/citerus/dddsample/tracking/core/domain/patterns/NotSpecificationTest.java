@@ -1,6 +1,9 @@
-package se.citerus.dddsample.tracking.core.domain.shared;
+package se.citerus.dddsample.tracking.core.domain.patterns;
 
 import junit.framework.TestCase;
+import se.citerus.dddsample.tracking.core.domain.patterns.specification.AlwaysFalseSpec;
+import se.citerus.dddsample.tracking.core.domain.patterns.specification.AlwaysTrueSpec;
+import se.citerus.dddsample.tracking.core.domain.patterns.specification.NotSpecification;
 
 public class NotSpecificationTest extends TestCase {
 

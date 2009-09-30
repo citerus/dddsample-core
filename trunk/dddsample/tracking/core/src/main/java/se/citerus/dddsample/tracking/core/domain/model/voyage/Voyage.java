@@ -2,7 +2,7 @@ package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.EntitySupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 import java.util.ArrayList;
 import java.util.Date;

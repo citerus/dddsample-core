@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared;
+package se.citerus.dddsample.tracking.core.domain.patterns.specification;
 
 /**
  * NOT decorator, used to create a new specifcation that is the inverse (NOT) of the given spec.

@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared;
+package se.citerus.dddsample.tracking.core.domain.patterns.specification;
 
 /**
  * AND specification, used to create a new specifcation that is the AND of two other specifications.

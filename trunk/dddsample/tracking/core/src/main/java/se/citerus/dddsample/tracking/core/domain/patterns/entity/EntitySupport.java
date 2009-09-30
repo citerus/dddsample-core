@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared.experimental;
+package se.citerus.dddsample.tracking.core.domain.patterns.entity;
 
 /**
  * Supporting base class for entities.

@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared.experimental;
+package se.citerus.dddsample.tracking.core.domain.patterns.valueobject;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

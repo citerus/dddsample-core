@@ -1,6 +1,6 @@
 package se.citerus.dddsample.tracking.core.domain.model.handling;
 
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObjectSupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 import java.util.concurrent.atomic.AtomicLong;
 

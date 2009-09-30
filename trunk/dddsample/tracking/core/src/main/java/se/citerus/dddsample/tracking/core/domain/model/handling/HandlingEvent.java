@@ -7,9 +7,9 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.shared.DomainObjectUtils;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.DomainEvent;
-import se.citerus.dddsample.tracking.core.domain.shared.experimental.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.patterns.DomainObjectUtils;
+import se.citerus.dddsample.tracking.core.domain.patterns.domainevent.DomainEvent;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
 
 import java.util.Date;
 

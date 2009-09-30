@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.shared;
+package se.citerus.dddsample.tracking.core.domain.patterns;
 
 /**
  * Utility code for domain classes.
