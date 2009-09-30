@@ -5,6 +5,8 @@ package se.citerus.dddsample.tracking.core.domain.shared.experimental;
  * The identity may be explicit, for example the sequence number of a payment,
  * or it could be derived from various aspects of the event such as where, when and what
  * has happened.
+ *
+ * TODO create support class
  */
 public interface DomainEvent<T> {
 
