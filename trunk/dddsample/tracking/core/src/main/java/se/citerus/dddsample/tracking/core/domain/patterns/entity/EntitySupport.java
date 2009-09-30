@@ -10,6 +10,9 @@ package se.citerus.dddsample.tracking.core.domain.patterns.entity;
  */
 public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, ID> {
 
+  @SuppressWarnings("UnusedDeclaration")
+  private final Long _primaryKey = null;
+  
   @Override
   public final boolean sameAs(final T other) {
     return other != null && this.identity().equals(other.identity());
@@ -30,9 +33,5 @@ public abstract class EntitySupport<T extends Entity, ID> implements Entity<T, I
 
     return sameAs((T) o);
   }
-
-  @SuppressWarnings("UnusedDeclaration")
-  // Surrogate primary key
-  private Long id;
 
 }
