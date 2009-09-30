@@ -7,7 +7,6 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.patterns.DomainObjectUtils;
 import se.citerus.dddsample.tracking.core.domain.patterns.domainevent.DomainEvent;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
 
@@ -159,7 +158,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public Voyage voyage() {
-    return DomainObjectUtils.nullSafe(activity.voyage(), Voyage.NONE);
+    return activity.voyage() != null ? activity.voyage() : Voyage.NONE;
   }
 
   public Date completionTime() {
