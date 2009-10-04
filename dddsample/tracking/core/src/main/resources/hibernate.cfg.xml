@@ -9,7 +9,9 @@
   <session-factory>
     <!-- Properties defined here are shared between test and production -->
     <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
-    
+    <property name="format_sql">true</property>
+    <property name="hbm2ddl.auto">create-drop</property>
+
     <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/Cargo.hbm.xml" />
     <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/Voyage.hbm.xml" />
     <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/Leg.hbm.xml" />
