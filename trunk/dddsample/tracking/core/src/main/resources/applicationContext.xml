@@ -6,10 +6,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-  <import resource="context-infrastructure.xml"/>
-  <import resource="context-domain.xml"/>
-  <import resource="context-application.xml"/>
-  <import resource="context-interfaces.xml"/>
+  <import resource="contexts/context-infrastructure.xml"/>
+  <import resource="contexts/context-domain.xml"/>
+  <import resource="contexts/context-application.xml"/>
+  <import resource="contexts/context-interfaces.xml"/>
 
   <context:annotation-config/>
 
