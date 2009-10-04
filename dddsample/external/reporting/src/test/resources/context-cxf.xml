@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
+
+  <jaxrs:server address="http://localhost:14000" id="jaxRsService">
+    <jaxrs:serviceBeans>
+      <ref bean="reportingService"/>
+    </jaxrs:serviceBeans>
+  </jaxrs:server>
+
+</beans>
