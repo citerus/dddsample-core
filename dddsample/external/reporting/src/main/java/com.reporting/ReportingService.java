@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.DataAccessException;
 
 import javax.sql.DataSource;
 import javax.ws.rs.GET;
@@ -83,7 +84,11 @@ public class ReportingService {
   private VoyageReport loadVoyageReport(String voyageNumber) {
     String[] args = {voyageNumber};
     String sql = "select * from voyage where voyage_number = ?";
-    return (VoyageReport) jdbc.queryForObject(sql, args, rowMapper);
+    try {
+      return (VoyageReport) jdbc.queryForObject(sql, args, rowMapper);
+    } catch (EmptyResultDataAccessException e) {
+      return null;
+    }
   }
 
   ReportingService() {

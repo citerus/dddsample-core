@@ -21,7 +21,7 @@ import java.io.IOException;
 public class ReportServiceTest {
 
   @Test
-  public void deliveryReport() throws Exception {
+  public void cargoReport() throws Exception {
     JSONObject json = readJSON("/report/cargo/ABC");
     JSONObject cargo = json.getJSONObject("cargo");
     
@@ -44,6 +44,29 @@ public class ReportServiceTest {
     verifyHandling(handlings.getJSONObject(3), "Load", "Long Beach", "V0200");
   }
 
+  @Test
+  public void cargoNotFound() throws Exception {
+    assertEquals("", readString("/report/cargo/NOSUCH"));
+  }
+
+  @Test
+  public void voyageReport() throws Exception {
+    JSONObject json = readJSON("/report/voyage/V0200");
+    JSONObject voyage = json.getJSONObject("voyage");
+
+    assertEquals("V0200", voyage.get("voyageNumber"));
+    assertEquals("Seattle", voyage.get("nextStop"));
+    assertEquals("6/7/09 12:45 PM", voyage.get("etaNextStop"));
+    assertEquals("In transit", voyage.get("currentStatus"));
+    assertEquals(0, voyage.get("delayedByMinutes"));
+    assertEquals("6/6/09 2:01 PM", voyage.get("lastUpdatedOn"));
+  }
+
+  @Test
+  public void voyageNotFound() throws Exception {
+    assertEquals("", readString("/report/voyage/NOSUCH"));
+  }
+
   private void verifyHandling(JSONObject handling, String type, String location, String voyage) throws JSONException {
     assertEquals(type, handling.get("type"));
     assertEquals(location, handling.get("location"));
@@ -54,18 +77,14 @@ public class ReportServiceTest {
     }
   }
 
-  @Test
-  public void voyageReport() throws Exception {
-    JSONObject json = readJSON("/report/voyage/V0200");
-    JSONObject voyage = json.getJSONObject("voyage");
-
-    assertEquals("V0200", voyage.get("voyageNumber"));
+  private JSONObject readJSON(String path) throws IOException, JSONException {
+    String jsonString = readString(path);
+    return new JSONObject(jsonString);
   }
 
-  private JSONObject readJSON(String path) throws IOException, JSONException {
+  private String readString(String path) throws IOException {
     URLConnection urlConnection = new URL("http://localhost:14000" + path).openConnection();
-    String jsonString = IOUtils.toString(urlConnection.getInputStream());
-    return new JSONObject(jsonString);
+    return IOUtils.toString(urlConnection.getInputStream());
   }
 
 }
