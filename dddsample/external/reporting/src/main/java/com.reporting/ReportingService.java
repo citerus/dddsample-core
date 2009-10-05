@@ -1,10 +1,11 @@
 package com.reporting;
 
+import static com.reporting.Constants.US_DATETIME;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.DataAccessException;
 
 import javax.sql.DataSource;
 import javax.ws.rs.GET;
@@ -12,13 +13,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Context;
-import java.util.List;
-import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
-@Produces("application/json")
+@Produces({"application/json", "application/pdf"})
 @Path("/report")
 public class ReportingService {
 
@@ -37,31 +38,38 @@ public class ReportingService {
   @GET
   @Path("/cargo/{trackingId}")
   @Transactional
-  public CargoReport getCargoReport(@PathParam("trackingId") String trackingId, @Context Response.ResponseBuilder response) {
+  public Response getCargoReport(@PathParam("trackingId") String trackingId) throws ParseException {
     CargoReport cargoReport = loadCargoReport(trackingId);
     if (cargoReport == null) return null;
 
     cargoReport.setHandlings(loadHandlings(trackingId));
-    //response.lastModified(cargoReport.getLastUpdatedOn());
-    return cargoReport;
+
+    return Response.ok(cargoReport).
+      lastModified(US_DATETIME.parse(cargoReport.getLastUpdatedOn())).
+      build();
   }
 
   @GET
   @Path("/voyage/{voyageNumber}")
   @Transactional
-  public VoyageReport getVoyageReport(@PathParam("voyageNumber") String voyageNumber, @Context Response.ResponseBuilder response) {
+  public Response getVoyageReport(@PathParam("voyageNumber") String voyageNumber) throws ParseException {
     VoyageReport voyageReport = loadVoyageReport(voyageNumber);
     if (voyageReport == null) return null;
 
-    //response.lastModified(voyageReport.getLastUpdatedOn());
-    return voyageReport;
+    voyageReport.setOnboardCargos(loadOnboardCargos(voyageNumber));
+
+    return Response.ok(voyageReport).
+      lastModified(US_DATETIME.parse(voyageReport.getLastUpdatedOn())).
+      build();
   }
 
   // --- Private methods ---
 
   private CargoReport loadCargoReport(String trackingId) {
     try {
-      return (CargoReport) jdbc.queryForObject("select * from cargo where cargo_tracking_id = ?", new String[] {trackingId}, cargoReportRowMapper);
+      String[] args = {trackingId};
+      String sql = "select * from cargo where cargo_tracking_id = ?";
+      return (CargoReport) jdbc.queryForObject(sql, args, cargoReportRowMapper);
     } catch (EmptyResultDataAccessException e) {
       return null;
     }
@@ -81,6 +89,29 @@ public class ReportingService {
     return handlings;
   }
 
+  private List<VoyageReport.Cargo> loadOnboardCargos(String voyageNumber) {
+    final List<VoyageReport.Cargo> cargos = new ArrayList<VoyageReport.Cargo>();
+    final ParameterizedRowMapper<VoyageReport.Cargo> rowMapper = new ParameterizedRowMapper<VoyageReport.Cargo>() {
+      @Override
+      public VoyageReport.Cargo mapRow(ResultSet rs, int rowNum) throws SQLException {
+        VoyageReport.Cargo cargo = new VoyageReport.Cargo();
+        cargo.setTrackingId(rs.getString("cargo_tracking_id"));
+        cargo.setFinalDestination(rs.getString("destination"));
+        return cargo;
+      }
+    };
+    String[] args = {voyageNumber};
+    String sql = "select cargo_tracking_id, destination from cargo where current_voyage_number = ?";
+    jdbc.query(sql, args, new RowCallbackHandler() {
+      @Override
+      public void processRow(ResultSet rs) throws SQLException {
+        cargos.add(rowMapper.mapRow(rs, rs.getRow()));
+      }
+    });
+
+    return cargos;
+  }
+
   private VoyageReport loadVoyageReport(String voyageNumber) {
     String[] args = {voyageNumber};
     String sql = "select * from voyage where voyage_number = ?";
@@ -94,5 +125,5 @@ public class ReportingService {
   ReportingService() {
     // Needed by CGLIB
   }
-  
+
 }

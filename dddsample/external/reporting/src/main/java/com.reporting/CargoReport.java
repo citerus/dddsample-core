@@ -102,7 +102,7 @@ public class CargoReport {
     String type;
     String location;
     String voyage;
-    Date completedOn;
+    String completedOn;
 
     public String getType() {
       return type;
@@ -128,11 +128,11 @@ public class CargoReport {
       this.voyage = voyage;
     }
 
-    public Date getCompletedOn() {
+    public String getCompletedOn() {
       return completedOn;
     }
 
-    public void setCompletedOn(Date completedOn) {
+    public void setCompletedOn(String completedOn) {
       this.completedOn = completedOn;
     }
   }

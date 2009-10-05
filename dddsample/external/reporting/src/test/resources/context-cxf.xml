@@ -18,6 +18,10 @@
     <jaxrs:serviceBeans>
       <ref bean="reportingService"/>
     </jaxrs:serviceBeans>
+    <jaxrs:providers>
+      <bean class="com.reporting.PDFCargoReportProvider"/>
+      <bean class="com.reporting.PDFVoyageReportProvider"/>
+    </jaxrs:providers>
   </jaxrs:server>
 
 </beans>
