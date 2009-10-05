@@ -6,20 +6,12 @@ import java.util.Date;
 @XmlRootElement(name = "voyage")
 public class VoyageReport {
 
-  private Date lastUpdatedOn;
   private String voyageNumber;
   private String nextStop;
-  private Date etaNextStop;
+  private String etaNextStop;
   private String currentStatus;
   private int delayedByMinutes;
-
-  public Date getLastUpdatedOn() {
-    return lastUpdatedOn;
-  }
-
-  public void setLastUpdatedOn(Date lastUpdatedOn) {
-    this.lastUpdatedOn = lastUpdatedOn;
-  }
+  private String lastUpdatedOn;
 
   public String getVoyageNumber() {
     return voyageNumber;
@@ -37,11 +29,11 @@ public class VoyageReport {
     this.nextStop = nextStop;
   }
 
-  public Date getEtaNextStop() {
+  public String getEtaNextStop() {
     return etaNextStop;
   }
 
-  public void setEtaNextStop(Date etaNextStop) {
+  public void setEtaNextStop(String etaNextStop) {
     this.etaNextStop = etaNextStop;
   }
 
@@ -60,4 +52,13 @@ public class VoyageReport {
   public void setDelayedByMinutes(int delayedByMinutes) {
     this.delayedByMinutes = delayedByMinutes;
   }
+
+  public String getLastUpdatedOn() {
+    return lastUpdatedOn;
+  }
+
+  public void setLastUpdatedOn(String lastUpdatedOn) {
+    this.lastUpdatedOn = lastUpdatedOn;
+  }
+
 }

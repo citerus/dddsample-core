@@ -39,14 +39,13 @@ insert into voyage (
   current_status,
   delayed_by_min,
   last_updated_on
-)
-values (
+) values (
   'V0100',
   'Honolulu',
-  '',
+  '2009-06-10 04:25:00.000',
   'In port',
-  '300',
-  ''
+  '1400',
+  '2009-06-06 14:01:22.331'
 );
 
 insert into voyage (
@@ -56,12 +55,11 @@ insert into voyage (
   current_status,
   delayed_by_min,
   last_updated_on
-)
-values (
+) values (
   'V0200',
   'Seattle',
-  '',
+  '2009-06-07 12:45:00.000',
   'In transit',
   '0',
-  ''
+  '2009-06-06 14:01:19.901'
 );
