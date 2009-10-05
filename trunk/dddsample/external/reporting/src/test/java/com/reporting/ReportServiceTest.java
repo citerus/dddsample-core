@@ -7,7 +7,6 @@ import org.codehaus.jettison.json.JSONArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,8 +44,31 @@ public class ReportServiceTest {
   }
 
   @Test
+  public void cargoPDFReport() throws Exception {
+    String pdf = readPDF("/report/cargo/ABC");
+    assertTrue(pdf.length() > 0);
+  }
+
+  @Test
   public void cargoNotFound() throws Exception {
     assertEquals("", readString("/report/cargo/NOSUCH"));
+  }
+
+  @Test
+  public void voyageReportWithCargos() throws Exception {
+    JSONObject json = readJSON("/report/voyage/V0100");
+    JSONObject voyage = json.getJSONObject("voyage");
+
+    assertEquals("V0100", voyage.get("voyageNumber"));
+    assertEquals("Honolulu", voyage.get("nextStop"));
+    assertEquals("6/10/09 4:25 AM", voyage.get("etaNextStop"));
+    assertEquals("In port", voyage.get("currentStatus"));
+    assertEquals(1400, voyage.get("delayedByMinutes"));
+    assertEquals("6/6/09 2:01 PM", voyage.get("lastUpdatedOn"));
+
+    JSONObject cargo = voyage.getJSONObject("onboardCargos");
+    assertEquals("ABC", cargo.get("trackingId"));
+    assertEquals("Stockholm", cargo.get("finalDestination"));
   }
 
   @Test
@@ -60,11 +82,18 @@ public class ReportServiceTest {
     assertEquals("In transit", voyage.get("currentStatus"));
     assertEquals(0, voyage.get("delayedByMinutes"));
     assertEquals("6/6/09 2:01 PM", voyage.get("lastUpdatedOn"));
+    assertFalse(voyage.has("onboardCargos"));
   }
 
   @Test
   public void voyageNotFound() throws Exception {
     assertEquals("", readString("/report/voyage/NOSUCH"));
+  }
+
+  @Test
+  public void voyagePDFReport() throws Exception {
+    String pdf = readPDF("/report/voyage/V0200");
+    assertTrue(pdf.length() > 0);
   }
 
   private void verifyHandling(JSONObject handling, String type, String location, String voyage) throws JSONException {
@@ -78,12 +107,23 @@ public class ReportServiceTest {
   }
 
   private JSONObject readJSON(String path) throws IOException, JSONException {
-    String jsonString = readString(path);
+    URL url = new URL("http://localhost:14000" + path);
+    URLConnection urlConnection = url.openConnection();
+    urlConnection.setRequestProperty("Accept", "application/json");
+    String jsonString = IOUtils.toString(urlConnection.getInputStream());
     return new JSONObject(jsonString);
   }
 
   private String readString(String path) throws IOException {
-    URLConnection urlConnection = new URL("http://localhost:14000" + path).openConnection();
+    URL url = new URL("http://localhost:14000" + path);
+    URLConnection urlConnection = url.openConnection();
+    return IOUtils.toString(urlConnection.getInputStream());
+  }
+
+  private String readPDF(String path) throws IOException {
+    URL url = new URL("http://localhost:14000" + path);
+    URLConnection urlConnection = url.openConnection();
+    urlConnection.setRequestProperty("Accept", "application/pdf");
     return IOUtils.toString(urlConnection.getInputStream());
   }
 

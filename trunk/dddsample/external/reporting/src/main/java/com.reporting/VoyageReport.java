@@ -1,7 +1,8 @@
 package com.reporting;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 @XmlRootElement(name = "voyage")
 public class VoyageReport {
@@ -12,6 +13,7 @@ public class VoyageReport {
   private String currentStatus;
   private int delayedByMinutes;
   private String lastUpdatedOn;
+  private List<Cargo> onboardCargos = new ArrayList<Cargo>();
 
   public String getVoyageNumber() {
     return voyageNumber;
@@ -59,6 +61,35 @@ public class VoyageReport {
 
   public void setLastUpdatedOn(String lastUpdatedOn) {
     this.lastUpdatedOn = lastUpdatedOn;
+  }
+
+  public List<Cargo> getOnboardCargos() {
+    return onboardCargos;
+  }
+
+  public void setOnboardCargos(List<Cargo> onboardCargos) {
+    this.onboardCargos = onboardCargos;
+  }
+
+  public static class Cargo {
+    String trackingId;
+    String finalDestination;
+
+    public String getTrackingId() {
+      return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+      this.trackingId = trackingId;
+    }
+
+    public String getFinalDestination() {
+      return finalDestination;
+    }
+
+    public void setFinalDestination(String finalDestination) {
+      this.finalDestination = finalDestination;
+    }
   }
 
 }
