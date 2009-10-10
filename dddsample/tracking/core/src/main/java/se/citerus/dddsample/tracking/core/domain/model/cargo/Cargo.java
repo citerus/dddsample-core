@@ -51,7 +51,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   private RouteSpecification routeSpecification;
   private Itinerary itinerary;
   private Delivery delivery;
-  private Projections projections;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
     Validate.notNull(trackingId, "Tracking ID is required");
@@ -60,7 +59,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     this.trackingId = trackingId;
     this.routeSpecification = routeSpecification;
     this.delivery = Delivery.initial();
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   @Override
@@ -95,14 +93,14 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Estimated time of arrival.
    */
   public Date estimatedTimeOfArrival() {
-    return projections.estimatedTimeOfArrival();
+    return Projections.estimatedTimeOfArrival(delivery, itinerary, routeSpecification);
   }
 
   /**
    * @return Next expected activity.
    */
   public HandlingActivity nextExpectedActivity() {
-    return projections.nextExpectedActivity();
+    return Projections.nextExpectedActivity(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -149,8 +147,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     Validate.notNull(routeSpecification, "Route specification is required");
 
     this.routeSpecification = routeSpecification;
-    // Handling consistency within the Cargo aggregate synchronously
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -162,8 +158,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     Validate.notNull(itinerary, "Itinerary is required");
 
     this.itinerary = itinerary;
-    // Handling consistency within the Cargo aggregate synchronously
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   /**
@@ -208,7 +202,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
 
     // Delivery and Projections are value object, so they are replaced with new or derived ones
     this.delivery = Delivery.whenHandled(handlingActivity);
-    this.projections = new Projections(delivery, itinerary, routeSpecification);
   }
 
   @Override
