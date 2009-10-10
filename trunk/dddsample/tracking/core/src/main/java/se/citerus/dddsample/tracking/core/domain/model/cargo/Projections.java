@@ -16,45 +16,30 @@ import java.util.Iterator;
  */
 class Projections extends ValueObjectSupport<Projections> {
 
-  private final Date estimatedTimeOfArrival;
-  private final HandlingActivity nextExpectedActivity;
-
   private static final Date ETA_UNKOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;
 
-  Projections(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
-    this.estimatedTimeOfArrival = calculateEstimatedTimeOfArrival(delivery, itinerary, routeSpecification);
-    this.nextExpectedActivity = calculateNextExpectedActivity(delivery, itinerary, routeSpecification);
-  }
-
   /**
+   * @param delivery delivery
+   * @param itinerary itinerary
+   * @param routeSpecification routeSpecification
    * @return Estimated time of arrival, or null if not known.
    */
-  Date estimatedTimeOfArrival() {
-    if (estimatedTimeOfArrival != ETA_UNKOWN) {
-      return new Date(estimatedTimeOfArrival.getTime());
+  static Date estimatedTimeOfArrival(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
+    if (delivery.onTrack(itinerary, routeSpecification)) {
+      return new Date(itinerary.finalUnloadTime().getTime());
     } else {
       return ETA_UNKOWN;
     }
   }
 
   /**
+   * @param delivery delivery
+   * @param itinerary itinerary
+   * @param routeSpecification routeSpecification 
    * @return The next expected handling activity.
    */
-  HandlingActivity nextExpectedActivity() {
-    return nextExpectedActivity;
-  }
-
-  private Date calculateEstimatedTimeOfArrival(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
-    if (delivery.onTrack(itinerary, routeSpecification)) {
-      return itinerary.finalUnloadTime();
-    } else {
-      return ETA_UNKOWN;
-    }
-  }
-
-  private HandlingActivity calculateNextExpectedActivity(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
-
+  static HandlingActivity nextExpectedActivity(final Delivery delivery, final Itinerary itinerary, final RouteSpecification routeSpecification) {
     /*
      TODO Capture:
 
@@ -91,27 +76,22 @@ class Projections extends ValueObjectSupport<Projections> {
     }
   }
 
-  private HandlingActivity receiveInFirstLocation(final Itinerary itinerary) {
+  private static HandlingActivity receiveInFirstLocation(final Itinerary itinerary) {
     final Leg leg = itinerary.firstLeg();
     return new HandlingActivity(RECEIVE, leg.loadLocation());
   }
 
-  private HandlingActivity loadInFirstLocation(final Itinerary itinerary) {
+  private static HandlingActivity loadInFirstLocation(final Itinerary itinerary) {
     final Leg leg = itinerary.firstLeg();
     return new HandlingActivity(LOAD, leg.loadLocation(), leg.voyage());
   }
 
-  private HandlingActivity loadOrClaimInNextLocation(final Itinerary itinerary, final Location activityLocation) {
+  private static HandlingActivity loadOrClaimInNextLocation(final Itinerary itinerary, final Location activityLocation) {
     for (final Iterator<Leg> it = itinerary.legs().iterator(); it.hasNext();) {
       final Leg leg = it.next();
       if (leg.unloadLocation().sameAs(activityLocation)) {
         if (it.hasNext()) {
           final Leg nextLeg = it.next();
-
-          //return leg.loadActivity(); { return new HandlingActivity(voyage, loadLocation); }
-
-          //return HandlingActivity.loadOnto(nextLeg.voyage()).in(nextLeg.loadLocation());
-
           return new HandlingActivity(LOAD, nextLeg.loadLocation(), nextLeg.voyage());
         } else {
           return new HandlingActivity(CLAIM, leg.unloadLocation());
@@ -122,7 +102,7 @@ class Projections extends ValueObjectSupport<Projections> {
     return NO_ACTIVITY;
   }
 
-  private HandlingActivity unloadInNextLocation(final Itinerary itinerary, final Location activityLocation) {
+  private static HandlingActivity unloadInNextLocation(final Itinerary itinerary, final Location activityLocation) {
     for (final Leg leg : itinerary.legs()) {
       if (leg.loadLocation().sameAs(activityLocation)) {
         return new HandlingActivity(UNLOAD, leg.unloadLocation(), leg.voyage());
@@ -134,8 +114,6 @@ class Projections extends ValueObjectSupport<Projections> {
 
   Projections() {
     // Needed by Hibernate
-    estimatedTimeOfArrival = null;
-    nextExpectedActivity = null;
   }
 
 }
