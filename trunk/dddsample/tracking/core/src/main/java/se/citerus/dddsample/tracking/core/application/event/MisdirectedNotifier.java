@@ -1,9 +1,3 @@
-/**
- * Purpose
- * @author peter
- * @created 2009-aug-03
- * $Id$
- */
 package se.citerus.dddsample.tracking.core.application.event;
 
 import org.apache.commons.logging.Log;
@@ -32,6 +26,10 @@ public class MisdirectedNotifier {
     final Cargo cargo = cargoRepository.find(trackingId);
 
     if (cargo.isMisdirected()) {
+      /**
+       * In a real system, some significant action would be taken
+       * when this happens.
+       */
       LOG.info("Cargo " + cargo + " is misdirected!");
     }
   }
