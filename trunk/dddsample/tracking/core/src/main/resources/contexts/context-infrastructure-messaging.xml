@@ -12,29 +12,34 @@
 
   <!--context:component-scan base-package="se.citerus.dddsample.tracking.core.infrastructure.messaging.jms"/-->
 
+  <!-- TODO
+    CargoHandled + CargoUpdated are inconsistent names for queues and event descriptions.
+    NewHandlingEvent and CargoHandled would be more in line with the rest of the application
+  -->
+
   <amq:connectionFactory id="jmsConnectionFactory"
                          brokerURL="vm://localhost?broker.persistent=false&amp;broker.useJmx=false"/>
 
-  <amq:queue id="cargoHandledQueue" name="CargoHandledQueue" physicalName="CargoHandledQueue"/>
-  <amq:topic id="cargoUpdateTopic" name="CargUpdateTopic" physicalName="CargoUpdateTopic"/>
+  <amq:topic id="cargoHandledTopic" name="CargoHandledTopic" physicalName="CargoHandledTopic"/>
+  <amq:topic id="cargoUpdatedTopic" name="CargUpdatedTopic" physicalName="CargoUpdatedTopic"/>
 
   <jms:listener-container connection-factory="jmsConnectionFactory">
-    <jms:listener destination="CargoHandledQueue" ref="listener3"/>
-    <jms:listener destination="CargoUpdateTopic" ref="listener1"/>
-    <jms:listener destination="CargoUpdateTopic" ref="listener2"/>
+    <jms:listener destination="CargoUpdateTopic" ref="misdirectedNotifierListener"/>
+    <jms:listener destination="CargoUpdateTopic" ref="readyToClaimNotfierListener"/>
+    <jms:listener destination="CargoHandledTopic" ref="cargoUpdaterListener"/>
   </jms:listener-container>
 
-  <bean id="listener1" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+  <bean id="misdirectedNotifierListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
     <property name="delegate" ref="misdirectedNotifier"/>
     <property name="defaultListenerMethod" value="alertIfMisdirected"/>
   </bean>
 
-  <bean id="listener2" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+  <bean id="readyToClaimNotfierListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
     <property name="delegate" ref="readyToClaimNotfier"/>
     <property name="defaultListenerMethod" value="alertIfReadyToClaim"/>
   </bean>
 
-  <bean id="listener3" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+  <bean id="cargoUpdaterListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
     <property name="delegate" ref="cargoUpdater"/>
     <property name="defaultListenerMethod" value="updateCargo"/>
   </bean>
@@ -45,8 +50,8 @@
 
   <bean class="se.citerus.dddsample.tracking.core.infrastructure.messaging.jms.JmsSystemEventsImpl">
     <constructor-arg ref="jmsOperations"/>
-    <constructor-arg ref="cargoHandledQueue"/>
-    <constructor-arg ref="cargoUpdateTopic"/>
+    <constructor-arg ref="cargoHandledTopic"/>
+    <constructor-arg ref="cargoUpdatedTopic"/>
   </bean>
   
 </beans>
