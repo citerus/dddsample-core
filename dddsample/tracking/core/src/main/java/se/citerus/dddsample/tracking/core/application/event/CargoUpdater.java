@@ -21,38 +21,28 @@ public class CargoUpdater {
   private final Log logger = LogFactory.getLog(getClass());
 
   @Autowired
-  public CargoUpdater(final SystemEvents systemEvents,
-                      final CargoRepository cargoRepository,
-                      final HandlingEventRepository handlingEventRepository) {
+  public CargoUpdater(SystemEvents systemEvents,
+                      CargoRepository cargoRepository,
+                      HandlingEventRepository handlingEventRepository) {
     this.systemEvents = systemEvents;
     this.cargoRepository = cargoRepository;
     this.handlingEventRepository = handlingEventRepository;
   }
 
   @Transactional
-  public void updateCargo(final EventSequenceNumber eventSequenceNumber) {
-    final HandlingEvent handlingEvent = handlingEventRepository.find(eventSequenceNumber);
+  public void updateCargo(final EventSequenceNumber sequenceNumber) {
+    final HandlingEvent handlingEvent = handlingEventRepository.find(sequenceNumber);
+    if (handlingEvent == null) {
+      logger.error("Could not find any handling event with sequence number " + sequenceNumber);
+      return;
+    }
+
     final HandlingActivity activity = handlingEvent.activity();
     final Cargo cargo = handlingEvent.cargo();
 
     cargo.handled(activity);
-
-    // TODO create domain events and deal with them as a result of the handling
-    /*
-    Here's an idea:
-
-    ResultOfHandling result = cargo.effectOf(activity);
-    cargo.apply(result);
-
-    or
-
-    cargo.handled(activity);
-    Delivery delivery = cargo.currentDelivery();
-    send all delivery.events();
-
-    */
-
     cargoRepository.store(cargo);
+
     systemEvents.notifyOfCargoUpdate(cargo);
     logger.info("Updated cargo " + cargo);
   }
