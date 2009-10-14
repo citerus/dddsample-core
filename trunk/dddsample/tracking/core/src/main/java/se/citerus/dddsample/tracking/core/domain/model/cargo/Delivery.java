@@ -15,7 +15,7 @@ import java.util.Date;
  * Everything about the delivery of the cargo, i.e. where the cargo is
  * right now, whether or not it's routed, misdirected and so on.
  */
-public class Delivery extends ValueObjectSupport<Delivery> {
+class Delivery extends ValueObjectSupport<Delivery> {
 
   private final HandlingActivity mostRecentHandlingActivity;
   private final Date calculatedAt;
@@ -55,7 +55,7 @@ public class Delivery extends ValueObjectSupport<Delivery> {
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   Location lastKnownLocation() {
-    if (isHandled()) {
+    if (hasBeenHandled()) {
       return mostRecentHandlingActivity.location();
     } else {
       return Location.UNKNOWN;
@@ -66,14 +66,14 @@ public class Delivery extends ValueObjectSupport<Delivery> {
    * @return Current voyage.
    */
   Voyage currentVoyage() {
-    if (isHandled() && transportStatus().equals(ONBOARD_CARRIER)) {
+    if (hasBeenHandled() && transportStatus() == ONBOARD_CARRIER) {
       return mostRecentHandlingActivity.voyage();
     } else {
       return Voyage.NONE;
     }
   }
 
-  private boolean isHandled() {
+  private boolean hasBeenHandled() {
     return mostRecentHandlingActivity != null;
   }
 
@@ -91,15 +91,19 @@ public class Delivery extends ValueObjectSupport<Delivery> {
    * @param routeSpecification route specification
    */
   boolean isMisdirected(final Itinerary itinerary, final RouteSpecification routeSpecification) {
-    if (mostRecentHandlingActivity == null) {
+    if (!hasBeenHandled()) {
       return false;
     }
 
-    if (CUSTOMS.sameValueAs(mostRecentHandlingActivity.type())) {
-      return !routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
+    if (mostRecentHandlingActivity.type() == CUSTOMS) {
+      return !handledAtDestination(routeSpecification);
     } else {
-      return !itinerary.isExpected(mostRecentHandlingActivity);
+      return !itinerary.wasExpecting(mostRecentHandlingActivity);
     }
+  }
+
+  private boolean handledAtDestination(final RouteSpecification routeSpecification) {
+    return routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
   }
 
   /**
@@ -107,9 +111,12 @@ public class Delivery extends ValueObjectSupport<Delivery> {
    * @param routeSpecification route specification
    */
   boolean isUnloadedAtDestination(final RouteSpecification routeSpecification) {
-    return isHandled() &&
-          (CLAIM.sameValueAs(mostRecentHandlingActivity.type()) || UNLOAD.sameValueAs(mostRecentHandlingActivity.type()) &&
-           routeSpecification.destination().sameAs(mostRecentHandlingActivity.location()));
+    if (hasBeenHandled()) {
+      return (mostRecentHandlingActivity.type() == CLAIM ||
+              mostRecentHandlingActivity.type() == UNLOAD && handledAtDestination(routeSpecification));
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -142,8 +149,7 @@ public class Delivery extends ValueObjectSupport<Delivery> {
    * @param routeSpecification route specification
    */
   boolean onTrack(final Itinerary itinerary, final RouteSpecification routeSpecification) {
-    return routingStatus(itinerary, routeSpecification).sameValueAs(ROUTED) && 
-           !isMisdirected(itinerary, routeSpecification);
+    return routingStatus(itinerary, routeSpecification) == ROUTED && !isMisdirected(itinerary, routeSpecification);
   }
 
   Delivery() {

@@ -7,7 +7,7 @@ import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Leg;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.MISROUTED;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
@@ -49,7 +49,7 @@ final class DTOAssembler {
       cargo.routeSpecification().origin().unLocode().stringValue(),
       cargo.routeSpecification().destination().unLocode().stringValue(),
       cargo.routeSpecification().arrivalDeadline(),
-      cargo.routingStatus().sameValueAs(RoutingStatus.MISROUTED),
+      cargo.routingStatus() == MISROUTED,
       legDTOList
     );
   }
