@@ -46,12 +46,12 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
   }
 
   /**
-   * Test if the given handling event is expected when executing this itinerary.
+   * Test if the given handling event was expected when executing this itinerary.
    *
    * @param handlingActivity Event to test.
    * @return <code>true</code> if the event is expected
    */
-  public boolean isExpected(final HandlingActivity handlingActivity) {
+  public boolean wasExpecting(final HandlingActivity handlingActivity) {
     if (isEmpty()) {
       return false;
     }
@@ -198,7 +198,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
   /**
    * @return Estimated time of arrival
    */
-  public Date estimatedTimeOfArrival() {
+  Date estimatedTimeOfArrival() {
     return new Date(finalUnloadTime().getTime());
   }
 
