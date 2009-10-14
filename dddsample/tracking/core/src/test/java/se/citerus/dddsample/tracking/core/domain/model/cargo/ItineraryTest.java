@@ -50,22 +50,22 @@ public class ItineraryTest extends TestCase {
     // HandlingActivity.Load(cargo, RECEIVE, SHANGHAI, toDate("2009-05-03"))
     //Happy path
     HandlingActivity receiveShanghai = new HandlingActivity(RECEIVE, SHANGHAI);
-    assertTrue(itinerary.isExpected(receiveShanghai));
+    assertTrue(itinerary.wasExpecting(receiveShanghai));
 
     HandlingActivity loadShanghai = new HandlingActivity(LOAD, SHANGHAI, voyage);
-    assertTrue(itinerary.isExpected(loadShanghai));
+    assertTrue(itinerary.wasExpecting(loadShanghai));
 
     HandlingActivity unloadRotterdam = new HandlingActivity(UNLOAD, ROTTERDAM, voyage);
-    assertTrue(itinerary.isExpected(unloadRotterdam));
+    assertTrue(itinerary.wasExpecting(unloadRotterdam));
 
     HandlingActivity loadRotterdam = new HandlingActivity(LOAD, ROTTERDAM, voyage);
-    assertTrue(itinerary.isExpected(loadRotterdam));
+    assertTrue(itinerary.wasExpecting(loadRotterdam));
 
     HandlingActivity unloadGothenburg = new HandlingActivity(UNLOAD, GOTHENBURG, voyage);
-    assertTrue(itinerary.isExpected(unloadGothenburg));
+    assertTrue(itinerary.wasExpecting(unloadGothenburg));
 
     HandlingActivity claimGothenburg = new HandlingActivity(CLAIM, GOTHENBURG);
-    assertTrue(itinerary.isExpected(claimGothenburg));
+    assertTrue(itinerary.wasExpecting(claimGothenburg));
 
     //TODO Customs event can only be interpreted properly by knowing the destination of the cargo.
     // This can be inferred from the Itinerary, but it isn't definitive. So, do we answer based on
@@ -73,22 +73,22 @@ public class ItineraryTest extends TestCase {
     // ignore this at itinerary level somehow and leave it purely as a cargo responsibility.
     // (See customsClearancePoint tests in CargoTest)
 //    HandlingActivity customsGothenburg = new HandlingActivity(CUSTOMS, GOTHENBURG);
-//    assertTrue(itinerary.isExpected(customsGothenburg));
+//    assertTrue(itinerary.wasExpecting(customsGothenburg));
 
     //Received at the wrong location
     HandlingActivity receiveHangzou = new HandlingActivity(RECEIVE, HANGZOU);
-    assertFalse(itinerary.isExpected(receiveHangzou));
+    assertFalse(itinerary.wasExpecting(receiveHangzou));
 
     //Loaded to onto the wrong ship, correct location
     HandlingActivity loadRotterdam666 = new HandlingActivity(LOAD, ROTTERDAM, wrongVoyage);
-    assertFalse(itinerary.isExpected(loadRotterdam666));
+    assertFalse(itinerary.wasExpecting(loadRotterdam666));
 
     //Unloaded from the wrong ship in the wrong location
     HandlingActivity unloadHelsinki = new HandlingActivity(UNLOAD, HELSINKI, wrongVoyage);
-    assertFalse(itinerary.isExpected(unloadHelsinki));
+    assertFalse(itinerary.wasExpecting(unloadHelsinki));
 
     HandlingActivity claimRotterdam = new HandlingActivity(CLAIM, ROTTERDAM);
-    assertFalse(itinerary.isExpected(claimRotterdam));
+    assertFalse(itinerary.wasExpecting(claimRotterdam));
   }
 
   public void testCreateItinerary() throws Exception {
