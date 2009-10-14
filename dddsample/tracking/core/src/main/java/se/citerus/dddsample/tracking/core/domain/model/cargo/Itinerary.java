@@ -196,6 +196,13 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
   }
 
   /**
+   * @return Estimated time of arrival
+   */
+  public Date estimatedTimeOfArrival() {
+    return new Date(finalUnloadTime().getTime());
+  }
+
+  /**
    * @param location a location
    * @return Unload time at this location, or null if the location isn't on this itinerary.
    */
@@ -217,5 +224,4 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
     // Needed by Hibernate
     legs = null;
   }
-
 }

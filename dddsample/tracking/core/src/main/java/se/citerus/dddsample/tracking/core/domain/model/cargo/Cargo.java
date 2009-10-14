@@ -2,6 +2,7 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.CustomsZone;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
@@ -9,6 +10,7 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -93,14 +95,79 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Estimated time of arrival.
    */
   public Date estimatedTimeOfArrival() {
-    return Projections.estimatedTimeOfArrival(delivery, itinerary, routeSpecification);
+    if (onTrack()) {
+      return itinerary.estimatedTimeOfArrival();
+    } else {
+      return null;
+    }
   }
 
   /**
    * @return Next expected activity.
    */
   public HandlingActivity nextExpectedActivity() {
-    return Projections.nextExpectedActivity(delivery, itinerary, routeSpecification);
+    /*
+     TODO Capture:
+
+     Cargo is misdirected but has been rerouted. Next expected acivity should be to load according to first leg
+     of new itinerary.
+
+     and
+
+     even if a cargo is misdirected, we expect it to be unloaded at next stop.
+
+    */
+    if (!onTrack()) {
+      return null;
+    }
+
+    final Location lastKnownLocation = delivery.lastKnownLocation();
+
+    switch (delivery.transportStatus()) {
+      case IN_PORT:
+        if (itinerary.firstLeg().loadLocation().sameAs(lastKnownLocation)) {
+          final Leg firstLeg = itinerary.firstLeg();
+          return new HandlingActivity(LOAD, firstLeg.loadLocation(), firstLeg.voyage());
+        } else {
+          for (Iterator<Leg> it = itinerary.legs().iterator(); it.hasNext();) {
+            final Leg leg = it.next();
+            if (leg.unloadLocation().sameAs(lastKnownLocation)) {
+              if (it.hasNext()) {
+                final Leg nextLeg = it.next();
+                return new HandlingActivity(LOAD, nextLeg.loadLocation(), nextLeg.voyage());
+              } else {
+                return new HandlingActivity(CLAIM, leg.unloadLocation());
+              }
+            }
+          }
+
+          return null;
+        }
+
+      case NOT_RECEIVED:
+        final Leg leg = itinerary.firstLeg();
+        return new HandlingActivity(RECEIVE, leg.loadLocation());
+
+      case ONBOARD_CARRIER:
+        for (Leg leg1 : itinerary.legs()) {
+          if (leg1.loadLocation().sameAs(lastKnownLocation)) {
+            return new HandlingActivity(UNLOAD, leg1.unloadLocation(), leg1.voyage());
+          }
+        }
+
+        return null;
+
+      case CLAIMED:
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * @return True if the cargo is assigned to a route and is following that route.
+   */
+  public boolean onTrack() {
+    return delivery.onTrack(itinerary, routeSpecification);
   }
 
   /**
@@ -200,7 +267,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   public void handled(final HandlingActivity handlingActivity) {
     Validate.notNull(handlingActivity, "Handling activity is required");
 
-    // Delivery and Projections are value object, so they are replaced with new or derived ones
+    // Delivery is a value object, so it's replaced with a new one
     this.delivery = Delivery.whenHandled(handlingActivity);
   }
 
