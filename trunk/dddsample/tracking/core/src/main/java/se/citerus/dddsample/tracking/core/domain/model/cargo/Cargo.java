@@ -250,7 +250,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   }
 
   /**
-   * @return
+   * @return Most recent handling activity, or null if never handled.
    */
   public HandlingActivity mostRecentHandlingActivity() {
     return delivery.mostRecentHandlingActivity();
