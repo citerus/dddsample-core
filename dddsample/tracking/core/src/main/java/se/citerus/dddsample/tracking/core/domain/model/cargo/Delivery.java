@@ -44,6 +44,10 @@ class Delivery extends ValueObjectSupport<Delivery> {
     this.calculatedAt = new Date();
   }
 
+  HandlingActivity mostRecentHandlingActivity() {
+    return mostRecentHandlingActivity;
+  }
+  
   /**
    * @return Transport status
    */
