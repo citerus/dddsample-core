@@ -23,11 +23,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage.NONE
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.tracking.core.domain.service.RoutingService;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.CargoRepositoryInMem;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.*;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -387,7 +383,7 @@ public class CargoLifecycleScenarioTest {
 
   private void updateHandlingEventAggregate(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
     VoyageNumber voyageNumber = voyage != null ? voyage.voyageNumber() : null;
-    HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(new Date(), completionTime, trackingId, voyageNumber, location.unLocode(), type);
+    HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(completionTime, trackingId, voyageNumber, location.unLocode(), type);
     handlingEventRepository.store(handlingEvent);
   }
 

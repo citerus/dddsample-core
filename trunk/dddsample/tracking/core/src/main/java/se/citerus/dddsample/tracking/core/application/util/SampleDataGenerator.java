@@ -235,17 +235,17 @@ public class SampleDataGenerator implements ServletContextListener {
 
         try {
           HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
+            toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
           );
           session.save(event1);
 
           HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
+            toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
           );
           session.save(event2);
 
           HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+            toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
           );
           session.save(event3);
         } catch (CannotCreateHandlingEventException e) {
@@ -273,22 +273,22 @@ public class SampleDataGenerator implements ServletContextListener {
 
         try {
           HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingEvent.Type.RECEIVE
+            toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingEvent.Type.RECEIVE
           );
           session.save(event1);
 
           HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingEvent.Type.LOAD
+            toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingEvent.Type.LOAD
           );
           session.save(event2);
 
           HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+            toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
           );
           session.save(event3);
 
           HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
-            new Date(), toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
+            toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
           );
           session.save(event4);
 

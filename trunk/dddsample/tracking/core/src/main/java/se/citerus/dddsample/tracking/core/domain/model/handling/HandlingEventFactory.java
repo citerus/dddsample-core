@@ -30,7 +30,6 @@ public class HandlingEventFactory {
   }
 
   /**
-   * @param registrationTime time when this event was received by the system
    * @param completionTime   when the event was completed, for example finished loading
    * @param trackingId       cargo tracking id
    * @param voyageNumber     voyage number
@@ -41,7 +40,7 @@ public class HandlingEventFactory {
    * @throws UnknownCargoException    if there's no cargo with this tracking id
    * @throws UnknownLocationException if there's no location with this UN Locode
    */
-  public HandlingEvent createHandlingEvent(final Date registrationTime, final Date completionTime, final TrackingId trackingId,
+  public HandlingEvent createHandlingEvent(final Date completionTime, final TrackingId trackingId,
                                            final VoyageNumber voyageNumber, final UnLocode unlocode, final HandlingEvent.Type type)
     throws CannotCreateHandlingEventException {
 
@@ -50,6 +49,7 @@ public class HandlingEventFactory {
     final Location location = findLocation(unlocode);
 
     try {
+      final Date registrationTime = new Date();
       if (voyage == null) {
         return new HandlingEvent(cargo, completionTime, registrationTime, type, location);
       } else {
