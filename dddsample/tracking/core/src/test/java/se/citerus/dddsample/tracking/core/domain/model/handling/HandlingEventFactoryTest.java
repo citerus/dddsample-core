@@ -49,7 +49,7 @@ public class HandlingEventFactoryTest extends TestCase {
     VoyageNumber voyageNumber = CM001.voyageNumber();
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
-      new Date(), new Date(100), trackingId, voyageNumber, unLocode, Type.LOAD
+      new Date(100), trackingId, voyageNumber, unLocode, Type.LOAD
     );
 
     assertNotNull(handlingEvent);
@@ -67,7 +67,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
-      new Date(), new Date(100), trackingId, null, unLocode, Type.CLAIM
+      new Date(100), trackingId, null, unLocode, Type.CLAIM
     );
 
     assertNotNull(handlingEvent);
@@ -86,7 +86,7 @@ public class HandlingEventFactoryTest extends TestCase {
     UnLocode invalid = new UnLocode("NOEXT");
     try {
       factory.createHandlingEvent(
-        new Date(), new Date(100), trackingId, CM001.voyageNumber(), invalid, Type.LOAD
+        new Date(100), trackingId, CM001.voyageNumber(), invalid, Type.LOAD
       );
       fail("Expected UnknownLocationException");
     } catch (UnknownLocationException expected) {
@@ -101,7 +101,7 @@ public class HandlingEventFactoryTest extends TestCase {
     try {
       VoyageNumber invalid = new VoyageNumber("XXX");
       factory.createHandlingEvent(
-        new Date(), new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), Type.LOAD
+        new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), Type.LOAD
       );
       fail("Expected UnknownVoyageException");
     } catch (UnknownVoyageException expected) {
@@ -115,7 +115,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     try {
       factory.createHandlingEvent(
-        new Date(), new Date(100), trackingId, CM001.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD
+        new Date(100), trackingId, CM001.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD
       );
       fail("Expected UnknownCargoException");
     } catch (UnknownCargoException expected) {
