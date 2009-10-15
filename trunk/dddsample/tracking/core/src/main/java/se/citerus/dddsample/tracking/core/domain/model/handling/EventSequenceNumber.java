@@ -17,6 +17,10 @@ public class EventSequenceNumber extends ValueObjectSupport<EventSequenceNumber>
     return new EventSequenceNumber(SEQUENCE.getAndIncrement());
   }
 
+  public static EventSequenceNumber valueOf(final long value) {
+    return new EventSequenceNumber(value);
+  }
+  
   public long longValue() {
     return value;
   }
