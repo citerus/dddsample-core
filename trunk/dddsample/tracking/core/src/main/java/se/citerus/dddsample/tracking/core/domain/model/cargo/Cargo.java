@@ -250,6 +250,13 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   }
 
   /**
+   * @return
+   */
+  public HandlingActivity mostRecentHandlingActivity() {
+    return delivery.mostRecentHandlingActivity();
+  }
+
+  /**
    * Updates all aspects of the cargo aggregate status
    * based on the current route specification, itinerary and handling of the cargo.
    * <p/>
