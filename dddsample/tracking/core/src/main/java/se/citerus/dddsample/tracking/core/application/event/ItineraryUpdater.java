@@ -1,9 +1,3 @@
-/**
- * Purpose
- * @author peter
- * @created 2009-aug-04
- * $Id$
- */
 package se.citerus.dddsample.tracking.core.application.event;
 
 import org.apache.commons.logging.Log;
