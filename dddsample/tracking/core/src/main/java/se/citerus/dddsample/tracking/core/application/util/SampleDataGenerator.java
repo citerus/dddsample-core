@@ -253,7 +253,7 @@ public class SampleDataGenerator implements ServletContextListener {
         }
 
         final HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(abc123);
-        abc123.handled(handlingEvent.activity());
+        abc123.handled(handlingEvent.activity(), new Date());
         session.update(abc123);
 
         // Cargo JKL567
@@ -297,7 +297,7 @@ public class SampleDataGenerator implements ServletContextListener {
         }
 
         HandlingEvent handlingEvent1 = handlingEventRepository.mostRecentHandling(jkl567);
-        jkl567.handled(handlingEvent1.activity());
+        jkl567.handled(handlingEvent1.activity(), new Date());
         session.update(jkl567);
       }
     });

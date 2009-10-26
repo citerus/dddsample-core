@@ -121,7 +121,59 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
       return null;
     }
 
-    final Location lastKnownLocation = delivery.lastKnownLocation();
+
+    
+    /*
+    if (delivery.transportStatus() == NOT_RECEIVED) {
+      return itinerary.firstLeg().receive();
+    }
+
+    Leg leg = itinerary.legMatching(delivery.mostRecentHandlingActivity());
+
+    if (leg == null) return null;
+
+    if (onboardCarrier()) return leg.unload();
+    else if (inPort())
+      if (leg.sameValueAs(itinerary.lastLeg())) return leg.claim();
+      else return leg.load();
+    else return null;
+
+  private boolean inPort() {
+    return delivery.transportStatus() == IN_PORT;
+  }
+
+  private boolean onboardCarrier() {
+    return delivery.transportStatus() == ONBOARD_CARRIER;
+  }
+
+
+    */
+
+  /*
+    public Date timeOfNextHandling() {
+      if (notReceived()) {
+        return null;
+      }
+
+      final Leg leg = itinerary.legMatching(delivery.mostRecentHandlingActivity());
+
+      if (leg == null) return null;
+
+      if (onboardCarrier()) return leg.unloadTime();
+      else if (inPort())
+        if (leg.sameValueAs(itinerary.lastLeg())) return null;
+        else return leg.loadTime();
+      else return null;
+    }
+
+  private boolean notReceived() {
+    return delivery.transportStatus() == NOT_RECEIVED;
+  }
+  */
+
+
+
+  final Location lastKnownLocation = delivery.lastKnownLocation();
 
     switch (delivery.transportStatus()) {
       case IN_PORT:
@@ -270,12 +322,22 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * since {@link HandlingEvent} is in a different aggregate.
    *
    * @param handlingActivity handling activity
+   * @param completionTime when the activity was completed
    */
-  public void handled(final HandlingActivity handlingActivity) {
+  public void handled(final HandlingActivity handlingActivity, final Date completionTime) {
     Validate.notNull(handlingActivity, "Handling activity is required");
 
+    if (delivery.lastTimestamp().after(completionTime)) {
+      return;
+    }
+
+    // TODO
+    // What if an activity that should logically happen later is entered with
+    // a completion time that's before some other activity?
+    // Who should win - logic or completion time?
+
     // Delivery is a value object, so it's replaced with a new one
-    this.delivery = Delivery.whenHandled(handlingActivity);
+    this.delivery = Delivery.cargoWasHandled(handlingActivity, completionTime);
   }
 
   @Override
