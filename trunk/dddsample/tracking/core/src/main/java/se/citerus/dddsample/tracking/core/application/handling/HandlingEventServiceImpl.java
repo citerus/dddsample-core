@@ -34,28 +34,28 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   }
 
   @Override
-  @Transactional(rollbackFor = CannotCreateHandlingEventException.class)
+  @Transactional
   public void registerHandlingEvent(final Date completionTime, final TrackingId trackingId,
                                     final VoyageNumber voyageNumber, final UnLocode unLocode,
                                     final HandlingEvent.Type type) throws CannotCreateHandlingEventException {
 
     /* Using a factory to create a HandlingEvent (aggregate). This is where
        it is determined wether the incoming data, the attempt, actually is capable
-       of representing a real handling event. */
-    final HandlingEvent event = handlingEventFactory.createHandlingEvent(
+       of representing a real handling handlingEvent. */
+    final HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(
       completionTime, trackingId, voyageNumber, unLocode, type
     );
 
-    /* Store the new handling event, which updates the persistent
-       state of the handling event aggregate (but not the cargo aggregate -
+    /* Store the new handling handlingEvent, which updates the persistent
+       state of the handling handlingEvent aggregate (but not the cargo aggregate -
        that happens asynchronously!)
      */
-    handlingEventRepository.store(event);
+    handlingEventRepository.store(handlingEvent);
 
-    /* Publish an event stating that a cargo has been handled. */
-    systemEvents.notifyOfHandlingEvent(event);
+    /* Publish a system event */
+    systemEvents.notifyOfHandlingEvent(handlingEvent);
 
-    logger.info("Registered handling event");
+    logger.info("Registered handling event: " + handlingEvent);
   }
 
 }
