@@ -1,9 +1,6 @@
-package se.citerus.dddsample.tracking.core.domain.patterns;
+package se.citerus.dddsample.tracking.core.domain.patterns.specification;
 
 import junit.framework.TestCase;
-import se.citerus.dddsample.tracking.core.domain.patterns.specification.AlwaysFalseSpec;
-import se.citerus.dddsample.tracking.core.domain.patterns.specification.AlwaysTrueSpec;
-import se.citerus.dddsample.tracking.core.domain.patterns.specification.AndSpecification;
 
 public class AndSpecificationTest extends TestCase {
 
