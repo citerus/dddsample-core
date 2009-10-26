@@ -2,7 +2,7 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
@@ -56,37 +56,36 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
       return false;
     }
 
-    if (handlingActivity.type() == HandlingEvent.Type.RECEIVE) {
-      return (firstLeg().loadLocation().equals(handlingActivity.location()));
+    if (handlingActivity.type() == RECEIVE) {
+      return firstLeg().loadLocation().sameAs(handlingActivity.location());
     }
 
-    if (handlingActivity.type() == HandlingEvent.Type.LOAD) {
+    if (handlingActivity.type() == LOAD) {
       //Check that the there is a leg with same load location and voyage
       for (Leg leg : legs) {
-        if (leg.loadLocation().sameAs(handlingActivity.location()) &&
-          leg.voyage().sameAs(handlingActivity.voyage()))
+        if (leg.loadLocation().sameAs(handlingActivity.location()) && leg.voyage().sameAs(handlingActivity.voyage())) {
           return true;
+        }
       }
       return false;
     }
 
-    if (handlingActivity.type() == HandlingEvent.Type.UNLOAD) {
+    if (handlingActivity.type() == UNLOAD) {
       //Check that the there is a leg with same unload location and voyage
       for (Leg leg : legs) {
-        if (leg.unloadLocation().sameAs(handlingActivity.location()) &&
-          leg.voyage().sameAs(handlingActivity.voyage()))
+        if (leg.unloadLocation().sameAs(handlingActivity.location()) && leg.voyage().sameAs(handlingActivity.voyage())) {
           return true;
+        }
       }
       return false;
     }
 
-    if (handlingActivity.type() == HandlingEvent.Type.CLAIM) {
+    if (handlingActivity.type() == CLAIM) {
       //Check that the last leg's destination is from the handling activity's location
-      final Leg leg = lastLeg();
-      return (leg.unloadLocation().equals(handlingActivity.location()));
+      return lastLeg().unloadLocation().sameAs(handlingActivity.location());
     }
 
-    if (handlingActivity.type() == HandlingEvent.Type.CUSTOMS) {
+    if (handlingActivity.type() == CUSTOMS) {
       //Check that the customs location fits the rule of the customs zone
       //TODO Answering this properly requires Cargo's destination. Can't be answered at itinerary level.
     }
