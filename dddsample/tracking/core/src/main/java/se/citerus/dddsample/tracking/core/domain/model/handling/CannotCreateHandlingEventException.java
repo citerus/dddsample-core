@@ -8,7 +8,7 @@ package se.citerus.dddsample.tracking.core.domain.model.handling;
  * special case that the application is built to handle. It can occur during normal
  * program execution.
  */
-public class CannotCreateHandlingEventException extends Exception {
+public class CannotCreateHandlingEventException extends RuntimeException {
   public CannotCreateHandlingEventException(Exception e) {
     super(e);
   }
