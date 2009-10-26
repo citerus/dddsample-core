@@ -1,11 +1,9 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.patterns.specification.AbstractSpecification;
-import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 import java.util.Date;
 
@@ -13,12 +11,16 @@ import java.util.Date;
  * Route specification. Describes where a cargo orign and destination is,
  * and the arrival deadline.
  */
-// TODO use composition instead of inheritance
-public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
+public class RouteSpecification extends ValueObjectSupport<RouteSpecification> {
 
   private final Location origin;
   private final Location destination;
   private final Date arrivalDeadline;
+
+  private final NotNullSpecification notNull = new NotNullSpecification();
+  private final SameOriginSpecification sameOrigin = new SameOriginSpecification();
+  private final SameDestinationSpecification sameDestination = new SameDestinationSpecification();
+  private final MeetsDeadlineSpecification meetsDeadline = new MeetsDeadlineSpecification();
 
   /**
    * @param origin          origin location - can't be the same as the destination
@@ -81,40 +83,13 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     return new RouteSpecification(origin, destination, newArrivalDeadline);
   }
 
-  @Override
+  /**
+   * @param itinerary itinerary
+   * @return True if this route specification is satisfied by the itinerary,
+   *         i.e. the cargo will be delivered according to requirements.
+   */
   public boolean isSatisfiedBy(final Itinerary itinerary) {
-    return itinerary != null &&
-      origin().sameAs(itinerary.initialLoadLocation()) &&
-      destination().sameAs(itinerary.finalUnloadLocation()) &&
-      arrivalDeadline().after(itinerary.finalUnloadTime());
-  }
-
-  @Override
-  public boolean sameValueAs(final RouteSpecification other) {
-    return other != null && new EqualsBuilder().
-      append(this.origin, other.origin).
-      append(this.destination, other.destination).
-      append(this.arrivalDeadline, other.arrivalDeadline).
-      isEquals();
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    final RouteSpecification that = (RouteSpecification) o;
-
-    return sameValueAs(that);
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-      append(this.origin).
-      append(this.destination).
-      append(this.arrivalDeadline).
-      toHashCode();
+    return notNull.and(sameOrigin).and(sameDestination).and(meetsDeadline).isSatisfiedBy(itinerary);
   }
 
   @Override
@@ -126,6 +101,34 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     // Needed by Hibernate
     origin = destination = null;
     arrivalDeadline = null;
+  }
+
+  private class NotNullSpecification extends AbstractSpecification<Itinerary> {
+    @Override
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
+      return itinerary != null;
+    }
+  }
+
+  private class SameOriginSpecification extends AbstractSpecification<Itinerary> {
+    @Override
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
+      return origin.sameAs(itinerary.initialLoadLocation());
+    }
+  }
+
+  private class SameDestinationSpecification extends AbstractSpecification<Itinerary> {
+    @Override
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
+      return destination.sameAs(itinerary.finalUnloadLocation());
+    }
+  }
+
+  private class MeetsDeadlineSpecification extends AbstractSpecification<Itinerary> {
+    @Override
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
+      return arrivalDeadline.after(itinerary.finalUnloadTime());
+    }
   }
 
 }
