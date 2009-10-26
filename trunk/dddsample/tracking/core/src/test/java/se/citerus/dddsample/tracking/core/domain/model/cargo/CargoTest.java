@@ -3,6 +3,7 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 import junit.framework.TestCase;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.IN_PORT;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.NOT_RECEIVED;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
@@ -78,6 +79,22 @@ public class CargoTest extends TestCase {
     assertEquals(ROUTED, cargo.routingStatus());
   }
 
+  public void testOutOrderHandling() throws Exception {
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+
+    cargo.handled(HandlingActivity.loadedOnto(crazyVoyage).in(STOCKHOLM), toDate("2009-10-01"));
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), toDate("2009-10-01"));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), toDate("2009-10-02"));
+    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage), toDate("2009-10-04"));
+    assertEquals(cargo.transportStatus(), IN_PORT);
+    assertEquals(cargo.lastKnownLocation(), HONGKONG);
+
+    // Out of order handling, does not affect state of cargo
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), toDate("2009-10-03"));
+    assertEquals(IN_PORT, cargo.transportStatus());
+    assertEquals(HONGKONG, cargo.lastKnownLocation());
+  }
+
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
@@ -127,7 +144,7 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isReadyToClaim());
 
     // Adding an event unrelated to unloading at final destination
-    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU));
+    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU), new Date());
     assertFalse(cargo.isReadyToClaim());
 
     Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
@@ -135,59 +152,59 @@ public class CargoTest extends TestCase {
       build();
 
     // Adding an unload event, but not at the final destination
-    cargo.handled(new HandlingActivity(UNLOAD, TOKYO, voyage));
+    cargo.handled(new HandlingActivity(UNLOAD, TOKYO, voyage), new Date());
     assertFalse(cargo.isReadyToClaim());
 
     // Adding an event in the final destination, but not unload
-    cargo.handled(new HandlingActivity(CUSTOMS, NEWYORK));
+    cargo.handled(new HandlingActivity(CUSTOMS, NEWYORK), new Date());
     assertFalse(cargo.isReadyToClaim());
 
     // Finally, cargo is unloaded at final destination
-    cargo.handled(new HandlingActivity(UNLOAD, NEWYORK, voyage));
+    cargo.handled(new HandlingActivity(UNLOAD, NEWYORK, voyage), new Date());
     assertTrue(cargo.isReadyToClaim());
   }
 
   private Cargo populateCargoReceivedStockholm() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-    cargo.handled(new HandlingActivity(RECEIVE, STOCKHOLM));
+    cargo.handled(new HandlingActivity(RECEIVE, STOCKHOLM), new Date());
     return cargo;
   }
 
   private Cargo populateCargoClaimedMelbourne() throws Exception {
     final Cargo cargo = populateCargoOffMelbourne();
 
-    cargo.handled(new HandlingActivity(CLAIM, MELBOURNE));
+    cargo.handled(new HandlingActivity(CLAIM, MELBOURNE), new Date());
     return cargo;
   }
 
   private Cargo populateCargoOffHongKong() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
     
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage), new Date());
     return cargo;
   }
 
   private Cargo populateCargoOnHamburg() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
     
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), new Date());
     return cargo;
   }
 
   private Cargo populateCargoOffMelbourne() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HONGKONG, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(LOAD, HONGKONG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage), new Date());
 
     return cargo;
   }
@@ -203,30 +220,30 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isMisdirected());
 
     //Happy path
-    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
-    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, ROTTERDAM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, GOTHENBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(CLAIM, GOTHENBURG));
-    cargo.handled(new HandlingActivity(CUSTOMS, GOTHENBURG));
+    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI), new Date());
+    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(LOAD, ROTTERDAM, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, GOTHENBURG, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(CLAIM, GOTHENBURG), new Date());
+    cargo.handled(new HandlingActivity(CUSTOMS, GOTHENBURG), new Date());
     assertFalse(cargo.isMisdirected());
 
     //Try a couple of failing ones
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
 
-    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU));
+    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU), new Date());
     assertTrue(cargo.isMisdirected());
 
 
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
 
-    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
-    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));
-    cargo.handled(new HandlingActivity(CLAIM, ROTTERDAM));
+    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI), new Date());
+    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(CLAIM, ROTTERDAM), new Date());
 
     assertTrue(cargo.isMisdirected());
   }

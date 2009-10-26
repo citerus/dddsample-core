@@ -39,14 +39,14 @@ public class DeliveryTest extends TestCase {
     assertFalse(delivery.isUnloadedAtDestination(routeSpecification));
     assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
     assertEquals(NOT_RECEIVED, delivery.transportStatus());
-    assertTrue(delivery.calculatedAt().before(new Date()));
+    assertTrue(delivery.lastTimestamp().before(new Date()));
   }
 
   public void testUpdateOnHandlingHappyPath() {
     // 1. Receive
 
     HandlingActivity handlingActivity = new HandlingActivity(RECEIVE, HANGZOU);
-    Delivery newDelivery = Delivery.whenHandled(handlingActivity);
+    Delivery newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
 
     // Changed on handling
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
@@ -61,12 +61,12 @@ public class DeliveryTest extends TestCase {
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
     // Updated on every calculation
-    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
 
     // 2. Load
 
     handlingActivity = new HandlingActivity(LOAD, HANGZOU, HONGKONG_TO_NEW_YORK);
-    newDelivery = Delivery.whenHandled(handlingActivity);
+    newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
 
     assertEquals(HONGKONG_TO_NEW_YORK, newDelivery.currentVoyage());
     assertEquals(HANGZOU, newDelivery.lastKnownLocation());
@@ -77,14 +77,14 @@ public class DeliveryTest extends TestCase {
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
 
     // Skipping intermediate load/unloads
 
     // 3. Unload
 
     handlingActivity = new HandlingActivity(UNLOAD, STOCKHOLM, DALLAS_TO_HELSINKI);
-    newDelivery = Delivery.whenHandled(handlingActivity);
+    newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
@@ -95,12 +95,12 @@ public class DeliveryTest extends TestCase {
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
 
     // 4. Claim
 
     handlingActivity = new HandlingActivity(CLAIM, STOCKHOLM);
-    newDelivery = Delivery.whenHandled(handlingActivity);
+    newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
@@ -111,13 +111,13 @@ public class DeliveryTest extends TestCase {
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
   }
 
   public void testUpdateOnHandlingWhenMisdirected() {
     // Unload in Hamburg, which is the wrong location
     HandlingActivity handlingActivity = new HandlingActivity(UNLOAD, HAMBURG, DALLAS_TO_HELSINKI);
-    Delivery newDelivery = Delivery.whenHandled(handlingActivity);
+    Delivery newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(HAMBURG, newDelivery.lastKnownLocation());
@@ -130,7 +130,7 @@ public class DeliveryTest extends TestCase {
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.calculatedAt().before(newDelivery.calculatedAt()));
+    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
 
     // New route specification, old itinerary
     RouteSpecification newRouteSpecification = routeSpecification.withOrigin(HAMBURG);

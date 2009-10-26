@@ -2,15 +2,17 @@ package se.citerus.dddsample.tracking.core.application.event;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.tracking.core.domain.model.handling.EventSequenceNumber;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
-import se.citerus.dddsample.tracking.core.domain.model.handling.EventSequenceNumber;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+
+import java.util.Date;
 
 @Service
 public class CargoUpdater {
@@ -39,8 +41,9 @@ public class CargoUpdater {
 
     final HandlingActivity activity = handlingEvent.activity();
     final Cargo cargo = handlingEvent.cargo();
+    final Date completionTime = handlingEvent.completionTime();
 
-    cargo.handled(activity);
+    cargo.handled(activity, completionTime);
     cargoRepository.store(cargo);
 
     systemEvents.notifyOfCargoUpdate(cargo);
@@ -48,6 +51,7 @@ public class CargoUpdater {
   }
 
   CargoUpdater() {
+    // Needed by CGLIB
   }
 
 }

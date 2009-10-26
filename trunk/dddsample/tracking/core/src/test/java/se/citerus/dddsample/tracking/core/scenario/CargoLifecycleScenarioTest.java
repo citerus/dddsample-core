@@ -390,7 +390,7 @@ public class CargoLifecycleScenarioTest {
   private void updateCargoAggregate() {
     Cargo cargo = cargoRepository.find(trackingId);
     HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
-    cargo.handled(handlingEvent.activity());
+    cargo.handled(handlingEvent.activity(), new Date());
     cargoRepository.store(cargo);
   }
 

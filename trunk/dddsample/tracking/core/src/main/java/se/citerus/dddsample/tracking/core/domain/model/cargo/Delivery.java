@@ -24,24 +24,25 @@ class Delivery extends ValueObjectSupport<Delivery> {
    * Derives a new delivery when a cargo has been handled.
    *
    * @param handlingActivity  handling activity
+   * @param completionTime
    * @return An up to date delivery
    */
-  static Delivery whenHandled(final HandlingActivity handlingActivity) {
+  static Delivery cargoWasHandled(final HandlingActivity handlingActivity, Date completionTime) {
     Validate.notNull(handlingActivity, "Handling activity is required");
 
-    return new Delivery(handlingActivity);
+    return new Delivery(handlingActivity, completionTime);
   }
 
   /**
    * @return Initial delivery, before any handling has taken place
    */
   static Delivery initial() {
-    return new Delivery(null);
+    return new Delivery(null, new Date(0L));
   }
 
-  Delivery(final HandlingActivity mostRecentHandlingActivity) {
+  Delivery(final HandlingActivity mostRecentHandlingActivity, final Date completionTime) {
     this.mostRecentHandlingActivity = mostRecentHandlingActivity;
-    this.calculatedAt = new Date();
+    this.calculatedAt = completionTime;
   }
 
   HandlingActivity mostRecentHandlingActivity() {
@@ -100,14 +101,11 @@ class Delivery extends ValueObjectSupport<Delivery> {
     }
 
     if (mostRecentHandlingActivity.type() == CUSTOMS) {
-      return !handledAtDestination(routeSpecification);
+      boolean handledAtDestination = routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
+      return !handledAtDestination;
     } else {
       return !itinerary.wasExpecting(mostRecentHandlingActivity);
     }
-  }
-
-  private boolean handledAtDestination(final RouteSpecification routeSpecification) {
-    return routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
   }
 
   /**
@@ -117,7 +115,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
   boolean isUnloadedAtDestination(final RouteSpecification routeSpecification) {
     if (hasBeenHandled()) {
       return (mostRecentHandlingActivity.type() == CLAIM ||
-              mostRecentHandlingActivity.type() == UNLOAD && handledAtDestination(routeSpecification));
+              mostRecentHandlingActivity.type() == UNLOAD && routeSpecification.destination().sameAs(mostRecentHandlingActivity.location()));
     } else {
       return false;
     }
@@ -143,7 +141,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
   /**
    * @return When this delivery was calculated.
    */
-  Date calculatedAt() {
+  Date lastTimestamp() {
     return new Date(calculatedAt.getTime());
   }
 
