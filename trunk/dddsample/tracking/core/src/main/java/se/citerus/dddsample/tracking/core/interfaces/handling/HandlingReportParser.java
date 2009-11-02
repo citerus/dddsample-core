@@ -1,11 +1,11 @@
 package se.citerus.dddsample.tracking.core.interfaces.handling;
 
-import com.aggregator.HandlingReport;
 import org.apache.commons.lang.StringUtils;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.tracking.core.interfaces.handling.ws.aggregator.HandlingReport;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
