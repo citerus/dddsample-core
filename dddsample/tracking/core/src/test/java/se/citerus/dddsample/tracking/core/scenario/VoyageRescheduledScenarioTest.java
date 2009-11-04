@@ -21,8 +21,8 @@ import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLoc
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
 
 import java.util.Date;
 
@@ -59,7 +59,7 @@ public class VoyageRescheduledScenarioTest {
     assertThat(cargo.itinerary().loadTimeAt(NEWYORK), is(oldDepartureTime));
 
     // Now voyage2 is rescheduled, the departure from NYC is delayed a few hours.
-    Date newDepartureTime = toDate("2008-10-24", "18:00");
+    Date newDepartureTime = toDate("2008-10-24", "17:00");
     voyage2.departureRescheduled(NEWYORK, newDepartureTime);
 
     // The schedule of voyage2 is updated

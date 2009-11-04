@@ -85,20 +85,20 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
 
     private final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>();
     private final VoyageNumber voyageNumber;
-    private Location departureLocation;
+    private Location currentDepartureLocation;
 
-    public Builder(final VoyageNumber voyageNumber, final Location departureLocation) {
+    public Builder(final VoyageNumber voyageNumber, final Location initialDepartureLocation) {
       Validate.notNull(voyageNumber, "Voyage number is required");
-      Validate.notNull(departureLocation, "Departure location is required");
+      Validate.notNull(initialDepartureLocation, "Departure location is required");
 
       this.voyageNumber = voyageNumber;
-      this.departureLocation = departureLocation;
+      this.currentDepartureLocation = initialDepartureLocation;
     }
 
-    public Builder addMovement(Location arrivalLocation, Date departureTime, Date arrivalTime) {
-      carrierMovements.add(new CarrierMovement(departureLocation, arrivalLocation, departureTime, arrivalTime));
+    public Builder addMovement(final Location arrivalLocation, final Date departureTime, final Date arrivalTime) {
+      carrierMovements.add(new CarrierMovement(currentDepartureLocation, arrivalLocation, departureTime, arrivalTime));
       // Next departure location is the same as this arrival location
-      this.departureLocation = arrivalLocation;
+      this.currentDepartureLocation = arrivalLocation;
       return this;
     }
 

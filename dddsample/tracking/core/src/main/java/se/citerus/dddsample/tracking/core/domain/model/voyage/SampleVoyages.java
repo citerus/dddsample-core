@@ -21,7 +21,7 @@ public class SampleVoyages {
 
   private static Voyage createVoyage(String id, Location from, Location to) {
     return new Voyage(new VoyageNumber(id), new Schedule(Arrays.asList(
-      new CarrierMovement(from, to, new Date(), new Date())
+      new CarrierMovement(from, to, new Date(1), new Date(2))
     )));
   }
 
@@ -111,7 +111,7 @@ public class SampleVoyages {
       addMovement(HONGKONG, toDate("2008-11-24", "07:00"), toDate("2008-11-28", "13:37")).
       build();
 
-  public static final Map<VoyageNumber, Voyage> ALL = new HashMap();
+  public static final Map<VoyageNumber, Voyage> ALL = new HashMap<VoyageNumber, Voyage>();
 
   static {
     for (Field field : SampleVoyages.class.getDeclaredFields()) {

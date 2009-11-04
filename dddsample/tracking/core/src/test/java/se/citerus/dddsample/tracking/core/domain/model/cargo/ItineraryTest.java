@@ -19,22 +19,22 @@ public class ItineraryTest extends TestCase {
   protected void setUp() throws Exception {
 
     pacific = new Voyage.Builder(new VoyageNumber("4567"), SHANGHAI).
-      addMovement(LONGBEACH, new Date(), new Date()).
+      addMovement(LONGBEACH, new Date(1), new Date(2)).
       build();
 
     transcontinental = new Voyage.Builder(new VoyageNumber("4567"), LONGBEACH).
-      addMovement(CHICAGO, new Date(), new Date()).
-      addMovement(NEWYORK, new Date(), new Date()).
+      addMovement(CHICAGO, new Date(1), new Date(2)).
+      addMovement(NEWYORK, new Date(3), new Date(4)).
       build();
 
     voyage = new Voyage.Builder(new VoyageNumber("0123"), SHANGHAI).
-      addMovement(ROTTERDAM, new Date(), new Date()).
-      addMovement(GOTHENBURG, new Date(), new Date()).
+      addMovement(ROTTERDAM, new Date(1), new Date(2)).
+      addMovement(GOTHENBURG, new Date(3), new Date(4)).
       build();
 
     wrongVoyage = new Voyage.Builder(new VoyageNumber("666"), NEWYORK).
-      addMovement(STOCKHOLM, new Date(), new Date()).
-      addMovement(HELSINKI, new Date(), new Date()).
+      addMovement(STOCKHOLM, new Date(1), new Date(2)).
+      addMovement(HELSINKI, new Date(3), new Date(4)).
       build();
   }
 
@@ -42,8 +42,8 @@ public class ItineraryTest extends TestCase {
 
     Itinerary itinerary = new Itinerary(
       Arrays.asList(
-        new Leg(voyage, SHANGHAI, ROTTERDAM, new Date(), new Date()),
-        new Leg(voyage, ROTTERDAM, GOTHENBURG, new Date(), new Date())
+        new Leg(voyage, SHANGHAI, ROTTERDAM, new Date(1), new Date(2)),
+        new Leg(voyage, ROTTERDAM, GOTHENBURG, new Date(3), new Date(4))
       )
     );
 

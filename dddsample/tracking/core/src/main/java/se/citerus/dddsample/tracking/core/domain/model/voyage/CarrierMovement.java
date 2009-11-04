@@ -10,18 +10,12 @@ import java.util.Date;
 /**
  * A carrier movement is a vessel voyage from one location to another.
  */
-public final class CarrierMovement extends ValueObjectSupport<CarrierMovement> {
+public class CarrierMovement extends ValueObjectSupport<CarrierMovement> {
 
   private final Location departureLocation;
   private final Location arrivalLocation;
   private final Date departureTime;
   private final Date arrivalTime;
-
-  // Null object pattern 
-  public static final CarrierMovement NONE = new CarrierMovement(
-    Location.UNKNOWN, Location.UNKNOWN,
-    new Date(0), new Date(0)
-  );
 
   /**
    * Constructor.
@@ -31,14 +25,19 @@ public final class CarrierMovement extends ValueObjectSupport<CarrierMovement> {
    * @param departureTime     time of departure
    * @param arrivalTime       time of arrival
    */
-  // TODO make package local
-  public CarrierMovement(Location departureLocation,
-                         Location arrivalLocation,
-                         Date departureTime,
-                         Date arrivalTime) {
-    Validate.noNullElements(new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
-    this.departureTime = departureTime;
-    this.arrivalTime = arrivalTime;
+  CarrierMovement(final Location departureLocation,
+                  final Location arrivalLocation,
+                  final Date departureTime,
+                  final Date arrivalTime) {
+    Validate.notNull(departureLocation, "Departure location is required");
+    Validate.notNull(arrivalLocation, "Arrival location is required");
+    Validate.notNull(departureTime, "Departure time is required");
+    Validate.notNull(arrivalTime, "Arrival time is required");
+    Validate.isTrue(arrivalTime.after(departureTime), "Arrival time must be after departure time");
+    Validate.isTrue(!departureLocation.sameAs(arrivalLocation), "Departure location can't be the same as the arrival location");
+    
+    this.departureTime = new Date(departureTime.getTime());
+    this.arrivalTime = new Date(arrivalTime.getTime());
     this.departureLocation = departureLocation;
     this.arrivalLocation = arrivalLocation;
   }

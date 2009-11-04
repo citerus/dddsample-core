@@ -56,9 +56,9 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     Voyage hongkongMelbourneTokyoAndBack = new Voyage.Builder(
       new VoyageNumber("0303"), HONGKONG).
-      addMovement(MELBOURNE, new Date(), new Date()).
-      addMovement(TOKYO, new Date(), new Date()).
-      addMovement(HONGKONG, new Date(), new Date()).
+      addMovement(MELBOURNE, new Date(1), new Date(2)).
+      addMovement(TOKYO, new Date(3), new Date(4)).
+      addMovement(HONGKONG, new Date(5), new Date(6)).
       build();
 
     assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, 150, 110, hongkongMelbourneTokyoAndBack);
