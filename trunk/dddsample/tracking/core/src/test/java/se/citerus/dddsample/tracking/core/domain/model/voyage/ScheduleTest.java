@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 
 public class ScheduleTest extends TestCase {
 
-  public void testCarrierMovements() throws Exception {
-    //TODO: Test goes here...
+  public void testEmpty() throws Exception {
+    assertTrue(Schedule.EMPTY.carrierMovements().isEmpty());
   }
 
   public void testSameValueAs() throws Exception {

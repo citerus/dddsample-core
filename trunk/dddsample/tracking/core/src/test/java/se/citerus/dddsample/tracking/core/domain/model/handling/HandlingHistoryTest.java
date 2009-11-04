@@ -28,8 +28,8 @@ public class HandlingHistoryTest extends TestCase {
     cargo2 = new Cargo(new TrackingId("DEF"), new RouteSpecification(SHANGHAI, NEWYORK, toDate("2009-04-15")));
 
     voyage = new Voyage.Builder(new VoyageNumber("X25"), HONGKONG).
-      addMovement(SHANGHAI, new Date(), new Date()).
-      addMovement(DALLAS, new Date(), new Date()).
+      addMovement(SHANGHAI, new Date(1), new Date(2)).
+      addMovement(DALLAS, new Date(3), new Date(4)).
       build();
     event1 = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-05"), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
     event1duplicate = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-07"), HandlingEvent.Type.LOAD, SHANGHAI, voyage);

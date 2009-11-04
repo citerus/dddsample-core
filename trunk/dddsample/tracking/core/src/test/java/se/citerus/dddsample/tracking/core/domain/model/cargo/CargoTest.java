@@ -19,27 +19,27 @@ public class CargoTest extends TestCase {
 
   private Voyage crazyVoyage = new Voyage.Builder(new VoyageNumber("0123"),
     STOCKHOLM).
-    addMovement(HAMBURG, new Date(), new Date()).
-    addMovement(HONGKONG, new Date(), new Date()).
-    addMovement(MELBOURNE, new Date(), new Date()).
+    addMovement(HAMBURG, new Date(1), new Date(2)).
+    addMovement(HONGKONG, new Date(3), new Date(4)).
+    addMovement(MELBOURNE, new Date(5), new Date(6)).
     build();
 
   private Voyage pacific = new Voyage.Builder(new VoyageNumber("4567"),
     SHANGHAI).
-    addMovement(LONGBEACH, new Date(), new Date()).
-    addMovement(SEATTLE, new Date(), new Date()).
+    addMovement(LONGBEACH, new Date(1), new Date(2)).
+    addMovement(SEATTLE, new Date(3), new Date(4)).
     build();
 
   private Voyage transcontinental = new Voyage.Builder(new VoyageNumber("4567"),
     LONGBEACH).
-    addMovement(CHICAGO, new Date(), new Date()).
-    addMovement(NEWYORK, new Date(), new Date()).
+    addMovement(CHICAGO, new Date(1), new Date(2)).
+    addMovement(NEWYORK, new Date(3), new Date(4)).
     build();
 
   private Voyage northernRail = new Voyage.Builder(new VoyageNumber("8901"),
     SEATTLE).
-    addMovement(CHICAGO, new Date(), new Date()).
-    addMovement(NEWYORK, new Date(), new Date()).
+    addMovement(CHICAGO, new Date(1), new Date(2)).
+    addMovement(NEWYORK, new Date(3), new Date(4)).
     build();
 
   public void testConstruction() {
@@ -148,7 +148,7 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isReadyToClaim());
 
     Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
-      addMovement(NEWYORK, new Date(), new Date()).
+      addMovement(NEWYORK, new Date(1), new Date(2)).
       build();
 
     // Adding an unload event, but not at the final destination

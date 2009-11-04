@@ -27,15 +27,33 @@ public class CarrierMovementTest extends TestCase {
     } catch (IllegalArgumentException expected) {
     }
 
-    // Legal
-    new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
+    try {
+      new CarrierMovement(STOCKHOLM, HAMBURG, new Date(200), new Date(100));
+      fail("Should not accept departure time after arrival time");
+    } catch (IllegalArgumentException expected) {
+    }
+
+    try {
+      new CarrierMovement(STOCKHOLM, HAMBURG, new Date(100), new Date(100));
+      fail("Should not accept arrival time equal to departure time");
+    } catch (IllegalArgumentException expected) {
+    }
+
+    try {
+      new CarrierMovement(STOCKHOLM, STOCKHOLM, new Date(100), new Date(200));
+      fail("Should not accept identical departure and arrival locations");
+    } catch (IllegalArgumentException expected) {
+    }
+
+    // Ok
+    new CarrierMovement(STOCKHOLM, HAMBURG, new Date(100), new Date(200));
   }
 
   public void testSameValueAsEqualsHashCode() throws Exception {
-    CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
-    CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
-    CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
-    CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
+    CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(1), new Date(2));
+    CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(1), new Date(2));
+    CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(1), new Date(2));
+    CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(1), new Date(2));
 
     assertTrue(cm1.sameValueAs(cm2));
     assertFalse(cm2.sameValueAs(cm3));

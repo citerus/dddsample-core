@@ -18,9 +18,9 @@ public class Schedule extends ValueObjectSupport<Schedule> {
   public static final Schedule EMPTY = new Schedule();
 
   Schedule(final List<CarrierMovement> carrierMovements) {
-    Validate.notNull(carrierMovements);
-    Validate.noNullElements(carrierMovements);
-    Validate.notEmpty(carrierMovements);
+    Validate.notNull(carrierMovements, "Carrier movements are required");
+    Validate.noNullElements(carrierMovements, "There are null elements in the list of carrier movments");
+    Validate.notEmpty(carrierMovements, "There must be at least one carrier movement in a schedule");
 
     this.carrierMovements = carrierMovements;
   }
@@ -60,6 +60,6 @@ public class Schedule extends ValueObjectSupport<Schedule> {
 
   Schedule() {
     // Needed by Hibernate
-    carrierMovements = null;
+    carrierMovements = Collections.emptyList();
   }
 }
