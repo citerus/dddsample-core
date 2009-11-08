@@ -10,16 +10,16 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.tracking.core.domain.service.TrackingIdGenerator;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingIdFactory;
 
 @Repository
-public class DatabaseTrackingIdGenerator implements TrackingIdGenerator {
+public class DatabaseTrackingIdFactory implements TrackingIdFactory {
 
   private final SessionFactory sessionFactory;
   private static final String SEQUENCE_NAME = "TRACKING_ID_SEQ";
 
   @Autowired
-  public DatabaseTrackingIdGenerator(final SessionFactory sessionFactory) {
+  public DatabaseTrackingIdFactory(final SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 

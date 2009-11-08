@@ -22,7 +22,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyag
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdGeneratorInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdFactoryInMem;
 
 import java.util.Date;
 
@@ -39,7 +39,7 @@ public class VoyageRescheduledScenarioTest {
     voyage1 = new Voyage(new VoyageNumber("V1"), HONGKONG_TO_NEW_YORK.schedule());
     voyage2 = new Voyage(new VoyageNumber("V2"), NEW_YORK_TO_DALLAS.schedule());
     voyage3 = new Voyage(new VoyageNumber("V3"), DALLAS_TO_HELSINKI.schedule());
-    CargoFactory cargoFactory = new CargoFactory(new LocationRepositoryInMem(), new TrackingIdGeneratorInMem());
+    CargoFactory cargoFactory = new CargoFactory(new LocationRepositoryInMem(), new TrackingIdFactoryInMem());
     cargo = cargoFactory.newCargo(HANGZOU.unLocode(), STOCKHOLM.unLocode(), toDate("2008-12-23"));
     Itinerary itinerary = new Itinerary(
       Leg.deriveLeg(voyage1, HANGZOU, NEWYORK),
