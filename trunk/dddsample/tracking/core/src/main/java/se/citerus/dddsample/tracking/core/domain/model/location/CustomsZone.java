@@ -29,8 +29,7 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
    */
   public CustomsZone(final String code, final String name) {
     Validate.notNull(code, "Code is required");
-    Validate.isTrue(VALID_PATTERN.matcher(code).matches(),
-      code + " is not a valid CustomsZone code (does not match pattern)");
+    Validate.isTrue(VALID_PATTERN.matcher(code).matches(), code + " is not a valid customs zone code (does not match pattern)");
     Validate.notNull(name, "Name is required");
     this.code = code.toUpperCase();
     this.name = name;
