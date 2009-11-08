@@ -1,5 +1,9 @@
 package se.citerus.dddsample.tracking.core.interfaces.handling.ws;
 
+import com.aggregator.HandlingReport;
+import com.aggregator.HandlingReportErrors;
+import com.aggregator.HandlingReportErrors_Exception;
+import com.aggregator.HandlingReportService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -10,10 +14,6 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
-import se.citerus.dddsample.tracking.core.interfaces.handling.ws.aggregator.HandlingReportService;
-import se.citerus.dddsample.tracking.core.interfaces.handling.ws.aggregator.HandlingReport;
-import se.citerus.dddsample.tracking.core.interfaces.handling.ws.aggregator.HandlingReportErrors_Exception;
-import se.citerus.dddsample.tracking.core.interfaces.handling.ws.aggregator.HandlingReportErrors;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
