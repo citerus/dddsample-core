@@ -25,15 +25,15 @@ public class Leg extends ValueObjectSupport<Leg> {
     Validate.notNull(unloadLocation, "Unload location is required");
     Validate.notNull(loadTime, "Load time is required");
     Validate.notNull(unloadTime, "Unload time is required");
-    Validate.isTrue(!loadLocation.sameAs(unloadLocation));
-    // TODO use a minimum time between unloading and loading?
+    Validate.isTrue(!loadLocation.sameAs(unloadLocation), "Load location can't be the same as unload location");
+    // TODO enable this
     //Validate.isTrue(unloadTime.after(loadTime));
 
     this.voyage = voyage;
     this.loadLocation = loadLocation;
     this.unloadLocation = unloadLocation;
-    this.loadTime = loadTime;
-    this.unloadTime = unloadTime;
+    this.loadTime = new Date(loadTime.getTime());
+    this.unloadTime = new Date(unloadTime.getTime());
   }
 
   /**
