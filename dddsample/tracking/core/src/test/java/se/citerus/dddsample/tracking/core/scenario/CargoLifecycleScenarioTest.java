@@ -41,7 +41,7 @@ public class CargoLifecycleScenarioTest {
   VoyageRepository voyageRepository = new VoyageRepositoryInMem();
 
   HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
-  CargoFactory cargoFactory = new CargoFactory(locationRepository, new TrackingIdGeneratorInMem());
+  CargoFactory cargoFactory = new CargoFactory(locationRepository, new TrackingIdFactoryInMem());
 
   /**
    * This is a domain service interface, whose implementation

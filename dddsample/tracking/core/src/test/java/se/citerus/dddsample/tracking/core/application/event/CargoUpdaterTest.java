@@ -37,7 +37,7 @@ public class CargoUpdaterTest {
     handlingEventRepository = new HandlingEventRepositoryInMem();
     locationRepository = new LocationRepositoryInMem();
     voyageRepository = new VoyageRepositoryInMem();
-    cargoFactory = new CargoFactory(locationRepository, new TrackingIdGeneratorInMem());
+    cargoFactory = new CargoFactory(locationRepository, new TrackingIdFactoryInMem());
     handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     cargoUpdater = new CargoUpdater(systemEvents, cargoRepository, handlingEventRepository);
   }
