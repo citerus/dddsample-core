@@ -11,6 +11,7 @@ import se.citerus.dddsample.tracking.core.application.handling.HandlingEventServ
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
@@ -39,6 +40,7 @@ public class HandlingReportWebService implements HandlingReportService {
     final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), validationErrors);
     final HandlingEvent.Type type = parseEventType(handlingReport.getType(), validationErrors);
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), validationErrors);
+    final OperatorCode operatorCode = parseOperatorCode();
 
     final Map<String, String> allErrors = new HashMap<String, String>();
     for (String trackingIdStr : handlingReport.getTrackingIds()) {
@@ -46,7 +48,7 @@ public class HandlingReportWebService implements HandlingReportService {
 
       if (validationErrors.isEmpty()) {
         try {
-          handlingEventService.registerHandlingEvent(completionTime, trackingId, voyageNumber, unLocode, type);
+          handlingEventService.registerHandlingEvent(completionTime, trackingId, voyageNumber, unLocode, type, operatorCode);
         } catch (CannotCreateHandlingEventException e) {
           logger.error(e, e);
           allErrors.put(trackingIdStr, e.getMessage());

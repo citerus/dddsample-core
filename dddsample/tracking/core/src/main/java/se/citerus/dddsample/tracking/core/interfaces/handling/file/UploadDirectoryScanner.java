@@ -7,6 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import se.citerus.dddsample.tracking.core.application.handling.HandlingEventService;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
@@ -93,9 +94,10 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     final VoyageNumber voyageNumber = parseVoyageNumber(voyageNumberStr, errors);
     final HandlingEvent.Type eventType = parseEventType(eventTypeStr, errors);
     final UnLocode unLocode = parseUnLocode(unLocodeStr, errors);
+    final OperatorCode operatorCode = parseOperatorCode();
 
     if (errors.isEmpty()) {
-      handlingEventService.registerHandlingEvent(date, trackingId, voyageNumber, unLocode, eventType);
+      handlingEventService.registerHandlingEvent(date, trackingId, voyageNumber, unLocode, eventType, operatorCode);
     } else {
       throw new Exception(errors.toString());
     }
