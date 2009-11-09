@@ -10,6 +10,7 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
@@ -51,7 +52,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
 
-    service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
+    service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE"));
   }
 
 }

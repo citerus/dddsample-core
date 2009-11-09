@@ -12,10 +12,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
-import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.tracking.core.domain.model.handling.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations;
@@ -49,47 +46,47 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
     String handlingEventSql =
-      "insert into HandlingEvent (sequence_number, completionTime, registrationTime, type, location_id, voyage_id, cargo_id) " +
-        "values (?, ?, ?, ?, ?, ?, ?)";
+      "insert into HandlingEvent (sequence_number, completionTime, registrationTime, type, location_id, voyage_id, cargo_id, operator_code) " +
+        "values (?, ?, ?, ?, ?, ?, ?,?)";
 
     Object[][] handlingEventArgs = {
       //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
-      {1, ts(0), ts((0)), "RECEIVE", 1, null, 1},
-      {2, ts((4)), ts((5)), "LOAD", 1, 1, 1},
-      {3, ts((14)), ts((14)), "UNLOAD", 5, 1, 1},
-      {4, ts((15)), ts((15)), "LOAD", 5, 1, 1},
-      {5, ts((30)), ts((30)), "UNLOAD", 6, 1, 1},
-      {6, ts((33)), ts((33)), "LOAD", 6, 1, 1},
-      {7, ts((34)), ts((34)), "UNLOAD", 3, 1, 1},
-      {8, ts((60)), ts((60)), "LOAD", 3, 1, 1},
-      {9, ts((70)), ts((71)), "UNLOAD", 4, 1, 1},
-      {10, ts((75)), ts((75)), "LOAD", 4, 1, 1},
-      {11, ts((88)), ts((88)), "UNLOAD", 2, 1, 1},
-      {12, ts((100)), ts((102)), "CLAIM", 2, null, 1},
+      {1, ts(0), ts((0)), "RECEIVE", 1, null, 1, null},
+      {2, ts((4)), ts((5)), "LOAD", 1, 1, 1, "AS34F"},
+      {3, ts((14)), ts((14)), "UNLOAD", 5, 1, 1, "AS34F"},
+      {4, ts((15)), ts((15)), "LOAD", 5, 1, 1, "AS34F"},
+      {5, ts((30)), ts((30)), "UNLOAD", 6, 1, 1, "AS34F"},
+      {6, ts((33)), ts((33)), "LOAD", 6, 1, 1, "AS34F"},
+      {7, ts((34)), ts((34)), "UNLOAD", 3, 1, 1, "AS34F"},
+      {8, ts((60)), ts((60)), "LOAD", 3, 1, 1, "AS34F"},
+      {9, ts((70)), ts((71)), "UNLOAD", 4, 1, 1, "AS34F"},
+      {10, ts((75)), ts((75)), "LOAD", 4, 1, 1, "AS34F"},
+      {11, ts((88)), ts((88)), "UNLOAD", 2, 1, 1, "AS34F"},
+      {12, ts((100)), ts((102)), "CLAIM", 2, null, 1, null},
 
       //ZYX (AUMEL - USCHI - DEHAM -)
-      {13, ts((200)), ts((201)), "RECEIVE", 2, null, 3},
-      {14, ts((202)), ts((202)), "LOAD", 2, 2, 3},
-      {15, ts((208)), ts((208)), "UNLOAD", 7, 2, 3},
-      {16, ts((212)), ts((212)), "LOAD", 7, 2, 3},
-      {17, ts((230)), ts((230)), "UNLOAD", 6, 2, 3},
-      {18, ts((235)), ts((235)), "LOAD", 6, 2, 3},
+      {13, ts((200)), ts((201)), "RECEIVE", 2, null, 3, null},
+      {14, ts((202)), ts((202)), "LOAD", 2, 2, 3, "AS34F"},
+      {15, ts((208)), ts((208)), "UNLOAD", 7, 2, 3, "AS34F"},
+      {16, ts((212)), ts((212)), "LOAD", 7, 2, 3, "AS34F"},
+      {17, ts((230)), ts((230)), "UNLOAD", 6, 2, 3, "AS34F"},
+      {18, ts((235)), ts((235)), "LOAD", 6, 2, 3, "AS34F"},
 
       //ABC
-      {19, ts((20)), ts((21)), "CLAIM", 2, null, 2},
+      {19, ts((20)), ts((21)), "CLAIM", 2, null, 2, null},
 
       //CBA
-      {20, ts((0)), ts((1)), "RECEIVE", 2, null, 4},
-      {21, ts((10)), ts((11)), "LOAD", 2, 2, 4},
-      {22, ts((20)), ts((21)), "UNLOAD", 7, 2, 4},
+      {20, ts((0)), ts((1)), "RECEIVE", 2, null, 4, null},
+      {21, ts((10)), ts((11)), "LOAD", 2, 2, 4, "AS34F"},
+      {22, ts((20)), ts((21)), "UNLOAD", 7, 2, 4, "AS34F"},
 
       //FGH
-      {23, ts(100), ts(160), "RECEIVE", 3, null, 5},
-      {24, ts(150), ts(110), "LOAD", 3, 3, 5},
+      {23, ts(100), ts(160), "RECEIVE", 3, null, 5, null},
+      {24, ts(150), ts(110), "LOAD", 3, 3, 5, "AS34F"},
 
       // JKL
-      {25, ts(200), ts(220), "RECEIVE", 6, null, 6},
-      {26, ts(300), ts(330), "LOAD", 6, 3, 6},
+      {25, ts(200), ts(220), "RECEIVE", 6, null, 6, null},
+      {26, ts(300), ts(330), "LOAD", 6, 3, 6, "AS34F"},
       {27, ts(400), ts(440), "UNLOAD", 5, 3, 6}  // Unexpected event
     };
     executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
@@ -235,17 +232,17 @@ public class SampleDataGenerator implements ServletContextListener {
 
         try {
           HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
+            toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE, new OperatorCode("ABCDE")
           );
           session.save(event1);
 
           HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
+            toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE")
           );
           session.save(event2);
 
           HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+            toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD, new OperatorCode("ABCDE")
           );
           session.save(event3);
         } catch (CannotCreateHandlingEventException e) {
@@ -273,22 +270,22 @@ public class SampleDataGenerator implements ServletContextListener {
 
         try {
           HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingEvent.Type.RECEIVE
+            toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingEvent.Type.RECEIVE, new OperatorCode("ABCDE")
           );
           session.save(event1);
 
           HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingEvent.Type.LOAD
+            toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE")
           );
           session.save(event2);
 
           HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+            toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD, new OperatorCode("ABCDE")
           );
           session.save(event3);
 
           HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
+            toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE")
           );
           session.save(event4);
 

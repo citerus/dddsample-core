@@ -4,6 +4,7 @@ import com.aggregator.HandlingReport;
 import org.apache.commons.lang.StringUtils;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
@@ -82,5 +83,10 @@ public class HandlingReportParser {
     }
 
     return completionTime.toGregorianCalendar().getTime();
+  }
+
+  public static OperatorCode parseOperatorCode() {
+    // TODO stubbed atm
+    return new OperatorCode("ABCDE");
   }
 }

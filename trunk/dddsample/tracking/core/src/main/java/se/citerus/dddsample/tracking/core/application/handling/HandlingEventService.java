@@ -3,6 +3,7 @@ package se.citerus.dddsample.tracking.core.application.handling;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
@@ -22,6 +23,7 @@ public interface HandlingEventService {
    * @param voyageNumber   voyage number
    * @param unLocode       UN locode for the location where the event occurred
    * @param type           type of event
+   * @param operatorCode
    * @throws se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException
    *          if a handling event that represents an actual event that's relevant to a cargo we're tracking
    *          can't be created from the parameters
@@ -30,6 +32,6 @@ public interface HandlingEventService {
                              TrackingId trackingId,
                              VoyageNumber voyageNumber,
                              UnLocode unLocode,
-                             HandlingEvent.Type type) throws CannotCreateHandlingEventException;
+                             HandlingEvent.Type type, OperatorCode operatorCode) throws CannotCreateHandlingEventException;
 
 }
