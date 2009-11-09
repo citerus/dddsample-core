@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.tracking.core.application.event.SystemEvents;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.tracking.core.domain.model.handling.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
@@ -37,13 +34,13 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   @Transactional
   public void registerHandlingEvent(final Date completionTime, final TrackingId trackingId,
                                     final VoyageNumber voyageNumber, final UnLocode unLocode,
-                                    final HandlingEvent.Type type) throws CannotCreateHandlingEventException {
+                                    final HandlingEvent.Type type, final OperatorCode operatorCode) throws CannotCreateHandlingEventException {
 
     /* Using a factory to create a HandlingEvent (aggregate). This is where
        it is determined wether the incoming data, the attempt, actually is capable
        of representing a real handling handlingEvent. */
     final HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(
-      completionTime, trackingId, voyageNumber, unLocode, type
+      completionTime, trackingId, voyageNumber, unLocode, type, operatorCode
     );
 
     /* Store the new handling handlingEvent, which updates the persistent

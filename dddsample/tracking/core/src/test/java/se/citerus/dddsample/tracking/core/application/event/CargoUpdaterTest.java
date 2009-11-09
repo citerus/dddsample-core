@@ -52,7 +52,7 @@ public class CargoUpdaterTest {
       cargo.trackingId(),
       HONGKONG_TO_NEW_YORK.voyageNumber(),
       HONGKONG.unLocode(),
-      LOAD
+      LOAD, new OperatorCode("ABCDE")
     );
     handlingEventRepository.store(handlingEvent);
 

@@ -31,10 +31,10 @@ public class HandlingHistoryTest extends TestCase {
       addMovement(SHANGHAI, new Date(1), new Date(2)).
       addMovement(DALLAS, new Date(3), new Date(4)).
       build();
-    event1 = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-05"), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
-    event1duplicate = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-07"), HandlingEvent.Type.LOAD, SHANGHAI, voyage);
-    event2 = new HandlingEvent(cargo, toDate("2009-03-10"), toDate("2009-03-06"), HandlingEvent.Type.UNLOAD, DALLAS, voyage);
-    eventOfCargo2 = new HandlingEvent(cargo2, toDate("2009-03-11"), toDate("2009-03-08"), HandlingEvent.Type.LOAD, GOTHENBURG, voyage);
+    event1 = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-05"), HandlingEvent.Type.LOAD, SHANGHAI, voyage, new OperatorCode("ABCDE"));
+    event1duplicate = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-07"), HandlingEvent.Type.LOAD, SHANGHAI, voyage, new OperatorCode("ABCDE"));
+    event2 = new HandlingEvent(cargo, toDate("2009-03-10"), toDate("2009-03-06"), HandlingEvent.Type.UNLOAD, DALLAS, voyage, new OperatorCode("ABCDE"));
+    eventOfCargo2 = new HandlingEvent(cargo2, toDate("2009-03-11"), toDate("2009-03-08"), HandlingEvent.Type.LOAD, GOTHENBURG, voyage, new OperatorCode("ABCDE"));
   }
 
   public void testDistinctEventsByCompletionTime() {
