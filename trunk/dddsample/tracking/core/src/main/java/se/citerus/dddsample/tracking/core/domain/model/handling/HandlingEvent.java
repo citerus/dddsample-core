@@ -35,6 +35,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   private Date completionTime;
   private Date registrationTime;
   private Cargo cargo;
+  private OperatorCode operatorCode;
 
   /**
    * Handling event type. Either requires or prohibits a carrier movement
@@ -89,6 +90,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param type             type of event
    * @param location         where the event took place
    * @param voyage           the voyage
+   * @param operatorCode     operator code for port operator
    */
   // TODO make package local
   public HandlingEvent(final Cargo cargo,
@@ -96,13 +98,15 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
                        final Date registrationTime,
                        final Type type,
                        final Location location,
-                       final Voyage voyage) {
+                       final Voyage voyage,
+                       final OperatorCode operatorCode) {
     Validate.notNull(cargo, "Cargo is required");
     Validate.notNull(completionTime, "Completion time is required");
     Validate.notNull(registrationTime, "Registration time is required");
     Validate.notNull(type, "Handling event type is required");
     Validate.notNull(location, "Location is required");
     Validate.notNull(voyage, "Voyage is required");
+    Validate.notNull(operatorCode, "Operator code is required");
 
     if (!type.isVoyageRelated()) {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
@@ -113,6 +117,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     this.completionTime = new Date(completionTime.getTime());
     this.registrationTime = new Date(registrationTime.getTime());
     this.activity = new HandlingActivity(type, location, voyage);
+    this.operatorCode = operatorCode;
   }
 
   /**

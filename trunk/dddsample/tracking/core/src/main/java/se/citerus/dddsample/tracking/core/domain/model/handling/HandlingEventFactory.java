@@ -35,13 +35,15 @@ public class HandlingEventFactory {
    * @param voyageNumber     voyage number
    * @param unlocode         United Nations Location Code for the location of the event
    * @param type             type of event
+   * @param operatorCode     operator code
    * @return A handling event.
    * @throws UnknownVoyageException   if there's no voyage with this number
    * @throws UnknownCargoException    if there's no cargo with this tracking id
    * @throws UnknownLocationException if there's no location with this UN Locode
    */
   public HandlingEvent createHandlingEvent(final Date completionTime, final TrackingId trackingId,
-                                           final VoyageNumber voyageNumber, final UnLocode unlocode, final HandlingEvent.Type type)
+                                           final VoyageNumber voyageNumber, final UnLocode unlocode,
+                                           final HandlingEvent.Type type, final OperatorCode operatorCode)
     throws CannotCreateHandlingEventException {
 
     final Cargo cargo = findCargo(trackingId);
@@ -53,7 +55,7 @@ public class HandlingEventFactory {
       if (voyage == null) {
         return new HandlingEvent(cargo, completionTime, registrationTime, type, location);
       } else {
-        return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage);
+        return new HandlingEvent(cargo, completionTime, registrationTime, type, location, voyage, operatorCode);
       }
     } catch (Exception e) {
       throw new CannotCreateHandlingEventException(e);
