@@ -2,7 +2,10 @@ package se.citerus.dddsample.tracking.core.application.booking;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingIdFactory;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.STOCKHOLM;
@@ -24,8 +27,7 @@ public class BookingServiceTest extends TestCase {
     locationRepository = createMock(LocationRepository.class);
     routingService = createMock(RoutingService.class);
     trackingIdFactory = createMock(TrackingIdFactory.class);
-    CargoFactory cargoFactory = new CargoFactory(locationRepository, trackingIdFactory);
-    bookingService = new BookingServiceImpl(routingService, cargoFactory, cargoRepository, locationRepository);
+    bookingService = new BookingServiceImpl(routingService, trackingIdFactory, cargoRepository, locationRepository);
   }
 
   public void testRegisterNew() {

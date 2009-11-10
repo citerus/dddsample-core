@@ -11,17 +11,13 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Before;
 import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoFactory;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.Leg;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.MISROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.ROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdFactoryInMem;
 
 import java.util.Date;
@@ -35,12 +31,17 @@ public class VoyageRescheduledScenarioTest {
 
   @Before
   public void setupCargo() {
+    TrackingIdFactoryInMem trackingIdFactory = new TrackingIdFactoryInMem();
+
     // Creating new voyages to avoid rescheduling shared ones, breaking other tests
     voyage1 = new Voyage(new VoyageNumber("V1"), HONGKONG_TO_NEW_YORK.schedule());
     voyage2 = new Voyage(new VoyageNumber("V2"), NEW_YORK_TO_DALLAS.schedule());
     voyage3 = new Voyage(new VoyageNumber("V3"), DALLAS_TO_HELSINKI.schedule());
-    CargoFactory cargoFactory = new CargoFactory(new LocationRepositoryInMem(), new TrackingIdFactoryInMem());
-    cargo = cargoFactory.newCargo(HANGZOU.unLocode(), STOCKHOLM.unLocode(), toDate("2008-12-23"));
+
+    TrackingId trackingId = trackingIdFactory.nextTrackingId();
+    RouteSpecification routeSpecification = new RouteSpecification(HANGZOU, STOCKHOLM, toDate("2008-12-23"));
+
+    cargo = new Cargo(trackingId, routeSpecification);
     Itinerary itinerary = new Itinerary(
       Leg.deriveLeg(voyage1, HANGZOU, NEWYORK),
       Leg.deriveLeg(voyage2, NEWYORK, DALLAS),
