@@ -8,8 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoFactory;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.*;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
@@ -23,28 +24,31 @@ public class CargoUpdaterTest {
 
   SystemEvents systemEvents;
   CargoUpdater cargoUpdater;
-  CargoFactory cargoFactory;
   HandlingEventFactory handlingEventFactory;
   CargoRepository cargoRepository;
   HandlingEventRepository handlingEventRepository;
   LocationRepository locationRepository;
   VoyageRepository voyageRepository;
+  private TrackingIdFactoryInMem trackingIdFactory;
 
   @Before
-  public void setUp() throws CannotCreateHandlingEventException {
+  public void setUp() {
     systemEvents = createMock(SystemEvents.class);
     cargoRepository = new CargoRepositoryInMem();
     handlingEventRepository = new HandlingEventRepositoryInMem();
     locationRepository = new LocationRepositoryInMem();
     voyageRepository = new VoyageRepositoryInMem();
-    cargoFactory = new CargoFactory(locationRepository, new TrackingIdFactoryInMem());
+    trackingIdFactory = new TrackingIdFactoryInMem();
     handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     cargoUpdater = new CargoUpdater(systemEvents, cargoRepository, handlingEventRepository);
   }
 
   @Test
   public void updateCargo() throws CannotCreateHandlingEventException {
-    Cargo cargo = cargoFactory.newCargo(HONGKONG.unLocode(), GOTHENBURG.unLocode(), toDate("2009-10-15"));
+    TrackingId trackingId = trackingIdFactory.nextTrackingId();
+    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, GOTHENBURG, toDate("2009-10-15"));
+
+    Cargo cargo = new Cargo(trackingId, routeSpecification);
     cargoRepository.store(cargo);
 
     HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(

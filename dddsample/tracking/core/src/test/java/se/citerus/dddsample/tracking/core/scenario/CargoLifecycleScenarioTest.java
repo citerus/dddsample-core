@@ -38,7 +38,7 @@ public class CargoLifecycleScenarioTest {
   VoyageRepository voyageRepository = new VoyageRepositoryInMem();
 
   HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
-  CargoFactory cargoFactory = new CargoFactory(locationRepository, new TrackingIdFactoryInMem());
+  TrackingIdFactory trackingIdFactory = new TrackingIdFactoryInMem();
 
   /**
    * This is a domain service interface, whose implementation
@@ -188,7 +188,10 @@ public class CargoLifecycleScenarioTest {
 
   private void bookCargoFromHongkongToStockholm() {
     Date arrivalDeadline = toDate("2009-03-18");
-    Cargo cargo = cargoFactory.newCargo(HONGKONG.unLocode(), STOCKHOLM.unLocode(), arrivalDeadline);
+    final TrackingId trackingId1 = trackingIdFactory.nextTrackingId();
+    final RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, STOCKHOLM, arrivalDeadline);
+
+    Cargo cargo = new Cargo(trackingId1, routeSpecification);
     cargoRepository.store(cargo);
 
     trackingId = cargo.trackingId();

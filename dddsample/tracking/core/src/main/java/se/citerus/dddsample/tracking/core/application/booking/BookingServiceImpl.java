@@ -3,9 +3,9 @@ package se.citerus.dddsample.tracking.core.application.booking;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
@@ -20,18 +20,18 @@ import java.util.List;
 public final class BookingServiceImpl implements BookingService {
 
   private final RoutingService routingService;
-  private final CargoFactory cargoFactory;
   private final CargoRepository cargoRepository;
   private final LocationRepository locationRepository;
   private final Log logger = LogFactory.getLog(getClass());
+  private final TrackingIdFactory trackingIdFactory;
 
   @Autowired
   public BookingServiceImpl(final RoutingService routingService,
-                            final CargoFactory cargoFactory,
+                            final TrackingIdFactory trackingIdFactory,
                             final CargoRepository cargoRepository,
                             final LocationRepository locationRepository) {
     this.routingService = routingService;
-    this.cargoFactory = cargoFactory;
+    this.trackingIdFactory = trackingIdFactory;
     this.cargoRepository = cargoRepository;
     this.locationRepository = locationRepository;
   }
@@ -41,8 +41,14 @@ public final class BookingServiceImpl implements BookingService {
   public TrackingId bookNewCargo(final UnLocode originUnLocode,
                                  final UnLocode destinationUnLocode,
                                  final Date arrivalDeadline) {
-    final Cargo cargo = cargoFactory.newCargo(originUnLocode, destinationUnLocode, arrivalDeadline);
+    final TrackingId trackingId = trackingIdFactory.nextTrackingId();
+    final Location origin = locationRepository.find(originUnLocode);
+    final Location destination = locationRepository.find(destinationUnLocode);
+    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);
+
+    final Cargo cargo = new Cargo(trackingId, routeSpecification);
     cargoRepository.store(cargo);
+    
     logger.info("Booked new cargo with tracking id " + cargo.trackingId().stringValue());
 
     return cargo.trackingId();

@@ -8,8 +8,6 @@
 
   <context:component-scan base-package="se.citerus.dddsample.tracking.core.domain"/>
 
-  <bean class="se.citerus.dddsample.tracking.core.domain.model.cargo.CargoFactory" autowire="constructor"/>
-
   <bean class="se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory" autowire="constructor"/>
   
 </beans>
