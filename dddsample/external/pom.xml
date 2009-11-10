@@ -11,6 +11,7 @@
   <modules>
     <module>ila</module>
     <module>reporting</module>
+    <module>reporting-api</module>
     <module>pathfinder</module>
     <module>pathfinder-api</module>
     <module>aggregator</module>
