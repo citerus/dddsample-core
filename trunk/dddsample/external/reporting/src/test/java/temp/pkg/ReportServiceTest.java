@@ -1,19 +1,18 @@
-package com.reporting;
+package temp.pkg;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jettison.json.JSONObject;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONArray;
-import static org.junit.Assert.assertEquals;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/context.xml", "/context-cxf.xml", "/context-test-setup.xml"})
