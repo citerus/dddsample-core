@@ -109,28 +109,28 @@ public class RouteSpecification extends ValueObjectSupport<RouteSpecification> {
   
   private final class NotNullSpecification extends FieldlessSpecification {
     @Override
-    public final boolean isSatisfiedBy(final Itinerary itinerary) {
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
       return itinerary != null;
     }
   }
 
   private final class SameOriginSpecification extends FieldlessSpecification {
     @Override
-    public final boolean isSatisfiedBy(final Itinerary itinerary) {
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
       return origin.sameAs(itinerary.initialLoadLocation());
     }
   }
 
   private final class SameDestinationSpecification extends FieldlessSpecification {
     @Override
-    public final boolean isSatisfiedBy(final Itinerary itinerary) {
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
       return destination.sameAs(itinerary.finalUnloadLocation());
     }
   }
 
   private final class MeetsDeadlineSpecification extends FieldlessSpecification {
     @Override
-    public final boolean isSatisfiedBy(final Itinerary itinerary) {
+    public boolean isSatisfiedBy(final Itinerary itinerary) {
       return arrivalDeadline.after(itinerary.finalUnloadTime());
     }
   }

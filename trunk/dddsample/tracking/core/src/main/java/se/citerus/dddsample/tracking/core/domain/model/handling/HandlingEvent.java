@@ -77,8 +77,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     }
 
     @Override
-    public boolean sameValueAs(Type other) {
-      return other != null && this.equals(other);
+    public boolean sameValueAs(final Type other) {
+      return this.equals(other);
     }
 
   }
@@ -92,14 +92,13 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param voyage           the voyage
    * @param operatorCode     operator code for port operator
    */
-  // TODO make package local
-  public HandlingEvent(final Cargo cargo,
-                       final Date completionTime,
-                       final Date registrationTime,
-                       final Type type,
-                       final Location location,
-                       final Voyage voyage,
-                       final OperatorCode operatorCode) {
+  HandlingEvent(final Cargo cargo,
+                final Date completionTime,
+                final Date registrationTime,
+                final Type type,
+                final Location location,
+                final Voyage voyage,
+                final OperatorCode operatorCode) {
     Validate.notNull(cargo, "Cargo is required");
     Validate.notNull(completionTime, "Completion time is required");
     Validate.notNull(registrationTime, "Registration time is required");
@@ -164,6 +163,10 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   public Voyage voyage() {
     return activity.voyage() != null ? activity.voyage() : Voyage.NONE;
+  }
+
+  public OperatorCode operatorCode() {
+    return operatorCode;
   }
 
   public Date completionTime() {
