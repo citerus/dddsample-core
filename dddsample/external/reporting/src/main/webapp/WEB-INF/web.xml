@@ -24,6 +24,7 @@
     <param-value>
       classpath:context.xml
       classpath:context-cxf.xml
+      classpath:context-test-setup.xml
     </param-value>
   </context-param>
 
@@ -35,7 +36,7 @@
 
   <servlet-mapping>
     <servlet-name>cxf</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
 
 </web-app>

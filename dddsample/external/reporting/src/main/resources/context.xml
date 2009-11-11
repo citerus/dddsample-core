@@ -15,8 +15,12 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="reportingService" class="com.reporting.ReportingService">
+  <bean id="reportDAO" class="com.reporting2.db.ReportDAO">
     <constructor-arg ref="dataSource"/>
+  </bean>
+
+  <bean id="reportingService" class="com.reporting2.ReportingService">
+    <constructor-arg ref="reportDAO"/>
   </bean>
 
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
