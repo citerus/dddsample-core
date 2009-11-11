@@ -2,7 +2,6 @@ package se.citerus.dddsample.tracking.core.application.event;
 
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 
 /**
  * This interface provides a way to let other parts
