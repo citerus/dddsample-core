@@ -1,4 +1,4 @@
-package com.reporting2;
+package com.reporting;
 
 import java.text.DateFormat;
 import java.util.Locale;

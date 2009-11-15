@@ -1,7 +1,7 @@
-package com.reporting2.db;
+package com.reporting.db;
 
-import com.reporting2.reports.CargoReport;
-import com.reporting2.reports.VoyageReport;
+import com.reporting.reports.CargoReport;
+import com.reporting.reports.VoyageReport;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
