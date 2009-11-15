@@ -1,10 +1,11 @@
 package se.citerus.dddsample.tracking.core.application.event;
 
-import static org.easymock.EasyMock.*;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
@@ -28,11 +29,11 @@ public class CargoUpdaterTest {
   HandlingEventRepository handlingEventRepository;
   LocationRepository locationRepository;
   VoyageRepository voyageRepository;
-  private TrackingIdFactoryInMem trackingIdFactory;
+  TrackingIdFactoryInMem trackingIdFactory;
 
   @Before
   public void setUp() {
-    systemEvents = createMock(SystemEvents.class);
+    systemEvents = mock(SystemEvents.class);
     cargoRepository = new CargoRepositoryInMem();
     handlingEventRepository = new HandlingEventRepositoryInMem();
     locationRepository = new LocationRepositoryInMem();
@@ -59,24 +60,19 @@ public class CargoUpdaterTest {
     );
     handlingEventRepository.store(handlingEvent);
 
-    systemEvents.notifyOfCargoUpdate(cargo);
-    replay(systemEvents);
-
     assertThat(handlingEvent.activity(), not(equalTo(cargo.mostRecentHandlingActivity())));
 
     cargoUpdater.updateCargo(handlingEvent.sequenceNumber());
     
     assertThat(handlingEvent.activity(), equalTo(cargo.mostRecentHandlingActivity()));
-
-    verify(systemEvents);
+    verify(systemEvents).notifyOfCargoUpdate(cargo);
   }
 
   @Test
   public void handlingEventNotFound() {
-    replay(systemEvents);
-
     cargoUpdater.updateCargo(EventSequenceNumber.valueOf(999L));
     
-    verify(systemEvents);
+    verifyZeroInteractions(systemEvents);
   }
+  
 }
