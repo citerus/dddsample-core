@@ -21,14 +21,16 @@
 
     function search() {
       $.ajax({
-          url: "http://localhost:8080/reporting/rest/cargo/" + $("#query").val(),
+          url: "http://localhost:8080/reporting/rest/cargo/" + $("#query").val() + ".json",
           type: 'GET',
           contentType: 'application/json',
           success: function(response) {
             var json = eval('(' + response + ')');
             var cargo = json.cargoReport.cargo;
             $('#result').empty();
+            var pdfUrl = "http://localhost:8080/reporting/rest/cargo/" + $("#query").val() + ".pdf"
             $('#result').
+              append('<p><a href="' + pdfUrl + '">Download PDF</a></p>').
               append('<h2>Cargo ' + cargo.trackingId + '</h2>').
               append('<p>Destination: ' + cargo.finalDestination + ' (at ' + cargo.arrivalDeadline + ')</p>')
 

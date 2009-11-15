@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -20,8 +21,10 @@ public class ReportServiceTest {
 
   @Test
   public void cargoReport() throws Exception {
-    JSONObject json = readJSON("/report/cargo/ABC");
-    JSONObject cargo = json.getJSONObject("cargo");
+    JSONObject json = readJSON("/cargo/ABC.json");
+    JSONObject cargoReport = json.getJSONObject("cargoReport");
+
+    JSONObject cargo = cargoReport.getJSONObject("cargo");
     
     assertEquals("ABC", cargo.get("trackingId"));
     assertEquals("Hongkong", cargo.get("receivedIn"));
@@ -30,10 +33,10 @@ public class ReportServiceTest {
     assertEquals("6/12/09 6:30 PM", cargo.get("eta"));
     assertEquals("Onboard voyage", cargo.get("currentStatus"));
     assertEquals("V0100", cargo.get("currentVoyage"));
-    assertEquals("Tokyo", cargo.get("currentLocation"));
+    //assertEquals("Tokyo", cargo.get("currentLocation"));
     assertEquals("6/8/09 2:23 PM", cargo.get("lastUpdatedOn"));
 
-    JSONArray handlings = cargo.getJSONArray("handlings");
+    JSONArray handlings = cargoReport.getJSONArray("handlings");
     assertEquals(4, handlings.length());
 
     verifyHandling(handlings.getJSONObject(0), "Receive", "Hongkong", null);
@@ -44,19 +47,21 @@ public class ReportServiceTest {
 
   @Test
   public void cargoPDFReport() throws Exception {
-    String pdf = readPDF("/report/cargo/ABC");
+    String pdf = readPDF("/cargo/ABC.pdf");
     assertTrue(pdf.length() > 0);
   }
 
-  @Test
+  @Test(expected = FileNotFoundException.class)
   public void cargoNotFound() throws Exception {
-    assertEquals("", readString("/report/cargo/NOSUCH"));
+    readJSON("/cargo/NOSUCH.json");
   }
 
   @Test
   public void voyageReportWithCargos() throws Exception {
-    JSONObject json = readJSON("/report/voyage/V0100");
-    JSONObject voyage = json.getJSONObject("voyage");
+    JSONObject json = readJSON("/voyage/V0100.json");
+    JSONObject voyageReport = json.getJSONObject("voyageReport");
+
+    JSONObject voyage = voyageReport.getJSONObject("voyage");
 
     assertEquals("V0100", voyage.get("voyageNumber"));
     assertEquals("Honolulu", voyage.get("nextStop"));
@@ -65,15 +70,17 @@ public class ReportServiceTest {
     assertEquals(1400, voyage.get("delayedByMinutes"));
     assertEquals("6/6/09 2:01 PM", voyage.get("lastUpdatedOn"));
 
-    JSONObject cargo = voyage.getJSONObject("onboardCargos");
+    JSONObject cargo = voyageReport.getJSONObject("onboardCargos");
     assertEquals("ABC", cargo.get("trackingId"));
     assertEquals("Stockholm", cargo.get("finalDestination"));
   }
 
   @Test
   public void voyageReport() throws Exception {
-    JSONObject json = readJSON("/report/voyage/V0200");
-    JSONObject voyage = json.getJSONObject("voyage");
+    JSONObject json = readJSON("/voyage/V0200.json");
+    JSONObject voyageReport = json.getJSONObject("voyageReport");
+
+    JSONObject voyage = voyageReport.getJSONObject("voyage");
 
     assertEquals("V0200", voyage.get("voyageNumber"));
     assertEquals("Seattle", voyage.get("nextStop"));
@@ -81,17 +88,17 @@ public class ReportServiceTest {
     assertEquals("In transit", voyage.get("currentStatus"));
     assertEquals(0, voyage.get("delayedByMinutes"));
     assertEquals("6/6/09 2:01 PM", voyage.get("lastUpdatedOn"));
-    assertFalse(voyage.has("onboardCargos"));
+    assertFalse(voyageReport.has("onboardCargos"));
   }
 
-  @Test
+  @Test(expected = FileNotFoundException.class)
   public void voyageNotFound() throws Exception {
-    assertEquals("", readString("/report/voyage/NOSUCH"));
+    readJSON("/voyage/NOSUCH.json");
   }
 
   @Test
   public void voyagePDFReport() throws Exception {
-    String pdf = readPDF("/report/voyage/V0200");
+    String pdf = readPDF("/voyage/V0200.pdf");
     assertTrue(pdf.length() > 0);
   }
 
@@ -108,21 +115,13 @@ public class ReportServiceTest {
   private JSONObject readJSON(String path) throws IOException, JSONException {
     URL url = new URL("http://localhost:14000" + path);
     URLConnection urlConnection = url.openConnection();
-    urlConnection.setRequestProperty("Accept", "application/json");
     String jsonString = IOUtils.toString(urlConnection.getInputStream());
     return new JSONObject(jsonString);
-  }
-
-  private String readString(String path) throws IOException {
-    URL url = new URL("http://localhost:14000" + path);
-    URLConnection urlConnection = url.openConnection();
-    return IOUtils.toString(urlConnection.getInputStream());
   }
 
   private String readPDF(String path) throws IOException {
     URL url = new URL("http://localhost:14000" + path);
     URLConnection urlConnection = url.openConnection();
-    urlConnection.setRequestProperty("Accept", "application/pdf");
     return IOUtils.toString(urlConnection.getInputStream());
   }
 

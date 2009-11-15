@@ -17,6 +17,8 @@ public abstract class PDFMessageBodyWriter<T> implements MessageBodyWriter<T> {
 
   public long getSize(T t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mt) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    // TODO creates document twice, not optimal, but this class must be stateless.
+    // Could probably be worked around using a ThreadLocal, but it's beyond the scope of the sample app.
     writeDocumentToStream(t, baos);
     return baos.toByteArray().length;
   }
