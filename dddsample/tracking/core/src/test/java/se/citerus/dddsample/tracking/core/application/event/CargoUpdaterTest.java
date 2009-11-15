@@ -1,9 +1,8 @@
 package se.citerus.dddsample.tracking.core.application.event;
 
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
