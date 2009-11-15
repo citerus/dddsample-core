@@ -1,13 +1,7 @@
-/**
- * Purpose
- * @author peter
- * @created 2009-aug-05
- * $Id$
- */
 package se.citerus.dddsample.tracking.core.scenario;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
