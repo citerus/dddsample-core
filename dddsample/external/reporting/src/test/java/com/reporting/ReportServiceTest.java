@@ -1,4 +1,4 @@
-package temp.pkg;
+package com.reporting;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;

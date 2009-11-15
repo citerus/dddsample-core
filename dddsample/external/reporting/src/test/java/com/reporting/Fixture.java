@@ -4,7 +4,7 @@
  * @created 2009-okt-03
  * $Id$
  */
-package temp.pkg;
+package com.reporting;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.ApplicationEvent;
