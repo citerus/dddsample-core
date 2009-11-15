@@ -1,4 +1,4 @@
-package com.reporting2;
+package com.reporting;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.InitializingBean;

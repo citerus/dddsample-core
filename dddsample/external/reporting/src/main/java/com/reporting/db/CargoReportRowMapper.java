@@ -1,7 +1,7 @@
-package com.reporting2.db;
+package com.reporting.db;
 
-import static com.reporting2.Constants.US_DATETIME;
-import com.reporting2.reports.CargoReport;
+import static com.reporting.Constants.US_DATETIME;
+import com.reporting.reports.CargoReport;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import se.citerus.dddsample.reporting.api.CargoDetails;
 

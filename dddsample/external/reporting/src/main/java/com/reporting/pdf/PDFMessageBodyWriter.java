@@ -1,4 +1,4 @@
-package com.reporting2.pdf;
+package com.reporting.pdf;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;

@@ -1,4 +1,4 @@
-package com.reporting2.db;
+package com.reporting.db;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import se.citerus.dddsample.reporting.api.OnboardCargo;

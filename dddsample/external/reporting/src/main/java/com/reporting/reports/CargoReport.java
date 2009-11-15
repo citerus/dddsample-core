@@ -1,4 +1,4 @@
-package com.reporting2.reports;
+package com.reporting.reports;
 
 import se.citerus.dddsample.reporting.api.CargoDetails;
 import se.citerus.dddsample.reporting.api.Handling;

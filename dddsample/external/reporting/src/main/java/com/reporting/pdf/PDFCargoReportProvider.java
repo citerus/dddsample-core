@@ -1,4 +1,4 @@
-package com.reporting2.pdf;
+package com.reporting.pdf;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -6,7 +6,7 @@ import static com.lowagie.text.FontFactory.HELVETICA_BOLD;
 import static com.lowagie.text.FontFactory.getFont;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
-import com.reporting2.reports.CargoReport;
+import com.reporting.reports.CargoReport;
 import se.citerus.dddsample.reporting.api.CargoDetails;
 import se.citerus.dddsample.reporting.api.Handling;
 

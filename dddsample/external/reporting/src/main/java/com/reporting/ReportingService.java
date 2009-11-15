@@ -1,9 +1,9 @@
-package com.reporting2;
+package com.reporting;
 
-import static com.reporting2.Constants.US_DATETIME;
-import com.reporting2.db.ReportDAO;
-import com.reporting2.reports.CargoReport;
-import com.reporting2.reports.VoyageReport;
+import static com.reporting.Constants.US_DATETIME;
+import com.reporting.db.ReportDAO;
+import com.reporting.reports.CargoReport;
+import com.reporting.reports.VoyageReport;
 import se.citerus.dddsample.reporting.api.CargoDetails;
 import se.citerus.dddsample.reporting.api.Handling;
 

@@ -1,9 +1,9 @@
-package com.reporting2.pdf;
+package com.reporting.pdf;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
-import com.reporting2.reports.VoyageReport;
+import com.reporting.reports.VoyageReport;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.ext.Provider;
