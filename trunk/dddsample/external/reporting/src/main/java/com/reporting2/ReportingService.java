@@ -25,23 +25,25 @@ public class ReportingService {
   }
 
   @GET
-  @Path("/cargo/{trackingId}")
-  public Response getCargoReport(@PathParam("trackingId") String trackingId) throws ParseException {
+  @Path("/cargo/{trackingId}.{format}")
+  public Response getCargoReport(@PathParam("trackingId") String trackingId, @PathParam("format") String format) throws ParseException {
     CargoReport cargoReport = reportDAO.loadCargoReport(trackingId);
     if (cargoReport == null) return status(404).build();
 
     return ok(cargoReport).
+      type("application/" + format).
       lastModified(US_DATETIME.parse(cargoReport.getCargo().getLastUpdatedOn())).
       build();
   }
 
   @GET
-  @Path("/voyage/{voyageNumber}")
-  public Response getVoyageReport(@PathParam("voyageNumber") String voyageNumber) throws ParseException {
+  @Path("/voyage/{voyageNumber}.{format}")
+  public Response getVoyageReport(@PathParam("voyageNumber") String voyageNumber, @PathParam("format") String format) throws ParseException {
     VoyageReport voyageReport = reportDAO.loadVoyageReport(voyageNumber);
     if (voyageReport == null) return status(404).build();
 
     return ok(voyageReport).
+      type("application/" + format).
       lastModified(US_DATETIME.parse(voyageReport.getVoyage().getLastUpdatedOn())).
       build();
   }
@@ -50,12 +52,14 @@ public class ReportingService {
   @Path("/cargo")
   public void reportCargoDetails(CargoDetails cargoDetails) {
     // TODO
+    System.out.println("Received " + cargoDetails);
   }
 
   @PUT
   @Path("/cargo/{trackingId}/handled")
   public void reportHandling(@PathParam("trackingId") String trackingId, Handling handling) {
     // TODO
+    System.out.println("Received " + trackingId + " : " + handling);
   }
 
   ReportingService() {
