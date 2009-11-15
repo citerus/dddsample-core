@@ -21,8 +21,8 @@
       <ref bean="reportingService"/>
     </jaxrs:serviceBeans>
     <jaxrs:providers>
-      <bean class="com.reporting2.pdf.PDFCargoReportProvider"/>
-      <bean class="com.reporting2.pdf.PDFVoyageReportProvider"/>
+      <bean class="com.reporting.pdf.PDFCargoReportProvider"/>
+      <bean class="com.reporting.pdf.PDFVoyageReportProvider"/>
     </jaxrs:providers>
   </jaxrs:server>
 

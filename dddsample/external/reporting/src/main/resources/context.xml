@@ -15,11 +15,11 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="reportDAO" class="com.reporting2.db.ReportDAO">
+  <bean id="reportDAO" class="com.reporting.db.ReportDAO">
     <constructor-arg ref="dataSource"/>
   </bean>
 
-  <bean id="reportingService" class="com.reporting2.ReportingService">
+  <bean id="reportingService" class="com.reporting.ReportingService">
     <constructor-arg ref="reportDAO"/>
   </bean>
 

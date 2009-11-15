@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean class="com.reporting2.Fixture">
+  <bean class="com.reporting.Fixture">
     <constructor-arg ref="dataSource"/>
     <constructor-arg value="classpath:schema.sql"/>
     <constructor-arg value="classpath:sample_data.sql"/>
