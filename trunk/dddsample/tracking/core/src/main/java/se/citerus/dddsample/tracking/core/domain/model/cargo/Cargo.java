@@ -1,8 +1,8 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.NOT_ROUTED;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.CustomsZone;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
@@ -10,7 +10,6 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -60,7 +59,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
 
     this.trackingId = trackingId;
     this.routeSpecification = routeSpecification;
-    this.delivery = Delivery.initial();
+    this.delivery = Delivery.beforeHandling();
   }
 
   @Override
@@ -78,7 +77,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   }
 
   /**
-   * @return The itinerary. Never null.
+   * @return The itinerary.
    */
   public Itinerary itinerary() {
     return itinerary;
@@ -106,112 +105,15 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Next expected activity.
    */
   public HandlingActivity nextExpectedActivity() {
-    /*
-     TODO Capture:
-
-     Cargo is misdirected but has been rerouted. Next expected acivity should be to load according to first leg
-     of new itinerary.
-
-     and
-
-     even if a cargo is misdirected, we expect it to be unloaded at next stop.
-
-    */
-    if (!onTrack()) {
-      return null;
-    }
-
-
-    
-    /*
-    if (delivery.transportStatus() == NOT_RECEIVED) {
-      return itinerary.firstLeg().receive();
-    }
-
-    Leg leg = itinerary.legMatching(delivery.mostRecentHandlingActivity());
-
-    if (leg == null) return null;
-
-    if (onboardCarrier()) return leg.unload();
-    else if (inPort())
-      if (leg.sameValueAs(itinerary.lastLeg())) return leg.claim();
-      else return leg.load();
-    else return null;
-
-  private boolean inPort() {
-    return delivery.transportStatus() == IN_PORT;
-  }
-
-  private boolean onboardCarrier() {
-    return delivery.transportStatus() == ONBOARD_CARRIER;
-  }
-
-
-    */
-
-  /*
-    public Date timeOfNextHandling() {
-      if (notReceived()) {
-        return null;
+    if (onTrack()) {
+      if (delivery.isRoutedAfterHandling()) {
+        return itinerary.firstLeg().deriveLoadActivity();
+      } else {
+        // Not yet able to determine when the next expected activity is non-pyhsical, i.e. customs
+        return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
       }
-
-      final Leg leg = itinerary.legMatching(delivery.mostRecentHandlingActivity());
-
-      if (leg == null) return null;
-
-      if (onboardCarrier()) return leg.unloadTime();
-      else if (inPort())
-        if (leg.sameValueAs(itinerary.lastLeg())) return null;
-        else return leg.loadTime();
-      else return null;
-    }
-
-  private boolean notReceived() {
-    return delivery.transportStatus() == NOT_RECEIVED;
-  }
-  */
-
-
-
-  final Location lastKnownLocation = delivery.lastKnownLocation();
-
-    switch (delivery.transportStatus()) {
-      case IN_PORT:
-        if (itinerary.firstLeg().loadLocation().sameAs(lastKnownLocation)) {
-          final Leg firstLeg = itinerary.firstLeg();
-          return new HandlingActivity(LOAD, firstLeg.loadLocation(), firstLeg.voyage());
-        } else {
-          for (Iterator<Leg> it = itinerary.legs().iterator(); it.hasNext();) {
-            final Leg leg = it.next();
-            if (leg.unloadLocation().sameAs(lastKnownLocation)) {
-              if (it.hasNext()) {
-                final Leg nextLeg = it.next();
-                return new HandlingActivity(LOAD, nextLeg.loadLocation(), nextLeg.voyage());
-              } else {
-                return new HandlingActivity(CLAIM, leg.unloadLocation());
-              }
-            }
-          }
-
-          return null;
-        }
-
-      case NOT_RECEIVED:
-        final Leg leg = itinerary.firstLeg();
-        return new HandlingActivity(RECEIVE, leg.loadLocation());
-
-      case ONBOARD_CARRIER:
-        for (Leg leg1 : itinerary.legs()) {
-          if (leg1.loadLocation().sameAs(lastKnownLocation)) {
-            return new HandlingActivity(UNLOAD, leg1.unloadLocation(), leg1.voyage());
-          }
-        }
-
-        return null;
-
-      case CLAIMED:
-      default:
-        return null;
+    } else {
+      return null;
     }
   }
 
@@ -226,7 +128,8 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return True if cargo is misdirected.
    */
   public boolean isMisdirected() {
-    return delivery.isMisdirected(itinerary, routeSpecification);
+    return delivery.hasBeenHandledAfterRouting() &&
+           !itinerary.isExpectedActivity(delivery.mostRecentPhysicalHandlingActivity());
   }
 
   /**
@@ -276,6 +179,9 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   public void assignToRoute(final Itinerary itinerary) {
     Validate.notNull(itinerary, "Itinerary is required");
 
+    if (routingStatus() != NOT_ROUTED) {
+      this.delivery = delivery.onRouting();
+    }
     this.itinerary = itinerary;
   }
 
@@ -291,14 +197,18 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Customs clearance point.
    */
   public Location customsClearancePoint() {
-    return customsZone().entryPoint(itinerary.locations());
+    if (itinerary == null) {
+      return Location.UNKNOWN;
+    } else {
+      return customsZone().entryPoint(itinerary.locations());
+    }
   }
 
   /**
    * @return True if the cargo is ready to be claimed.
    */
   public boolean isReadyToClaim() {
-    return delivery.isUnloadedAtDestination(routeSpecification);
+    return delivery.onTheGroundAtDestination(routeSpecification);
   }
 
   /**
@@ -322,22 +232,30 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * since {@link HandlingEvent} is in a different aggregate.
    *
    * @param handlingActivity handling activity
-   * @param completionTime when the activity was completed
    */
-  public void handled(final HandlingActivity handlingActivity, final Date completionTime) {
+  public void handled(final HandlingActivity handlingActivity) {
     Validate.notNull(handlingActivity, "Handling activity is required");
 
-    if (delivery.lastTimestamp().after(completionTime)) {
-      return;
+    if (isSignificant(handlingActivity)) {
+      this.delivery = delivery.onHandling(handlingActivity);
     }
+  }
 
-    // TODO
-    // What if an activity that should logically happen later is entered with
-    // a completion time that's before some other activity?
-    // Who should win - logic or completion time?
+  private boolean isSignificant(final HandlingActivity newHandlingActivity) {
+    return succedsMostRecentActivity(newHandlingActivity);
+  }
 
-    // Delivery is a value object, so it's replaced with a new one
-    this.delivery = Delivery.cargoWasHandled(handlingActivity, completionTime);
+  /*
+  * Problem: CUSTOMS går inte att matcha mot ett Leg, så varje annan händelse som
+  * är förväntad kommer att trilla ut som strictly prior.
+  */
+  private boolean succedsMostRecentActivity(final HandlingActivity newHandlingActivity) {
+    if (delivery.hasBeenHandledAfterRouting()) {
+      final HandlingActivity priorActivity = itinerary.strictlyPriorOf(mostRecentHandlingActivity(), newHandlingActivity);
+      return !newHandlingActivity.sameValueAs(priorActivity);
+    } else {
+      return true;
+    }
   }
 
   @Override

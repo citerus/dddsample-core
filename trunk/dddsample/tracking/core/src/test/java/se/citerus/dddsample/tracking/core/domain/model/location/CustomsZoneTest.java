@@ -1,4 +1,4 @@
-package se.citerus.dddsample.tracking.core.domain.model.cargo;
+package se.citerus.dddsample.tracking.core.domain.model.location;
 
 import junit.framework.TestCase;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;

@@ -43,7 +43,7 @@ public class ReportsUpdaterTest {
     );
     handlingEventRepository.store(handlingEvent);
 
-    cargo.handled(handlingEvent.activity(), handlingEvent.completionTime());
+    cargo.handled(handlingEvent.activity());
 
     reportsUpdater = new ReportsUpdater(client, cargoRepository, handlingEventRepository, "/handling", "/cargo");
     eventSequenceNumber = handlingEvent.sequenceNumber();

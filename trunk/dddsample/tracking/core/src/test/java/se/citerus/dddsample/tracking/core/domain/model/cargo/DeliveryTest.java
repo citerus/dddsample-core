@@ -1,6 +1,8 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import junit.framework.TestCase;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.MISROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.ROUTED;
@@ -9,6 +11,8 @@ import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingE
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadedOnto;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 
@@ -28,15 +32,37 @@ public class DeliveryTest extends TestCase {
       Leg.deriveLeg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS),
       Leg.deriveLeg(DALLAS_TO_HELSINKI, DALLAS, STOCKHOLM)
     );
-    delivery = Delivery.initial();
+    delivery = Delivery.beforeHandling();
     Thread.sleep(1);
+  }
+
+  public void testOnHandling() {
+    Delivery delivery = Delivery.beforeHandling();
+
+    HandlingActivity load = loadedOnto(HONGKONG_TO_NEW_YORK).in(HONGKONG);
+    delivery = delivery.onHandling(load);
+
+    assertThat(delivery.mostRecentHandlingActivity(), is(load));
+    assertThat(delivery.mostRecentPhysicalHandlingActivity(), is(load));
+
+    HandlingActivity customs = customsIn(NEWYORK);
+    delivery = delivery.onHandling(customs);
+
+    assertThat(delivery.mostRecentHandlingActivity(), is(customs));
+    assertThat(delivery.mostRecentPhysicalHandlingActivity(), is(load));
+
+    HandlingActivity loadAgain = loadedOnto(NEW_YORK_TO_DALLAS).in(NEWYORK);
+    delivery = delivery.onHandling(loadAgain);
+
+    assertThat(delivery.mostRecentHandlingActivity(), is(loadAgain));
+    assertThat(delivery.mostRecentPhysicalHandlingActivity(), is(loadAgain));
   }
 
   public void testDerivedFromRouteSpecificationAndItinerary() throws Exception {
     assertEquals(ROUTED, delivery.routingStatus(itinerary, routeSpecification));
     assertEquals(Voyage.NONE, delivery.currentVoyage());
     assertFalse(delivery.isMisdirected(itinerary, routeSpecification));
-    assertFalse(delivery.isUnloadedAtDestination(routeSpecification));
+    assertFalse(delivery.onTheGroundAtDestination(routeSpecification));
     assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
     assertEquals(NOT_RECEIVED, delivery.transportStatus());
     assertTrue(delivery.lastTimestamp().before(new Date()));
@@ -46,7 +72,7 @@ public class DeliveryTest extends TestCase {
     // 1. Receive
 
     HandlingActivity handlingActivity = new HandlingActivity(RECEIVE, HANGZOU);
-    Delivery newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
+    Delivery newDelivery = delivery.onHandling(handlingActivity);
 
     // Changed on handling
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
@@ -55,7 +81,7 @@ public class DeliveryTest extends TestCase {
 
     // Changed on handling and/or (re-)routing
     assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
-    assertFalse(newDelivery.isUnloadedAtDestination(routeSpecification));
+    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     // Changed on (re-)routing
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
@@ -66,14 +92,14 @@ public class DeliveryTest extends TestCase {
     // 2. Load
 
     handlingActivity = new HandlingActivity(LOAD, HANGZOU, HONGKONG_TO_NEW_YORK);
-    newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
+    newDelivery = newDelivery.onHandling(handlingActivity);
 
     assertEquals(HONGKONG_TO_NEW_YORK, newDelivery.currentVoyage());
     assertEquals(HANGZOU, newDelivery.lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, newDelivery.transportStatus());
 
     assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
-    assertFalse(newDelivery.isUnloadedAtDestination(routeSpecification));
+    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
@@ -84,14 +110,14 @@ public class DeliveryTest extends TestCase {
     // 3. Unload
 
     handlingActivity = new HandlingActivity(UNLOAD, STOCKHOLM, DALLAS_TO_HELSINKI);
-    newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
+    newDelivery = newDelivery.onHandling(handlingActivity);
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
     assertEquals(IN_PORT, newDelivery.transportStatus());
 
     assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
-    assertTrue(newDelivery.isUnloadedAtDestination(routeSpecification));
+    assertTrue(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
@@ -100,14 +126,14 @@ public class DeliveryTest extends TestCase {
     // 4. Claim
 
     handlingActivity = new HandlingActivity(CLAIM, STOCKHOLM);
-    newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
+    newDelivery = newDelivery.onHandling(handlingActivity);
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
     assertEquals(CLAIMED, newDelivery.transportStatus());
 
     assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
-    assertTrue(newDelivery.isUnloadedAtDestination(routeSpecification));
+    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
@@ -117,7 +143,7 @@ public class DeliveryTest extends TestCase {
   public void testUpdateOnHandlingWhenMisdirected() {
     // Unload in Hamburg, which is the wrong location
     HandlingActivity handlingActivity = new HandlingActivity(UNLOAD, HAMBURG, DALLAS_TO_HELSINKI);
-    Delivery newDelivery = Delivery.cargoWasHandled(handlingActivity, new Date());
+    Delivery newDelivery = delivery.onHandling(handlingActivity);
 
     assertEquals(Voyage.NONE, newDelivery.currentVoyage());
     assertEquals(HAMBURG, newDelivery.lastKnownLocation());
@@ -126,7 +152,7 @@ public class DeliveryTest extends TestCase {
     // Next handling activity is undefined. Need a new itinerary to know what to do.
 
     assertTrue(newDelivery.isMisdirected(itinerary, routeSpecification));
-    assertFalse(newDelivery.isUnloadedAtDestination(routeSpecification));
+    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
