@@ -12,8 +12,6 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 
-import java.util.Date;
-
 @Service
 public class CargoUpdater {
 
@@ -41,9 +39,8 @@ public class CargoUpdater {
 
     final HandlingActivity activity = handlingEvent.activity();
     final Cargo cargo = handlingEvent.cargo();
-    final Date completionTime = handlingEvent.completionTime();
 
-    cargo.handled(activity, completionTime);
+    cargo.handled(activity);
     cargoRepository.store(cargo);
 
     systemEvents.notifyOfCargoUpdate(cargo);

@@ -58,6 +58,7 @@ public class CargoUpdaterTest {
       HONGKONG.unLocode(),
       LOAD, new OperatorCode("ABCDE")
     );
+
     handlingEventRepository.store(handlingEvent);
 
     assertThat(handlingEvent.activity(), not(equalTo(cargo.mostRecentHandlingActivity())));

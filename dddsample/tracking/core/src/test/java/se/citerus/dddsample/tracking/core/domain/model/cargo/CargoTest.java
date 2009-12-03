@@ -1,10 +1,11 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import junit.framework.TestCase;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
-import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.IN_PORT;
-import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.NOT_RECEIVED;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
@@ -18,35 +19,35 @@ import java.util.Date;
 public class CargoTest extends TestCase {
 
   private Voyage crazyVoyage = new Voyage.Builder(new VoyageNumber("0123"),
-    STOCKHOLM).
-    addMovement(HAMBURG, new Date(1), new Date(2)).
-    addMovement(HONGKONG, new Date(3), new Date(4)).
-    addMovement(MELBOURNE, new Date(5), new Date(6)).
-    build();
+      STOCKHOLM).
+      addMovement(HAMBURG, new Date(1), new Date(2)).
+      addMovement(HONGKONG, new Date(3), new Date(4)).
+      addMovement(MELBOURNE, new Date(5), new Date(6)).
+      build();
 
   private Voyage pacific = new Voyage.Builder(new VoyageNumber("4567"),
-    SHANGHAI).
-    addMovement(LONGBEACH, new Date(1), new Date(2)).
-    addMovement(SEATTLE, new Date(3), new Date(4)).
-    build();
+      SHANGHAI).
+      addMovement(LONGBEACH, new Date(1), new Date(2)).
+      addMovement(SEATTLE, new Date(3), new Date(4)).
+      build();
 
   private Voyage transcontinental = new Voyage.Builder(new VoyageNumber("4567"),
-    LONGBEACH).
-    addMovement(CHICAGO, new Date(1), new Date(2)).
-    addMovement(NEWYORK, new Date(3), new Date(4)).
-    build();
+      LONGBEACH).
+      addMovement(CHICAGO, new Date(1), new Date(2)).
+      addMovement(NEWYORK, new Date(3), new Date(4)).
+      build();
 
   private Voyage northernRail = new Voyage.Builder(new VoyageNumber("8901"),
-    SEATTLE).
-    addMovement(CHICAGO, new Date(1), new Date(2)).
-    addMovement(NEWYORK, new Date(3), new Date(4)).
-    build();
+      SEATTLE).
+      addMovement(CHICAGO, new Date(1), new Date(2)).
+      addMovement(NEWYORK, new Date(3), new Date(4)).
+      build();
 
   public void testConstruction() {
     TrackingId trackingId = new TrackingId("XYZ");
     Date arrivalDeadline = toDate("2009-03-13");
     RouteSpecification routeSpecification = new RouteSpecification(
-      STOCKHOLM, MELBOURNE, arrivalDeadline
+        STOCKHOLM, MELBOURNE, arrivalDeadline
     );
 
     Cargo cargo = new Cargo(trackingId, routeSpecification);
@@ -80,19 +81,24 @@ public class CargoTest extends TestCase {
   }
 
   public void testOutOrderHandling() throws Exception {
-    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+    Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
-    cargo.handled(HandlingActivity.loadedOnto(crazyVoyage).in(STOCKHOLM), toDate("2009-10-01"));
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), toDate("2009-10-01"));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), toDate("2009-10-02"));
-    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage), toDate("2009-10-04"));
-    assertEquals(cargo.transportStatus(), IN_PORT);
-    assertEquals(cargo.lastKnownLocation(), HONGKONG);
+    cargo.handled(HandlingActivity.loadedOnto(crazyVoyage).in(STOCKHOLM));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
+
+    cargo.handled(HandlingActivity.unloadedOff(crazyVoyage).in(HAMBURG));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(HAMBURG));
+
+    cargo.handled(HandlingActivity.unloadedOff(crazyVoyage).in(MELBOURNE));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(MELBOURNE));
 
     // Out of order handling, does not affect state of cargo
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), toDate("2009-10-03"));
-    assertEquals(IN_PORT, cargo.transportStatus());
-    assertEquals(HONGKONG, cargo.lastKnownLocation());
+    cargo.handled(HandlingActivity.loadedOnto(crazyVoyage).in(HAMBURG));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(MELBOURNE));
   }
 
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
@@ -116,7 +122,7 @@ public class CargoTest extends TestCase {
   public void testlastKnownLocationUnloaded() throws Exception {
     Cargo cargo = populateCargoOffHongKong();
 
-    assertEquals(HONGKONG, cargo.lastKnownLocation());
+    assertEquals(MELBOURNE, cargo.lastKnownLocation());
   }
 
   public void testlastKnownLocationloaded() throws Exception {
@@ -139,72 +145,71 @@ public class CargoTest extends TestCase {
     assertFalse("Cargos are not equal when TrackingID differ", c1.equals(c2));
   }
 
-  public void testIsUnloadedAtFinalDestination() throws Exception {
+  public void testIsReadyToClaim() throws Exception {
     Cargo cargo = setUpCargoWithItinerary(HANGZOU, TOKYO, NEWYORK);
     assertFalse(cargo.isReadyToClaim());
 
     // Adding an event unrelated to unloading at final destination
-    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU), new Date());
+    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU));
     assertFalse(cargo.isReadyToClaim());
 
     Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
-      addMovement(NEWYORK, new Date(1), new Date(2)).
-      build();
+        addMovement(NEWYORK, new Date(1), new Date(2)).
+        build();
 
     // Adding an unload event, but not at the final destination
-    cargo.handled(new HandlingActivity(UNLOAD, TOKYO, voyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, TOKYO, voyage));
     assertFalse(cargo.isReadyToClaim());
 
     // Adding an event in the final destination, but not unload
-    cargo.handled(new HandlingActivity(CUSTOMS, NEWYORK), new Date());
+    /*cargo.handled(new HandlingActivity(CUSTOMS, NEWYORK));
     assertFalse(cargo.isReadyToClaim());
+    assertFalse(cargo.isMisdirected());*/
 
     // Finally, cargo is unloaded at final destination
-    cargo.handled(new HandlingActivity(UNLOAD, NEWYORK, voyage), new Date());
+    cargo.handled(new HandlingActivity(UNLOAD, NEWYORK, voyage));
     assertTrue(cargo.isReadyToClaim());
   }
 
   private Cargo populateCargoReceivedStockholm() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-    cargo.handled(new HandlingActivity(RECEIVE, STOCKHOLM), new Date());
+    cargo.handled(new HandlingActivity(RECEIVE, STOCKHOLM));
     return cargo;
   }
 
   private Cargo populateCargoClaimedMelbourne() throws Exception {
     final Cargo cargo = populateCargoOffMelbourne();
 
-    cargo.handled(new HandlingActivity(CLAIM, MELBOURNE), new Date());
+    cargo.handled(new HandlingActivity(CLAIM, MELBOURNE));
     return cargo;
   }
 
   private Cargo populateCargoOffHongKong() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-    
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage), new Date());
+
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
     return cargo;
   }
 
   private Cargo populateCargoOnHamburg() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-    
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), new Date());
+
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
     return cargo;
   }
 
   private Cargo populateCargoOffMelbourne() throws Exception {
     final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, HONGKONG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(LOAD, HONGKONG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage), new Date());
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
 
     return cargo;
   }
@@ -220,30 +225,29 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isMisdirected());
 
     //Happy path
-    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI), new Date());
-    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(LOAD, ROTTERDAM, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, GOTHENBURG, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(CLAIM, GOTHENBURG), new Date());
-    cargo.handled(new HandlingActivity(CUSTOMS, GOTHENBURG), new Date());
+    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
+    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, ROTTERDAM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, GOTHENBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(CLAIM, GOTHENBURG));
+    cargo.handled(new HandlingActivity(CUSTOMS, GOTHENBURG));
     assertFalse(cargo.isMisdirected());
 
     //Try a couple of failing ones
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
 
-    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU), new Date());
+    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU));
     assertTrue(cargo.isMisdirected());
-
 
 
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
 
-    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI), new Date());
-    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage), new Date());
-    cargo.handled(new HandlingActivity(CLAIM, ROTTERDAM), new Date());
+    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
+    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));
+    cargo.handled(new HandlingActivity(CLAIM, ROTTERDAM));
 
     assertTrue(cargo.isMisdirected());
   }
@@ -251,25 +255,25 @@ public class CargoTest extends TestCase {
   public void testCustomsClearancePoint() {
     //cargo destination NYC
     final Cargo cargo = new Cargo(new TrackingId("XYZ"),
-      new RouteSpecification(SHANGHAI, NEWYORK, new Date()));
+        new RouteSpecification(SHANGHAI, NEWYORK, new Date()));
 
     //SHA-LGB-NYC
     cargo.assignToRoute(new Itinerary(
-      Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
-      Leg.deriveLeg(transcontinental, LONGBEACH, NEWYORK)));
+        Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
+        Leg.deriveLeg(transcontinental, LONGBEACH, NEWYORK)));
     assertEquals(LONGBEACH, cargo.customsClearancePoint());
 
     //SHA-SEA-NYC
     cargo.assignToRoute(new Itinerary(
-      Leg.deriveLeg(pacific, SHANGHAI, SEATTLE),
-      Leg.deriveLeg(northernRail, SEATTLE, NEWYORK)));
+        Leg.deriveLeg(pacific, SHANGHAI, SEATTLE),
+        Leg.deriveLeg(northernRail, SEATTLE, NEWYORK)));
     assertEquals(SEATTLE, cargo.customsClearancePoint());
 
     //cargo destination LGB
     //SHA-LGB
     cargo.specifyNewRoute(new RouteSpecification(SHANGHAI, LONGBEACH, new Date()));
     cargo.assignToRoute(new Itinerary(
-      Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH)));
+        Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH)));
     assertEquals(LONGBEACH, cargo.customsClearancePoint());
 
     //Cargo destination HAMBURG
@@ -277,8 +281,8 @@ public class CargoTest extends TestCase {
     // the cargo into its CustomsZone, so no clearancePoint.
     cargo.specifyNewRoute(new RouteSpecification(SHANGHAI, HAMBURG, new Date()));
     cargo.assignToRoute(new Itinerary(
-      Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
-      Leg.deriveLeg(transcontinental, LONGBEACH, NEWYORK)));
+        Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
+        Leg.deriveLeg(transcontinental, LONGBEACH, NEWYORK)));
     assertNull(cargo.customsClearancePoint());
 
     //Cargo destination NEWYORK on SHA-LGB-CHI
@@ -286,8 +290,8 @@ public class CargoTest extends TestCase {
     //but it does enter the CustomsZone, so it has a clearancePoint.
     cargo.specifyNewRoute(new RouteSpecification(SHANGHAI, NEWYORK, new Date()));
     cargo.assignToRoute(new Itinerary(
-      Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
-      Leg.deriveLeg(transcontinental, LONGBEACH, CHICAGO)));
+        Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
+        Leg.deriveLeg(transcontinental, LONGBEACH, CHICAGO)));
     assertEquals(LONGBEACH, cargo.customsClearancePoint());
 
   }
@@ -296,10 +300,10 @@ public class CargoTest extends TestCase {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, new Date()));
 
     Itinerary itinerary = new Itinerary(
-      Arrays.asList(
-        new Leg(crazyVoyage, origin, midpoint, new Date(), new Date()),
-        new Leg(crazyVoyage, midpoint, destination, new Date(), new Date())
-      )
+        Arrays.asList(
+            new Leg(crazyVoyage, origin, midpoint, new Date(), new Date()),
+            new Leg(crazyVoyage, midpoint, destination, new Date(), new Date())
+        )
     );
 
     cargo.assignToRoute(itinerary);

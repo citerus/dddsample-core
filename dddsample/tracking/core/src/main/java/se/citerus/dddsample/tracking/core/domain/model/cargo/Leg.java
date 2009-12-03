@@ -1,7 +1,12 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadedOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadedOff;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
@@ -81,6 +86,49 @@ public class Leg extends ValueObjectSupport<Leg> {
    */
   Leg withRescheduledVoyage(final Voyage voyage) {
     return Leg.deriveLeg(voyage, loadLocation, unloadLocation);
+  }
+
+
+  /**
+   *
+   * @param handlingActivity handling activity
+   * @return True if this legs matches the handling activity, i.e. the voyage and load location is the same in case of a load activity and so on.
+   */
+  boolean matchesActivity(final HandlingActivity handlingActivity) {
+    if (voyage.sameAs(handlingActivity.voyage())) {
+      if (handlingActivity.type() == LOAD) {
+        return loadLocation.sameAs(handlingActivity.location());
+      }
+      if (handlingActivity.type() == UNLOAD) {
+        return unloadLocation.sameAs(handlingActivity.location());
+      }
+    }
+
+    return false;
+  }
+
+  Leg ifLoadLocationSameAs(final HandlingActivity handlingActivity) {
+    if (loadLocation.sameAs(handlingActivity.location())) {
+      return this;
+    } else {
+      return null;
+    }
+  }
+
+  Leg ifUnloadLocationSameAs(final HandlingActivity handlingActivity) {
+    if (unloadLocation.sameAs(handlingActivity.location())) {
+      return this;
+    } else {
+      return null;
+    }
+  }
+
+  HandlingActivity deriveLoadActivity() {
+    return loadedOnto(voyage).in(loadLocation);
+  }
+
+  HandlingActivity deriveUnloadActivity() {
+    return unloadedOff(voyage).in(unloadLocation);
   }
 
   @Override

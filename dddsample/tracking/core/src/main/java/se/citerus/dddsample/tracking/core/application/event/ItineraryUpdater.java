@@ -27,6 +27,7 @@ public final class ItineraryUpdater {
   public void updateItineraries(final VoyageNumber voyageNumber) {
     final Voyage voyage = voyageRepository.find(voyageNumber);
     final List<Cargo> affectedCargos = cargoRepository.findCargosOnVoyage(voyage);
+
     for (final Cargo cargo : affectedCargos) {
       final Itinerary newItinerary = cargo.itinerary().withRescheduledVoyage(voyage);
       cargo.assignToRoute(newItinerary);

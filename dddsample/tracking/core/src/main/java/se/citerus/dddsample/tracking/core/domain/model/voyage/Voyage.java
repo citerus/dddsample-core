@@ -51,10 +51,7 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
    * @param newDepartureTime new departure time
    */
   public void departureRescheduled(final Location location, final Date newDepartureTime) {
-    // TODO Change departure/arrival by diffs instead of absolute times
-
-    final int size = schedule.carrierMovements().size();
-    final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>(size);
+    final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>();
 
     for (CarrierMovement carrierMovement : schedule.carrierMovements()) {
       if (carrierMovement.departureLocation().sameAs(location)) {
@@ -69,7 +66,7 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
 
   @Override
   public String toString() {
-    return "Voyage " + voyageNumber;
+    return voyageNumber.stringValue();
   }
 
   Voyage() {
