@@ -63,23 +63,23 @@ public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
 
   // DSL-like factory methods
 
-  public static InLocation loadedOnto(Voyage voyage) {
+  public static InLocation loadOnto(final Voyage voyage) {
     return new InLocation(LOAD, voyage);
   }
 
-  public static InLocation unloadedOff(Voyage voyage) {
+  public static InLocation unloadOff(final Voyage voyage) {
     return new InLocation(UNLOAD, voyage);
   }
 
-  public static HandlingActivity receivedIn(Location location) {
+  public static HandlingActivity receiveIn(final Location location) {
     return new HandlingActivity(RECEIVE, location);
   }
 
-  public static HandlingActivity claimedIn(Location location) {
+  public static HandlingActivity claimIn(final Location location) {
     return new HandlingActivity(CLAIM, location);
   }
 
-  public static HandlingActivity customsIn(Location location) {
+  public static HandlingActivity customsIn(final Location location) {
     return new HandlingActivity(CUSTOMS, location);
   }
 
@@ -87,12 +87,12 @@ public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
     private final HandlingEvent.Type type;
     private final Voyage voyage;
 
-    public InLocation(HandlingEvent.Type type, Voyage voyage) {
+    public InLocation(final HandlingEvent.Type type, final Voyage voyage) {
       this.type = type;
       this.voyage = voyage;
     }
 
-    public HandlingActivity in(Location location) {
+    public HandlingActivity in(final Location location) {
       return new HandlingActivity(type, location, voyage);
     }
   }

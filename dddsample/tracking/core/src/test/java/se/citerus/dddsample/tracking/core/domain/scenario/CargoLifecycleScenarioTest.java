@@ -13,7 +13,7 @@ import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadedOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage.NONE;
@@ -80,6 +80,9 @@ public class CargoLifecycleScenarioTest {
     unloadInStockholmOffOf(v200);
     checkDeliveryAfterUnloadInStockholm();
 
+    customsInStockholm();
+    checkDeliveryAfterCustomsInStockholm();
+    
     claimInStockholm();
     checkDeliveryAfterClaimInStockholm();
   }
@@ -174,11 +177,14 @@ public class CargoLifecycleScenarioTest {
     unloadInHamburg();
     checkDeliveryAfterUnloadInHamburg();
 
+    customsInHamburg();
+    checkDeliveryAfterCustomsInHamburg();
+
     loadInHamburg();
     checkDeliveryAfterLoadInHamburg();
 
     unloadInStockholmOffOf(v400);
-    checkDeliveryAfterUnloadInStockholm();
+    checkDeliveryAfterUnloadInStockholm2();
 
     claimInStockholm();
     checkDeliveryAfterClaimInStockholm();
@@ -297,7 +303,7 @@ public class CargoLifecycleScenarioTest {
     // New itinerary should satisfy new route
     assertThat(cargo.routingStatus(), is(ROUTED));
     assertFalse(cargo.isMisdirected());
-    assertThat(cargo.nextExpectedActivity(), is(loadedOnto(v300).in(TOKYO)));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(v300).in(TOKYO)));
   }
 
   public void loadInTokyo() throws CannotCreateHandlingEventException {
@@ -325,9 +331,26 @@ public class CargoLifecycleScenarioTest {
     assertThat(cargo.currentVoyage(), is(NONE));
     assertThat(cargo.lastKnownLocation(), is(HAMBURG));
     assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(customsIn(HAMBURG)));
+    assertFalse(cargo.isMisdirected());
+  }
+
+  public void customsInHamburg() throws CannotCreateHandlingEventException {
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-12"), null, HAMBURG, CUSTOMS);
+  }
+
+  private void checkDeliveryAfterCustomsInHamburg() {
+    Cargo cargo = cargoRepository.find(trackingId);
+    // Check current state - should be ok
+
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(HAMBURG));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.mostRecentHandlingActivity(), is(customsIn(HAMBURG)));
     assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, HAMBURG, v400)));
     assertFalse(cargo.isMisdirected());
   }
+
 
   public void loadInHamburg() throws CannotCreateHandlingEventException {
     createHandlingEventAndUpdateAggregates(toDate("2009-03-14"), v400, HAMBURG, LOAD);
@@ -354,7 +377,31 @@ public class CargoLifecycleScenarioTest {
     assertThat(cargo.currentVoyage(), is(NONE));
     assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
     assertThat(cargo.transportStatus(), is(IN_PORT));
-    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(CLAIM, STOCKHOLM)));
+    assertThat(cargo.nextExpectedActivity(), is(customsIn(STOCKHOLM)));
+    assertFalse(cargo.isMisdirected());
+  }
+
+  private void checkDeliveryAfterUnloadInStockholm2() {
+    Cargo cargo = cargoRepository.find(trackingId);
+    // Check current state - should be ok
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(claimIn(STOCKHOLM)));
+    assertFalse(cargo.isMisdirected());
+  }
+  
+  private void customsInStockholm() {
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-16"), null, STOCKHOLM, CUSTOMS);
+  }
+  
+  private void checkDeliveryAfterCustomsInStockholm() {
+    Cargo cargo = cargoRepository.find(trackingId);
+    // Check current state - should be ok
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(claimIn(STOCKHOLM)));
     assertFalse(cargo.isMisdirected());
   }
 
@@ -373,19 +420,20 @@ public class CargoLifecycleScenarioTest {
   }
 
   private void createHandlingEventAndUpdateAggregates(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
-    updateHandlingEventAggregate(completionTime, voyage, location, type);
-    updateCargoAggregate();
+    EventSequenceNumber eventSequenceNumber = updateHandlingEventAggregate(completionTime, voyage, location, type);
+    updateCargoAggregate(eventSequenceNumber);
   }
 
-  private void updateHandlingEventAggregate(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
+  private EventSequenceNumber updateHandlingEventAggregate(Date completionTime, Voyage voyage, Location location, HandlingEvent.Type type) throws CannotCreateHandlingEventException {
     VoyageNumber voyageNumber = voyage != null ? voyage.voyageNumber() : null;
     HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(completionTime, trackingId, voyageNumber, location.unLocode(), type, new OperatorCode("ABCDE"));
     handlingEventRepository.store(handlingEvent);
+    return handlingEvent.sequenceNumber();
   }
 
-  private void updateCargoAggregate() {
+  private void updateCargoAggregate(EventSequenceNumber eventSequenceNumber) {
     Cargo cargo = cargoRepository.find(trackingId);
-    HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
+    HandlingEvent handlingEvent = handlingEventRepository.find(eventSequenceNumber);
     cargo.handled(handlingEvent.activity());
     cargoRepository.store(cargo);
   }

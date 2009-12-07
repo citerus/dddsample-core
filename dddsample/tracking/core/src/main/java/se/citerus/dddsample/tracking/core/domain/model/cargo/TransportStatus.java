@@ -24,6 +24,7 @@ public enum TransportStatus implements ValueObject<TransportStatus> {
         return ONBOARD_CARRIER;
       case UNLOAD:
       case RECEIVE:
+      case CUSTOMS:
         return IN_PORT;
       case CLAIM:
         return CLAIMED;

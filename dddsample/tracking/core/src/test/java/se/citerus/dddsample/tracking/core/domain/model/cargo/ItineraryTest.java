@@ -105,19 +105,19 @@ public class ItineraryTest extends TestCase {
     Leg rotterdamToGothenburg = Leg.deriveLeg(voyage, ROTTERDAM, GOTHENBURG);
     Itinerary itinerary = new Itinerary(shanghaiToRotterdam, rotterdamToGothenburg);
 
-    assertThat(itinerary.legMatchOf(receivedIn(SHANGHAI)).leg(), is(shanghaiToRotterdam));
-    assertThat(itinerary.legMatchOf(loadedOnto(voyage).in(SHANGHAI)).leg(), is(shanghaiToRotterdam));
-    assertThat(itinerary.legMatchOf(unloadedOff(voyage).in(ROTTERDAM)).leg(), is(shanghaiToRotterdam));
-    assertThat(itinerary.legMatchOf(claimedIn(GOTHENBURG)).leg(), is(rotterdamToGothenburg));
+    assertThat(itinerary.legMatchOf(receiveIn(SHANGHAI)).leg(), is(shanghaiToRotterdam));
+    assertThat(itinerary.legMatchOf(loadOnto(voyage).in(SHANGHAI)).leg(), is(shanghaiToRotterdam));
+    assertThat(itinerary.legMatchOf(unloadOff(voyage).in(ROTTERDAM)).leg(), is(shanghaiToRotterdam));
+    assertThat(itinerary.legMatchOf(claimIn(GOTHENBURG)).leg(), is(rotterdamToGothenburg));
 
-    assertNull(itinerary.legMatchOf(loadedOnto(wrongVoyage).in(SHANGHAI)).leg());
-    assertNull(itinerary.legMatchOf(loadedOnto(wrongVoyage).in(NEWYORK)).leg());
+    assertNull(itinerary.legMatchOf(loadOnto(wrongVoyage).in(SHANGHAI)).leg());
+    assertNull(itinerary.legMatchOf(loadOnto(wrongVoyage).in(NEWYORK)).leg());
 
-    assertNull(itinerary.legMatchOf(unloadedOff(wrongVoyage).in(ROTTERDAM)).leg());
-    assertNull(itinerary.legMatchOf(unloadedOff(wrongVoyage).in(NEWYORK)).leg());
+    assertNull(itinerary.legMatchOf(unloadOff(wrongVoyage).in(ROTTERDAM)).leg());
+    assertNull(itinerary.legMatchOf(unloadOff(wrongVoyage).in(NEWYORK)).leg());
 
-    assertNull(itinerary.legMatchOf(receivedIn(NEWYORK)).leg());
-    assertNull(itinerary.legMatchOf(claimedIn(NEWYORK)).leg());
+    assertNull(itinerary.legMatchOf(receiveIn(NEWYORK)).leg());
+    assertNull(itinerary.legMatchOf(claimIn(NEWYORK)).leg());
   }
 
   public void testNextLeg() {
@@ -139,9 +139,9 @@ public class ItineraryTest extends TestCase {
 
     Itinerary itinerary = new Itinerary(shanghaiToLongBeach, longBeachToNewYork, newYorkToRotterdam);
 
-    HandlingActivity notOnRoute = HandlingActivity.loadedOnto(pacific).in(STOCKHOLM);
-    HandlingActivity loadInShanghai = HandlingActivity.loadedOnto(pacific).in(SHANGHAI);
-    HandlingActivity unloadInLongbeach = HandlingActivity.unloadedOff(pacific).in(LONGBEACH);
+    HandlingActivity notOnRoute = HandlingActivity.loadOnto(pacific).in(STOCKHOLM);
+    HandlingActivity loadInShanghai = HandlingActivity.loadOnto(pacific).in(SHANGHAI);
+    HandlingActivity unloadInLongbeach = HandlingActivity.unloadOff(pacific).in(LONGBEACH);
 
     assertThat(itinerary.strictlyPriorOf(loadInShanghai, unloadInLongbeach), is(loadInShanghai));
     assertThat(itinerary.strictlyPriorOf(unloadInLongbeach, loadInShanghai), is(loadInShanghai));

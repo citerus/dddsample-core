@@ -10,6 +10,8 @@ import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingE
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
@@ -58,6 +60,10 @@ public class CargoTest extends TestCase {
     assertEquals(Voyage.NONE, cargo.currentVoyage());
   }
 
+  public void testEmptyCtor() {
+    new Cargo();
+  }
+
   public void testRoutingStatus() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
     final Itinerary good = new Itinerary(Leg.deriveLeg(northernRail, SEATTLE, NEWYORK));
@@ -83,20 +89,20 @@ public class CargoTest extends TestCase {
   public void testOutOrderHandling() throws Exception {
     Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
 
-    cargo.handled(HandlingActivity.loadedOnto(crazyVoyage).in(STOCKHOLM));
+    cargo.handled(loadOnto(crazyVoyage).in(STOCKHOLM));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
     assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
 
-    cargo.handled(HandlingActivity.unloadedOff(crazyVoyage).in(HAMBURG));
+    cargo.handled(unloadOff(crazyVoyage).in(HAMBURG));
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertThat(cargo.lastKnownLocation(), is(HAMBURG));
 
-    cargo.handled(HandlingActivity.unloadedOff(crazyVoyage).in(MELBOURNE));
+    cargo.handled(unloadOff(crazyVoyage).in(MELBOURNE));
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertThat(cargo.lastKnownLocation(), is(MELBOURNE));
 
     // Out of order handling, does not affect state of cargo
-    cargo.handled(HandlingActivity.loadedOnto(crazyVoyage).in(HAMBURG));
+    cargo.handled(loadOnto(crazyVoyage).in(HAMBURG));
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertThat(cargo.lastKnownLocation(), is(MELBOURNE));
   }
@@ -169,6 +175,26 @@ public class CargoTest extends TestCase {
     // Finally, cargo is unloaded at final destination
     cargo.handled(new HandlingActivity(UNLOAD, NEWYORK, voyage));
     assertTrue(cargo.isReadyToClaim());
+  }
+
+  public void testCustomsInMelbourne() throws Exception {
+    Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+    
+    /*cargo.handled(unloadOff(crazyVoyage).in(HAMBURG));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(crazyVoyage).in(HAMBURG)));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(loadOnto(crazyVoyage).in(HAMBURG));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(crazyVoyage).in(MELBOURNE)));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(unloadOff(crazyVoyage).in(MELBOURNE));
+    assertThat(cargo.nextExpectedActivity(), is(customsIn(MELBOURNE)));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(customsIn(MELBOURNE));
+    assertThat(cargo.nextExpectedActivity(), is(claimIn(MELBOURNE)));
+    assertFalse(cargo.isMisdirected());*/
   }
 
   private Cargo populateCargoReceivedStockholm() throws Exception {
@@ -257,6 +283,8 @@ public class CargoTest extends TestCase {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"),
         new RouteSpecification(SHANGHAI, NEWYORK, new Date()));
 
+    assertThat(cargo.customsClearancePoint(), is(Location.UNKNOWN));
+
     //SHA-LGB-NYC
     cargo.assignToRoute(new Itinerary(
         Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH),
@@ -301,8 +329,8 @@ public class CargoTest extends TestCase {
 
     Itinerary itinerary = new Itinerary(
         Arrays.asList(
-            new Leg(crazyVoyage, origin, midpoint, new Date(), new Date()),
-            new Leg(crazyVoyage, midpoint, destination, new Date(), new Date())
+            new Leg(crazyVoyage, origin, midpoint, new Date(1), new Date(2)),
+            new Leg(crazyVoyage, midpoint, destination, new Date(3), new Date(4))
         )
     );
 

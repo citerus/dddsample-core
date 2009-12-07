@@ -169,7 +169,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
    */
   HandlingActivity activitySucceding(final HandlingActivity previousActivity) {
     if (previousActivity == null) {
-      return receivedIn(firstLeg().loadLocation());
+      return receiveIn(firstLeg().loadLocation());
     } else {
       return deriveFromMatchingLeg(previousActivity, legMatchOf(previousActivity).leg());
     }
@@ -253,7 +253,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
       return null;
     } else {
       if (handlingActivity.type() == LOAD) {
-        return unloadedOff(handlingActivity.voyage()).in(matchingLeg.unloadLocation());
+        return unloadOff(handlingActivity.voyage()).in(matchingLeg.unloadLocation());
       } else if (handlingActivity.type() == UNLOAD) {
         return deriveFromNextLeg(nextLeg(matchingLeg));
       } else {
@@ -265,7 +265,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
 
   private HandlingActivity deriveFromNextLeg(final Leg nextLeg) {
     if (nextLeg == null) {
-      return claimedIn(lastLeg().unloadLocation());
+      return claimIn(lastLeg().unloadLocation());
     } else {
       return nextLeg.deriveLoadActivity();
     }

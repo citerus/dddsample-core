@@ -14,7 +14,7 @@ import java.util.TimeZone;
 public final class Location extends EntitySupport<Location, UnLocode> {
 
   private final UnLocode unLocode;
-  private String name;
+  private final String name;
   private TimeZone timeZone;
   private CustomsZone customsZone;
 
@@ -87,6 +87,7 @@ public final class Location extends EntitySupport<Location, UnLocode> {
   Location() {
     // Needed by Hibernate
     unLocode = null;
+    name = null;
   }
 
 }

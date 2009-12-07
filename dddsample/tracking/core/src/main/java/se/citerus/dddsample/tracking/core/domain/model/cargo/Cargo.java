@@ -3,9 +3,11 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.NOT_ROUTED;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.CustomsZone;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
@@ -94,7 +96,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Estimated time of arrival.
    */
   public Date estimatedTimeOfArrival() {
-    if (onTrack()) {
+    if (delivery.isOnRoute(itinerary, routeSpecification)) {
       return itinerary.estimatedTimeOfArrival();
     } else {
       return null;
@@ -105,31 +107,32 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Next expected activity.
    */
   public HandlingActivity nextExpectedActivity() {
-    if (onTrack()) {
-      if (delivery.isRoutedAfterHandling()) {
-        return itinerary.firstLeg().deriveLoadActivity();
+    if (!delivery.isOnRoute(itinerary, routeSpecification)) {
+      return null;
+    }
+
+    if (delivery.isRoutedAfterHandling()) {
+      return itinerary.firstLeg().deriveLoadActivity();
+    } else {
+      if (unloadedInCustomsClearancePoint()) {
+        return customsIn(customsClearancePoint());
       } else {
-        // Not yet able to determine when the next expected activity is non-pyhsical, i.e. customs
         return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
       }
-    } else {
-      return null;
     }
   }
 
-  /**
-   * @return True if the cargo is assigned to a route and is following that route.
-   */
-  public boolean onTrack() {
-    return delivery.onTrack(itinerary, routeSpecification);
+  private boolean unloadedInCustomsClearancePoint() {
+    return mostRecentHandlingActivity() != null &&
+           mostRecentHandlingActivity().location().sameAs(customsClearancePoint()) &&
+           mostRecentHandlingActivity().type() == UNLOAD;
   }
 
   /**
    * @return True if cargo is misdirected.
    */
   public boolean isMisdirected() {
-    return delivery.hasBeenHandledAfterRouting() &&
-           !itinerary.isExpectedActivity(delivery.mostRecentPhysicalHandlingActivity());
+    return delivery.isMisdirected(itinerary);
   }
 
   /**
@@ -192,7 +195,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     return routeSpecification.destination().customsZone();
   }
 
-
   /**
    * @return Customs clearance point.
    */
@@ -245,13 +247,9 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     return succedsMostRecentActivity(newHandlingActivity);
   }
 
-  /*
-  * Problem: CUSTOMS går inte att matcha mot ett Leg, så varje annan händelse som
-  * är förväntad kommer att trilla ut som strictly prior.
-  */
   private boolean succedsMostRecentActivity(final HandlingActivity newHandlingActivity) {
     if (delivery.hasBeenHandledAfterRouting()) {
-      final HandlingActivity priorActivity = itinerary.strictlyPriorOf(mostRecentHandlingActivity(), newHandlingActivity);
+      final HandlingActivity priorActivity = itinerary.strictlyPriorOf(delivery.mostRecentPhysicalHandlingActivity(), newHandlingActivity);
       return !newHandlingActivity.sameValueAs(priorActivity);
     } else {
       return true;
