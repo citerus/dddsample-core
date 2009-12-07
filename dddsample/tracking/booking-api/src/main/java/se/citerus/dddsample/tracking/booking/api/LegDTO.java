@@ -23,12 +23,12 @@ public final class LegDTO implements Serializable {
    * @param loadTime
    * @param unloadTime
    */
-  public LegDTO(final String voyageNumber, final String from, final String to, Date loadTime, Date unloadTime) {
+  public LegDTO(final String voyageNumber, final String from, final String to, final Date loadTime, final Date unloadTime) {
     this.voyageNumber = voyageNumber;
     this.from = from;
     this.to = to;
-    this.loadTime = loadTime;
-    this.unloadTime = unloadTime;
+    this.loadTime = new Date(loadTime.getTime());
+    this.unloadTime = new Date(unloadTime.getTime());
   }
 
   public String getVoyageNumber() {
@@ -44,11 +44,11 @@ public final class LegDTO implements Serializable {
   }
 
   public Date getLoadTime() {
-    return loadTime;
+    return new Date(loadTime.getTime());
   }
 
   public Date getUnloadTime() {
-    return unloadTime;
+    return new Date(unloadTime.getTime());
   }
 
 }
