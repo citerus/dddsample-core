@@ -1,30 +1,24 @@
 package se.citerus.dddsample.tracking.core.interfaces.booking.facade;
 
-import se.citerus.dddsample.tracking.core.domain.model.location.Location;
-import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.MELBOURNE;
-import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
-import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
-import se.citerus.dddsample.tracking.booking.api.LegDTO;
-import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
-import se.citerus.dddsample.tracking.booking.api.LocationDTO;
-import se.citerus.dddsample.tracking.booking.api.*;
-
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import se.citerus.dddsample.tracking.booking.api.CargoRoutingDTO;
+import se.citerus.dddsample.tracking.booking.api.LegDTO;
+import se.citerus.dddsample.tracking.booking.api.LocationDTO;
+import se.citerus.dddsample.tracking.booking.api.RouteCandidateDTO;
+import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
+import se.citerus.dddsample.tracking.core.domain.model.location.Location;
+import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class DTOAssemblerTest {
 
@@ -96,19 +90,13 @@ public class DTOAssemblerTest {
   }
 
   @Test
-  public void formRouteCandidateDTO() throws Exception {
+  public void fromRouteCandidateDTO() throws Exception {
     final List<LegDTO> legs = new ArrayList<LegDTO>();
-    legs.add(new LegDTO("CM001", "AAAAA", "BBBBB", new Date(), new Date()));
-    legs.add(new LegDTO("CM001", "BBBBB", "CCCCC", new Date(), new Date()));
+    legs.add(new LegDTO("CM003", "CNHKG", "USNYC", new Date(), new Date()));
+    legs.add(new LegDTO("CM004", "USNYC", "USCHI", new Date(), new Date()));
 
-    final LocationRepository locationRepository = createMock(LocationRepository.class);
-    expect(locationRepository.find(new UnLocode("AAAAA"))).andReturn(HONGKONG);
-    expect(locationRepository.find(new UnLocode("BBBBB"))).andReturn(TOKYO).times(2);
-    expect(locationRepository.find(new UnLocode("CCCCC"))).andReturn(CHICAGO);
-
+    final LocationRepository locationRepository = new LocationRepositoryInMem();
     final VoyageRepository voyageRepository = new VoyageRepositoryInMem();
-
-    replay(locationRepository);
 
 
     // Tested call
@@ -122,11 +110,11 @@ public class DTOAssemblerTest {
     final Leg leg1 = itinerary.legs().get(0);
     assertNotNull(leg1);
     assertEquals(HONGKONG, leg1.loadLocation());
-    assertEquals(TOKYO, leg1.unloadLocation());
+    assertEquals(NEWYORK, leg1.unloadLocation());
 
     final Leg leg2 = itinerary.legs().get(1);
     assertNotNull(leg2);
-    assertEquals(TOKYO, leg2.loadLocation());
+    assertEquals(NEWYORK, leg2.loadLocation());
     assertEquals(CHICAGO, leg2.unloadLocation());
   }
 
