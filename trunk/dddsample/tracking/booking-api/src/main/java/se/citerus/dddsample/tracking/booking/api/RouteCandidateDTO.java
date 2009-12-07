@@ -1,6 +1,7 @@
 package se.citerus.dddsample.tracking.booking.api;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public final class RouteCandidateDTO implements Serializable {
    * @param legs The legs for this itinerary.
    */
   public RouteCandidateDTO(final List<LegDTO> legs) {
-    this.legs = legs;
+    this.legs = new ArrayList<LegDTO>(legs);
   }
 
   /**
