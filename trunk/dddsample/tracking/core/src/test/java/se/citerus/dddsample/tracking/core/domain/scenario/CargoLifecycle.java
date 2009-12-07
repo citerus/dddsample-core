@@ -36,9 +36,6 @@ public class CargoLifecycle {
 
 
 
-
-
-
     // Route: Hongkong - Long Beach - New York - Stockholm
     List<Itinerary> itineraries =
       routingService.fetchRoutesForSpecification(cargo.routeSpecification());
@@ -48,7 +45,7 @@ public class CargoLifecycle {
     // Routed
     assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
     assertThat(cargo.routingStatus(), is(ROUTED));
-    assertThat(cargo.nextExpectedActivity(), is(receivedIn(HONGKONG)));
+    assertThat(cargo.nextExpectedActivity(), is(receiveIn(HONGKONG)));
     assertNotNull(cargo.estimatedTimeOfArrival());
 
 
@@ -58,11 +55,20 @@ public class CargoLifecycle {
 
 
 
+
+
+
     // Received
-    cargo.handled(receivedIn(HONGKONG));
+    cargo.handled(receiveIn(HONGKONG));
 
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+
+
+
+
+
+
 
 
 
@@ -75,13 +81,17 @@ public class CargoLifecycle {
 
 
     // Loaded
-    cargo.handled(loadedOnto(v100).in(HONGKONG));
+    cargo.handled(loadOnto(v100).in(HONGKONG));
 
     assertThat(cargo.currentVoyage(), is(v100));
     assertThat(cargo.lastKnownLocation(), is(HONGKONG));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.nextExpectedActivity(), is(unloadedOff(v100).in(LONGBEACH)));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(v100).in(LONGBEACH)));
     assertFalse(cargo.isMisdirected());
+
+
+
+
 
 
 
@@ -93,32 +103,19 @@ public class CargoLifecycle {
 
 
     // Unloaded
-    cargo.handled(unloadedOff(v100).in(LONGBEACH));
+    cargo.handled(unloadOff(v100).in(LONGBEACH));
 
     assertThat(cargo.currentVoyage(), is(NONE));
     assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertFalse(cargo.isMisdirected());
-    assertThat(cargo.nextExpectedActivity(), is(loadedOnto(v250).in(LONGBEACH)));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(v250).in(LONGBEACH)));
 
 
 
 
 
 
-
-
-
-    /*
-    loadInLongBeach();
-    checkDeliveryAfterLoadInLongBeach();
-
-    unloadInNewYork();
-    checkDeliveryAfterUnloadInNewYork();
-
-    loadInNewYork();
-    checkDeliveryAfterLoadInNewYork();
-    */
 
 
 
@@ -129,7 +126,7 @@ public class CargoLifecycle {
 
 
     // Unloaded in Rotterdam, wasn't supposed to happen
-    cargo.handled(unloadedOff(v200).in(ROTTERDAM));
+    cargo.handled(unloadOff(v200).in(ROTTERDAM));
 
     // Misdirected
     assertTrue(cargo.isMisdirected());
@@ -145,19 +142,35 @@ public class CargoLifecycle {
 
 
 
+
+
+
     // Reroute: specify new route
+    RouteSpecification currentRouteSpec = cargo.routeSpecification();
     RouteSpecification newRouteSpec =
-      cargo.routeSpecification().withOrigin(cargo.lastKnownLocation());
+        currentRouteSpec.withOrigin(cargo.lastKnownLocation());
     cargo.specifyNewRoute(newRouteSpec);
+
     assertThat(cargo.routingStatus(), is(MISROUTED));
 
+
+
+
+
+
+
+
+
+
     // Assign to new route
-    List<Itinerary> available =
-      routingService.fetchRoutesForSpecification(newRouteSpec);
+    List<Itinerary> available = routingService.fetchRoutesForSpecification(newRouteSpec);
     Itinerary newItinerary = selectAppropriateRoute(available);
     cargo.assignToRoute(newItinerary);
+
     assertThat(cargo.routingStatus(), is(ROUTED));
-    assertThat(cargo.nextExpectedActivity(), is(loadedOnto(v300).in(ROTTERDAM)));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(v300).in(ROTTERDAM)));
+
+
 
 
 
@@ -169,7 +182,7 @@ public class CargoLifecycle {
 
 
     // Loaded, back on track
-    cargo.handled(loadedOnto(v300).in(ROTTERDAM));
+    cargo.handled(loadOnto(v300).in(ROTTERDAM));
     assertFalse(cargo.isMisdirected());
     assertThat(cargo.lastKnownLocation(), is(ROTTERDAM));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
@@ -184,12 +197,9 @@ public class CargoLifecycle {
 
 
 
-    /*
-    checkDeliveryAfterUnloadInStockholm();
 
-    claimInStockholm();
-    checkDeliveryAfterClaimInStockholm();
-    */
+
+
   }
 
   private Itinerary selectAppropriateRoute(List<Itinerary> itineraries) {

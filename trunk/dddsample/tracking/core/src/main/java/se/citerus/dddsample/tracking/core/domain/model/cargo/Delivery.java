@@ -3,7 +3,6 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.CUSTOMS;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
@@ -20,7 +19,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
 
   private final HandlingActivity mostRecentHandlingActivity;
   private final HandlingActivity mostRecentPhysicalHandlingActivity;
-  private final Date calculatedAt;
+  private final Date lastUpdatedOn;
   private final boolean routedAfterHandling;
 
   /**
@@ -33,9 +32,9 @@ class Delivery extends ValueObjectSupport<Delivery> {
     Validate.notNull(newHandlingActivity, "Handling activity is required");
 
     if (newHandlingActivity.type().isPhysical()) {
-      return new Delivery(newHandlingActivity, newHandlingActivity, new Date(), false);
+      return new Delivery(newHandlingActivity, newHandlingActivity, false);
     } else {
-      return new Delivery(newHandlingActivity, mostRecentPhysicalHandlingActivity, new Date(), false);
+      return new Delivery(newHandlingActivity, mostRecentPhysicalHandlingActivity, false);
     }
   }
 
@@ -43,23 +42,23 @@ class Delivery extends ValueObjectSupport<Delivery> {
    * @return An up to date delivery
    */
   Delivery onRouting() {
-    return new Delivery(mostRecentHandlingActivity, mostRecentPhysicalHandlingActivity, calculatedAt, true);
+    return new Delivery(mostRecentHandlingActivity, mostRecentPhysicalHandlingActivity, true);
   }
 
   /**
    * @return Initial delivery, before any handling has taken place
    */
   static Delivery beforeHandling() {
-    return new Delivery(null, null, new Date(0L), false);
+    return new Delivery(null, null, false);
   }
 
-  Delivery(final HandlingActivity mostRecentHandlingActivity,
-           final HandlingActivity mostRecentPhysicalHandlingActivity,
-           final Date completionTime, boolean routedAfterHandling) {
+  private Delivery(final HandlingActivity mostRecentHandlingActivity,
+                   final HandlingActivity mostRecentPhysicalHandlingActivity,
+                   final boolean routedAfterHandling) {
     this.mostRecentHandlingActivity = mostRecentHandlingActivity;
     this.mostRecentPhysicalHandlingActivity = mostRecentPhysicalHandlingActivity;
-    this.calculatedAt = completionTime;
     this.routedAfterHandling = routedAfterHandling;
+    this.lastUpdatedOn = new Date();
   }
 
   HandlingActivity mostRecentHandlingActivity() {
@@ -81,7 +80,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   Location lastKnownLocation() {
-    if (hasBeenHandledAfterRouting()) {
+    if (hasBeenHandled()) {
       return mostRecentHandlingActivity.location();
     } else {
       return Location.UNKNOWN;
@@ -100,7 +99,11 @@ class Delivery extends ValueObjectSupport<Delivery> {
   }
 
   boolean hasBeenHandledAfterRouting() {
-    return !routedAfterHandling && mostRecentHandlingActivity != null;
+    return hasBeenHandled() && !routedAfterHandling;
+  }
+
+  boolean hasBeenHandled() {
+    return mostRecentHandlingActivity != null;
   }
 
   /**
@@ -112,24 +115,11 @@ class Delivery extends ValueObjectSupport<Delivery> {
    * <li>A cargo that has received no handling events can not be misdirected.
    * </ul>
    *
-   * @return <code>true</code> if the cargo has been misdirected,
    * @param itinerary itinerary
-   * @param routeSpecification route specification
+   * @return <code>true</code> if the cargo has been misdirected,
    */
-  boolean isMisdirected(final Itinerary itinerary, final RouteSpecification routeSpecification) {
-    if (hasBeenHandledAfterRouting()) {
-      if (mostRecentHandlingActivity.type() == CUSTOMS) {
-        return !handledAtDestination(routeSpecification);
-      } else {
-        return !itinerary.isExpectedActivity(mostRecentHandlingActivity);
-      }
-    }
-
-    return false;
-  }
-
-  private boolean handledAtDestination(RouteSpecification routeSpecification) {
-    return routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
+  boolean isMisdirected(final Itinerary itinerary) {
+    return hasBeenHandledAfterRouting() && !itinerary.isExpectedActivity(mostRecentPhysicalHandlingActivity);
   }
 
   /**
@@ -162,8 +152,8 @@ class Delivery extends ValueObjectSupport<Delivery> {
   /**
    * @return When this delivery was calculated.
    */
-  Date lastTimestamp() {
-    return new Date(calculatedAt.getTime());
+  Date lastUpdatedOn() {
+    return new Date(lastUpdatedOn.getTime());
   }
 
   /**
@@ -171,8 +161,8 @@ class Delivery extends ValueObjectSupport<Delivery> {
    * @param itinerary itinerary
    * @param routeSpecification route specification
    */
-  boolean onTrack(final Itinerary itinerary, final RouteSpecification routeSpecification) {
-    return routingStatus(itinerary, routeSpecification) == ROUTED && !isMisdirected(itinerary, routeSpecification);
+  boolean isOnRoute(final Itinerary itinerary, final RouteSpecification routeSpecification) {
+    return routingStatus(itinerary, routeSpecification) == ROUTED && !isMisdirected(itinerary);
   }
 
   /**
@@ -184,7 +174,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
 
   Delivery() {
     // Needed by Hibernate
-    calculatedAt = null;
+    lastUpdatedOn = null;
     mostRecentHandlingActivity = mostRecentPhysicalHandlingActivity = null;
     routedAfterHandling = false;
   }

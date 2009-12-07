@@ -6,8 +6,8 @@ import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadedOnto;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadedOff;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.NEW_YORK_TO_DALLAS;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 
@@ -59,17 +59,17 @@ public class LegTest {
   public void matchActivity() {
     Leg newYorkToDallas = Leg.deriveLeg(voyage, NEWYORK, DALLAS);
 
-    assertTrue(newYorkToDallas.matchesActivity(loadedOnto(voyage).in(NEWYORK)));
-    assertTrue(newYorkToDallas.matchesActivity(unloadedOff(voyage).in(DALLAS)));
-    assertFalse(newYorkToDallas.matchesActivity(loadedOnto(voyage).in(DALLAS)));
-    assertFalse(newYorkToDallas.matchesActivity(unloadedOff(voyage).in(NEWYORK)));
+    assertTrue(newYorkToDallas.matchesActivity(loadOnto(voyage).in(NEWYORK)));
+    assertTrue(newYorkToDallas.matchesActivity(unloadOff(voyage).in(DALLAS)));
+    assertFalse(newYorkToDallas.matchesActivity(loadOnto(voyage).in(DALLAS)));
+    assertFalse(newYorkToDallas.matchesActivity(unloadOff(voyage).in(NEWYORK)));
   }
 
   @Test
   public void deriveActivities() {
     Leg newYorkToDallas = Leg.deriveLeg(voyage, NEWYORK, DALLAS);
     
-    assertThat(newYorkToDallas.deriveLoadActivity(), is(HandlingActivity.loadedOnto(voyage).in(NEWYORK)));
-    assertThat(newYorkToDallas.deriveUnloadActivity(), is(HandlingActivity.unloadedOff(voyage).in(DALLAS)));
+    assertThat(newYorkToDallas.deriveLoadActivity(), is(HandlingActivity.loadOnto(voyage).in(NEWYORK)));
+    assertThat(newYorkToDallas.deriveUnloadActivity(), is(HandlingActivity.unloadOff(voyage).in(DALLAS)));
   }
 }

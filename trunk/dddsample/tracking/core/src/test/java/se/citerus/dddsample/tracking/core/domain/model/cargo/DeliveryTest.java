@@ -12,7 +12,7 @@ import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadedOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 
@@ -39,7 +39,7 @@ public class DeliveryTest extends TestCase {
   public void testOnHandling() {
     Delivery delivery = Delivery.beforeHandling();
 
-    HandlingActivity load = loadedOnto(HONGKONG_TO_NEW_YORK).in(HONGKONG);
+    HandlingActivity load = loadOnto(HONGKONG_TO_NEW_YORK).in(HONGKONG);
     delivery = delivery.onHandling(load);
 
     assertThat(delivery.mostRecentHandlingActivity(), is(load));
@@ -51,7 +51,7 @@ public class DeliveryTest extends TestCase {
     assertThat(delivery.mostRecentHandlingActivity(), is(customs));
     assertThat(delivery.mostRecentPhysicalHandlingActivity(), is(load));
 
-    HandlingActivity loadAgain = loadedOnto(NEW_YORK_TO_DALLAS).in(NEWYORK);
+    HandlingActivity loadAgain = loadOnto(NEW_YORK_TO_DALLAS).in(NEWYORK);
     delivery = delivery.onHandling(loadAgain);
 
     assertThat(delivery.mostRecentHandlingActivity(), is(loadAgain));
@@ -61,11 +61,10 @@ public class DeliveryTest extends TestCase {
   public void testDerivedFromRouteSpecificationAndItinerary() throws Exception {
     assertEquals(ROUTED, delivery.routingStatus(itinerary, routeSpecification));
     assertEquals(Voyage.NONE, delivery.currentVoyage());
-    assertFalse(delivery.isMisdirected(itinerary, routeSpecification));
     assertFalse(delivery.onTheGroundAtDestination(routeSpecification));
     assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
     assertEquals(NOT_RECEIVED, delivery.transportStatus());
-    assertTrue(delivery.lastTimestamp().before(new Date()));
+    assertTrue(delivery.lastUpdatedOn().before(new Date()));
   }
 
   public void testUpdateOnHandlingHappyPath() {
@@ -80,14 +79,13 @@ public class DeliveryTest extends TestCase {
     assertEquals(IN_PORT, newDelivery.transportStatus());
 
     // Changed on handling and/or (re-)routing
-    assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
     assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     // Changed on (re-)routing
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
     // Updated on every calculation
-    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
+    assertTrue(delivery.lastUpdatedOn().before(newDelivery.lastUpdatedOn()));
 
     // 2. Load
 
@@ -98,12 +96,11 @@ public class DeliveryTest extends TestCase {
     assertEquals(HANGZOU, newDelivery.lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, newDelivery.transportStatus());
 
-    assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
     assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
+    assertTrue(delivery.lastUpdatedOn().before(newDelivery.lastUpdatedOn()));
 
     // Skipping intermediate load/unloads
 
@@ -116,12 +113,11 @@ public class DeliveryTest extends TestCase {
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
     assertEquals(IN_PORT, newDelivery.transportStatus());
 
-    assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
     assertTrue(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
+    assertTrue(delivery.lastUpdatedOn().before(newDelivery.lastUpdatedOn()));
 
     // 4. Claim
 
@@ -132,12 +128,11 @@ public class DeliveryTest extends TestCase {
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
     assertEquals(CLAIMED, newDelivery.transportStatus());
 
-    assertFalse(newDelivery.isMisdirected(itinerary, routeSpecification));
     assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
+    assertTrue(delivery.lastUpdatedOn().before(newDelivery.lastUpdatedOn()));
   }
 
   public void testUpdateOnHandlingWhenMisdirected() {
@@ -151,27 +146,21 @@ public class DeliveryTest extends TestCase {
 
     // Next handling activity is undefined. Need a new itinerary to know what to do.
 
-    assertTrue(newDelivery.isMisdirected(itinerary, routeSpecification));
     assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
-    assertTrue(delivery.lastTimestamp().before(newDelivery.lastTimestamp()));
+    assertTrue(delivery.lastUpdatedOn().before(newDelivery.lastUpdatedOn()));
 
     // New route specification, old itinerary
     RouteSpecification newRouteSpecification = routeSpecification.withOrigin(HAMBURG);
     assertEquals(MISROUTED, newDelivery.routingStatus(itinerary, newRouteSpecification));
-
-    // TODO is it really misdirected at this point?
-    assertTrue(newDelivery.isMisdirected(itinerary, newRouteSpecification));
 
     Itinerary newItinerary = new Itinerary(
       Leg.deriveLeg(DALLAS_TO_HELSINKI, HAMBURG, STOCKHOLM)
     );
 
     assertEquals(ROUTED, newDelivery.routingStatus(newItinerary, newRouteSpecification));
-    // TODO is it really misdirected here?
-    assertTrue(newDelivery.isMisdirected(newItinerary, newRouteSpecification));
     assertEquals(IN_PORT, newDelivery.transportStatus());
   }
 

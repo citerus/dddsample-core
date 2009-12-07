@@ -5,8 +5,8 @@ import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingE
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadedOnto;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadedOff;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
@@ -88,7 +88,6 @@ public class Leg extends ValueObjectSupport<Leg> {
     return Leg.deriveLeg(voyage, loadLocation, unloadLocation);
   }
 
-
   /**
    *
    * @param handlingActivity handling activity
@@ -124,11 +123,11 @@ public class Leg extends ValueObjectSupport<Leg> {
   }
 
   HandlingActivity deriveLoadActivity() {
-    return loadedOnto(voyage).in(loadLocation);
+    return loadOnto(voyage).in(loadLocation);
   }
 
   HandlingActivity deriveUnloadActivity() {
-    return unloadedOff(voyage).in(unloadLocation);
+    return unloadOff(voyage).in(unloadLocation);
   }
 
   @Override
