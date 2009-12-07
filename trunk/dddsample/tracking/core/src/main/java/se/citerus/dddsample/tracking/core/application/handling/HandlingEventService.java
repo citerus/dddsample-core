@@ -18,12 +18,12 @@ public interface HandlingEventService {
    * Registers a handling event in the system, and notifies interested
    * parties that a cargo has been handled.
    *
-   * @param completionTime when the event was completed
-   * @param trackingId     cargo tracking id
-   * @param voyageNumber   voyage number
-   * @param unLocode       UN locode for the location where the event occurred
-   * @param type           type of event
-   * @param operatorCode
+   * @param completionTime  when the event was completed
+   * @param trackingId      cargo tracking id
+   * @param voyageNumber    voyage number
+   * @param unLocode        UN locode for the location where the event occurred
+   * @param type            type of event
+   * @param operatorCode    operator code
    * @throws se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException
    *          if a handling event that represents an actual event that's relevant to a cargo we're tracking
    *          can't be created from the parameters
@@ -32,6 +32,7 @@ public interface HandlingEventService {
                              TrackingId trackingId,
                              VoyageNumber voyageNumber,
                              UnLocode unLocode,
-                             HandlingEvent.Type type, OperatorCode operatorCode) throws CannotCreateHandlingEventException;
+                             HandlingEvent.Type type,
+                             OperatorCode operatorCode) throws CannotCreateHandlingEventException;
 
 }
