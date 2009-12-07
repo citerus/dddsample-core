@@ -92,7 +92,7 @@ final class DTOAssembler {
       final Voyage voyage = voyageRepository.find(voyageNumber);
       final Location from = locationRepository.find(new UnLocode(legDTO.getFrom()));
       final Location to = locationRepository.find(new UnLocode(legDTO.getTo()));
-      legs.add(new Leg(voyage, from, to, legDTO.getLoadTime(), legDTO.getUnloadTime()));
+      legs.add(Leg.deriveLeg(voyage, from, to));
     }
     return new Itinerary(legs);
   }
