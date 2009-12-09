@@ -38,7 +38,7 @@ public class SampleLocations {
   public static final Location NEWYORK = new Location(new UnLocode("USNYC"), "New York", EASTERN, US);
   public static final Location DALLAS = new Location(new UnLocode("USDAL"), "Dallas", CENTRAL, US);
 
-  public static final Map<UnLocode, Location> ALL = new HashMap<UnLocode, Location>();
+  private static final Map<UnLocode, Location> ALL = new HashMap<UnLocode, Location>();
 
   static {
     for (Field field : SampleLocations.class.getDeclaredFields()) {
