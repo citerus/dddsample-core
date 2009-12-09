@@ -55,7 +55,7 @@ public class ExternalRoutingServiceTest extends TestCase {
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, toDate("2009-04-01"));
     Cargo cargo = new Cargo(trackingId, routeSpecification);
 
-    expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
+    expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.pacific2);
 
     replay(voyageRepository);
 

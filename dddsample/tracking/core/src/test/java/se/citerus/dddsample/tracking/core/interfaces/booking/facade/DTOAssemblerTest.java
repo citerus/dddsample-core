@@ -10,7 +10,8 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
+
+import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
@@ -24,15 +25,13 @@ public class DTOAssemblerTest {
 
   @Test
   public void toCargoRoutingDTO() throws Exception {
-    final Location origin = STOCKHOLM;
-    final Location destination = MELBOURNE;
+    final Location origin = HONGKONG;
+    final Location destination = LONGBEACH;
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(origin, destination, new Date()));
 
     final Itinerary itinerary = new Itinerary(
-      Arrays.asList(
-        new Leg(CM001, origin, SHANGHAI, new Date(), new Date()),
-        new Leg(CM001, ROTTERDAM, destination, new Date(), new Date())
-      )
+      Leg.deriveLeg(SampleVoyages.pacific1, HONGKONG, TOKYO),
+      Leg.deriveLeg(SampleVoyages.pacific1, TOKYO, LONGBEACH)
     );
 
     cargo.assignToRoute(itinerary);
@@ -42,51 +41,46 @@ public class DTOAssemblerTest {
     assertEquals(2, dto.getLegs().size());
 
     LegDTO legDTO = dto.getLegs().get(0);
-    assertEquals("CM001", legDTO.getVoyageNumber());
-    assertEquals("SESTO", legDTO.getFrom());
-    assertEquals("CNSHA", legDTO.getTo());
+    assertEquals("PAC1", legDTO.getVoyageNumber());
+    assertEquals("CNHKG", legDTO.getFrom());
+    assertEquals("JNTKO", legDTO.getTo());
 
     legDTO = dto.getLegs().get(1);
-    assertEquals("CM001", legDTO.getVoyageNumber());
-    assertEquals("NLRTM", legDTO.getFrom());
-    assertEquals("AUMEL", legDTO.getTo());
+    assertEquals("PAC1", legDTO.getVoyageNumber());
+    assertEquals("JNTKO", legDTO.getFrom());
+    assertEquals("USLBG", legDTO.getTo());
   }
 
   @Test
   public void toCargoDTONoItinerary() throws Exception {
-    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
+    final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, LONGBEACH, new Date()));
     final CargoRoutingDTO dto = DTOAssembler.toDTO(cargo);
 
     assertEquals("XYZ", dto.getTrackingId());
-    assertEquals("SESTO", dto.getOrigin());
-    assertEquals("AUMEL", dto.getFinalDestination());
+    assertEquals("CNHKG", dto.getOrigin());
+    assertEquals("USLBG", dto.getFinalDestination());
     assertTrue(dto.getLegs().isEmpty());
   }
 
   @Test
   public void toRouteCandidateDTO() throws Exception {
-    final Location origin = STOCKHOLM;
-    final Location destination = MELBOURNE;
-
     final Itinerary itinerary = new Itinerary(
-      Arrays.asList(
-        new Leg(CM001, origin, SHANGHAI, new Date(), new Date()),
-        new Leg(CM001, ROTTERDAM, destination, new Date(), new Date())
-      )
+      Leg.deriveLeg(SampleVoyages.pacific1, HONGKONG, TOKYO),
+      Leg.deriveLeg(SampleVoyages.pacific1, TOKYO, LONGBEACH)
     );
 
     final RouteCandidateDTO dto = DTOAssembler.toDTO(itinerary);
 
     assertEquals(2, dto.getLegs().size());
     LegDTO legDTO = dto.getLegs().get(0);
-    assertEquals("CM001", legDTO.getVoyageNumber());
-    assertEquals("SESTO", legDTO.getFrom());
-    assertEquals("CNSHA", legDTO.getTo());
+    assertEquals("PAC1", legDTO.getVoyageNumber());
+    assertEquals("CNHKG", legDTO.getFrom());
+    assertEquals("JNTKO", legDTO.getTo());
 
     legDTO = dto.getLegs().get(1);
-    assertEquals("CM001", legDTO.getVoyageNumber());
-    assertEquals("NLRTM", legDTO.getFrom());
-    assertEquals("AUMEL", legDTO.getTo());
+    assertEquals("PAC1", legDTO.getVoyageNumber());
+    assertEquals("JNTKO", legDTO.getFrom());
+    assertEquals("USLBG", legDTO.getTo());
   }
 
   @Test

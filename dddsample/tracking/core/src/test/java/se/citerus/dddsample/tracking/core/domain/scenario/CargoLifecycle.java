@@ -81,12 +81,12 @@ public class CargoLifecycle {
 
 
     // Loaded
-    cargo.handled(loadOnto(v100).in(HONGKONG));
+    cargo.handled(loadOnto(pacific1).in(HONGKONG));
 
-    assertThat(cargo.currentVoyage(), is(v100));
+    assertThat(cargo.currentVoyage(), is(pacific1));
     assertThat(cargo.lastKnownLocation(), is(HONGKONG));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.nextExpectedActivity(), is(unloadOff(v100).in(LONGBEACH)));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(pacific1).in(LONGBEACH)));
     assertFalse(cargo.isMisdirected());
 
 
@@ -103,13 +103,13 @@ public class CargoLifecycle {
 
 
     // Unloaded
-    cargo.handled(unloadOff(v100).in(LONGBEACH));
+    cargo.handled(unloadOff(pacific1).in(LONGBEACH));
 
     assertThat(cargo.currentVoyage(), is(NONE));
     assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertFalse(cargo.isMisdirected());
-    assertThat(cargo.nextExpectedActivity(), is(loadOnto(v250).in(LONGBEACH)));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(continental1).in(LONGBEACH)));
 
 
 
@@ -126,7 +126,7 @@ public class CargoLifecycle {
 
 
     // Unloaded in Rotterdam, wasn't supposed to happen
-    cargo.handled(unloadOff(v200).in(ROTTERDAM));
+    cargo.handled(unloadOff(pacific2).in(ROTTERDAM));
 
     // Misdirected
     assertTrue(cargo.isMisdirected());
@@ -211,9 +211,9 @@ public class CargoLifecycle {
   private static class ScenarioStubRoutingService implements RoutingService {
 
     private static final Itinerary itinerary1 = new Itinerary(asList(
-      new Leg(v100, HONGKONG, LONGBEACH, toDate("2009-03-03"), toDate("2009-03-09")),
-      new Leg(v250, LONGBEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
-      new Leg(v200, NEWYORK, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
+      new Leg(pacific1, HONGKONG, LONGBEACH, toDate("2009-03-03"), toDate("2009-03-09")),
+      new Leg(continental1, LONGBEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
+      new Leg(pacific2, NEWYORK, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
     ));
 
     private static final Itinerary itinerary2 = new Itinerary(asList(

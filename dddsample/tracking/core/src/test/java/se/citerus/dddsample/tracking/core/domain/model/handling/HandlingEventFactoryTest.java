@@ -10,7 +10,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingE
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
@@ -46,7 +46,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     replay(cargoRepository);
 
-    VoyageNumber voyageNumber = CM001.voyageNumber();
+    VoyageNumber voyageNumber = SampleVoyages.pacific1.voyageNumber();
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
       new Date(100), trackingId, voyageNumber, unLocode, Type.LOAD, new OperatorCode("ABCDE")
@@ -54,7 +54,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     assertNotNull(handlingEvent);
     assertEquals(STOCKHOLM, handlingEvent.location());
-    assertEquals(CM001, handlingEvent.voyage());
+    assertEquals(SampleVoyages.pacific1, handlingEvent.voyage());
     assertEquals(cargo, handlingEvent.cargo());
     assertEquals(new Date(100), handlingEvent.completionTime());
     assertTrue(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1)));
@@ -86,7 +86,7 @@ public class HandlingEventFactoryTest extends TestCase {
     UnLocode invalid = new UnLocode("NOEXT");
     try {
       factory.createHandlingEvent(
-        new Date(100), trackingId, CM001.voyageNumber(), invalid, Type.LOAD, new OperatorCode("ABCDE")
+        new Date(100), trackingId, SampleVoyages.pacific1.voyageNumber(), invalid, Type.LOAD, new OperatorCode("ABCDE")
       );
       fail("Expected UnknownLocationException");
     } catch (UnknownLocationException expected) {
@@ -115,7 +115,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     try {
       factory.createHandlingEvent(
-        new Date(100), trackingId, CM001.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD, new OperatorCode("ABCDE")
+        new Date(100), trackingId, SampleVoyages.pacific1.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD, new OperatorCode("ABCDE")
       );
       fail("Expected UnknownCargoException");
     } catch (UnknownCargoException expected) {

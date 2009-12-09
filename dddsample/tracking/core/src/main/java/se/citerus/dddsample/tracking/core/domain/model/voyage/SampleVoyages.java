@@ -12,40 +12,54 @@ import java.util.*;
  */
 public class SampleVoyages {
 
-  public static final Voyage CM001 = createVoyage("CM001", STOCKHOLM, HAMBURG);
-  public static final Voyage CM002 = createVoyage("CM002", HAMBURG, HONGKONG);
-  public static final Voyage CM003 = createVoyage("CM003", HONGKONG, NEWYORK);
-  public static final Voyage CM004 = createVoyage("CM004", NEWYORK, CHICAGO);
-  public static final Voyage CM005 = createVoyage("CM005", CHICAGO, HAMBURG);
-  public static final Voyage CM006 = createVoyage("CM006", HAMBURG, HANGZOU);
-
-  private static Voyage createVoyage(String id, Location from, Location to) {
-    return new Voyage(new VoyageNumber(id), new Schedule(Arrays.asList(
-      new CarrierMovement(from, to, new Date(1), new Date(2))
-    )));
-  }
-
-  // TODO CM00[1-6] and createVoyage are deprecated. Remove and refactor tests.
-
-  public final static Voyage v100 = new Voyage.Builder(new VoyageNumber("V100"), HONGKONG).
+  public final static Voyage pacific1 = new Voyage.Builder(new VoyageNumber("PAC1"), HONGKONG).
     addMovement(TOKYO, toDate("2009-03-03"), toDate("2009-03-05")).
     addMovement(LONGBEACH, toDate("2009-03-06"), toDate("2009-03-09")).
+    addMovement(SEATTLE, toDate("2009-03-10"), toDate("2009-03-12")).
+    addMovement(HONGKONG, toDate("2009-03-15"), toDate("2009-03-19")).
     build();
-  public final static Voyage v200 = new Voyage.Builder(new VoyageNumber("V200"), SHANGHAI).
-    addMovement(NEWYORK, toDate("2009-03-06"), toDate("2009-03-08")).
-    addMovement(ROTTERDAM, toDate("2009-03-10"), toDate("2009-03-14")).
-    addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-16")).
+
+  public final static Voyage pacific2 = new Voyage.Builder(new VoyageNumber("PAC2"), SHANGHAI).
+    addMovement(LONGBEACH, toDate("2009-03-06"), toDate("2009-03-08")).
+    addMovement(SEATTLE, toDate("2009-03-10"), toDate("2009-03-14")).
+    addMovement(HANGZOU, toDate("2009-03-14"), toDate("2009-03-16")).
+    addMovement(SHANGHAI, toDate("2009-03-17"), toDate("2009-03-19")).
     build();
-  public final static Voyage v250 = new Voyage.Builder(new VoyageNumber("V250"), LONGBEACH).
+
+  public final static Voyage continental1 = new Voyage.Builder(new VoyageNumber("CNT1"), LONGBEACH).
+    addMovement(DALLAS, toDate("2009-03-06"), toDate("2009-03-08")).
+    addMovement(CHICAGO, toDate("2009-03-09"), toDate("2009-03-10")).
+    addMovement(NEWYORK, toDate("2009-03-11"), toDate("2009-03-14")).
+    build();
+
+  public final static Voyage continenal2 = new Voyage.Builder(new VoyageNumber("CNT2"), LONGBEACH).
     addMovement(DALLAS, toDate("2009-03-06"), toDate("2009-03-08")).
     addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
     build();
+
+  public final static Voyage atlantic1 = new Voyage.Builder(new VoyageNumber("ATC1"), NEWYORK).
+      addMovement(ROTTERDAM, toDate("2009-03-15"), toDate("2009-03-18")).
+      addMovement(HAMBURG, toDate("2009-03-19"), toDate("2009-03-20")).
+      addMovement(HELSINKI, toDate("2009-03-21"), toDate("2009-03-22")).
+      addMovement(NEWYORK, toDate("2009-03-24"), toDate("2009-03-30")).
+      build();
+
+  public final static Voyage atlantic2 = new Voyage.Builder(new VoyageNumber("ATC2"), NEWYORK).
+      addMovement(ROTTERDAM, toDate("2009-03-17"), toDate("2009-03-20")).
+      addMovement(GOTHENBURG, toDate("2009-03-22"), toDate("2009-03-24")).
+      addMovement(STOCKHOLM, toDate("2009-03-25"), toDate("2009-03-26")).
+      addMovement(HELSINKI, toDate("2009-03-27"), toDate("2009-03-28")).
+      addMovement(NEWYORK, toDate("2009-03-31"), toDate("2009-04-04")).
+      build();
+
+
   public final static Voyage v300 = new Voyage.Builder(new VoyageNumber("V300"), TOKYO).
     addMovement(ROTTERDAM, toDate("2009-03-08"), toDate("2009-03-11")).
     addMovement(HAMBURG, toDate("2009-03-11"), toDate("2009-03-12")).
     addMovement(MELBOURNE, toDate("2009-03-14"), toDate("2009-03-18")).
     addMovement(TOKYO, toDate("2009-03-19"), toDate("2009-03-21")).
     build();
+
   public final static Voyage v400 = new Voyage.Builder(new VoyageNumber("V400"), HAMBURG).
     addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15")).
     addMovement(HELSINKI, toDate("2009-03-15"), toDate("2009-03-16")).
@@ -64,7 +78,6 @@ public class SampleVoyages {
       addMovement(MELBOURNE, toDate("2008-10-06", "11:00"), toDate("2008-10-12", "11:30")).
       addMovement(NEWYORK, toDate("2008-10-14", "12:00"), toDate("2008-10-23", "23:10")).
       build();
-
 
   /**
    * Voyage number 0200T (by train)
@@ -111,7 +124,7 @@ public class SampleVoyages {
       addMovement(HONGKONG, toDate("2008-11-24", "07:00"), toDate("2008-11-28", "13:37")).
       build();
 
-  public static final Map<VoyageNumber, Voyage> ALL = new HashMap<VoyageNumber, Voyage>();
+  private static final Map<VoyageNumber, Voyage> ALL = new HashMap<VoyageNumber, Voyage>();
 
   static {
     for (Field field : SampleVoyages.class.getDeclaredFields()) {

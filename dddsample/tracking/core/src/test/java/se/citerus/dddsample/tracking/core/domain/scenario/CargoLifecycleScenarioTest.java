@@ -77,7 +77,7 @@ public class CargoLifecycleScenarioTest {
     loadInNewYork();
     checkDeliveryAfterLoadInNewYork();
 
-    unloadInStockholmOffOf(v200);
+    unloadInStockholmOffOf(pacific2);
     checkDeliveryAfterUnloadInStockholm();
 
     customsInStockholm();
@@ -88,7 +88,7 @@ public class CargoLifecycleScenarioTest {
   }
 
   private void unloadInLongBeach() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-06"), v100, LONGBEACH, UNLOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-06"), pacific1, LONGBEACH, UNLOAD);
   }
 
   private void checkDeliveryAfterUnloadInLongBeach() {
@@ -98,25 +98,25 @@ public class CargoLifecycleScenarioTest {
     assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
     assertThat(cargo.transportStatus(), is(IN_PORT));
     assertFalse(cargo.isMisdirected());
-    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, LONGBEACH, v250)));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, LONGBEACH, continental1)));
   }
 
   private void loadInLongBeach() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-07"), v250, LONGBEACH, LOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-07"), continental1, LONGBEACH, LOAD);
   }
 
   private void checkDeliveryAfterLoadInLongBeach() {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.currentVoyage(), is(v250));
+    assertThat(cargo.currentVoyage(), is(continental1));
     assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
     assertFalse(cargo.isMisdirected());
-    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, NEWYORK, v250)));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, NEWYORK, continental1)));
   }
 
   private void unloadInNewYork() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-08"), v250, NEWYORK, UNLOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-08"), continental1, NEWYORK, UNLOAD);
   }
 
   private void checkDeliveryAfterUnloadInNewYork() {
@@ -125,22 +125,22 @@ public class CargoLifecycleScenarioTest {
     assertThat(cargo.currentVoyage(), is(NONE));
     assertThat(cargo.lastKnownLocation(), is(NEWYORK));
     assertThat(cargo.transportStatus(), is(IN_PORT));
-    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, NEWYORK, v200)));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(LOAD, NEWYORK, pacific2)));
     assertFalse(cargo.isMisdirected());
   }
 
   private void loadInNewYork() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-10"), v200, NEWYORK, LOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-10"), pacific2, NEWYORK, LOAD);
   }
 
   private void checkDeliveryAfterLoadInNewYork() {
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.currentVoyage(), is(v200));
+    assertThat(cargo.currentVoyage(), is(pacific2));
     assertThat(cargo.lastKnownLocation(), is(NEWYORK));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
     assertFalse(cargo.isMisdirected());
-    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, STOCKHOLM, v200)));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, STOCKHOLM, pacific2)));
   }
 
   @Test
@@ -239,23 +239,23 @@ public class CargoLifecycleScenarioTest {
   }
 
   public void loadInHongkong() throws CannotCreateHandlingEventException {
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-03"), v100, HONGKONG, LOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-03"), pacific1, HONGKONG, LOAD);
   }
 
   private void checkDeliveryAfterLoadInHongKong() {
     // Check current state - should be ok
     Cargo cargo = cargoRepository.find(trackingId);
 
-    assertThat(cargo.currentVoyage(), is(v100));
+    assertThat(cargo.currentVoyage(), is(pacific1));
     assertThat(cargo.lastKnownLocation(), is(HONGKONG));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
-    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, LONGBEACH, v100)));
+    assertThat(cargo.nextExpectedActivity(), is(new HandlingActivity(UNLOAD, LONGBEACH, pacific1)));
     assertFalse(cargo.isMisdirected());
   }
 
   public void unloadInTokyo() throws CannotCreateHandlingEventException {
     // Cargo is now (incorrectly) unloaded in Tokyo
-    createHandlingEventAndUpdateAggregates(toDate("2009-03-05"), v100, TOKYO, UNLOAD);
+    createHandlingEventAndUpdateAggregates(toDate("2009-03-05"), pacific1, TOKYO, UNLOAD);
   }
 
   private void checkDeliveryAfterUnloadInTokyo() {
@@ -445,9 +445,9 @@ public class CargoLifecycleScenarioTest {
         // Hongkong - NYC - Chicago - Stockholm, initial routing
         return Arrays.asList(
           new Itinerary(Arrays.asList(
-            new Leg(v100, HONGKONG, LONGBEACH, toDate("2009-03-03"), toDate("2009-03-09")),
-            new Leg(v250, LONGBEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
-            new Leg(v200, NEWYORK, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
+            new Leg(pacific1, HONGKONG, LONGBEACH, toDate("2009-03-03"), toDate("2009-03-09")),
+            new Leg(continental1, LONGBEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
+            new Leg(pacific2, NEWYORK, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
           ))
         );
       } else {
