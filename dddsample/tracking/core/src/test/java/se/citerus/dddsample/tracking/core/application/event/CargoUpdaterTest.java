@@ -3,6 +3,8 @@ package se.citerus.dddsample.tracking.core.application.event;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -66,6 +68,7 @@ public class CargoUpdaterTest {
     cargoUpdater.updateCargo(handlingEvent.sequenceNumber());
     
     assertThat(handlingEvent.activity(), equalTo(cargo.mostRecentHandlingActivity()));
+    assertTrue(handlingEvent.activity() != cargo.mostRecentHandlingActivity());
     verify(systemEvents).notifyOfCargoUpdate(cargo);
   }
 
