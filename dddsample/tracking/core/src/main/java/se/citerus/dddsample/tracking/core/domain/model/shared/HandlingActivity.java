@@ -37,16 +37,32 @@ public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
     this.voyage = voyage;
   }
 
+  /**
+   * @return Type of handling
+   */
   public HandlingEvent.Type type() {
     return type;
   }
 
+  /**
+   * @return Location
+   */
   public Location location() {
     return location;
   }
 
+  /**
+   * @return Voyage
+   */
   public Voyage voyage() {
     return voyage;
+  }
+
+  /**
+   * @return A copy of this activity
+   */
+  public HandlingActivity copy() {
+    return new HandlingActivity(type, location, voyage);
   }
 
   @Override
