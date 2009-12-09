@@ -164,4 +164,7 @@ public class DeliveryTest extends TestCase {
     assertEquals(IN_PORT, newDelivery.transportStatus());
   }
 
+  public void testEmptyCtor() {
+    new Delivery();
+  }
 }
