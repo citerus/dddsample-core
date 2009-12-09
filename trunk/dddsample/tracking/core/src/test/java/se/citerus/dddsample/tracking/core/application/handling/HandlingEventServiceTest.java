@@ -13,7 +13,8 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRep
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM001;
+
+import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import java.util.Date;
@@ -45,14 +46,14 @@ public class HandlingEventServiceTest extends TestCase {
 
   public void testRegisterEvent() throws Exception {
     expect(cargoRepository.find(cargo.trackingId())).andReturn(cargo);
-    expect(voyageRepository.find(CM001.voyageNumber())).andReturn(CM001);
+    expect(voyageRepository.find(SampleVoyages.pacific1.voyageNumber())).andReturn(SampleVoyages.pacific1);
     expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
     handlingEventRepository.store(isA(HandlingEvent.class));
     systemEvents.notifyOfHandlingEvent(isA(HandlingEvent.class));
 
     replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
 
-    service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE"));
+    service.registerHandlingEvent(new Date(), cargo.trackingId(), SampleVoyages.pacific1.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE"));
   }
 
 }

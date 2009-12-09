@@ -9,7 +9,7 @@ import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.CM004;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
@@ -142,7 +142,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
     Location legTo = locationRepository.find(new UnLocode("DEHAM"));
-    Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
+    Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(SampleVoyages.continenal2, legFrom, legTo, new Date(), new Date())));
 
     cargo.assignToRoute(newItinerary);
 
