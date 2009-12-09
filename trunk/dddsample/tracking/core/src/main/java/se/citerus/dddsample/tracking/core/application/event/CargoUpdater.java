@@ -37,7 +37,7 @@ public class CargoUpdater {
       return;
     }
 
-    final HandlingActivity activity = handlingEvent.activity();
+    final HandlingActivity activity = handlingEvent.activity().copy();
     final Cargo cargo = handlingEvent.cargo();
 
     cargo.handled(activity);
