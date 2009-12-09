@@ -98,10 +98,16 @@ class Delivery extends ValueObjectSupport<Delivery> {
     }
   }
 
+  /**
+   * @return True if the cargo has been handled at least once since it was last routed
+   */
   boolean hasBeenHandledAfterRouting() {
     return hasBeenHandled() && !routedAfterHandling;
   }
 
+  /**
+   * @return True if the cargo has been handled at least once
+   */
   boolean hasBeenHandled() {
     return mostRecentHandlingActivity != null;
   }
@@ -116,7 +122,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
    * </ul>
    *
    * @param itinerary itinerary
-   * @return <code>true</code> if the cargo has been misdirected,
+   * @return <code>true</code> if the cargo has been misdirected.
    */
   boolean isMisdirected(final Itinerary itinerary) {
     return hasBeenHandledAfterRouting() && !itinerary.isExpectedActivity(mostRecentPhysicalHandlingActivity);
@@ -157,9 +163,9 @@ class Delivery extends ValueObjectSupport<Delivery> {
   }
 
   /**
-   * @return True if the cargo is routed and not misdirected  @param itinerary
    * @param itinerary itinerary
    * @param routeSpecification route specification
+   * @return True if the cargo is routed and not misdirected
    */
   boolean isOnRoute(final Itinerary itinerary, final RouteSpecification routeSpecification) {
     return routingStatus(itinerary, routeSpecification) == ROUTED && !isMisdirected(itinerary);
