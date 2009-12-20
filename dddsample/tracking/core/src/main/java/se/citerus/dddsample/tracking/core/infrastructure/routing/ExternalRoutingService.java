@@ -5,8 +5,8 @@ import com.pathfinder.api.TransitEdge;
 import com.pathfinder.api.TransitPath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Leg;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
@@ -94,11 +94,10 @@ public class ExternalRoutingService implements RoutingService {
   }
 
   private Leg toLeg(final TransitEdge edge) {
-    return new Leg(
+    return Leg.deriveLeg(
       voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
       locationRepository.find(new UnLocode(edge.getFromUnLocode())),
-      locationRepository.find(new UnLocode(edge.getToUnLocode())),
-      edge.getFromDate(), edge.getToDate()
+      locationRepository.find(new UnLocode(edge.getToUnLocode()))
     );
   }
 
