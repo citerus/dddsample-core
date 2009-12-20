@@ -60,10 +60,10 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
 
   /**
    * Convenience method for testing. Usage in application would be
-   * entryPoint(List<Location) route)
+   * entryPoint(List<Location>) route)
    *
-   * @param route
-   * @return
+   * @param route a list of locations
+   * @return The first location on the route that is in this customs zone.
    */
   public Location entryPoint(final Location... route) {
     return entryPoint(Arrays.asList(route));
