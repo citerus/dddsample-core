@@ -18,16 +18,6 @@
     <component name="operatorCode" update="false">
       <property name="code" column="operator_code" not-null="false" length="3"/>
     </component>
-    <component name="activity" update="false">
-      <many-to-one name="voyage" column="voyage_id" not-null="false" cascade="none" foreign-key="event_voyage_fk"/>
-      <many-to-one name="location" column="location_id" not-null="true" cascade="none" foreign-key="location_fk"/>
-      <property name="type" column="type" not-null="true">
-        <type name="org.hibernate.type.EnumType">
-          <param name="enumClass">se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent$Type</param>
-          <param name="type">12</param>
-          <!-- 12 is java.sql.Types.VARCHAR -->
-        </type>
-      </property>
-    </component>
+    <many-to-one name="activity" column="activity_id" foreign-key="activity_fk" not-null="true" update="false" cascade="all"/>
   </class>
 </hibernate-mapping>
