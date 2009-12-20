@@ -6,8 +6,6 @@ import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLoc
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
-import java.util.Arrays;
-
 public class RouteSpecificationTest extends TestCase {
 
   final Voyage hongKongTokyoNewYork = new Voyage.Builder(
@@ -23,14 +21,9 @@ public class RouteSpecificationTest extends TestCase {
     addMovement(CHICAGO, toDate("2009-02-12"), toDate("2009-02-20")).
     build();
 
-  // TODO:
-  // it shouldn't be possible to create Legs that have load/unload locations
-  // and/or dates that don't match the voyage's carrier movements.
-  final Itinerary itinerary = new Itinerary(Arrays.asList(
-    new Leg(hongKongTokyoNewYork, HONGKONG, NEWYORK,
-      toDate("2009-02-01"), toDate("2009-02-10")),
-    new Leg(dallasNewYorkChicago, NEWYORK, CHICAGO,
-      toDate("2009-02-12"), toDate("2009-02-20")))
+  final Itinerary itinerary = new Itinerary(
+    Leg.deriveLeg(hongKongTokyoNewYork, HONGKONG, NEWYORK),
+    Leg.deriveLeg(dallasNewYorkChicago, NEWYORK, CHICAGO)
   );
 
   public void testIsSatisfiedBy_Success() {

@@ -96,7 +96,7 @@ public class RouteSpecification extends ValueObjectSupport<RouteSpecification> {
 
   @Override
   public String toString() {
-    return origin + " to " + destination + " by " + arrivalDeadline;
+    return origin + " - " + destination + " by " + arrivalDeadline;
   }
 
   RouteSpecification() {

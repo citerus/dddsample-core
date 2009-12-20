@@ -12,20 +12,111 @@ import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingAct
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage.NONE;
 import se.citerus.dddsample.tracking.core.domain.service.RoutingService;
+import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdFactoryInMem;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
+import java.util.Date;
 import java.util.List;
 
 public class CargoLifecycle {
 
   @Test
-  public void cargoIsMisdirectedAndRerouted() throws Exception {
+  public void cargoIsProperlyDelivered() throws Exception {
+    Cargo cargo = setupCargoFromHongkongToStockholm();
+
+    // Initial state, before routing
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(NOT_ROUTED));
+    assertFalse(cargo.isMisdirected());
+    assertNull(cargo.estimatedTimeOfArrival());
+    assertNull(cargo.nextExpectedActivity());
+
+
+
+    // Route: Hongkong - Long Beach - New York - Stockholm
+    List<Itinerary> itineraries =
+      routingService.fetchRoutesForSpecification(cargo.routeSpecification());
+    Itinerary itinerary = selectAppropriateRoute(itineraries);
+    cargo.assignToRoute(itinerary);
+
+    // Routed
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertThat(cargo.nextExpectedActivity(), is(receiveIn(HONGKONG)));
+    assertNotNull(cargo.estimatedTimeOfArrival());
+    assertThat(cargo.customsClearancePoint(), is(STOCKHOLM));
+
+    // Received
+    cargo.handled(receiveIn(HONGKONG));
+
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+
+    // Loaded
+    cargo.handled(loadOnto(pacific1).in(HONGKONG));
+
+    assertThat(cargo.currentVoyage(), is(pacific1));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(pacific1).in(LONGBEACH)));
+    assertFalse(cargo.isMisdirected());
+
+    // Unloaded
+    cargo.handled(unloadOff(pacific1).in(LONGBEACH));
+
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(continental1).in(LONGBEACH)));
+
+    cargo.handled(loadOnto(continental1).in(LONGBEACH));
+
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.currentVoyage(), is(continental1));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(continental1).in(NEWYORK)));
+
+    cargo.handled(unloadOff(continental1).in(NEWYORK));
+
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(NEWYORK));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(atlantic2).in(NEWYORK)));
+
+    cargo.handled(loadOnto(atlantic2).in(NEWYORK));
+
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(NEWYORK));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.currentVoyage(), is(atlantic2));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(atlantic2).in(STOCKHOLM)));
+
+    cargo.handled(unloadOff(atlantic2).in(STOCKHOLM));
+
+    assertFalse(cargo.isReadyToClaim());
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(STOCKHOLM));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.nextExpectedActivity(), is(customsIn(STOCKHOLM)));
+
+    cargo.handled(customsIn(STOCKHOLM));
+
+    assertTrue(cargo.isReadyToClaim());
+    assertThat(cargo.nextExpectedActivity(), is(claimIn(STOCKHOLM)));
+
+    cargo.handled(claimIn(STOCKHOLM));
     
-    TrackingId trackingId = new TrackingId("ABC");
-    RouteSpecification routeSpecification =
-      new RouteSpecification(HONGKONG, STOCKHOLM, toDate("2009-03-18"));
-    Cargo cargo = new Cargo(trackingId, routeSpecification);
+    assertNull(cargo.nextExpectedActivity());
+  }
+
+  @Test
+  public void cargoIsMisdirectedAndRerouted() throws Exception {
+
+    Cargo cargo = setupCargoFromHongkongToStockholm();
 
     // Initial state, before routing
     assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
@@ -168,7 +259,7 @@ public class CargoLifecycle {
     cargo.assignToRoute(newItinerary);
 
     assertThat(cargo.routingStatus(), is(ROUTED));
-    assertThat(cargo.nextExpectedActivity(), is(loadOnto(v300).in(ROTTERDAM)));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(atlantic1).in(ROTTERDAM)));
 
 
 
@@ -182,7 +273,7 @@ public class CargoLifecycle {
 
 
     // Loaded, back on track
-    cargo.handled(loadOnto(v300).in(ROTTERDAM));
+    cargo.handled(loadOnto(atlantic1).in(ROTTERDAM));
     assertFalse(cargo.isMisdirected());
     assertThat(cargo.lastKnownLocation(), is(ROTTERDAM));
     assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
@@ -202,24 +293,128 @@ public class CargoLifecycle {
 
   }
 
+  @Test
+  public void customerRequestsChangeOfDestination() throws Exception {
+    Cargo cargo = setupCargoFromHongkongToStockholm();
+
+    // Initial state, before routing
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(NOT_ROUTED));
+    assertFalse(cargo.isMisdirected());
+    assertNull(cargo.estimatedTimeOfArrival());
+    assertNull(cargo.nextExpectedActivity());
+
+
+
+    // Route: Hongkong - Long Beach - New York - Stockholm
+    List<Itinerary> itineraries =
+      routingService.fetchRoutesForSpecification(cargo.routeSpecification());
+    Itinerary itinerary = selectAppropriateRoute(itineraries);
+    cargo.assignToRoute(itinerary);
+
+    // Routed
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertThat(cargo.nextExpectedActivity(), is(receiveIn(HONGKONG)));
+    assertNotNull(cargo.estimatedTimeOfArrival());
+
+    // Received
+    cargo.handled(receiveIn(HONGKONG));
+
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+
+    // Loaded
+    cargo.handled(loadOnto(pacific1).in(HONGKONG));
+
+    assertThat(cargo.currentVoyage(), is(pacific1));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(pacific1).in(LONGBEACH)));
+    assertFalse(cargo.isMisdirected());
+
+    // Unloaded
+    cargo.handled(unloadOff(pacific1).in(LONGBEACH));
+
+    assertThat(cargo.currentVoyage(), is(NONE));
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(continental1).in(LONGBEACH)));
+
+    // Customer wants cargo to go to Rotterdam instead of Stockholm
+    RouteSpecification toRotterdam = cargo.routeSpecification().
+      withOrigin(cargo.lastKnownLocation()).
+      withDestination(ROTTERDAM);
+
+    cargo.specifyNewRoute(toRotterdam);
+
+    // Misrouted
+    assertThat(cargo.routingStatus(), is(MISROUTED));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+
+    // Assign to new route
+    List<Itinerary> available = routingService.fetchRoutesForSpecification(cargo.routeSpecification());
+    Itinerary newItinerary = selectAppropriateRoute(available);
+    cargo.assignToRoute(newItinerary);
+
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(continental2).in(LONGBEACH)));
+
+    // Loaded, back on track
+    cargo.handled(loadOnto(continental2).in(LONGBEACH));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(continental2).in(NEWYORK)));
+
+    // Fast forward a bit
+    cargo.handled(unloadOff(continental2).in(NEWYORK));
+    cargo.handled(loadOnto(atlantic1).in(NEWYORK));
+
+    // Cargo enters its destination customs zone
+    cargo.handled(unloadOff(atlantic1).in(ROTTERDAM));
+    assertThat(cargo.nextExpectedActivity(), is(customsIn(ROTTERDAM)));
+    cargo.handled(customsIn(ROTTERDAM));
+    assertThat(cargo.nextExpectedActivity(), is(claimIn(ROTTERDAM)));
+  }
+
+  private Cargo setupCargoFromHongkongToStockholm() {
+    TrackingId trackingId = trackingIdFactory.nextTrackingId();
+    Date arrivalDeadline = toDate("2009-04-10");
+    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, STOCKHOLM, arrivalDeadline);
+
+    return new Cargo(trackingId, routeSpecification);
+  }
+
+  // Stubbed out customer selection process
   private Itinerary selectAppropriateRoute(List<Itinerary> itineraries) {
     return itineraries.get(0);
   }
 
-  RoutingService routingService = new ScenarioStubRoutingService();
+  private final RoutingService routingService = new ScenarioStubRoutingService();
+
+  private final TrackingIdFactory trackingIdFactory = new TrackingIdFactoryInMem();
 
   private static class ScenarioStubRoutingService implements RoutingService {
 
-    private static final Itinerary itinerary1 = new Itinerary(asList(
-      new Leg(pacific1, HONGKONG, LONGBEACH, toDate("2009-03-03"), toDate("2009-03-09")),
-      new Leg(continental1, LONGBEACH, NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")),
-      new Leg(pacific2, NEWYORK, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
-    ));
+    private static final Itinerary itinerary1 = new Itinerary(
+      Leg.deriveLeg(pacific1, HONGKONG, LONGBEACH),
+      Leg.deriveLeg(continental1, LONGBEACH, NEWYORK),
+      Leg.deriveLeg(atlantic2, NEWYORK, STOCKHOLM)
+    );
 
-    private static final Itinerary itinerary2 = new Itinerary(asList(
-      new Leg(v300, ROTTERDAM, HAMBURG, toDate("2009-03-10"), toDate("2009-03-12")),
-      new Leg(v400, HAMBURG, STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15"))
-    ));
+    private static final Itinerary itinerary2 = new Itinerary(
+      Leg.deriveLeg(atlantic1, ROTTERDAM, HAMBURG),
+      Leg.deriveLeg(atlantic2, HAMBURG, STOCKHOLM)
+    );
+
+    private static final Itinerary itinerary3 = new Itinerary(
+      Leg.deriveLeg(continental2, LONGBEACH, NEWYORK),
+      Leg.deriveLeg(atlantic1, NEWYORK, ROTTERDAM)
+    );
 
     public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
       if (routeSpecification.origin().sameAs(HONGKONG)) {
@@ -228,8 +423,11 @@ public class CargoLifecycle {
       } else if (routeSpecification.origin().sameAs(ROTTERDAM)) {
         // Rotterdam - Hamburg - Stockholm, rerouting misdirected cargo from Rotterdam
         return asList(itinerary2);
+      } else if (routeSpecification.origin().sameAs(LONGBEACH)) {
+        // Customer requested change of destination
+        return asList(itinerary3);
       } else {
-        return emptyList();
+        throw new IllegalStateException("No stubbed data for " + routeSpecification);
       }
     }
 

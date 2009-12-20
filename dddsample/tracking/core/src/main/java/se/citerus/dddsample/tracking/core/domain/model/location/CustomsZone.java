@@ -31,6 +31,7 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
     Validate.notNull(code, "Code is required");
     Validate.isTrue(VALID_PATTERN.matcher(code).matches(), code + " is not a valid customs zone code (does not match pattern)");
     Validate.notNull(name, "Name is required");
+
     this.code = code.toUpperCase();
     this.name = name;
   }
@@ -45,8 +46,8 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
    * following this route. Note that specific voyages, etc do not
    * matter, only the sequence of Locations.
    *
-   * @param route
-   * @return
+   * @param route a list of locations
+   * @return The first location on the route that is in this customs zone.
    */
   public Location entryPoint(final List<Location> route) {
     for (Location location : route) {
@@ -108,7 +109,7 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
     return name;
   }
 
-  public boolean includes(final Location location) {
+  boolean includes(final Location location) {
     return this.sameAs(location.customsZone());
   }
 

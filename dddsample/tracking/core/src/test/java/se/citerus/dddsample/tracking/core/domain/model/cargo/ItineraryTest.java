@@ -12,7 +12,6 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -50,10 +49,8 @@ public class ItineraryTest extends TestCase {
   public void testIfCargoIsOnTrack() {
 
     Itinerary itinerary = new Itinerary(
-      Arrays.asList(
-        new Leg(voyage, SHANGHAI, ROTTERDAM, new Date(1), new Date(2)),
-        new Leg(voyage, ROTTERDAM, GOTHENBURG, new Date(3), new Date(4))
-      )
+        Leg.deriveLeg(voyage, SHANGHAI, ROTTERDAM),
+        Leg.deriveLeg(voyage, ROTTERDAM, GOTHENBURG)
     );
 
     // HandlingActivity.Load(cargo, RECEIVE, SHANGHAI, toDate("2009-05-03"))

@@ -1,11 +1,13 @@
 package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
-import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Sample carrier movements, for test purposes.
@@ -20,6 +22,7 @@ public class SampleVoyages {
     build();
 
   public final static Voyage pacific2 = new Voyage.Builder(new VoyageNumber("PAC2"), SHANGHAI).
+    addMovement(TOKYO, toDate("2009-03-04"), toDate("2009-03-05")).
     addMovement(LONGBEACH, toDate("2009-03-06"), toDate("2009-03-08")).
     addMovement(SEATTLE, toDate("2009-03-10"), toDate("2009-03-14")).
     addMovement(HANGZOU, toDate("2009-03-14"), toDate("2009-03-16")).
@@ -32,8 +35,13 @@ public class SampleVoyages {
     addMovement(NEWYORK, toDate("2009-03-11"), toDate("2009-03-14")).
     build();
 
-  public final static Voyage continenal2 = new Voyage.Builder(new VoyageNumber("CNT2"), LONGBEACH).
+  public final static Voyage continental2 = new Voyage.Builder(new VoyageNumber("CNT2"), LONGBEACH).
     addMovement(DALLAS, toDate("2009-03-06"), toDate("2009-03-08")).
+    addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
+    build();
+
+  public final static Voyage continental3 = new Voyage.Builder(new VoyageNumber("CNT3"), SEATTLE).
+    addMovement(CHICAGO, toDate("2009-03-06"), toDate("2009-03-08")).
     addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
     build();
 
@@ -45,26 +53,12 @@ public class SampleVoyages {
       build();
 
   public final static Voyage atlantic2 = new Voyage.Builder(new VoyageNumber("ATC2"), NEWYORK).
-      addMovement(ROTTERDAM, toDate("2009-03-17"), toDate("2009-03-20")).
+      addMovement(HAMBURG, toDate("2009-03-17"), toDate("2009-03-20")).
       addMovement(GOTHENBURG, toDate("2009-03-22"), toDate("2009-03-24")).
       addMovement(STOCKHOLM, toDate("2009-03-25"), toDate("2009-03-26")).
       addMovement(HELSINKI, toDate("2009-03-27"), toDate("2009-03-28")).
       addMovement(NEWYORK, toDate("2009-03-31"), toDate("2009-04-04")).
       build();
-
-
-  public final static Voyage v300 = new Voyage.Builder(new VoyageNumber("V300"), TOKYO).
-    addMovement(ROTTERDAM, toDate("2009-03-08"), toDate("2009-03-11")).
-    addMovement(HAMBURG, toDate("2009-03-11"), toDate("2009-03-12")).
-    addMovement(MELBOURNE, toDate("2009-03-14"), toDate("2009-03-18")).
-    addMovement(TOKYO, toDate("2009-03-19"), toDate("2009-03-21")).
-    build();
-
-  public final static Voyage v400 = new Voyage.Builder(new VoyageNumber("V400"), HAMBURG).
-    addMovement(STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15")).
-    addMovement(HELSINKI, toDate("2009-03-15"), toDate("2009-03-16")).
-    addMovement(HAMBURG, toDate("2009-03-20"), toDate("2009-03-22")).
-    build();
 
   /**
    * Voyage number 0100S (by ship)
@@ -126,7 +120,7 @@ public class SampleVoyages {
 
   private static final Map<VoyageNumber, Voyage> ALL = new HashMap<VoyageNumber, Voyage>();
 
-  static {
+    static {
     for (Field field : SampleVoyages.class.getDeclaredFields()) {
       if (field.getType().equals(Voyage.class)) {
         try {

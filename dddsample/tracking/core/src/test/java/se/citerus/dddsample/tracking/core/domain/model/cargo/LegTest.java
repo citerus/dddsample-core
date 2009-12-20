@@ -15,7 +15,7 @@ public class LegTest {
 
   final Voyage voyage = NEW_YORK_TO_DALLAS;
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructor() throws Exception {
     Leg.deriveLeg(null, null, null);
   }

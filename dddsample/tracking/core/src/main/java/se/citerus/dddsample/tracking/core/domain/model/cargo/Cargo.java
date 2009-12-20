@@ -113,13 +113,13 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
 
     if (delivery.isRoutedAfterHandling()) {
       return itinerary.firstLeg().deriveLoadActivity();
-    } else {
-      if (unloadedInCustomsClearancePoint()) {
-        return customsIn(customsClearancePoint());
-      } else {
-        return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
-      }
     }
+
+    if (unloadedInCustomsClearancePoint()) {
+      return customsIn(customsClearancePoint());
+    }
+
+    return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
   }
 
   private boolean unloadedInCustomsClearancePoint() {
@@ -210,7 +210,11 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return True if the cargo is ready to be claimed.
    */
   public boolean isReadyToClaim() {
-    return delivery.onTheGroundAtDestination(routeSpecification);
+    if (customsClearancePoint().sameAs(routeSpecification.destination())) {
+      return customsIn(customsClearancePoint()).sameValueAs(mostRecentHandlingActivity());
+    } else {
+      return delivery.onTheGroundAtDestination(routeSpecification);
+    }
   }
 
   /**

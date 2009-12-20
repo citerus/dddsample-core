@@ -5,7 +5,8 @@ import org.apache.commons.lang.Validate;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.receiveIn;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
@@ -17,6 +18,8 @@ import java.util.*;
 public class Itinerary extends ValueObjectSupport<Itinerary> {
 
   private final List<Leg> legs;
+  // Null object
+  static final Itinerary NONE = new Itinerary();
 
   /**
    * Constructor.
@@ -27,6 +30,8 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
     Validate.notEmpty(legs);
     Validate.noNullElements(legs);
 
+    // TODO
+    // Validate that legs are in proper order, connected
     /*final Iterator<Leg> it = legs.iterator();
     Leg leg = it.next();
     while (it.hasNext()) {
@@ -40,10 +45,6 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
     while (lit.hasNext()) {
       Validate.isTrue(lit.previous().unloadTime().before(lit.next().loadTime()));
     }*/
-
-    // TODO
-    // Validate that legs are in proper order, connected
-    // and that load/unload times are doable?
 
     this.legs = legs;
   }
@@ -253,7 +254,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
       return null;
     } else {
       if (handlingActivity.type() == LOAD) {
-        return unloadOff(handlingActivity.voyage()).in(matchingLeg.unloadLocation());
+        return matchingLeg.deriveUnloadActivity();
       } else if (handlingActivity.type() == UNLOAD) {
         return deriveFromNextLeg(nextLeg(matchingLeg));
       } else {
@@ -278,7 +279,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
 
   Itinerary() {
     // Needed by Hibernate
-    legs = null;
+    legs = Collections.emptyList();
   }
 
 }

@@ -45,49 +45,92 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
+    String activitySql = "insert into HandlingActivity (id, handling_event_type, location_id, voyage_id) values (?, ?, ?, ?)";
+      Object[][] actvityArgs = {
+        {1, "RECEIVE", 1, null},
+        {2, "LOAD",    1, 1},
+        {3, "UNLOAD",  5, 1},
+        {4, "LOAD",    5, 1},
+        {5, "UNLOAD",  6, 1},
+        {6, "LOAD",    6, 1},
+        {7, "UNLOAD",  3, 1},
+        {8, "LOAD",    3, 1},
+        {9, "UNLOAD",  4, 1},
+        {10, "LOAD",    4, 1},
+        {11, "UNLOAD",  2, 1},
+        {12, "CLAIM",   2, null},
+
+        //ZYX (AUMEL - USCHI - DEHAM -)
+        {13, "RECEIVE", 2, null},
+        {14, "LOAD",    2, 2},
+        {15, "UNLOAD",  7, 2},
+        {16, "LOAD",    7, 2},
+        {17, "UNLOAD",  6, 2},
+        {18, "LOAD",    6, 2},
+
+        //ABC
+        {19, "CLAIM", 2, null},
+
+        //CBA
+        {20, "RECEIVE", 2, null},
+        {21, "LOAD",    2, 2},
+        {22, "UNLOAD",  7, 2},
+
+        //FGH
+        {23, "RECEIVE", 3, null},
+        {24, "LOAD",    3, 3},
+
+        // JKL
+        {25, "RECEIVE", 6, null},
+        {26, "LOAD",    6, 3},
+        {27, "UNLOAD",  5, 3}  // Unexpected event
+      };
+    executeUpdate(jdbcTemplate, activitySql, actvityArgs);
+
+
     String handlingEventSql =
-      "insert into HandlingEvent (sequence_number, completionTime, registrationTime, type, location_id, voyage_id, cargo_id, operator_code) " +
-        "values (?, ?, ?, ?, ?, ?, ?,?)";
+      "insert into HandlingEvent (sequence_number, completionTime, registrationTime, cargo_id, operator_code, activity_id) " +
+        "values (?, ?, ?, ?, ?, ?)";
 
     Object[][] handlingEventArgs = {
       //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
-      {1, ts(0), ts((0)), "RECEIVE", 1, null, 1, null},
-      {2, ts((4)), ts((5)), "LOAD", 1, 1, 1, "AS34F"},
-      {3, ts((14)), ts((14)), "UNLOAD", 5, 1, 1, "AS34F"},
-      {4, ts((15)), ts((15)), "LOAD", 5, 1, 1, "AS34F"},
-      {5, ts((30)), ts((30)), "UNLOAD", 6, 1, 1, "AS34F"},
-      {6, ts((33)), ts((33)), "LOAD", 6, 1, 1, "AS34F"},
-      {7, ts((34)), ts((34)), "UNLOAD", 3, 1, 1, "AS34F"},
-      {8, ts((60)), ts((60)), "LOAD", 3, 1, 1, "AS34F"},
-      {9, ts((70)), ts((71)), "UNLOAD", 4, 1, 1, "AS34F"},
-      {10, ts((75)), ts((75)), "LOAD", 4, 1, 1, "AS34F"},
-      {11, ts((88)), ts((88)), "UNLOAD", 2, 1, 1, "AS34F"},
-      {12, ts((100)), ts((102)), "CLAIM", 2, null, 1, null},
+      {1, ts(0), ts((0)), 1, null, 1},
+      {2, ts((4)), ts((5)), 1, "AS34F", 2},
+      {3, ts((14)), ts((14)), 1, "AS34F", 3},
+      {4, ts((15)), ts((15)), 1, "AS34F", 4},
+      {5, ts((30)), ts((30)), 1, "AS34F", 5},
+      {6, ts((33)), ts((33)), 1, "AS34F", 6},
+      {7, ts((34)), ts((34)), 1, "AS34F", 7},
+      {8, ts((60)), ts((60)), 1, "AS34F", 8},
+      {9, ts((70)), ts((71)), 1, "AS34F", 9},
+      {10, ts((75)), ts((75)), 1, "AS34F", 10},
+      {11, ts((88)), ts((88)), 1, "AS34F", 11},
+      {12, ts((100)), ts((102)), 1, null, 12},
 
       //ZYX (AUMEL - USCHI - DEHAM -)
-      {13, ts((200)), ts((201)), "RECEIVE", 2, null, 3, null},
-      {14, ts((202)), ts((202)), "LOAD", 2, 2, 3, "AS34F"},
-      {15, ts((208)), ts((208)), "UNLOAD", 7, 2, 3, "AS34F"},
-      {16, ts((212)), ts((212)), "LOAD", 7, 2, 3, "AS34F"},
-      {17, ts((230)), ts((230)), "UNLOAD", 6, 2, 3, "AS34F"},
-      {18, ts((235)), ts((235)), "LOAD", 6, 2, 3, "AS34F"},
+      {13, ts((200)), ts((201)), 3, null, 13},
+      {14, ts((202)), ts((202)), 3, "AS34F", 14},
+      {15, ts((208)), ts((208)), 3, "AS34F", 15},
+      {16, ts((212)), ts((212)), 3, "AS34F", 16},
+      {17, ts((230)), ts((230)), 3, "AS34F", 17},
+      {18, ts((235)), ts((235)), 3, "AS34F", 18},
 
       //ABC
-      {19, ts((20)), ts((21)), "CLAIM", 2, null, 2, null},
+      {19, ts((20)), ts((21)), 2, null, 19},
 
       //CBA
-      {20, ts((0)), ts((1)), "RECEIVE", 2, null, 4, null},
-      {21, ts((10)), ts((11)), "LOAD", 2, 2, 4, "AS34F"},
-      {22, ts((20)), ts((21)), "UNLOAD", 7, 2, 4, "AS34F"},
+      {20, ts((0)), ts((1)), 4, null, 20},
+      {21, ts((10)), ts((11)), 4, "AS34F", 21},
+      {22, ts((20)), ts((21)), 4, "AS34F", 22},
 
       //FGH
-      {23, ts(100), ts(160), "RECEIVE", 3, null, 5, null},
-      {24, ts(150), ts(110), "LOAD", 3, 3, 5, "AS34F"},
+      {23, ts(100), ts(160), 5, null, 23},
+      {24, ts(150), ts(110), 5, "AS34F", 24},
 
       // JKL
-      {25, ts(200), ts(220), "RECEIVE", 6, null, 6, null},
-      {26, ts(300), ts(330), "LOAD", 6, 3, 6, "AS34F"},
-      {27, ts(400), ts(440), "UNLOAD", 5, 3, 6}  // Unexpected event
+      {25, ts(200), ts(220), 6, null, 25},
+      {26, ts(300), ts(330), 6, "AS34F", 26},
+      {27, ts(400), ts(440), 6, null, 27}  // Unexpected event
     };
     executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
   }
