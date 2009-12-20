@@ -18,6 +18,7 @@
     <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/Location.hbm.xml" />
     <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/CarrierMovement.hbm.xml" />
     <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/HandlingEvent.hbm.xml" />
+    <mapping resource="se/citerus/dddsample/tracking/core/infrastructure/persistence/hibernate/HandlingActivity.hbm.xml" />
   </session-factory>
 
 </hibernate-configuration>

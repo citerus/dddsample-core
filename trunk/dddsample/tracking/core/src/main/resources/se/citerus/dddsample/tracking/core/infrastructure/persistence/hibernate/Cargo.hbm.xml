@@ -15,27 +15,11 @@
       <property name="id" column="tracking_id"/>
     </component>
 
-    <component name="delivery" lazy="true">
+    <component name="delivery">
       <property name="routedAfterHandling" column="routed_after_handling" not-null="true"/>
-      <property name="lastUpdatedOn" column="last_update"/>
-      <component name="mostRecentHandlingActivity">
-        <many-to-one name="location" column="most_recent_location_id" foreign-key="most_recent_location_fk" cascade="none"/>
-        <property name="type" column="most_recent_handling_event_type">
-          <type name="org.hibernate.type.EnumType">
-            <param name="enumClass">se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent$Type</param>
-            <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
-          </type>
-        </property>
-      </component>
-        <component name="mostRecentPhysicalHandlingActivity">
-          <many-to-one name="location" column="most_recent_physical_location_id" foreign-key="most_recent_physical_location_fk" cascade="none"/>
-          <property name="type" column="most_recent_physical_handling_event_type">
-            <type name="org.hibernate.type.EnumType">
-              <param name="enumClass">se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent$Type</param>
-              <param name="type">12</param><!-- 12 is java.sql.Types.VARCHAR -->
-            </type>
-          </property>
-        </component>
+      <property name="lastUpdatedOn" column="last_update" not-null="true"/>
+      <many-to-one name="mostRecentPhysicalHandlingActivity" column="most_recent_physical_act" not-null="false" update="false" cascade="all"/>
+      <many-to-one name="mostRecentHandlingActivity" column="most_recent_act" not-null="false" update="false" cascade="all"/>
     </component>
 
     <component name="routeSpecification">
@@ -52,6 +36,6 @@
         <one-to-many class="se.citerus.dddsample.tracking.core.domain.model.cargo.Leg"/>
       </list>
     </component>
-
   </class>
+
 </hibernate-mapping>
