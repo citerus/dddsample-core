@@ -55,7 +55,7 @@ public class CargoTest extends TestCase {
 
     assertEquals(NOT_ROUTED, cargo.routingStatus());
     assertEquals(NOT_RECEIVED, cargo.transportStatus());
-    assertEquals(Location.UNKNOWN, cargo.lastKnownLocation());
+    assertEquals(Location.NONE, cargo.lastKnownLocation());
     assertEquals(Voyage.NONE, cargo.currentVoyage());
   }
 
@@ -75,7 +75,6 @@ public class CargoTest extends TestCase {
     };
 
     cargo.specifyNewRoute(acceptOnlyGood);
-
     assertEquals(NOT_ROUTED, cargo.routingStatus());
 
     cargo.assignToRoute(bad);
@@ -109,7 +108,7 @@ public class CargoTest extends TestCase {
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
-    assertEquals(Location.UNKNOWN, cargo.lastKnownLocation());
+    assertEquals(Location.NONE, cargo.lastKnownLocation());
   }
 
   public void testlastKnownLocationReceived() throws Exception {
@@ -187,49 +186,6 @@ public class CargoTest extends TestCase {
 
     cargo.handled(claimIn(SEATTLE));
     assertFalse(cargo.isReadyToClaim());
-  }
-
-  private Cargo populateCargoReceivedStockholm() throws Exception {
-    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-    cargo.handled(new HandlingActivity(RECEIVE, STOCKHOLM));
-    return cargo;
-  }
-
-  private Cargo populateCargoClaimedMelbourne() throws Exception {
-    final Cargo cargo = populateCargoOffMelbourne();
-
-    cargo.handled(new HandlingActivity(CLAIM, MELBOURNE));
-    return cargo;
-  }
-
-  private Cargo populateCargoOffHongKong() throws Exception {
-    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
-    return cargo;
-  }
-
-  private Cargo populateCargoOnHamburg() throws Exception {
-    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
-    return cargo;
-  }
-
-  private Cargo populateCargoOffMelbourne() throws Exception {
-    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-
-    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
-
-    return cargo;
   }
 
   public void testIsMisdirectedHappyPath() throws Exception {
@@ -335,26 +291,12 @@ public class CargoTest extends TestCase {
     assertFalse(cargo.isMisdirected());
   }
 
-  private Cargo shanghaiSeattleChicagoOnPacific2AndContinental3() {
-    Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(SHANGHAI, CHICAGO, toDate("2009-12-24")));
-
-    // A cargo with no itinerary is not misdirected
-    assertFalse(cargo.isMisdirected());
-
-    Itinerary itinerary = new Itinerary(
-        Leg.deriveLeg(pacific2, SHANGHAI, SEATTLE),
-        Leg.deriveLeg(continental3, SEATTLE, CHICAGO)
-    );
-    cargo.assignToRoute(itinerary);
-    return cargo;
-  }
-
   public void testCustomsClearancePoint() {
     //cargo destination NYC
     final Cargo cargo = new Cargo(new TrackingId("XYZ"),
         new RouteSpecification(SHANGHAI, NEWYORK, new Date()));
 
-    assertThat(cargo.customsClearancePoint(), is(Location.UNKNOWN));
+    assertThat(cargo.customsClearancePoint(), is(Location.NONE));
 
     //SHA-LGB-NYC
     cargo.assignToRoute(new Itinerary(
@@ -395,6 +337,20 @@ public class CargoTest extends TestCase {
 
   }
 
+  private Cargo shanghaiSeattleChicagoOnPacific2AndContinental3() {
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(SHANGHAI, CHICAGO, toDate("2009-12-24")));
+
+    // A cargo with no itinerary is not misdirected
+    assertFalse(cargo.isMisdirected());
+
+    Itinerary itinerary = new Itinerary(
+        Leg.deriveLeg(pacific2, SHANGHAI, SEATTLE),
+        Leg.deriveLeg(continental3, SEATTLE, CHICAGO)
+    );
+    cargo.assignToRoute(itinerary);
+    return cargo;
+  }
+
   private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, new Date()));
 
@@ -406,5 +362,49 @@ public class CargoTest extends TestCase {
     cargo.assignToRoute(itinerary);
     return cargo;
   }
+
+  private Cargo populateCargoReceivedStockholm() throws Exception {
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+    cargo.handled(new HandlingActivity(RECEIVE, STOCKHOLM));
+    return cargo;
+  }
+
+  private Cargo populateCargoClaimedMelbourne() throws Exception {
+    final Cargo cargo = populateCargoOffMelbourne();
+
+    cargo.handled(new HandlingActivity(CLAIM, MELBOURNE));
+    return cargo;
+  }
+
+  private Cargo populateCargoOffHongKong() throws Exception {
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
+    return cargo;
+  }
+
+  private Cargo populateCargoOnHamburg() throws Exception {
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
+    return cargo;
+  }
+
+  private Cargo populateCargoOffMelbourne() throws Exception {
+    final Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
+
+    cargo.handled(new HandlingActivity(LOAD, STOCKHOLM, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(LOAD, HAMBURG, crazyVoyage));
+    cargo.handled(new HandlingActivity(UNLOAD, MELBOURNE, crazyVoyage));
+
+    return cargo;
+  }
+
 
 }

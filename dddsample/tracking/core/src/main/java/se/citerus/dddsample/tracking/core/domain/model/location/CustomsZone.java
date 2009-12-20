@@ -27,7 +27,7 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
    * @param code code
    * @param name name
    */
-  public CustomsZone(final String code, final String name) {
+  CustomsZone(final String code, final String name) {
     Validate.notNull(code, "Code is required");
     Validate.isTrue(VALID_PATTERN.matcher(code).matches(), code + " is not a valid customs zone code (does not match pattern)");
     Validate.notNull(name, "Name is required");
@@ -35,7 +35,7 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
     this.code = code.toUpperCase();
     this.name = name;
   }
-
+  
   @Override
   public String identity() {
     return code;

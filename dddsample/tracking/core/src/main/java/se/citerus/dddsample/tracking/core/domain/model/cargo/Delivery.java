@@ -83,7 +83,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
     if (hasBeenHandled()) {
       return mostRecentHandlingActivity.location();
     } else {
-      return Location.UNKNOWN;
+      return Location.NONE;
     }
   }
 
