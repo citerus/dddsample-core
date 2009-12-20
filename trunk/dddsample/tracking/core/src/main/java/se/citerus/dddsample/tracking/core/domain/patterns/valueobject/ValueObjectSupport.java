@@ -2,10 +2,11 @@ package se.citerus.dddsample.tracking.core.domain.patterns.valueobject;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import static se.citerus.dddsample.tracking.core.domain.patterns.OrmUtils.unwrapOrmProxy;
 
 /**
  * Supporting base class for value objects.
- *
+ * <p/>
  * While the ValueObject interface makes the pattern properties explicit,
  * this class is less general and is suited for this particular application.
  * </p>
@@ -21,7 +22,7 @@ public abstract class ValueObjectSupport<T extends ValueObject> implements Value
   @SuppressWarnings("UnusedDeclaration")
   private final Long _primaryKey = null;
   private transient int _cachedHashCode = 0;
-  private final static String[] EXCLUDED_FIELDS = {"_primaryKey", "_cachedHashCode"};
+  private static final String[] EXCLUDED_FIELDS = {"_primaryKey", "_cachedHashCode"};
 
   /**
    * @param other The other value object.
@@ -29,7 +30,7 @@ public abstract class ValueObjectSupport<T extends ValueObject> implements Value
    */
   @Override
   public final boolean sameValueAs(final T other) {
-    return other != null && EqualsBuilder.reflectionEquals(this, other, EXCLUDED_FIELDS);
+    return other != null && EqualsBuilder.reflectionEquals(unwrapOrmProxy(this), unwrapOrmProxy(other), EXCLUDED_FIELDS);
   }
 
   /**
@@ -56,16 +57,17 @@ public abstract class ValueObjectSupport<T extends ValueObject> implements Value
   }
 
   /**
-   * @param o other object
+   * @param other other object
    * @return True if other object has the same value as this value object.
    */
-  @SuppressWarnings({"SimplifiableIfStatement", "unchecked"})
+  @SuppressWarnings({"SimplifiableIfStatement", "unchecked", "EqualsWhichDoesntCheckParameterClass"})
   @Override
-  public final boolean equals(final Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public final boolean equals(final Object other) {
+    if (other == null) return false;
+    if (this == other) return true;
+    if (unwrapOrmProxy(this).getClass() != unwrapOrmProxy(other).getClass()) return false;
 
-    return sameValueAs((T) o);
+    return sameValueAs((T) other);
   }
 
 }
