@@ -11,7 +11,7 @@ import java.util.TimeZone;
  * <p/>
  * It is uniquely identified by a UN Locode.
  */
-public final class Location extends EntitySupport<Location, UnLocode> {
+public class Location extends EntitySupport<Location, UnLocode> {
 
   private final UnLocode unLocode;
   private final String name;
@@ -21,8 +21,8 @@ public final class Location extends EntitySupport<Location, UnLocode> {
   /**
    * Special Location object that marks an unknown location.
    */
-  public static final Location UNKNOWN = new Location(
-    new UnLocode("XXXXX"), "Unknown location", TimeZone.getTimeZone("Zulu"), null
+  public static final Location NONE = new Location(
+    new UnLocode("XXXXX"), "-", TimeZone.getTimeZone("Zulu"), null
   );
 
   /**

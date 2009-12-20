@@ -200,7 +200,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    */
   public Location customsClearancePoint() {
     if (itinerary == null) {
-      return Location.UNKNOWN;
+      return Location.NONE;
     } else {
       return customsZone().entryPoint(itinerary.locations());
     }

@@ -62,7 +62,7 @@ public class DeliveryTest extends TestCase {
     assertEquals(ROUTED, delivery.routingStatus(itinerary, routeSpecification));
     assertEquals(Voyage.NONE, delivery.currentVoyage());
     assertFalse(delivery.onTheGroundAtDestination(routeSpecification));
-    assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
+    assertEquals(Location.NONE, delivery.lastKnownLocation());
     assertEquals(NOT_RECEIVED, delivery.transportStatus());
     assertTrue(delivery.lastUpdatedOn().before(new Date()));
   }
