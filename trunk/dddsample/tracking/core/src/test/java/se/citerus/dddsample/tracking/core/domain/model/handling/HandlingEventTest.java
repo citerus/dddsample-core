@@ -54,13 +54,13 @@ public class HandlingEventTest extends TestCase {
 
   public void testCurrentLocationLoadEvent() throws Exception {
 
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), LOAD, CHICAGO, SampleVoyages.continenal2, new OperatorCode("ABCDE"));
+    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), LOAD, CHICAGO, SampleVoyages.continental2, new OperatorCode("ABCDE"));
 
     assertEquals(CHICAGO, ev.location());
   }
 
   public void testCurrentLocationUnloadEvent() throws Exception {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HAMBURG, SampleVoyages.continenal2, new OperatorCode("ABCDE"));
+    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HAMBURG, SampleVoyages.continental2, new OperatorCode("ABCDE"));
 
     assertEquals(HAMBURG, ev.location());
   }

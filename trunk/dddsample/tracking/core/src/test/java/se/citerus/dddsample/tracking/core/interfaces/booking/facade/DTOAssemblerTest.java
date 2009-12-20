@@ -10,7 +10,6 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-
 import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
@@ -86,8 +85,8 @@ public class DTOAssemblerTest {
   @Test
   public void fromRouteCandidateDTO() throws Exception {
     final List<LegDTO> legs = new ArrayList<LegDTO>();
-    legs.add(new LegDTO("CM003", "CNHKG", "USNYC", new Date(), new Date()));
-    legs.add(new LegDTO("CM004", "USNYC", "USCHI", new Date(), new Date()));
+    legs.add(new LegDTO("PAC1", "CNHKG", "USLBG", new Date(), new Date()));
+    legs.add(new LegDTO("CNT1", "USLBG", "USNYC", new Date(), new Date()));
 
     final LocationRepository locationRepository = new LocationRepositoryInMem();
     final VoyageRepository voyageRepository = new VoyageRepositoryInMem();
@@ -104,12 +103,12 @@ public class DTOAssemblerTest {
     final Leg leg1 = itinerary.legs().get(0);
     assertNotNull(leg1);
     assertEquals(HONGKONG, leg1.loadLocation());
-    assertEquals(NEWYORK, leg1.unloadLocation());
+    assertEquals(LONGBEACH, leg1.unloadLocation());
 
     final Leg leg2 = itinerary.legs().get(1);
     assertNotNull(leg2);
-    assertEquals(NEWYORK, leg2.loadLocation());
-    assertEquals(CHICAGO, leg2.unloadLocation());
+    assertEquals(LONGBEACH, leg2.loadLocation());
+    assertEquals(NEWYORK, leg2.unloadLocation());
   }
 
   @Test

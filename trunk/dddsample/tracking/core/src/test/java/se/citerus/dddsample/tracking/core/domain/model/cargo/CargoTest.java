@@ -10,12 +10,11 @@ import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingE
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
-import java.util.Arrays;
 import java.util.Date;
 
 public class CargoTest extends TestCase {
@@ -151,50 +150,43 @@ public class CargoTest extends TestCase {
     assertFalse("Cargos are not equal when TrackingID differ", c1.equals(c2));
   }
 
-  public void testIsReadyToClaim() throws Exception {
-    Cargo cargo = setUpCargoWithItinerary(HANGZOU, TOKYO, NEWYORK);
+  public void testIsReadyToClaimWithDestinationDifferentFromCustomsClearancePoint() {
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(HONGKONG, NEWYORK, toDate("2009-12-24")));
+    Itinerary itinerary = new Itinerary(
+      Leg.deriveLeg(pacific1, HONGKONG, LONGBEACH),
+      Leg.deriveLeg(continental2, LONGBEACH, NEWYORK)
+    );
+    cargo.assignToRoute(itinerary);
+    assertFalse(cargo.routeSpecification().destination().sameAs(cargo.customsClearancePoint()));
     assertFalse(cargo.isReadyToClaim());
 
-    // Adding an event unrelated to unloading at final destination
-    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU));
+    cargo.handled(unloadOff(pacific1).in(LONGBEACH));
     assertFalse(cargo.isReadyToClaim());
 
-    Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
-        addMovement(NEWYORK, new Date(1), new Date(2)).
-        build();
-
-    // Adding an unload event, but not at the final destination
-    cargo.handled(new HandlingActivity(UNLOAD, TOKYO, voyage));
+    cargo.handled(loadOnto(continental2).in(LONGBEACH));
     assertFalse(cargo.isReadyToClaim());
-
-    // Adding an event in the final destination, but not unload
-    /*cargo.handled(new HandlingActivity(CUSTOMS, NEWYORK));
-    assertFalse(cargo.isReadyToClaim());
-    assertFalse(cargo.isMisdirected());*/
-
-    // Finally, cargo is unloaded at final destination
-    cargo.handled(new HandlingActivity(UNLOAD, NEWYORK, voyage));
+    
+    cargo.handled(unloadOff(continental2).in(NEWYORK));
     assertTrue(cargo.isReadyToClaim());
   }
 
-  public void testCustomsInMelbourne() throws Exception {
-    Cargo cargo = setUpCargoWithItinerary(STOCKHOLM, HAMBURG, MELBOURNE);
-    
-    /*cargo.handled(unloadOff(crazyVoyage).in(HAMBURG));
-    assertThat(cargo.nextExpectedActivity(), is(loadOnto(crazyVoyage).in(HAMBURG)));
-    assertFalse(cargo.isMisdirected());
+  public void testIsReadyToClaimWithDestinationSameAsCustomsClearancePoint() {
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(SHANGHAI, SEATTLE, toDate("2009-12-24")));
+    Itinerary itinerary = new Itinerary(
+      Leg.deriveLeg(pacific2, SHANGHAI, SEATTLE)
+    );
+    cargo.assignToRoute(itinerary);
+    assertTrue(cargo.routeSpecification().destination().sameAs(cargo.customsClearancePoint()));
+    assertFalse(cargo.isReadyToClaim());
 
-    cargo.handled(loadOnto(crazyVoyage).in(HAMBURG));
-    assertThat(cargo.nextExpectedActivity(), is(unloadOff(crazyVoyage).in(MELBOURNE)));
-    assertFalse(cargo.isMisdirected());
+    cargo.handled(unloadOff(pacific2).in(SEATTLE));
+    assertFalse(cargo.isReadyToClaim());
 
-    cargo.handled(unloadOff(crazyVoyage).in(MELBOURNE));
-    assertThat(cargo.nextExpectedActivity(), is(customsIn(MELBOURNE)));
-    assertFalse(cargo.isMisdirected());
+    cargo.handled(customsIn(SEATTLE));
+    assertTrue(cargo.isReadyToClaim());
 
-    cargo.handled(customsIn(MELBOURNE));
-    assertThat(cargo.nextExpectedActivity(), is(claimIn(MELBOURNE)));
-    assertFalse(cargo.isMisdirected());*/
+    cargo.handled(claimIn(SEATTLE));
+    assertFalse(cargo.isReadyToClaim());
   }
 
   private Cargo populateCargoReceivedStockholm() throws Exception {
@@ -240,42 +232,121 @@ public class CargoTest extends TestCase {
     return cargo;
   }
 
-  public void testIsMisdirected() throws Exception {
-    //A cargo with no itinerary is not misdirected
-    Cargo cargo = new Cargo(new TrackingId("TRKID"), new RouteSpecification(SHANGHAI, GOTHENBURG, new Date()));
-    assertFalse(cargo.isMisdirected());
-
-    cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
+  public void testIsMisdirectedHappyPath() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
     //A cargo with no handling events is not misdirected
     assertFalse(cargo.isMisdirected());
 
-    //Happy path
-    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
-    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));
-    cargo.handled(new HandlingActivity(LOAD, ROTTERDAM, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, GOTHENBURG, crazyVoyage));
-    cargo.handled(new HandlingActivity(CLAIM, GOTHENBURG));
-    cargo.handled(new HandlingActivity(CUSTOMS, GOTHENBURG));
+    cargo.handled(receiveIn(SHANGHAI));
     assertFalse(cargo.isMisdirected());
 
-    //Try a couple of failing ones
+    cargo.handled(loadOnto(pacific2).in(SHANGHAI));
+    assertFalse(cargo.isMisdirected());
 
-    cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
+    cargo.handled(unloadOff(pacific2).in(SEATTLE));
+    assertFalse(cargo.isMisdirected());
 
-    cargo.handled(new HandlingActivity(RECEIVE, HANGZOU));
+    cargo.handled(customsIn(SEATTLE));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(loadOnto(continental3).in(SEATTLE));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(unloadOff(continental3).in(CHICAGO));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(claimIn(CHICAGO));
+    assertFalse(cargo.isMisdirected());
+  }
+
+  public void testIsMisdirectedIncorrectReceive() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
+
+    cargo.handled(receiveIn(TOKYO));
     assertTrue(cargo.isMisdirected());
+  }
 
+  public void testIsMisdirectedLoadOntoWrongVoyage() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
-    cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
-
-    cargo.handled(new HandlingActivity(RECEIVE, SHANGHAI));
-    cargo.handled(new HandlingActivity(LOAD, SHANGHAI, crazyVoyage));
-    cargo.handled(new HandlingActivity(UNLOAD, ROTTERDAM, crazyVoyage));
-    cargo.handled(new HandlingActivity(CLAIM, ROTTERDAM));
-
+    cargo.handled(loadOnto(pacific1).in(HONGKONG));
     assertTrue(cargo.isMisdirected());
+  }
+
+  public void testIsMisdirectedUnloadInWrongLocation() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
+
+    cargo.handled(unloadOff(pacific2).in(TOKYO));
+    assertTrue(cargo.isMisdirected());
+  }
+
+  public void testIsMisdirectedCustomsInWrongLocation() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
+
+    cargo.handled(customsIn(CHICAGO));
+    assertTrue(cargo.isMisdirected());
+  }
+
+  public void testIsMisdirectedClaimedInWrongLocation() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
+
+    cargo.handled(claimIn(SEATTLE));
+    assertTrue(cargo.isMisdirected());
+  }
+
+  public void testIsMisdirectedAfterRerouting() throws Exception {
+    Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
+
+    cargo.handled(loadOnto(pacific2).in(SHANGHAI));
+    assertFalse(cargo.isMisdirected());
+
+    // Cargo destination is changed by customer mid-route
+    RouteSpecification newRouteSpec = cargo.routeSpecification().
+      withOrigin(cargo.lastKnownLocation()).
+      withDestination(NEWYORK);
+
+    cargo.specifyNewRoute(newRouteSpec);
+    // Misrouted, but not misdirected. Delivery is still accoring to plan (itinerary),
+    // but not according to desire (route specification).
+    assertFalse(cargo.isMisdirected());
+    assertTrue(cargo.routingStatus() == MISROUTED);
+
+    /**
+     * This is a perfect example of how LegMatch is a modelling breakthrough.
+     * It allows us to easily construct an itinerary that completes the remainder of the
+     * old itinerary and appends the new and different path.
+     */
+    Leg currentLeg = cargo.itinerary().legMatchOf(cargo.mostRecentHandlingActivity()).leg();
+    Itinerary newItinerary = new Itinerary(
+      currentLeg,
+      Leg.deriveLeg(continental3, SEATTLE, NEWYORK)
+    );
+    cargo.assignToRoute(newItinerary);
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(unloadOff(pacific2).in(SEATTLE));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(loadOnto(continental3).in(SEATTLE));
+    assertFalse(cargo.isMisdirected());
+
+    cargo.handled(unloadOff(continental3).in(NEWYORK));
+    assertFalse(cargo.isMisdirected());
+  }
+
+  private Cargo shanghaiSeattleChicagoOnPacific2AndContinental3() {
+    Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(SHANGHAI, CHICAGO, toDate("2009-12-24")));
+
+    // A cargo with no itinerary is not misdirected
+    assertFalse(cargo.isMisdirected());
+
+    Itinerary itinerary = new Itinerary(
+        Leg.deriveLeg(pacific2, SHANGHAI, SEATTLE),
+        Leg.deriveLeg(continental3, SEATTLE, CHICAGO)
+    );
+    cargo.assignToRoute(itinerary);
+    return cargo;
   }
 
   public void testCustomsClearancePoint() {
@@ -328,10 +399,8 @@ public class CargoTest extends TestCase {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, new Date()));
 
     Itinerary itinerary = new Itinerary(
-        Arrays.asList(
-            new Leg(crazyVoyage, origin, midpoint, new Date(1), new Date(2)),
-            new Leg(crazyVoyage, midpoint, destination, new Date(3), new Date(4))
-        )
+        Leg.deriveLeg(crazyVoyage, origin, midpoint),
+        Leg.deriveLeg(crazyVoyage, midpoint, destination)
     );
 
     cargo.assignToRoute(itinerary);

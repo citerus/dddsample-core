@@ -134,7 +134,7 @@ class Delivery extends ValueObjectSupport<Delivery> {
    */
   boolean onTheGroundAtDestination(final RouteSpecification routeSpecification) {
     return hasBeenHandledAfterRouting() &&
-           mostRecentHandlingActivity.type() == UNLOAD && 
+           mostRecentHandlingActivity.type() == UNLOAD &&
            routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
   }
 

@@ -9,12 +9,11 @@ import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.atlantic2;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -108,13 +107,12 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
     cargoRepository.store(cargo);
 
-    cargo.assignToRoute(new Itinerary(Arrays.asList(
-      new Leg(
+    cargo.assignToRoute(new Itinerary(
+      Leg.deriveLeg(
         voyageRepository.find(new VoyageNumber("0101")),
         locationRepository.find(STOCKHOLM.unLocode()),
-        locationRepository.find(MELBOURNE.unLocode()),
-        new Date(), new Date())
-    )));
+        locationRepository.find(MELBOURNE.unLocode()))
+    ));
 
     flush();
 
@@ -140,9 +138,11 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Long cargoId = getLongId(cargo);
     assertEquals(3, sjt.queryForInt("select count(*) from Leg where cargo_id = ?", cargoId));
 
-    Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
-    Location legTo = locationRepository.find(new UnLocode("DEHAM"));
-    Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(SampleVoyages.continenal2, legFrom, legTo, new Date(), new Date())));
+    Location legFrom = locationRepository.find(new UnLocode("DEHAM"));
+    Location legTo = locationRepository.find(new UnLocode("FIHEL"));
+    Itinerary newItinerary = new Itinerary(
+        Leg.deriveLeg(atlantic2, legFrom, legTo)
+    );
 
     cargo.assignToRoute(newItinerary);
 

@@ -1,7 +1,6 @@
 package se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate;
 
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
-
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
@@ -10,11 +9,9 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFac
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.MELBOURNE;
-
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import java.util.Date;
@@ -58,10 +55,9 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
     flush();
 
-    Map<String, Object> result = sjt.queryForMap("select * from HandlingEvent where sequenceNumber = ?", event.sequenceNumber());
+    Map<String, Object> result = sjt.queryForMap("select * from HandlingEvent where sequence_number = ?", event.sequenceNumber());
     assertEquals(1L, result.get("CARGO_ID"));
     assertEquals(new Date(10), result.get("COMPLETIONTIME"));
-    assertEquals("CLAIM", result.get("TYPE"));
     // TODO: the rest of the columns
   }
 
@@ -76,7 +72,9 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     HandlingEvent handlingEvent = handlingEventRepository.mostRecentHandling(cargo);
     assertEquals(cargo, handlingEvent.cargo());
     assertEquals(toDate("2007-09-27", "05:00"), handlingEvent.completionTime());
-    assertEquals(new HandlingActivity(HandlingEvent.Type.CLAIM, MELBOURNE), handlingEvent.activity());
+
+    assertEquals(claimIn(MELBOURNE), handlingEvent.activity());
+    assertEquals(handlingEvent.activity(), claimIn(MELBOURNE));
   }
 
 }

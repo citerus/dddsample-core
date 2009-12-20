@@ -24,7 +24,7 @@ public class Leg extends ValueObjectSupport<Leg> {
   private final Date unloadTime;
 
   // TODO hide this, use factory only
-  public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
+  public Leg(final Voyage voyage, final Location loadLocation, final Location unloadLocation, final Date loadTime, final Date unloadTime) {
     Validate.notNull(voyage, "Voyage is required");
     Validate.notNull(loadLocation, "Load location is required");
     Validate.notNull(unloadLocation, "Unload location is required");
@@ -56,7 +56,11 @@ public class Leg extends ValueObjectSupport<Leg> {
    * @param unloadLocation unload location
    * @return A leg on this voyage between the given locations.
    */
-  public static Leg deriveLeg(Voyage voyage, Location loadLocation, Location unloadLocation) {
+  public static Leg deriveLeg(final Voyage voyage, final Location loadLocation, final Location unloadLocation) {
+    // TODO enable this (or perhaps the requirement for load/unlaod time covers this?)
+    //voyage.locations().contains(loadLocation);
+    //voyage.locations().contains(unloadLocation);
+    Validate.notNull(voyage, "Voyage is required");
     return new Leg(voyage, loadLocation, unloadLocation, voyage.schedule().departureTimeAt(loadLocation), voyage.schedule().arrivalTimeAt(unloadLocation));
   }
 
