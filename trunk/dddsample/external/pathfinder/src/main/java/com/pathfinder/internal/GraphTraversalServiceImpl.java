@@ -41,7 +41,7 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
 
       transitEdges.add(new TransitEdge(
         dao.getVoyageNumber(originUnLocode, firstLegTo),
-        originUnLocode, firstLegTo, fromDate, toDate));
+        originUnLocode, firstLegTo));
 
       for (int j = 0; j < allVertices.size() - 1; j++) {
         final String curr = allVertices.get(j);
@@ -49,7 +49,7 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
         fromDate = nextDate(date);
         toDate = nextDate(fromDate);
         date = nextDate(toDate);
-        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next, fromDate, toDate));
+        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next));
       }
 
       final String lastLegFrom = allVertices.get(allVertices.size() - 1);
@@ -57,7 +57,7 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
       toDate = nextDate(fromDate);
       transitEdges.add(new TransitEdge(
         dao.getVoyageNumber(lastLegFrom, destinationUnLocode),
-        lastLegFrom, destinationUnLocode, fromDate, toDate));
+        lastLegFrom, destinationUnLocode));
 
       candidates.add(new TransitPath(transitEdges));
     }
