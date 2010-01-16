@@ -1,21 +1,22 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import junit.framework.TestCase;
+import se.citerus.dddsample.tracking.core.domain.model.location.Location;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
+
+import java.util.Date;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
-import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-
-import java.util.Date;
 
 public class CargoTest extends TestCase {
 
@@ -269,11 +270,11 @@ public class CargoTest extends TestCase {
     assertTrue(cargo.routingStatus() == MISROUTED);
 
     /**
-     * This is a perfect example of how LegMatch is a modelling breakthrough.
+     * This is a perfect example of how LegActivityMatch is a modelling breakthrough.
      * It allows us to easily construct an itinerary that completes the remainder of the
      * old itinerary and appends the new and different path.
      */
-    Leg currentLeg = cargo.itinerary().legMatchOf(cargo.mostRecentHandlingActivity()).leg();
+    Leg currentLeg = cargo.itinerary().matchLeg(cargo.mostRecentHandlingActivity()).leg();
     Itinerary newItinerary = new Itinerary(
       currentLeg,
       Leg.deriveLeg(continental3, SEATTLE, NEWYORK)

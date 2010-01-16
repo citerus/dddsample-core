@@ -1,10 +1,11 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
-import static se.citerus.dddsample.tracking.core.domain.model.cargo.LegMatch.LegEnd.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
-class LegMatch extends ValueObjectSupport<LegMatch> implements Comparable<LegMatch> {
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.LegActivityMatch.LegEnd.*;
+
+class LegActivityMatch extends ValueObjectSupport<LegActivityMatch> implements Comparable<LegActivityMatch> {
 
   private final Leg leg;
   private final LegEnd legEnd;
@@ -13,45 +14,45 @@ class LegMatch extends ValueObjectSupport<LegMatch> implements Comparable<LegMat
 
   enum LegEnd { LOAD_END, UNLOAD_END, NO_END }
 
-  private LegMatch(final Leg leg, final LegEnd legEnd, final HandlingActivity handlingActivity, final Itinerary itinerary) {
+  private LegActivityMatch(final Leg leg, final LegEnd legEnd, final HandlingActivity handlingActivity, final Itinerary itinerary) {
     this.leg = leg;
     this.legEnd = legEnd;
     this.handlingActivity = handlingActivity;
     this.itinerary = itinerary;
   }
 
-  static LegMatch match(final Leg leg, final HandlingActivity handlingActivity, final Itinerary itinerary) {
+  static LegActivityMatch match(final Leg leg, final HandlingActivity handlingActivity, final Itinerary itinerary) {
     switch (handlingActivity.type()) {
       case RECEIVE:
       case LOAD:
-        return new LegMatch(leg, LOAD_END, handlingActivity, itinerary);
+        return new LegActivityMatch(leg, LOAD_END, handlingActivity, itinerary);
       case UNLOAD:
       case CLAIM:
       case CUSTOMS:
-        return new LegMatch(leg, UNLOAD_END, handlingActivity, itinerary);
+        return new LegActivityMatch(leg, UNLOAD_END, handlingActivity, itinerary);
       default:
         return noMatch(handlingActivity, itinerary);
     }
   }
 
-  static LegMatch ifLoadLocationSame(final Leg leg, final HandlingActivity handlingActivity, final Itinerary itinerary) {
+  static LegActivityMatch ifLoadLocationSame(final Leg leg, final HandlingActivity handlingActivity, final Itinerary itinerary) {
     if (leg.loadLocation().sameAs(handlingActivity.location())) {
-      return new LegMatch(leg, LOAD_END, handlingActivity, itinerary);
+      return new LegActivityMatch(leg, LOAD_END, handlingActivity, itinerary);
     } else {
       return noMatch(handlingActivity, itinerary);
     }
   }
 
-  static LegMatch ifUnloadLocationSame(final Leg leg, final HandlingActivity handlingActivity, final Itinerary itinerary) {
+  static LegActivityMatch ifUnloadLocationSame(final Leg leg, final HandlingActivity handlingActivity, final Itinerary itinerary) {
     if (leg.unloadLocation().sameAs(handlingActivity.location())) {
-      return new LegMatch(leg, UNLOAD_END, handlingActivity, itinerary);
+      return new LegActivityMatch(leg, UNLOAD_END, handlingActivity, itinerary);
     } else {
       return noMatch(handlingActivity, itinerary);
     }
   }
 
-  static LegMatch noMatch(final HandlingActivity handlingActivity, final Itinerary itinerary) {
-    return new LegMatch(null, NO_END, handlingActivity, itinerary);
+  static LegActivityMatch noMatch(final HandlingActivity handlingActivity, final Itinerary itinerary) {
+    return new LegActivityMatch(null, NO_END, handlingActivity, itinerary);
   }
 
   Leg leg() {
@@ -63,7 +64,7 @@ class LegMatch extends ValueObjectSupport<LegMatch> implements Comparable<LegMat
   }
 
   @Override
-  public int compareTo(final LegMatch other) {
+  public int compareTo(final LegActivityMatch other) {
     final Integer thisLegIndex = itinerary.legs().indexOf(this.leg);
     final Integer otherLegIndex = itinerary.legs().indexOf(other.leg);
 

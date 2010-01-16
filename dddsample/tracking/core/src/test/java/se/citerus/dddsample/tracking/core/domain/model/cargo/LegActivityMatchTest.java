@@ -15,7 +15,7 @@ import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyag
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.pacific1;
 
 @RunWith(JUnit4ClassRunner.class)
-public class LegMatchTest {
+public class LegActivityMatchTest {
 
   @Test
   public void compareMatches() {
@@ -24,21 +24,21 @@ public class LegMatchTest {
       deriveLeg(continental2, LONGBEACH, DALLAS)
     );
 
-    LegMatch startMatch = LegMatch.match(
+    LegActivityMatch startMatch = LegActivityMatch.match(
       deriveLeg(pacific1, TOKYO, LONGBEACH),
       loadOnto(pacific1).in(TOKYO), itinerary);
 
     assertThat(startMatch.handlingActivity(), equalTo(loadOnto(pacific1).in(TOKYO)));
     assertThat(startMatch.leg(), equalTo(deriveLeg(pacific1, TOKYO, LONGBEACH)));
 
-    LegMatch endMatch = LegMatch.match(
+    LegActivityMatch endMatch = LegActivityMatch.match(
       deriveLeg(pacific1, TOKYO, LONGBEACH),
       unloadOff(pacific1).in(LONGBEACH), itinerary);
 
     assertThat(endMatch.handlingActivity(), equalTo(unloadOff(pacific1).in(LONGBEACH)));
     assertThat(endMatch.leg(), equalTo(deriveLeg(pacific1, TOKYO, LONGBEACH)));
 
-    LegMatch nextMatch = LegMatch.match(
+    LegActivityMatch nextMatch = LegActivityMatch.match(
       deriveLeg(continental2, LONGBEACH, DALLAS),
       loadOnto(continental2).in(LONGBEACH), itinerary);
 
