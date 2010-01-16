@@ -1,19 +1,20 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import junit.framework.TestCase;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
 
 public class ItineraryTest extends TestCase {
 
@@ -102,19 +103,19 @@ public class ItineraryTest extends TestCase {
     Leg rotterdamToGothenburg = Leg.deriveLeg(voyage, ROTTERDAM, GOTHENBURG);
     Itinerary itinerary = new Itinerary(shanghaiToRotterdam, rotterdamToGothenburg);
 
-    assertThat(itinerary.legMatchOf(receiveIn(SHANGHAI)).leg(), is(shanghaiToRotterdam));
-    assertThat(itinerary.legMatchOf(loadOnto(voyage).in(SHANGHAI)).leg(), is(shanghaiToRotterdam));
-    assertThat(itinerary.legMatchOf(unloadOff(voyage).in(ROTTERDAM)).leg(), is(shanghaiToRotterdam));
-    assertThat(itinerary.legMatchOf(claimIn(GOTHENBURG)).leg(), is(rotterdamToGothenburg));
+    assertThat(itinerary.matchLeg(receiveIn(SHANGHAI)).leg(), is(shanghaiToRotterdam));
+    assertThat(itinerary.matchLeg(loadOnto(voyage).in(SHANGHAI)).leg(), is(shanghaiToRotterdam));
+    assertThat(itinerary.matchLeg(unloadOff(voyage).in(ROTTERDAM)).leg(), is(shanghaiToRotterdam));
+    assertThat(itinerary.matchLeg(claimIn(GOTHENBURG)).leg(), is(rotterdamToGothenburg));
 
-    assertNull(itinerary.legMatchOf(loadOnto(wrongVoyage).in(SHANGHAI)).leg());
-    assertNull(itinerary.legMatchOf(loadOnto(wrongVoyage).in(NEWYORK)).leg());
+    assertNull(itinerary.matchLeg(loadOnto(wrongVoyage).in(SHANGHAI)).leg());
+    assertNull(itinerary.matchLeg(loadOnto(wrongVoyage).in(NEWYORK)).leg());
 
-    assertNull(itinerary.legMatchOf(unloadOff(wrongVoyage).in(ROTTERDAM)).leg());
-    assertNull(itinerary.legMatchOf(unloadOff(wrongVoyage).in(NEWYORK)).leg());
+    assertNull(itinerary.matchLeg(unloadOff(wrongVoyage).in(ROTTERDAM)).leg());
+    assertNull(itinerary.matchLeg(unloadOff(wrongVoyage).in(NEWYORK)).leg());
 
-    assertNull(itinerary.legMatchOf(receiveIn(NEWYORK)).leg());
-    assertNull(itinerary.legMatchOf(claimIn(NEWYORK)).leg());
+    assertNull(itinerary.matchLeg(receiveIn(NEWYORK)).leg());
+    assertNull(itinerary.matchLeg(claimIn(NEWYORK)).leg());
   }
 
   public void testNextLeg() {

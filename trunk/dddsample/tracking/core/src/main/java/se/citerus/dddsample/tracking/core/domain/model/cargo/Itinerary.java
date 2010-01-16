@@ -2,15 +2,16 @@ package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.receiveIn;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 import java.util.*;
+
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.receiveIn;
 
 /**
  * An itinerary.
@@ -93,7 +94,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
    * @return <code>true</code> if the event is expected
    */
   boolean isExpectedActivity(final HandlingActivity handlingActivity) {
-    return legMatchOf(handlingActivity).leg() != null;
+    return matchLeg(handlingActivity).leg() != null;
   }
 
   /**
@@ -172,7 +173,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
     if (previousActivity == null) {
       return receiveIn(firstLeg().loadLocation());
     } else {
-      return deriveFromMatchingLeg(previousActivity, legMatchOf(previousActivity).leg());
+      return deriveFromMatchingLeg(previousActivity, matchLeg(previousActivity).leg());
     }
   }
 
@@ -182,8 +183,8 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
    * @return The activity which is strictly prior to the other, according to the itinerary, or null if neither is strictly prior.
    */
   HandlingActivity strictlyPriorOf(final HandlingActivity handlingActivity1, final HandlingActivity handlingActivity2) {
-    final LegMatch match1 = legMatchOf(handlingActivity1);
-    final LegMatch match2 = legMatchOf(handlingActivity2);
+    final LegActivityMatch match1 = matchLeg(handlingActivity1);
+    final LegActivityMatch match2 = matchLeg(handlingActivity2);
     final int compared = match1.compareTo(match2);
 
     if (compared < 0) {
@@ -213,13 +214,13 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
    * @param handlingActivity handling activity
    * @return The leg match of this handling activity. Never null.
    */
-  LegMatch legMatchOf(final HandlingActivity handlingActivity) {
+  LegActivityMatch matchLeg(final HandlingActivity handlingActivity) {
     if (handlingActivity == null) {
-      return LegMatch.noMatch(handlingActivity, this);
+      return LegActivityMatch.noMatch(handlingActivity, this);
     } else if (handlingActivity.type() == RECEIVE) {
-      return LegMatch.ifLoadLocationSame(firstLeg(), handlingActivity, this);
+      return LegActivityMatch.ifLoadLocationSame(firstLeg(), handlingActivity, this);
     } else if (handlingActivity.type() == CLAIM) {
-      return LegMatch.ifUnloadLocationSame(lastLeg(), handlingActivity, this);
+      return LegActivityMatch.ifUnloadLocationSame(lastLeg(), handlingActivity, this);
     } else {
       return findLegMatchingActivity(handlingActivity);
     }
@@ -239,14 +240,14 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
     return legs.get(legs.size() - 1);
   }
 
-  private LegMatch findLegMatchingActivity(final HandlingActivity handlingActivity) {
+  private LegActivityMatch findLegMatchingActivity(final HandlingActivity handlingActivity) {
     for (Leg leg : legs) {
       if (leg.matchesActivity(handlingActivity)) {
-        return LegMatch.match(leg, handlingActivity, this);
+        return LegActivityMatch.match(leg, handlingActivity, this);
       }
     }
 
-    return LegMatch.noMatch(handlingActivity, this);
+    return LegActivityMatch.noMatch(handlingActivity, this);
   }
 
   private HandlingActivity deriveFromMatchingLeg(final HandlingActivity handlingActivity, final Leg matchingLeg) {
