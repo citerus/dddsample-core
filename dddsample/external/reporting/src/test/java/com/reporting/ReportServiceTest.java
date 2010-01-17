@@ -1,23 +1,38 @@
 package com.reporting;
 
+import com.reporting.db.ReportDAO;
+import com.reporting.reports.CargoReport;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import se.citerus.dddsample.reporting.api.Handling;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
+
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/context.xml", "/context-cxf.xml", "/context-test-setup.xml"})
 public class ReportServiceTest {
+
+  @Autowired
+  ReportDAO reportDAO;
+  private XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
 
   @Test
   public void cargoReport() throws Exception {
@@ -102,6 +117,83 @@ public class ReportServiceTest {
     assertTrue(pdf.length() > 0);
   }
 
+  @Test
+  public void reportCargo() throws Exception {
+    HttpURLConnection con = openXMLPutConnection("/cargo");
+    XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(con.getOutputStream());
+    writer.writeStartDocument();
+    writer.writeStartElement("cargoDetails");
+
+    addElement(writer, "trackingId", "FGH456");
+    addElement(writer, "receivedIn", "HONGKONG");
+    addElement(writer, "finalDestination", "HELSINKI");
+    addElement(writer, "arrivalDeadline", "2010-05-15");
+    addElement(writer, "eta", "2010-05-04 14:30");
+    addElement(writer, "currentStatus", "ONBOARD_CARRIER");
+    addElement(writer, "currentVoyage", "S0134");
+    addElement(writer, "currentLocation", "");
+    addElement(writer, "lastUpdatedOn", "2010-05-01 12:20");
+
+    writer.writeEndElement();
+    writer.writeEndDocument();
+
+    writer.flush();
+    writer.close();
+    
+    assertEquals(HTTP_NO_CONTENT, con.getResponseCode());
+
+    CargoReport cargoReport = reportDAO.loadCargoReport("FGH456");
+    assertNotNull(cargoReport);
+  }
+
+  @Test
+  public void reportHandling() throws Exception {
+    HttpURLConnection con = openXMLPostConnection("/cargo/ABC/handled");
+    XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(con.getOutputStream());
+    writer.writeStartDocument();
+    writer.writeStartElement("handling");
+
+    addElement(writer, "type", "Unload");
+    addElement(writer, "location", "New York");
+    addElement(writer, "voyage", "V0200");
+    addElement(writer, "completedOn", "2009-06-09 12:10");
+
+    writer.writeEndElement();
+    writer.writeEndDocument();
+
+    writer.flush();
+    writer.close();
+
+    assertEquals(HTTP_NO_CONTENT, con.getResponseCode());
+
+    CargoReport cargoReport = reportDAO.loadCargoReport("ABC");
+    List<Handling> handlings = cargoReport.getHandlings();
+    assertEquals(5, handlings.size());
+    assertEquals("Unload", handlings.get(4).getType());
+  }
+
+  private HttpURLConnection openXMLPostConnection(String path) throws IOException {
+    return openWithMethod(path, "POST");
+  }
+
+  private HttpURLConnection openXMLPutConnection(String path) throws IOException {
+    return openWithMethod(path, "PUT");
+  }
+
+  private HttpURLConnection openWithMethod(String path, String method) throws IOException {
+    HttpURLConnection con = open(path);
+    con.setDoOutput(true);
+    con.setRequestMethod(method);
+    con.setRequestProperty("Content-type", "application/xml");
+    return con;
+  }
+
+  private void addElement(XMLStreamWriter writer, String elementName, String content) throws XMLStreamException {
+    writer.writeStartElement(elementName);
+    writer.writeCharacters(content);
+    writer.writeEndElement();
+  }
+
   private void verifyHandling(JSONObject handling, String type, String location, String voyage) throws JSONException {
     assertEquals(type, handling.get("type"));
     assertEquals(location, handling.get("location"));
@@ -113,16 +205,19 @@ public class ReportServiceTest {
   }
 
   private JSONObject readJSON(String path) throws IOException, JSONException {
-    URL url = new URL("http://localhost:14000" + path);
-    URLConnection urlConnection = url.openConnection();
+    URLConnection urlConnection = open(path);
     String jsonString = IOUtils.toString(urlConnection.getInputStream());
     return new JSONObject(jsonString);
   }
 
   private String readPDF(String path) throws IOException {
-    URL url = new URL("http://localhost:14000" + path);
-    URLConnection urlConnection = url.openConnection();
+    URLConnection urlConnection = open(path);
     return IOUtils.toString(urlConnection.getInputStream());
+  }
+
+  private HttpURLConnection open(String path) throws IOException {
+    URL url = new URL("http://localhost:14000" + path);
+    return (HttpURLConnection) url.openConnection();
   }
 
 }

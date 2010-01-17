@@ -41,6 +41,10 @@
             }
 
             $('#result').append('<p>Updated on: ' + cargo.lastUpdatedOn + '</p>');
+
+            for (var handling in json.cargoReport.handlings) {
+              $('#result').append('<p>' + handling['location'] + '</p>');
+            }
           },
           error: function(response) {
             if (response.status == 404) {
