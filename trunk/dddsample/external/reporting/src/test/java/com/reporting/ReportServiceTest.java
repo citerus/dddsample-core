@@ -173,18 +173,18 @@ public class ReportServiceTest {
   }
 
   private HttpURLConnection openXMLPostConnection(String path) throws IOException {
-    return openWithMethod(path, "POST");
+    return openWithMethod(path, "POST", "application/xml");
   }
 
   private HttpURLConnection openXMLPutConnection(String path) throws IOException {
-    return openWithMethod(path, "PUT");
+    return openWithMethod(path, "PUT", "application/xml");
   }
 
-  private HttpURLConnection openWithMethod(String path, String method) throws IOException {
+  private HttpURLConnection openWithMethod(String path, String method, String contentType) throws IOException {
     HttpURLConnection con = open(path);
     con.setDoOutput(true);
     con.setRequestMethod(method);
-    con.setRequestProperty("Content-type", "application/xml");
+    con.setRequestProperty("Content-type", contentType);
     return con;
   }
 
