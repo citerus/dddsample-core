@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.reporting.api.CargoDetails;
 import se.citerus.dddsample.reporting.api.Handling;
+import se.citerus.dddsample.reporting.api.ReportSubmission;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -20,7 +21,7 @@ import static javax.ws.rs.core.Response.status;
 @Produces({"application/json", "application/pdf"})
 @Consumes({"application/json", "application/xml"})
 @Path("/")
-public class ReportingService {
+public class ReportingService implements ReportSubmission {
 
   private ReportDAO reportDAO;
   private static final Log LOG = LogFactory.getLog(ReportingService.class);
@@ -53,6 +54,7 @@ public class ReportingService {
       build();
   }
 
+  @Override
   @PUT
   @Path("/cargo")
   @Transactional
@@ -61,6 +63,7 @@ public class ReportingService {
     LOG.info("Stored cargo: " + cargoDetails);
   }
 
+  @Override
   @POST
   @Path("/cargo/{trackingId}/handled")
   @Transactional
