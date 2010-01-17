@@ -1,24 +1,29 @@
 package com.reporting;
 
-import static com.reporting.Constants.US_DATETIME;
 import com.reporting.db.ReportDAO;
 import com.reporting.reports.CargoReport;
 import com.reporting.reports.VoyageReport;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.reporting.api.CargoDetails;
 import se.citerus.dddsample.reporting.api.Handling;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import static javax.ws.rs.core.Response.ok;
-import static javax.ws.rs.core.Response.status;
 import java.text.ParseException;
 
+import static com.reporting.Constants.US_DATETIME;
+import static javax.ws.rs.core.Response.ok;
+import static javax.ws.rs.core.Response.status;
+
 @Produces({"application/json", "application/pdf"})
-@Consumes("application/json")
+@Consumes({"application/json", "application/xml"})
 @Path("/")
 public class ReportingService {
 
   private ReportDAO reportDAO;
+  private static final Log LOG = LogFactory.getLog(ReportingService.class);
 
   public ReportingService(ReportDAO reportDAO) {
     this.reportDAO = reportDAO;
@@ -50,18 +55,21 @@ public class ReportingService {
 
   @PUT
   @Path("/cargo")
-  public void reportCargoDetails(CargoDetails cargoDetails) {
-    // TODO
-    System.out.println("Received " + cargoDetails);
+  @Transactional
+  public void reportCargo(CargoDetails cargoDetails) {
+    reportDAO.storeCargoDetals(cargoDetails);
+    LOG.info("Stored cargo: " + cargoDetails);
   }
 
-  @PUT
+  @POST
   @Path("/cargo/{trackingId}/handled")
+  @Transactional
   public void reportHandling(@PathParam("trackingId") String trackingId, Handling handling) {
-    // TODO
-    System.out.println("Received " + trackingId + " : " + handling);
+    reportDAO.storeHandling(trackingId, handling);
+    LOG.info("Stored handling of cargo " + trackingId + ": " + handling);
   }
 
+  @SuppressWarnings({"UnusedDeclaration"})
   ReportingService() {
     // Needed by CGLIB
   }
