@@ -19,7 +19,7 @@
     <constructor-arg ref="dataSource"/>
   </bean>
 
-  <bean id="reportingService" class="com.reporting.ReportingService">
+  <bean id="reportingService" class="com.reporting.ReportingServiceImpl">
     <constructor-arg ref="reportDAO"/>
   </bean>
 

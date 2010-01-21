@@ -27,7 +27,19 @@
     <jms:listener destination="CargoUpdateTopic" ref="misdirectedNotifierListener"/>
     <jms:listener destination="CargoUpdateTopic" ref="readyToClaimNotfierListener"/>
     <jms:listener destination="CargoHandledTopic" ref="cargoUpdaterListener"/>
+    <jms:listener destination="CargoHandledTopic" ref="reportHandlingListener"/>
+    <jms:listener destination="CargoUpdateTopic" ref="reportCargoUpdateListener"/>
   </jms:listener-container>
+
+  <bean id="reportHandlingListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <property name="delegate" ref="reportPusher"/>
+    <property name="defaultListenerMethod" value="reportHandlingEvent"/>
+  </bean>
+
+  <bean id="reportCargoUpdateListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <property name="delegate" ref="reportPusher"/>
+    <property name="defaultListenerMethod" value="reportCargoUpdate"/>
+  </bean>
 
   <bean id="misdirectedNotifierListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
     <property name="delegate" ref="misdirectedNotifier"/>

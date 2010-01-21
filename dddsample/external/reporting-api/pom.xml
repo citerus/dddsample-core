@@ -12,4 +12,10 @@
   <name>External: Reporting API</name>
   <version>${project.parent.version}</version>
   <description>Reporting API</description>
+  <dependencies>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>

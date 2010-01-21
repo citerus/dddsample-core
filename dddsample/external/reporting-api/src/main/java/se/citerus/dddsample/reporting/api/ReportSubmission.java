@@ -1,9 +1,17 @@
 package se.citerus.dddsample.reporting.api;
 
+import javax.ws.rs.*;
+
+@Consumes({"application/json", "application/xml"})
+@Path("/")
 public interface ReportSubmission {
 
-  void reportCargo(CargoDetails cargoDetails);
+  @PUT
+  @Path("/cargo")
+  void submitCargoDetails(CargoDetails cargoDetails);
 
-  void reportHandling(String trackingId, Handling handling);
+  @POST
+  @Path("/cargo/{trackingId}/handled")
+  void submitHandling(@PathParam("trackingId") String trackingId, Handling handling);
 
 }
