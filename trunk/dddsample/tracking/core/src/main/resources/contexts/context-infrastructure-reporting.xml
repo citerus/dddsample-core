@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                           http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
+
+  <jaxrs:client id="reportSubmission"
+                serviceClass="se.citerus.dddsample.reporting.api.ReportSubmission"
+                address="http://localhost:8080/reporting/rest"/>
+
+  <bean id="reportPusher" class="se.citerus.dddsample.tracking.core.infrastructure.reporting.ReportPusher">
+    <constructor-arg ref="reportSubmission"/>
+    <constructor-arg ref="cargoRepositoryHibernate"/>
+    <constructor-arg ref="handlingEventRepositoryHibernate"/>
+  </bean>
+
+</beans>

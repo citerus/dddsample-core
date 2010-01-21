@@ -1,34 +1,36 @@
 package se.citerus.dddsample.tracking.core.infrastructure.reporting;
 
-import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 import se.citerus.dddsample.reporting.api.CargoDetails;
 import se.citerus.dddsample.reporting.api.Handling;
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import se.citerus.dddsample.reporting.api.ReportSubmission;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.*;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.ROTTERDAM;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.ROTTERDAM;
+
 public class ReportsUpdaterTest {
 
-  ReportsUpdater reportsUpdater;
-  WebClient client;
+  ReportPusher reportPusher;
+  ReportSubmission reportSubmission;
   EventSequenceNumber eventSequenceNumber;
 
   @Before
   public void setUp() {
-    client = mock(WebClient.class);
+    reportSubmission = mock(ReportSubmission.class);
     CargoRepository cargoRepository = new CargoRepositoryInMem();
     HandlingEventRepository handlingEventRepository = new HandlingEventRepositoryInMem();
     HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, new VoyageRepositoryInMem(), new LocationRepositoryInMem());
@@ -45,15 +47,13 @@ public class ReportsUpdaterTest {
 
     cargo.handled(handlingEvent.activity());
 
-    reportsUpdater = new ReportsUpdater(client, cargoRepository, handlingEventRepository, "/handling", "/cargo");
+    reportPusher = new ReportPusher(reportSubmission, cargoRepository, handlingEventRepository);
     eventSequenceNumber = handlingEvent.sequenceNumber();
   }
 
   @Test
   public void reportCargoUpdate() {
-    when(client.path("/cargo")).thenReturn(client);
-
-    reportsUpdater.reportCargoUpdate(new TrackingId("ABC"));
+    reportPusher.reportCargoUpdate(new TrackingId("ABC"));
 
     CargoDetails expected = new CargoDetails();
     expected.setTrackingId("ABC");
@@ -61,20 +61,19 @@ public class ReportsUpdaterTest {
     expected.setFinalDestination("Rotterdam");
     expected.setCurrentStatus("IN_PORT");
 
-    verify(client).post(eq(expected));
+    verify(reportSubmission).submitCargoDetails(eq(expected));
   }
 
   @Test
   public void reportHandling() {
-    when(client.path("/handling")).thenReturn(client);
-
-    reportsUpdater.reportHandlingEvent(eventSequenceNumber);
+    reportPusher.reportHandlingEvent(eventSequenceNumber);
     
     Handling expected = new Handling();
     expected.setLocation("Hongkong");
     expected.setType("RECEIVE");
     expected.setVoyage("");
-    verify(client).post(eq(expected));
+
+    verify(reportSubmission).submitHandling(eq("ABC"), eq(expected));
   }
 
 }

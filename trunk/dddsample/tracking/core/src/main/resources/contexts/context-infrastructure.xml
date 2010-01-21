@@ -7,5 +7,6 @@
   <import resource="context-infrastructure-persistence.xml"/>
   <import resource="context-infrastructure-messaging.xml"/>
   <import resource="context-infrastructure-routing.xml"/>
+  <import resource="context-infrastructure-reporting.xml"/>
 
 </beans>
