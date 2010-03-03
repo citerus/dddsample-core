@@ -27,8 +27,8 @@
       <item name="Patterns Reference" href="patterns-reference.html"/>
       <item name="Architecture" href="architecture.html" />
       <item name="FAQ" href="faq.html"/>
-      <!--item name="Case study: Handling" href="handlingEventRegistration.html" /-->
     </menu>
     <menu ref="reports"/>
+    <menu ref="modules"/> 
   </body>
 </project>
