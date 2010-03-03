@@ -5,15 +5,21 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
 
+import static se.citerus.dddsample.reporting.api.DateFormats.US_FORMAT;
+
+@SuppressWarnings({"UnusedDeclaration"})
 @XmlRootElement
 public class Handling {
 
   private String type;
   private String location;
   private String voyage;
-  private String completedOn;
+  private Date completedOn;
 
   public String getType() {
     return type;
@@ -39,11 +45,17 @@ public class Handling {
     this.voyage = voyage;
   }
 
-  public String getCompletedOn() {
+  @XmlElement(name = "completedOn")
+  public String getCompletedOnAsString() {
+    return US_FORMAT.format(getCompletedOn());
+  }
+
+  @XmlTransient
+  public Date getCompletedOn() {
     return completedOn;
   }
 
-  public void setCompletedOn(String completedOn) {
+  public void setCompletedOn(Date completedOn) {
     this.completedOn = completedOn;
   }
 
