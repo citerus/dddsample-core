@@ -23,6 +23,13 @@ class Delivery extends ValueObjectSupport<Delivery> {
   private final Date lastUpdatedOn;
 
   /**
+   * @return Initial delivery, before any handling has taken place
+   */
+  static Delivery beforeHandling() {
+    return new Delivery(null, null);
+  }
+
+  /**
    * Derives a new delivery when a cargo has been handled.
    *
    * @param newHandlingActivity  handling activity
@@ -43,13 +50,6 @@ class Delivery extends ValueObjectSupport<Delivery> {
    */
   Delivery onRouting() {
     return new Delivery(mostRecentHandlingActivity, mostRecentPhysicalHandlingActivity);
-  }
-
-  /**
-   * @return Initial delivery, before any handling has taken place
-   */
-  static Delivery beforeHandling() {
-    return new Delivery(null, null);
   }
 
   private Delivery(final HandlingActivity mostRecentHandlingActivity,
@@ -120,16 +120,6 @@ class Delivery extends ValueObjectSupport<Delivery> {
   }
 
   /**
-   * @return True if the cargo has been unloaded at the final destination.
-   * @param routeSpecification route specification
-   */
-  boolean onTheGroundAtDestination(final RouteSpecification routeSpecification) {
-    return hasBeenHandled() &&
-           mostRecentHandlingActivity.type() == UNLOAD &&
-           routeSpecification.destination().sameAs(mostRecentHandlingActivity.location());
-  }
-
-  /**
    * @return Routing status.
    * @param itinerary itinerary
    * @param routeSpecification route specification
@@ -168,4 +158,9 @@ class Delivery extends ValueObjectSupport<Delivery> {
     mostRecentHandlingActivity = mostRecentPhysicalHandlingActivity = null;
   }
 
+  boolean isUnloadedIn(Location customsClearancePoint) {
+    return hasBeenHandled() &&
+           mostRecentHandlingActivity.location().sameAs(customsClearancePoint) &&
+           mostRecentHandlingActivity().type() == UNLOAD;
+  }
 }

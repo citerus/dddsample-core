@@ -12,7 +12,6 @@ import java.util.Date;
 
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.NOT_ROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
 
 /**
@@ -106,18 +105,19 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   }
 
   /**
-   * @return Next expected activity.
+   * @return Next expected activity. If the cargo is not on route (misdirected and/or misrouted),
+   * it cannot be determined and null is returned.
    */
   public HandlingActivity nextExpectedActivity() {
     if (!delivery.isOnRoute(itinerary, routeSpecification)) {
       return null;
     }
 
-    if (unloadedInCustomsClearancePoint()) {
+    if (delivery.isUnloadedIn(customsClearancePoint())) {
       return customsIn(customsClearancePoint());
+    } else {
+      return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
     }
-
-    return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
   }
 
   /**
@@ -228,7 +228,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     if (customsClearancePoint().sameAs(routeSpecification.destination())) {
       return customsIn(customsClearancePoint()).sameValueAs(mostRecentHandlingActivity());
     } else {
-      return delivery.onTheGroundAtDestination(routeSpecification);
+      return delivery.isUnloadedIn(routeSpecification.destination());
     }
   }
 
@@ -285,12 +285,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     } else {
       return true;
     }
-  }
-
-  private boolean unloadedInCustomsClearancePoint() {
-    return mostRecentHandlingActivity() != null &&
-           mostRecentHandlingActivity().location().sameAs(customsClearancePoint()) &&
-           mostRecentHandlingActivity().type() == UNLOAD;
   }
 
   @Override
