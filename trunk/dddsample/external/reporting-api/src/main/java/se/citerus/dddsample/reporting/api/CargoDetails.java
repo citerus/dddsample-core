@@ -5,7 +5,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
+
+import static se.citerus.dddsample.reporting.api.DateFormats.US_FORMAT;
 
 @XmlRootElement
 public class CargoDetails {
@@ -13,12 +18,12 @@ public class CargoDetails {
   private String trackingId;
   private String receivedIn;
   private String finalDestination;
-  private String arrivalDeadline;
-  private String eta;
+  private Date arrivalDeadline;
+  private Date eta;
   private String currentStatus;
   private String currentVoyage;
   private String currentLocation;
-  private String lastUpdatedOn;
+  private Date lastUpdatedOn;
 
   public String getTrackingId() {
     return trackingId;
@@ -44,19 +49,33 @@ public class CargoDetails {
     this.finalDestination = finalDestination;
   }
 
-  public String getArrivalDeadline() {
+  @XmlElement(name = "arrivalDeadline")
+  @SuppressWarnings("UnusedDeclaration")
+  public String getArrivalDeadlineAsString() {
+    return US_FORMAT.format(getArrivalDeadline());
+  }
+
+  @XmlTransient
+  public Date getArrivalDeadline() {
     return arrivalDeadline;
   }
 
-  public void setArrivalDeadline(String arrivalDeadline) {
+  public void setArrivalDeadline(Date arrivalDeadline) {
     this.arrivalDeadline = arrivalDeadline;
   }
 
-  public String getEta() {
+  @XmlElement(name = "eta")
+  @SuppressWarnings("UnusedDeclaration")
+  public String getEtaAsString() {
+    return US_FORMAT.format(getEta());
+  }
+
+  @XmlTransient
+  public Date getEta() {
     return eta;
   }
 
-  public void setEta(String eta) {
+  public void setEta(Date eta) {
     this.eta = eta;
   }
 
@@ -84,11 +103,18 @@ public class CargoDetails {
     this.currentLocation = currentLocation;
   }
 
-  public String getLastUpdatedOn() {
+  @XmlElement(name = "lastUpdatedOn")
+  @SuppressWarnings("UnusedDeclaration")
+  public String getLastUpdatedOnAsString() {
+    return US_FORMAT.format(getLastUpdatedOn());
+  }
+
+  @XmlTransient
+  public Date getLastUpdatedOn() {
     return lastUpdatedOn;
   }
 
-  public void setLastUpdatedOn(String lastUpdatedOn) {
+  public void setLastUpdatedOn(Date lastUpdatedOn) {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 

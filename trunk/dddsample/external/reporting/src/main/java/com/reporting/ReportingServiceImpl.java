@@ -11,10 +11,7 @@ import se.citerus.dddsample.reporting.api.Handling;
 import se.citerus.dddsample.reporting.api.ReportSubmission;
 
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
-import java.util.Date;
 
-import static com.reporting.Constants.US_DATETIME;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 
@@ -32,10 +29,9 @@ public class ReportingServiceImpl implements ReportSubmission, ReportingService 
     CargoReport cargoReport = reportDAO.loadCargoReport(trackingId);
     if (cargoReport == null) return status(404).build();
 
-    Date date = parseDate(cargoReport.getCargo().getLastUpdatedOn());
     return ok(cargoReport).
       type("application/" + format).
-      lastModified(date).
+      lastModified(cargoReport.getCargo().getLastUpdatedOn()).
       build();
   }
 
@@ -46,7 +42,7 @@ public class ReportingServiceImpl implements ReportSubmission, ReportingService 
 
     return ok(voyageReport).
       type("application/" + format).
-      lastModified(parseDate(voyageReport.getVoyage().getLastUpdatedOn())).
+      lastModified(voyageReport.getVoyage().getLastUpdatedOn()).
       build();
   }
 
@@ -62,14 +58,6 @@ public class ReportingServiceImpl implements ReportSubmission, ReportingService 
   public void submitHandling(String trackingId, Handling handling) {
     reportDAO.storeHandling(trackingId, handling);
     LOG.info("Stored handling of cargo " + trackingId + ": " + handling);
-  }
-
-  private Date parseDate(String lastUpdatedOn) {
-    try {
-      return US_DATETIME.parse(lastUpdatedOn);
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @SuppressWarnings({"UnusedDeclaration"})

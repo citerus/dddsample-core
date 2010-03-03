@@ -30,4 +30,9 @@
     <property name="password" value=""/>
   </bean>
 
+  <bean id="schemaCreator" class="com.reporting.db.ScriptLoader">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg value="classpath:schema.sql"/>
+  </bean>
+
 </beans>

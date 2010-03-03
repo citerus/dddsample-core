@@ -29,7 +29,6 @@
     <param-value>
       classpath:context.xml
       classpath:context-cxf.xml
-      classpath:context-test-setup.xml
     </param-value>
   </context-param>
 

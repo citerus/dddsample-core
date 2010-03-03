@@ -2,8 +2,6 @@ package com.reporting.pdf;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import static com.lowagie.text.FontFactory.HELVETICA_BOLD;
-import static com.lowagie.text.FontFactory.getFont;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 import com.reporting.reports.CargoReport;
@@ -12,6 +10,9 @@ import se.citerus.dddsample.reporting.api.Handling;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.ext.Provider;
+
+import static com.lowagie.text.FontFactory.HELVETICA_BOLD;
+import static com.lowagie.text.FontFactory.getFont;
 
 @Produces("application/pdf")
 @Provider
@@ -40,7 +41,7 @@ public class PDFCargoReportProvider extends PDFMessageBodyWriter<CargoReport> {
         table.addCell(handling.getType());
         table.addCell(handling.getLocation());
         table.addCell(handling.getVoyage());
-        table.addCell(handling.getCompletedOn());
+        table.addCell(handling.getCompletedOnAsString());
       }
     } catch (DocumentException e) {
       throw new RuntimeException(e);
