@@ -114,6 +114,8 @@ public class CargoLifecycle {
     assertNull(cargo.nextExpectedActivity());
   }
 
+  // TODO misdirected cargo, loaded onto wrong voyage
+                                                      
   @Test
   public void cargoIsMisdirectedAndRerouted() throws Exception {
 
@@ -185,6 +187,88 @@ public class CargoLifecycle {
 
     // Etc
   }
+
+  @Test
+  public void cargoIsLoadedOntoWrongVoyage() throws Exception {
+
+    Cargo cargo = setupCargoFromHongkongToStockholm();
+
+    // Initial state, before routing
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(NOT_ROUTED));
+    assertFalse(cargo.isMisdirected());
+    assertNull(cargo.estimatedTimeOfArrival());
+    assertNull(cargo.nextExpectedActivity());
+
+    // Route: Hongkong - Long Beach - New York - Stockholm
+    List<Itinerary> itineraries = routingService.fetchRoutesForSpecification(cargo.routeSpecification());
+    Itinerary itinerary = selectAppropriateRoute(itineraries);
+    cargo.assignToRoute(itinerary);
+
+    // Routed
+    assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertThat(cargo.nextExpectedActivity(), is(receiveIn(HONGKONG)));
+    assertThat(cargo.estimatedTimeOfArrival(), is(toDate("2009-03-26")));
+
+    // Received
+    cargo.handled(receiveIn(HONGKONG));
+
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+
+    // Loaded
+    cargo.handled(loadOnto(pacific1).in(HONGKONG));
+
+    assertThat(cargo.currentVoyage(), is(pacific1));
+    assertThat(cargo.lastKnownLocation(), is(HONGKONG));
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(pacific1).in(LONGBEACH)));
+    assertFalse(cargo.isMisdirected());
+
+    // Unload
+    cargo.handled(unloadOff(pacific1).in(LONGBEACH));
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(LONGBEACH));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+    assertThat(cargo.nextExpectedActivity(), is(loadOnto(continental1).in(LONGBEACH)));
+
+    // Load onto wrong voyage
+    cargo.handled(loadOnto(pacific2).in(LONGBEACH));
+    assertTrue(cargo.isMisdirected());
+    assertThat(cargo.transportStatus(), is(ONBOARD_CARRIER));
+    assertNull(cargo.nextExpectedActivity());
+    assertNull(cargo.estimatedTimeOfArrival());
+
+    // Reroute: specify new route
+
+    assertThat(cargo.earliestReroutingLocation(), is(SEATTLE));
+
+    // Assign to new route
+    List<Itinerary> available = routingService.fetchRoutesForSpecification(
+      cargo.routeSpecification().withOrigin(cargo.earliestReroutingLocation())
+    );
+
+    Itinerary newItinerary = selectAppropriateRoute(available);
+
+    Itinerary mergedItinerary = cargo.itineraryMergedWith(newItinerary);
+    cargo.assignToRoute(mergedItinerary);
+
+    // No longer misdirected
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.routingStatus(), is(ROUTED));
+    assertThat(cargo.nextExpectedActivity(), is(unloadOff(pacific2).in(SEATTLE)));
+
+    // Loaded
+    cargo.handled(unloadOff(pacific2).in(SEATTLE));
+
+    assertFalse(cargo.isMisdirected());
+    assertThat(cargo.lastKnownLocation(), is(SEATTLE));
+    assertThat(cargo.transportStatus(), is(IN_PORT));
+
+    // Etc
+  }
+
 
   @Test
   public void customerRequestsChangeOfDestination() throws Exception {
