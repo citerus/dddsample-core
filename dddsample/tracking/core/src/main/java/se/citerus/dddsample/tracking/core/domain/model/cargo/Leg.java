@@ -1,16 +1,21 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
 
 /**
  * An itinerary consists of one or more legs.
@@ -132,6 +137,22 @@ public class Leg extends ValueObjectSupport<Leg> {
 
   HandlingActivity deriveUnloadActivity() {
     return unloadOff(voyage).in(unloadLocation);
+  }
+
+  public List<Location> intermediateLocations() {
+    final List<Location> locations = new ArrayList<Location>();
+    final Iterator<Location> it = voyage.locations().iterator();
+
+    Location location = it.next();
+    for (; it.hasNext() && !loadLocation.sameAs(location);) {}
+
+    location = it.next();
+    for (; it.hasNext() && !unloadLocation.sameAs(location);) {
+      locations.add(location);
+      location = it.next();
+    }
+
+    return unmodifiableList(locations);
   }
 
   @Override

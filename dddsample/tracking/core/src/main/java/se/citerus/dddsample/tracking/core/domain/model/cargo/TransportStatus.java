@@ -14,7 +14,7 @@ public enum TransportStatus implements ValueObject<TransportStatus> {
     return this.equals(other);
   }
 
-  public static TransportStatus derivedFrom(HandlingActivity handlingActivity) {
+  public static TransportStatus derivedFrom(final HandlingActivity handlingActivity) {
     if (handlingActivity == null) {
       return NOT_RECEIVED;
     }

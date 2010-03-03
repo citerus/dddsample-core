@@ -19,8 +19,6 @@ import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingAct
 public class Itinerary extends ValueObjectSupport<Itinerary> {
 
   private final List<Leg> legs;
-  // Null object
-  static final Itinerary NONE = new Itinerary();
 
   /**
    * Constructor.
@@ -240,6 +238,40 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
     return legs.get(legs.size() - 1);
   }
 
+
+  Itinerary truncatedAfter(final Location location) {
+    final List<Leg> newLegs = new ArrayList<Leg>();
+
+    for (Leg leg : legs) {
+      if (leg.voyage().locations().contains(location)) {
+        newLegs.add(Leg.deriveLeg(leg.voyage(), leg.loadLocation(), location));
+        break;
+      } else {
+        newLegs.add(leg);
+        if (leg.unloadLocation().sameAs(location)) {
+          break;
+        }
+      }
+    }
+
+    return new Itinerary(newLegs);
+  }
+
+  Itinerary withLeg(final Leg leg) {
+    final List<Leg> newLegs = new ArrayList<Leg>(legs.size() + 1);
+    newLegs.add(leg);
+
+    return new Itinerary(newLegs);
+  }
+
+  Itinerary appendBy(final Itinerary other) {
+    final List<Leg> newLegs = new ArrayList<Leg>(this.legs.size() + other.legs.size());
+    newLegs.addAll(this.legs);
+    newLegs.addAll(other.legs);
+
+    return new Itinerary(newLegs);
+  }
+  
   private LegActivityMatch findLegMatchingActivity(final HandlingActivity handlingActivity) {
     for (Leg leg : legs) {
       if (leg.matchesActivity(handlingActivity)) {

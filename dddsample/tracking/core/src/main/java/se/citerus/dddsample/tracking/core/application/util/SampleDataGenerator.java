@@ -10,14 +10,11 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import se.citerus.dddsample.tracking.core.domain.model.handling.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import javax.servlet.ServletContextEvent;
@@ -25,8 +22,12 @@ import javax.servlet.ServletContextListener;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import static java.util.Arrays.asList;
 import java.util.Date;
+
+import static java.util.Arrays.asList;
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 
 /**
  * Provides sample data.
@@ -175,16 +176,16 @@ public class SampleDataGenerator implements ServletContextListener {
 
   private static void loadCargoData(JdbcTemplate jdbcTemplate) {
     String cargoSql =
-      "insert into Cargo (id, tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, last_update, routed_after_handling) " +
-        "values (?, ?, ?, ?, ?, ?, ?)";
+      "insert into Cargo (id, tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, last_update) " +
+        "values (?, ?, ?, ?, ?, ?)";
 
     Object[][] cargoArgs = {
-      {1, "XYZ", 1, 2, ts(10), ts(100), false},
-      {2, "ABC", 1, 5, ts(20), ts(100), false},
-      {3, "ZYX", 2, 1, ts(30), ts(100), false},
-      {4, "CBA", 5, 1, ts(40), ts(100), false},
-      {5, "FGH", 3, 5, ts(50), ts(100), false},
-      {6, "JKL", 6, 4, ts(60), ts(100), false}
+      {1, "XYZ", 1, 2, ts(10), ts(100)},
+      {2, "ABC", 1, 5, ts(20), ts(100)},
+      {3, "ZYX", 2, 1, ts(30), ts(100)},
+      {4, "CBA", 5, 1, ts(40), ts(100)},
+      {5, "FGH", 3, 5, ts(50), ts(100)},
+      {6, "JKL", 6, 4, ts(60), ts(100)}
     };
     executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
   }

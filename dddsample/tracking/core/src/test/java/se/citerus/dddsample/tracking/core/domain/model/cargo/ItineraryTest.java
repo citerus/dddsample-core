@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -148,6 +149,23 @@ public class ItineraryTest extends TestCase {
     assertThat(itinerary.strictlyPriorOf(notOnRoute, loadInShanghai), is(loadInShanghai));
     
     assertNull(itinerary.strictlyPriorOf(unloadInLongbeach, unloadInLongbeach));
+  }
+
+  public void testTruncatedAfter() throws Exception {
+    Leg shanghaiToLongBeach = Leg.deriveLeg(pacific, SHANGHAI, LONGBEACH);
+    Leg longBeachToNewYork = Leg.deriveLeg(transcontinental, LONGBEACH, NEWYORK);
+    Leg newYorkToRotterdam = Leg.deriveLeg(atlantic, NEWYORK, ROTTERDAM);
+
+    Itinerary itinerary = new Itinerary(shanghaiToLongBeach, longBeachToNewYork, newYorkToRotterdam);
+
+    Itinerary toNewYork = itinerary.truncatedAfter(NEWYORK);
+    assertEquals(asList(shanghaiToLongBeach, longBeachToNewYork), toNewYork.legs());
+
+    Itinerary toChicago = itinerary.truncatedAfter(CHICAGO);
+    assertEquals(asList(shanghaiToLongBeach, Leg.deriveLeg(transcontinental, LONGBEACH, CHICAGO)), toChicago.legs());
+
+    Itinerary toRotterdam = itinerary.truncatedAfter(ROTTERDAM);
+    assertEquals(asList(shanghaiToLongBeach, longBeachToNewYork, Leg.deriveLeg(atlantic, NEWYORK, ROTTERDAM)), toRotterdam.legs());
   }
 
   public void testCreateItinerary() throws Exception {
