@@ -1,6 +1,12 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import junit.framework.TestCase;
+import se.citerus.dddsample.tracking.core.domain.model.location.Location;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
+
+import java.util.Date;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
@@ -8,15 +14,10 @@ import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatu
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.ROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
-import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
-
-import java.util.Date;
 
 public class DeliveryTest extends TestCase {
 
@@ -61,7 +62,7 @@ public class DeliveryTest extends TestCase {
   public void testDerivedFromRouteSpecificationAndItinerary() throws Exception {
     assertEquals(ROUTED, delivery.routingStatus(itinerary, routeSpecification));
     assertEquals(Voyage.NONE, delivery.currentVoyage());
-    assertFalse(delivery.onTheGroundAtDestination(routeSpecification));
+    assertFalse(delivery.isUnloadedIn(routeSpecification.destination()));
     assertEquals(Location.NONE, delivery.lastKnownLocation());
     assertEquals(NOT_RECEIVED, delivery.transportStatus());
     assertTrue(delivery.lastUpdatedOn().before(new Date()));
@@ -79,7 +80,7 @@ public class DeliveryTest extends TestCase {
     assertEquals(IN_PORT, newDelivery.transportStatus());
 
     // Changed on handling and/or (re-)routing
-    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
+    assertFalse(newDelivery.isUnloadedIn(routeSpecification.destination()));
 
     // Changed on (re-)routing
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
@@ -96,7 +97,7 @@ public class DeliveryTest extends TestCase {
     assertEquals(HANGZOU, newDelivery.lastKnownLocation());
     assertEquals(ONBOARD_CARRIER, newDelivery.transportStatus());
 
-    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
+    assertFalse(newDelivery.isUnloadedIn(routeSpecification.destination()));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
@@ -113,7 +114,7 @@ public class DeliveryTest extends TestCase {
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
     assertEquals(IN_PORT, newDelivery.transportStatus());
 
-    assertTrue(newDelivery.onTheGroundAtDestination(routeSpecification));
+    assertTrue(newDelivery.isUnloadedIn(routeSpecification.destination()));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
@@ -128,7 +129,7 @@ public class DeliveryTest extends TestCase {
     assertEquals(STOCKHOLM, newDelivery.lastKnownLocation());
     assertEquals(CLAIMED, newDelivery.transportStatus());
 
-    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
+    assertFalse(newDelivery.isUnloadedIn(routeSpecification.destination()));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
@@ -146,7 +147,7 @@ public class DeliveryTest extends TestCase {
 
     // Next handling activity is undefined. Need a new itinerary to know what to do.
 
-    assertFalse(newDelivery.onTheGroundAtDestination(routeSpecification));
+    assertFalse(newDelivery.isUnloadedIn(routeSpecification.destination()));
 
     assertEquals(ROUTED, newDelivery.routingStatus(itinerary, routeSpecification));
 
