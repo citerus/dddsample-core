@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
+
 /**
  * A Voyage.
  */
@@ -73,6 +75,35 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
   Voyage() {
     // Needed by Hibernate
     voyageNumber = null;
+  }
+
+  public Location nextArrivalLocation(final Location location) {
+    for (Iterator<CarrierMovement> it = schedule.carrierMovements().iterator(); it.hasNext();) {
+      CarrierMovement carrierMovement = it.next();
+      if (carrierMovement.arrivalLocation().sameAs(location)) {
+        return location;
+      } else if (carrierMovement.departureLocation().sameAs(location)) {
+        return it.next().arrivalLocation();
+      }
+    }
+
+    return Location.NONE;
+  }
+
+  public List<Location> locations() {
+    final List<Location> locations = new ArrayList<Location>();
+    final Iterator<CarrierMovement> it = schedule.carrierMovements().iterator();
+
+    for (; it.hasNext(); ) {
+      final CarrierMovement carrierMovement = it.next();
+      locations.add(carrierMovement.departureLocation());
+
+      if (!it.hasNext()) {
+        locations.add(carrierMovement.arrivalLocation());
+      }
+    }
+
+    return unmodifiableList(locations);
   }
 
   /**

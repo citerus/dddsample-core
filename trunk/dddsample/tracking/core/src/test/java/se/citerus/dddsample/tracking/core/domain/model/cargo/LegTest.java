@@ -1,15 +1,18 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
+import org.junit.Test;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
+import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import org.junit.Test;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.NEW_YORK_TO_DALLAS;
-import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 
 public class LegTest {
 
@@ -72,4 +75,11 @@ public class LegTest {
     assertThat(newYorkToDallas.deriveLoadActivity(), is(HandlingActivity.loadOnto(voyage).in(NEWYORK)));
     assertThat(newYorkToDallas.deriveUnloadActivity(), is(HandlingActivity.unloadOff(voyage).in(DALLAS)));
   }
+
+  @Test
+  public void intermediateLocations() throws Exception {
+    Leg leg = Leg.deriveLeg(SampleVoyages.HONGKONG_TO_NEW_YORK, HONGKONG, NEWYORK);
+    assertEquals(asList(HANGZOU, TOKYO, MELBOURNE), leg.intermediateLocations());
+  }
+
 }

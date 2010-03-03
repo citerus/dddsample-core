@@ -1,17 +1,19 @@
 package se.citerus.dddsample.tracking.core.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.NOT_ROUTED;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.CustomsZone;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
 
 import java.util.Date;
+
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.NOT_ROUTED;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
+import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -109,10 +111,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   public HandlingActivity nextExpectedActivity() {
     if (!delivery.isOnRoute(itinerary, routeSpecification)) {
       return null;
-    }
-
-    if (delivery.isRoutedAfterHandling()) {
-      return itinerary.firstLeg().deriveLoadActivity();
     }
 
     if (unloadedInCustomsClearancePoint()) {
@@ -224,6 +222,18 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     return delivery.mostRecentHandlingActivity();
   }
 
+  public Location earliestReroutingLocation() {
+    if (isMisdirected()) {
+      if (transportStatus() == ONBOARD_CARRIER) {
+        return currentVoyage().nextArrivalLocation(lastKnownLocation());
+      } else {
+        return lastKnownLocation();
+      }
+    } else {
+      return itinerary.matchLeg(delivery.mostRecentPhysicalHandlingActivity()).leg().unloadLocation();
+    }
+  }
+
   /**
    * Updates all aspects of the cargo aggregate status
    * based on the current route specification, itinerary and handling of the cargo.
@@ -247,12 +257,29 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     }
   }
 
+  public Itinerary itineraryMergedWith(final Itinerary other) {
+    if (isMisdirected() && transportStatus() == ONBOARD_CARRIER) {
+      final Leg currentLeg = Leg.deriveLeg(
+        currentVoyage(), lastKnownLocation(), currentVoyage().nextArrivalLocation(lastKnownLocation())
+      );
+
+      return this.itinerary().
+        truncatedAfter(lastKnownLocation()).
+        withLeg(currentLeg).
+        appendBy(other);
+    } else {
+      return this.itinerary().
+        truncatedAfter(earliestReroutingLocation()).
+        appendBy(other);
+    }
+  }
+
   private boolean isSignificant(final HandlingActivity newHandlingActivity) {
     return succedsMostRecentActivity(newHandlingActivity);
   }
 
   private boolean succedsMostRecentActivity(final HandlingActivity newHandlingActivity) {
-    if (delivery.hasBeenHandledAfterRouting()) {
+    if (delivery.hasBeenHandled()) {
       final HandlingActivity priorActivity = itinerary.strictlyPriorOf(delivery.mostRecentPhysicalHandlingActivity(), newHandlingActivity);
       return !newHandlingActivity.sameValueAs(priorActivity);
     } else {

@@ -1,16 +1,18 @@
 package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class VoyageTest extends TestCase {
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.HONGKONG_TO_NEW_YORK;
 
+public class VoyageTest {
 
-  public void testSchedule() {
-    /*Voyage transcontinental = new Voyage.Builder(new VoyageNumber("4567"),
-      LONGBEACH).
-      addMovement(CHICAGO, new Date(1), new Date(2)).
-      addMovement(NEWYORK, new Date(3), new Date(4)).
-      build();*/
+  @Test
+  public void locations() {
+    Voyage voyage = HONGKONG_TO_NEW_YORK;
+    assertEquals(asList(HONGKONG, HANGZOU, TOKYO, MELBOURNE, NEWYORK), voyage.locations());
   }
 
 }
