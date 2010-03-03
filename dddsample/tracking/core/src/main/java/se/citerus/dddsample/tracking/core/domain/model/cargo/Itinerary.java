@@ -259,6 +259,7 @@ public class Itinerary extends ValueObjectSupport<Itinerary> {
 
   Itinerary withLeg(final Leg leg) {
     final List<Leg> newLegs = new ArrayList<Leg>(legs.size() + 1);
+    newLegs.addAll(legs);
     newLegs.add(leg);
 
     return new Itinerary(newLegs);

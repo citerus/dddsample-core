@@ -67,23 +67,11 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
     this.schedule = new Schedule(carrierMovements);
   }
 
-  @Override
-  public String toString() {
-    return voyageNumber.stringValue();
-  }
 
-  Voyage() {
-    // Needed by Hibernate
-    voyageNumber = null;
-  }
-
-  public Location nextArrivalLocation(final Location location) {
-    for (Iterator<CarrierMovement> it = schedule.carrierMovements().iterator(); it.hasNext();) {
-      CarrierMovement carrierMovement = it.next();
-      if (carrierMovement.arrivalLocation().sameAs(location)) {
-        return location;
-      } else if (carrierMovement.departureLocation().sameAs(location)) {
-        return it.next().arrivalLocation();
+  public Location arrivalLocationAfterDepartureFrom(final Location departureLocation) {
+    for (CarrierMovement carrierMovement : schedule.carrierMovements()) {
+      if (carrierMovement.departureLocation().sameAs(departureLocation)) {
+        return carrierMovement.arrivalLocation();
       }
     }
 
@@ -104,6 +92,16 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
     }
 
     return unmodifiableList(locations);
+  }
+  
+  @Override
+  public String toString() {
+    return voyageNumber.stringValue();
+  }
+
+  Voyage() {
+    // Needed by Hibernate
+    voyageNumber = null;
   }
 
   /**

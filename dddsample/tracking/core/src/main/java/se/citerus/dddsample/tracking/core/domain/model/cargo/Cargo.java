@@ -120,12 +120,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     return itinerary.activitySucceding(delivery.mostRecentPhysicalHandlingActivity());
   }
 
-  private boolean unloadedInCustomsClearancePoint() {
-    return mostRecentHandlingActivity() != null &&
-           mostRecentHandlingActivity().location().sameAs(customsClearancePoint()) &&
-           mostRecentHandlingActivity().type() == UNLOAD;
-  }
-
   /**
    * @return True if cargo is misdirected.
    */
@@ -159,6 +153,29 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    */
   public Location lastKnownLocation() {
     return delivery.lastKnownLocation();
+  }
+
+  /**
+   * Updates all aspects of the cargo aggregate status
+   * based on the current route specification, itinerary and handling of the cargo.
+   * <p/>
+   * When either of those three changes, i.e. when a new route is specified for the cargo,
+   * the cargo is assigned to a route or when the cargo is handled, the status must be
+   * re-calculated.
+   * <p/>
+   * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
+   * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
+   * but handling cause the status update to happen <b>asynchronously</b>
+   * since {@link HandlingEvent} is in a different aggregate.
+   *
+   * @param handlingActivity handling activity
+   */
+  public void handled(final HandlingActivity handlingActivity) {
+    Validate.notNull(handlingActivity, "Handling activity is required");
+
+    if (succedsMostRecentActivity(handlingActivity)) {
+      this.delivery = delivery.onHandling(handlingActivity);
+    }
   }
 
   /**
@@ -222,10 +239,15 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     return delivery.mostRecentHandlingActivity();
   }
 
+  /**
+   * @return The earliest rerouting location.
+   * If the cargo is in port, it's the current location.
+   * If it's onboard a carrier it's the next arrival location.
+   */
   public Location earliestReroutingLocation() {
     if (isMisdirected()) {
       if (transportStatus() == ONBOARD_CARRIER) {
-        return currentVoyage().nextArrivalLocation(lastKnownLocation());
+        return currentVoyage().arrivalLocationAfterDepartureFrom(lastKnownLocation());
       } else {
         return lastKnownLocation();
       }
@@ -235,32 +257,14 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   }
 
   /**
-   * Updates all aspects of the cargo aggregate status
-   * based on the current route specification, itinerary and handling of the cargo.
-   * <p/>
-   * When either of those three changes, i.e. when a new route is specified for the cargo,
-   * the cargo is assigned to a route or when the cargo is handled, the status must be
-   * re-calculated.
-   * <p/>
-   * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
-   * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
-   * but handling cause the status update to happen <b>asynchronously</b>
-   * since {@link HandlingEvent} is in a different aggregate.
-   *
-   * @param handlingActivity handling activity
+   * @param other itinerary
+   * @return An merge between the current itinerary and the provided itinerary
+   * that describes a continuous route even if the cargo is currently misdirected.
    */
-  public void handled(final HandlingActivity handlingActivity) {
-    Validate.notNull(handlingActivity, "Handling activity is required");
-
-    if (isSignificant(handlingActivity)) {
-      this.delivery = delivery.onHandling(handlingActivity);
-    }
-  }
-
   public Itinerary itineraryMergedWith(final Itinerary other) {
     if (isMisdirected() && transportStatus() == ONBOARD_CARRIER) {
       final Leg currentLeg = Leg.deriveLeg(
-        currentVoyage(), lastKnownLocation(), currentVoyage().nextArrivalLocation(lastKnownLocation())
+        currentVoyage(), lastKnownLocation(), currentVoyage().arrivalLocationAfterDepartureFrom(lastKnownLocation())
       );
 
       return this.itinerary().
@@ -274,10 +278,6 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     }
   }
 
-  private boolean isSignificant(final HandlingActivity newHandlingActivity) {
-    return succedsMostRecentActivity(newHandlingActivity);
-  }
-
   private boolean succedsMostRecentActivity(final HandlingActivity newHandlingActivity) {
     if (delivery.hasBeenHandled()) {
       final HandlingActivity priorActivity = itinerary.strictlyPriorOf(delivery.mostRecentPhysicalHandlingActivity(), newHandlingActivity);
@@ -285,6 +285,12 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
     } else {
       return true;
     }
+  }
+
+  private boolean unloadedInCustomsClearancePoint() {
+    return mostRecentHandlingActivity() != null &&
+           mostRecentHandlingActivity().location().sameAs(customsClearancePoint()) &&
+           mostRecentHandlingActivity().type() == UNLOAD;
   }
 
   @Override
