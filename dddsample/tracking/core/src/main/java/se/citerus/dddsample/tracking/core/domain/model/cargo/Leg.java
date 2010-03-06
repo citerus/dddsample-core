@@ -115,22 +115,6 @@ public class Leg extends ValueObjectSupport<Leg> {
     return false;
   }
 
-  Leg ifLoadLocationSameAs(final HandlingActivity handlingActivity) {
-    if (loadLocation.sameAs(handlingActivity.location())) {
-      return this;
-    } else {
-      return null;
-    }
-  }
-
-  Leg ifUnloadLocationSameAs(final HandlingActivity handlingActivity) {
-    if (unloadLocation.sameAs(handlingActivity.location())) {
-      return this;
-    } else {
-      return null;
-    }
-  }
-
   HandlingActivity deriveLoadActivity() {
     return loadOnto(voyage).in(loadLocation);
   }
