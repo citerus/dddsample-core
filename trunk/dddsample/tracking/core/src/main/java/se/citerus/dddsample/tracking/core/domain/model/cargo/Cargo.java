@@ -262,6 +262,10 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * that describes a continuous route even if the cargo is currently misdirected.
    */
   public Itinerary itineraryMergedWith(final Itinerary other) {
+    if (this.itinerary == null) {
+      return other;
+    }
+
     if (isMisdirected() && transportStatus() == ONBOARD_CARRIER) {
       final Leg currentLeg = Leg.deriveLeg(
         currentVoyage(), lastKnownLocation(), currentVoyage().arrivalLocationAfterDepartureFrom(lastKnownLocation())
