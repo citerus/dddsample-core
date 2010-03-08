@@ -1,16 +1,18 @@
 package se.citerus.dddsample.tracking.core.domain.model.handling;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
-import static java.util.Arrays.asList;
 import java.util.Date;
+
+import static java.util.Arrays.asList;
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 
 
 public class HandlingHistoryTest extends TestCase {
@@ -31,10 +33,10 @@ public class HandlingHistoryTest extends TestCase {
       addMovement(SHANGHAI, new Date(1), new Date(2)).
       addMovement(DALLAS, new Date(3), new Date(4)).
       build();
-    event1 = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-05"), HandlingEvent.Type.LOAD, SHANGHAI, voyage, new OperatorCode("ABCDE"));
-    event1duplicate = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-07"), HandlingEvent.Type.LOAD, SHANGHAI, voyage, new OperatorCode("ABCDE"));
-    event2 = new HandlingEvent(cargo, toDate("2009-03-10"), toDate("2009-03-06"), HandlingEvent.Type.UNLOAD, DALLAS, voyage, new OperatorCode("ABCDE"));
-    eventOfCargo2 = new HandlingEvent(cargo2, toDate("2009-03-11"), toDate("2009-03-08"), HandlingEvent.Type.LOAD, GOTHENBURG, voyage, new OperatorCode("ABCDE"));
+    event1 = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-05"), HandlingActivityType.LOAD, SHANGHAI, voyage, new OperatorCode("ABCDE"));
+    event1duplicate = new HandlingEvent(cargo, toDate("2009-03-05"), toDate("2009-03-07"), HandlingActivityType.LOAD, SHANGHAI, voyage, new OperatorCode("ABCDE"));
+    event2 = new HandlingEvent(cargo, toDate("2009-03-10"), toDate("2009-03-06"), HandlingActivityType.UNLOAD, DALLAS, voyage, new OperatorCode("ABCDE"));
+    eventOfCargo2 = new HandlingEvent(cargo2, toDate("2009-03-11"), toDate("2009-03-08"), HandlingActivityType.LOAD, GOTHENBURG, voyage, new OperatorCode("ABCDE"));
   }
 
   public void testDistinctEventsByCompletionTime() {
@@ -51,7 +53,7 @@ public class HandlingHistoryTest extends TestCase {
 
   public void testMostRecentLoadOrUnload() {
     // TODO
-    HandlingEvent event3Customs = new HandlingEvent(cargo, toDate("2009-03-11"), toDate("2009-03-11"), HandlingEvent.Type.CUSTOMS, DALLAS);
+    HandlingEvent event3Customs = new HandlingEvent(cargo, toDate("2009-03-11"), toDate("2009-03-11"), HandlingActivityType.CUSTOMS, DALLAS);
     handlingHistory = HandlingHistory.fromEvents(asList(event2, event1, event1duplicate, event3Customs));
 
     assertEquals(event3Customs, handlingHistory.mostRecentlyCompletedEvent());

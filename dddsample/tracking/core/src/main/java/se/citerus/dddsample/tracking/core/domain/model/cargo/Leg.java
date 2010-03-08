@@ -12,10 +12,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.unloadOff;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.LOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.UNLOAD;
 
 /**
  * An itinerary consists of one or more legs.

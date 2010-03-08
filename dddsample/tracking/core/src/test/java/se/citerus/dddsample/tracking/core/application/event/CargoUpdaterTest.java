@@ -1,26 +1,26 @@
 package se.citerus.dddsample.tracking.core.application.event;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.*;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.GOTHENBURG;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.HONGKONG_TO_NEW_YORK;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.*;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.GOTHENBURG;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.LOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.HONGKONG_TO_NEW_YORK;
 
 public class CargoUpdaterTest {
 

@@ -1,11 +1,11 @@
 package se.citerus.dddsample.tracking.core.domain.model.shared;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
+
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.*;
 
 /**
  * A handling activity represents how and where a cargo can be handled,
@@ -14,11 +14,11 @@ import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjec
  */
 public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
 
-  private final HandlingEvent.Type type;
+  private final HandlingActivityType type;
   private final Location location;
   private final Voyage voyage;
 
-  public HandlingActivity(final HandlingEvent.Type type, final Location location) {
+  public HandlingActivity(final HandlingActivityType type, final Location location) {
     Validate.notNull(type, "Handling event type is required");
     Validate.notNull(location, "Location is required");
 
@@ -27,7 +27,7 @@ public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
     this.voyage = null;
   }
 
-  public HandlingActivity(final HandlingEvent.Type type, final Location location, final Voyage voyage) {
+  public HandlingActivity(final HandlingActivityType type, final Location location, final Voyage voyage) {
     Validate.notNull(type, "Handling event type is required");
     Validate.notNull(location, "Location is required");
     Validate.notNull(voyage, "Voyage is required");
@@ -40,7 +40,7 @@ public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
   /**
    * @return Type of handling
    */
-  public HandlingEvent.Type type() {
+  public HandlingActivityType type() {
     return type;
   }
 
@@ -100,10 +100,10 @@ public class HandlingActivity extends ValueObjectSupport<HandlingActivity> {
   }
 
   public static class InLocation {
-    private final HandlingEvent.Type type;
+    private final HandlingActivityType type;
     private final Voyage voyage;
 
-    public InLocation(final HandlingEvent.Type type, final Voyage voyage) {
+    public InLocation(final HandlingActivityType type, final Voyage voyage) {
       this.type = type;
       this.voyage = voyage;
     }

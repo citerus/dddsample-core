@@ -13,9 +13,9 @@ import static org.junit.Assert.assertThat;
 import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.*;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 
 public class CargoTest extends TestCase {

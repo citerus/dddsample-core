@@ -3,13 +3,10 @@ package se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate;
 import se.citerus.dddsample.tracking.core.application.util.SampleDataGenerator;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.RECEIVE;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.atlantic2;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
@@ -17,6 +14,11 @@ import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.LOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.RECEIVE;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.atlantic2;
 
 public class CargoRepositoryTest extends AbstractRepositoryTest {
 
@@ -75,7 +77,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertLeg(thirdLeg, "0101", STOCKHOLM, HELSINKI);
   }
 
-  private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType, Location expectedLocation, int completionTimeMs, int registrationTimeMs, Voyage voyage) {
+  private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingActivityType expectedEventType, Location expectedLocation, int completionTimeMs, int registrationTimeMs, Voyage voyage) {
     assertEquals(expectedEventType, event.type());
     assertEquals(expectedLocation, event.location());
 

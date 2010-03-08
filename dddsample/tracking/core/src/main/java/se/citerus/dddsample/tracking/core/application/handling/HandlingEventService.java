@@ -2,9 +2,9 @@ package se.citerus.dddsample.tracking.core.application.handling;
 
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
 import java.util.Date;
@@ -32,7 +32,7 @@ public interface HandlingEventService {
                              TrackingId trackingId,
                              VoyageNumber voyageNumber,
                              UnLocode unLocode,
-                             HandlingEvent.Type type,
+                             HandlingActivityType type,
                              OperatorCode operatorCode) throws CannotCreateHandlingEventException;
 
 }

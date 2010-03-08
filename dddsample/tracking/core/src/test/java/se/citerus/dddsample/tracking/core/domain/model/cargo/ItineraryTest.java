@@ -13,9 +13,9 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.*;
 
 public class ItineraryTest extends TestCase {
 

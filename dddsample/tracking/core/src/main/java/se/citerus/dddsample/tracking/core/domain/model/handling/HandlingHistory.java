@@ -2,9 +2,11 @@ package se.citerus.dddsample.tracking.core.domain.model.handling;
 
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
 
 import java.util.*;
+
 import static java.util.Collections.sort;
 
 /**
@@ -69,10 +71,10 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
   public List<HandlingEvent> physicalHandlingEvents(List<HandlingEvent> unfilteredEvents) {
     final List<HandlingEvent> filtered = new ArrayList<HandlingEvent>();
     for (HandlingEvent event : unfilteredEvents) {
-      if (event.type().equals(HandlingEvent.Type.RECEIVE)) filtered.add(event);
-      if (event.type().equals(HandlingEvent.Type.LOAD)) filtered.add(event);
-      if (event.type().equals(HandlingEvent.Type.UNLOAD)) filtered.add(event);
-      if (event.type().equals(HandlingEvent.Type.CLAIM)) filtered.add(event);
+      if (event.type().equals(HandlingActivityType.RECEIVE)) filtered.add(event);
+      if (event.type().equals(HandlingActivityType.LOAD)) filtered.add(event);
+      if (event.type().equals(HandlingActivityType.UNLOAD)) filtered.add(event);
+      if (event.type().equals(HandlingActivityType.CLAIM)) filtered.add(event);
     }
     return Collections.unmodifiableList(filtered);
   }

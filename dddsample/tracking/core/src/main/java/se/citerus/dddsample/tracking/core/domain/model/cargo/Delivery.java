@@ -10,7 +10,7 @@ import java.util.Date;
 
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.UNLOAD;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.UNLOAD;
 
 /**
  * Everything about the delivery of the cargo, i.e. where the cargo is

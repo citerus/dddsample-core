@@ -1,7 +1,6 @@
 package se.citerus.dddsample.tracking.core.application.handling;
 
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.tracking.core.application.event.SystemEvents;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
@@ -12,12 +11,14 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFac
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import java.util.Date;
+
+import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 
 public class HandlingEventServiceTest extends TestCase {
   private HandlingEventServiceImpl service;
@@ -53,7 +54,7 @@ public class HandlingEventServiceTest extends TestCase {
 
     replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, systemEvents);
 
-    service.registerHandlingEvent(new Date(), cargo.trackingId(), SampleVoyages.pacific1.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE"));
+    service.registerHandlingEvent(new Date(), cargo.trackingId(), SampleVoyages.pacific1.voyageNumber(), STOCKHOLM.unLocode(), HandlingActivityType.LOAD, new OperatorCode("ABCDE"));
   }
 
 }

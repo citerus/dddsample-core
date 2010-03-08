@@ -15,6 +15,7 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import javax.servlet.ServletContextEvent;
@@ -276,17 +277,17 @@ public class SampleDataGenerator implements ServletContextListener {
 
         try {
           HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE, new OperatorCode("ABCDE")
+            toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingActivityType.RECEIVE, new OperatorCode("ABCDE")
           );
           session.save(event1);
 
           HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE")
+            toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingActivityType.LOAD, new OperatorCode("ABCDE")
           );
           session.save(event2);
 
           HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD, new OperatorCode("ABCDE")
+            toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingActivityType.UNLOAD, new OperatorCode("ABCDE")
           );
           session.save(event3);
         } catch (CannotCreateHandlingEventException e) {
@@ -314,22 +315,22 @@ public class SampleDataGenerator implements ServletContextListener {
 
         try {
           HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingEvent.Type.RECEIVE, new OperatorCode("ABCDE")
+            toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingActivityType.RECEIVE, new OperatorCode("ABCDE")
           );
           session.save(event1);
 
           HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE")
+            toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingActivityType.LOAD, new OperatorCode("ABCDE")
           );
           session.save(event2);
 
           HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD, new OperatorCode("ABCDE")
+            toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingActivityType.UNLOAD, new OperatorCode("ABCDE")
           );
           session.save(event3);
 
           HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
-            toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD, new OperatorCode("ABCDE")
+            toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingActivityType.LOAD, new OperatorCode("ABCDE")
           );
           session.save(event4);
 

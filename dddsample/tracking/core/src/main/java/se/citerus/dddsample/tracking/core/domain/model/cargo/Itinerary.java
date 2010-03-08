@@ -9,9 +9,9 @@ import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjec
 
 import java.util.*;
 
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.receiveIn;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.*;
 
 /**
  * An itinerary.
