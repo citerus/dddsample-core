@@ -1,6 +1,5 @@
 package se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate;
 
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
@@ -9,14 +8,17 @@ import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFac
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.MELBOURNE;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
-import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.MELBOURNE;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.claimIn;
 
 public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
@@ -49,7 +51,7 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
     TrackingId trackingId = new TrackingId("XYZ");
     Date completionTime = new Date(10);
-    HandlingEvent event = handlingEventFactory.createHandlingEvent(completionTime, trackingId, null, unLocode, HandlingEvent.Type.CLAIM, null);
+    HandlingEvent event = handlingEventFactory.createHandlingEvent(completionTime, trackingId, null, unLocode, HandlingActivityType.CLAIM, null);
 
     handlingEventRepository.store(event);
 

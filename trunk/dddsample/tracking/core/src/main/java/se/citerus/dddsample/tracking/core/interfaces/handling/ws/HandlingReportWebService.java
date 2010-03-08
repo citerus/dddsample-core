@@ -10,15 +10,16 @@ import org.springframework.stereotype.Service;
 import se.citerus.dddsample.tracking.core.application.handling.HandlingEventService;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.util.*;
+
+import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
 
 /**
  * This web service endpoint implementation performs basic validation and parsing
@@ -38,7 +39,7 @@ public class HandlingReportWebService implements HandlingReportService {
 
     final Date completionTime = parseCompletionTime(handlingReport, validationErrors);
     final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), validationErrors);
-    final HandlingEvent.Type type = parseEventType(handlingReport.getType(), validationErrors);
+    final HandlingActivityType type = parseEventType(handlingReport.getType(), validationErrors);
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), validationErrors);
     final OperatorCode operatorCode = parseOperatorCode();
 

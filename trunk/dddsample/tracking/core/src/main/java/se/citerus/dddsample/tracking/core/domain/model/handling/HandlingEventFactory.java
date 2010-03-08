@@ -6,6 +6,7 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageRepository;
@@ -43,7 +44,7 @@ public class HandlingEventFactory {
    */
   public HandlingEvent createHandlingEvent(final Date completionTime, final TrackingId trackingId,
                                            final VoyageNumber voyageNumber, final UnLocode unlocode,
-                                           final HandlingEvent.Type type, final OperatorCode operatorCode)
+                                           final HandlingActivityType type, final OperatorCode operatorCode)
     throws CannotCreateHandlingEventException {
 
     final Cargo cargo = findCargo(trackingId);

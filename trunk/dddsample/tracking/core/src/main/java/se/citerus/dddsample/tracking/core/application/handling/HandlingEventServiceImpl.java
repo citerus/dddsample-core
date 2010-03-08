@@ -9,6 +9,7 @@ import se.citerus.dddsample.tracking.core.application.event.SystemEvents;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
 import java.util.Date;
@@ -34,7 +35,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   @Transactional
   public void registerHandlingEvent(final Date completionTime, final TrackingId trackingId,
                                     final VoyageNumber voyageNumber, final UnLocode unLocode,
-                                    final HandlingEvent.Type type, final OperatorCode operatorCode) throws CannotCreateHandlingEventException {
+                                    final HandlingActivityType type, final OperatorCode operatorCode) throws CannotCreateHandlingEventException {
 
     /* Using a factory to create a HandlingEvent (aggregate). This is where
        it is determined wether the incoming data, the attempt, actually is capable

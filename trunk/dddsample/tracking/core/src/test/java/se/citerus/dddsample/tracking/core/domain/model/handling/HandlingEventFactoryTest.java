@@ -1,15 +1,13 @@
 package se.citerus.dddsample.tracking.core.domain.model.handling;
 
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.tracking.core.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
@@ -18,6 +16,9 @@ import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.Lo
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
 import java.util.Date;
+
+import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 
 public class HandlingEventFactoryTest extends TestCase {
 
@@ -49,7 +50,7 @@ public class HandlingEventFactoryTest extends TestCase {
     VoyageNumber voyageNumber = SampleVoyages.pacific1.voyageNumber();
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
-      new Date(100), trackingId, voyageNumber, unLocode, Type.LOAD, new OperatorCode("ABCDE")
+      new Date(100), trackingId, voyageNumber, unLocode, HandlingActivityType.LOAD, new OperatorCode("ABCDE")
     );
 
     assertNotNull(handlingEvent);
@@ -67,7 +68,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
-      new Date(100), trackingId, null, unLocode, Type.CLAIM, new OperatorCode("ABCDE")
+      new Date(100), trackingId, null, unLocode, HandlingActivityType.CLAIM, new OperatorCode("ABCDE")
     );
 
     assertNotNull(handlingEvent);
@@ -86,7 +87,7 @@ public class HandlingEventFactoryTest extends TestCase {
     UnLocode invalid = new UnLocode("NOEXT");
     try {
       factory.createHandlingEvent(
-        new Date(100), trackingId, SampleVoyages.pacific1.voyageNumber(), invalid, Type.LOAD, new OperatorCode("ABCDE")
+        new Date(100), trackingId, SampleVoyages.pacific1.voyageNumber(), invalid, HandlingActivityType.LOAD, new OperatorCode("ABCDE")
       );
       fail("Expected UnknownLocationException");
     } catch (UnknownLocationException expected) {
@@ -101,7 +102,7 @@ public class HandlingEventFactoryTest extends TestCase {
     try {
       VoyageNumber invalid = new VoyageNumber("XXX");
       factory.createHandlingEvent(
-        new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), Type.LOAD, new OperatorCode("ABCDE")
+        new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), HandlingActivityType.LOAD, new OperatorCode("ABCDE")
       );
       fail("Expected UnknownVoyageException");
     } catch (UnknownVoyageException expected) {
@@ -115,7 +116,7 @@ public class HandlingEventFactoryTest extends TestCase {
 
     try {
       factory.createHandlingEvent(
-        new Date(100), trackingId, SampleVoyages.pacific1.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD, new OperatorCode("ABCDE")
+        new Date(100), trackingId, SampleVoyages.pacific1.voyageNumber(), STOCKHOLM.unLocode(), HandlingActivityType.LOAD, new OperatorCode("ABCDE")
       );
       fail("Expected UnknownCargoException");
     } catch (UnknownCargoException expected) {

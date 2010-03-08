@@ -10,6 +10,7 @@ import se.citerus.dddsample.tracking.core.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.tracking.core.domain.model.handling.*;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.LocationRepositoryInMem;
@@ -41,7 +42,7 @@ public class ReportsUpdaterTest {
     cargoRepository.store(cargo);
 
     HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(
-      toDate("2009-10-02"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE, new OperatorCode("ABCDE")
+      toDate("2009-10-02"), trackingId, null, HONGKONG.unLocode(), HandlingActivityType.RECEIVE, new OperatorCode("ABCDE")
     );
     handlingEventRepository.store(handlingEvent);
 

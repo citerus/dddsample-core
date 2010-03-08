@@ -6,11 +6,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import se.citerus.dddsample.tracking.core.application.handling.HandlingEventService;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
-import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
+
+import static se.citerus.dddsample.tracking.core.interfaces.handling.HandlingReportParser.*;
 
 /**
  * Periodically scans a certain directory for files and attempts
@@ -92,7 +93,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     final Date date = parseDate(completionTimeStr, errors);
     final TrackingId trackingId = parseTrackingId(trackingIdStr, errors);
     final VoyageNumber voyageNumber = parseVoyageNumber(voyageNumberStr, errors);
-    final HandlingEvent.Type eventType = parseEventType(eventTypeStr, errors);
+    final HandlingActivityType eventType = parseEventType(eventTypeStr, errors);
     final UnLocode unLocode = parseUnLocode(unLocodeStr, errors);
     final OperatorCode operatorCode = parseOperatorCode();
 

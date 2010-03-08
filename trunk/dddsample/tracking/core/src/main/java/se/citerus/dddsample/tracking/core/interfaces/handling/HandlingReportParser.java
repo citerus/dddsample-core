@@ -3,9 +3,9 @@ package se.citerus.dddsample.tracking.core.interfaces.handling;
 import com.aggregator.HandlingReport;
 import org.apache.commons.lang.StringUtils;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -66,11 +66,11 @@ public class HandlingReportParser {
     return date;
   }
 
-  public static HandlingEvent.Type parseEventType(final String eventType, final List<String> errors) {
+  public static HandlingActivityType parseEventType(final String eventType, final List<String> errors) {
     try {
-      return HandlingEvent.Type.valueOf(eventType);
+      return HandlingActivityType.valueOf(eventType);
     } catch (IllegalArgumentException e) {
-      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingEvent.Type.values()));
+      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingActivityType.values()));
       return null;
     }
   }

@@ -4,12 +4,14 @@ import junit.framework.TestCase;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages;
 
-import static java.util.Arrays.asList;
 import java.util.Date;
+
+import static java.util.Arrays.asList;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.*;
 
 public class HandlingEventTest extends TestCase {
   private Cargo cargo;
@@ -29,7 +31,7 @@ public class HandlingEventTest extends TestCase {
     assertEquals(NEWYORK, e2.location());
 
     // These event types prohibit a carrier movement association
-    for (HandlingEvent.Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
+    for (HandlingActivityType type : asList(CLAIM, RECEIVE, CUSTOMS)) {
       try {
         new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, SampleVoyages.continental1, new OperatorCode("ABCDE"));
         fail("Handling event type " + type + " prohibits carrier movement");
@@ -38,7 +40,7 @@ public class HandlingEventTest extends TestCase {
     }
 
     // These event types requires a carrier movement association
-    for (HandlingEvent.Type type : asList(LOAD, UNLOAD)) {
+    for (HandlingActivityType type : asList(LOAD, UNLOAD)) {
       try {
         new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null, new OperatorCode("ABCDE"));
         fail("Handling event type " + type + " requires carrier movement");
@@ -48,7 +50,7 @@ public class HandlingEventTest extends TestCase {
   }
 
   public void testNewWithLocation() throws Exception {
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, HELSINKI);
+    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingActivityType.CLAIM, HELSINKI);
     assertEquals(HELSINKI, e1.location());
   }
 

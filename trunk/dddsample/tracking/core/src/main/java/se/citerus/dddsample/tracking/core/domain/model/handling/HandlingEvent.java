@@ -6,9 +6,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.Cargo;
 import se.citerus.dddsample.tracking.core.domain.model.location.Location;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity;
+import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.patterns.domainevent.DomainEvent;
-import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObject;
 
 import java.util.Date;
 
@@ -24,9 +24,9 @@ import java.util.Date;
  * This class is the only member, and consequently the root, of the HandlingEvent aggregate.
  * <p/>
  * HandlingEvent's could contain information about a {@link Voyage} and if so,
- * the event type must be either {@link Type#LOAD} or {@link Type#UNLOAD}.
+ * the event type must be either {@link se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType#LOAD} or {@link se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType#UNLOAD}.
  * <p/>
- * All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
+ * All other events must be of {@link se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType#RECEIVE}, {@link se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType#CLAIM} or {@link se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType#CUSTOMS}.
  */
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
@@ -36,52 +36,6 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   private Date registrationTime;
   private Cargo cargo;
   private OperatorCode operatorCode;
-
-  /**
-   * Handling event type. Either requires or prohibits a carrier movement
-   * association, it's never optional.
-   */
-  public enum Type implements ValueObject<Type> {
-    LOAD(true, true),
-    UNLOAD(true, true),
-    RECEIVE(false, true),
-    CLAIM(false, true),
-    CUSTOMS(false, false);
-
-    private final boolean voyageRelated;
-    private final boolean physical;
-
-    /**
-     * Private enum constructor.
-     *
-     * @param voyageRelated whether or not a voyage is associated with this event type
-     * @param physical whether or not this event type is physical
-     */
-    private Type(final boolean voyageRelated, final boolean physical) {
-      this.voyageRelated = voyageRelated;
-      this.physical = physical;
-    }
-
-    /**
-     * @return True if a voyage association is required for this event type.
-     */
-    public boolean isVoyageRelated() {
-      return voyageRelated;
-    }
-
-    /**
-     * @return True if this is a physical handling.
-     */
-    public boolean isPhysical() {
-      return physical;
-    }
-
-    @Override
-    public boolean sameValueAs(final Type other) {
-      return this.equals(other);
-    }
-
-  }
 
   /**
    * @param cargo            cargo
@@ -95,7 +49,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   HandlingEvent(final Cargo cargo,
                 final Date completionTime,
                 final Date registrationTime,
-                final Type type,
+                final HandlingActivityType type,
                 final Location location,
                 final Voyage voyage,
                 final OperatorCode operatorCode) {
@@ -130,7 +84,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public HandlingEvent(final Cargo cargo,
                        final Date completionTime,
                        final Date registrationTime,
-                       final Type type,
+                       final HandlingActivityType type,
                        final Location location) {
     Validate.notNull(cargo, "Cargo is required");
     Validate.notNull(completionTime, "Completion time is required");
@@ -157,7 +111,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return activity;
   }
 
-  public Type type() {
+  public HandlingActivityType type() {
     return activity.type();
   }
 

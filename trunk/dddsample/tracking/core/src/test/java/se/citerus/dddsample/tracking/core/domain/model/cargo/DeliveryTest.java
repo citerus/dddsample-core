@@ -13,10 +13,10 @@ import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.t
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.MISROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.ROUTED;
 import static se.citerus.dddsample.tracking.core.domain.model.cargo.TransportStatus.*;
-import static se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent.Type.*;
 import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.customsIn;
 import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivity.loadOnto;
+import static se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType.*;
 import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 
 public class DeliveryTest extends TestCase {
