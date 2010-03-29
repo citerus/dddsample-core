@@ -47,8 +47,7 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
   @Override
   protected void onSetUpInTransaction() throws Exception {
     // TODO store Sample* and object instances here instead of handwritten SQL
-    //SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
-    SampleDataGenerator.loadHibernateData(new TransactionTemplate(transactionManager), sessionFactory, handlingEventFactory, handlingEventRepository);
+    SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
     sjt = new SimpleJdbcTemplate(jdbcTemplate);
   }
 
