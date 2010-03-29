@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * DTO for registering and routing a cargo.
  */
-public final class CargoRoutingDTO implements Serializable {
+public final class
+  CargoRoutingDTO implements Serializable {
 
   private final String trackingId;
   private final String origin;
@@ -46,6 +47,10 @@ public final class CargoRoutingDTO implements Serializable {
 
   public boolean isMisrouted() {
     return misrouted;
+  }
+
+  public boolean isRouted() {
+    return !legs.isEmpty();
   }
 
   public Date getArrivalDeadline() {
