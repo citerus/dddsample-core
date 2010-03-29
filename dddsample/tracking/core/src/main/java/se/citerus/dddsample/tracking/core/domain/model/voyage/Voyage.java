@@ -68,7 +68,7 @@ public class Voyage extends EntitySupport<Voyage,VoyageNumber> {
   }
 
 
-  public Location arrivalLocationAfterDepartureFrom(final Location departureLocation) {
+  public Location arrivalLocationWhenDepartedFrom(final Location departureLocation) {
     for (CarrierMovement carrierMovement : schedule.carrierMovements()) {
       if (carrierMovement.departureLocation().sameAs(departureLocation)) {
         return carrierMovement.arrivalLocation();
