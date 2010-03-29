@@ -1,0 +1,74 @@
+html {
+  overflow-y: scroll;
+}
+
+a {
+  text-decoration: none;
+  color: #234;
+}
+
+a:hover {
+  color: #123;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: large;
+  background: rgb(11,19,36);
+  margin: 0;
+  padding: 20px;
+}
+
+img#background {
+  width: 98%;
+  z-index: -1;
+  position: absolute;
+  bottom: 0;
+}
+
+h1, h2 {
+  margin: 15px 0;
+  padding: 0;
+  font-size: x-large;
+}
+
+div#header {
+  margin: 30px 0;
+}
+
+div#content {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  background-color: rgb(255, 157, 84);
+  width: 600px;
+  padding: 10px 20px;
+  margin: auto;
+  border: 2px solid;
+}
+
+div#footer {
+  text-align: center;
+  font-size: x-small;
+  padding-top: 10px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+input#query {
+  padding: 5px;
+  font-size: large;
+}
+
+input#submit {
+  padding: 5px 10px;
+  font-size: large;
+  border: 2px solid;
+  background-color: rgb(255, 203, 134);
+}
+
+table {
+}
+
+td {
+  padding: 8px;
+}

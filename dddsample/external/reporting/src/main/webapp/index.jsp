@@ -4,55 +4,30 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
   <script type="text/javascript" src="jquery-1.3.2.js"></script>
-  <title>Reporting</title>
+  <script type="text/javascript" src="reporting.js"></script>
+  <link rel="stylesheet" type="text/css" href="main.css"/> 
+  <title>DDDSample Reporting</title>
 </head>
 <body>
-  <h1 id="apa">Reporting</h1>
-  <div>
-    <form action="" method="get" onsubmit="search(); return false;">
-      Search:
-      <input id="query" name="query" type="text"/>
-      <input id="submit" name="submit" type="submit" value="Search"/>
-    </form>
+  <img id="background" src="background.png" alt=""/>
+  <div id="content">
+    <div id="header">
+      <img src="dddsample.png" alt="dddsample"/>
+    </div>
+    <div id="form">
+      <form action="" method="get" onsubmit="search(); return false;">
+        Track cargo or voyage:
+        <input id="query" name="query" type="text" size="30" value="ABC"/>
+        <input id="submit" name="submit" type="submit" value="Track"/>
+      </form>
+    </div>
+    <div id="result"></div>
+    <div id="footer">
+      Created by <a href="http://www.citerus.se">Citerus</a> and <a href="http://www.domainlanguage.com">Domain Language</a>
+    </div>
   </div>
-  <div id="result"></div>
   <script type="text/javascript">
     $('#query').focus();
-
-    function search() {
-      $.ajax({
-          url: "http://localhost:8080/reporting/rest/cargo/" + $("#query").val() + ".json",
-          type: 'GET',
-          contentType: 'application/json',
-          success: function(response) {
-            var json = eval('(' + response + ')');
-            var cargo = json.cargoReport.cargo;
-            $('#result').empty();
-            var pdfUrl = "http://localhost:8080/reporting/rest/cargo/" + $("#query").val() + ".pdf"
-            $('#result').
-              append('<p><a href="' + pdfUrl + '">Download PDF</a></p>').
-              append('<h2>Cargo ' + cargo.trackingId + '</h2>').
-              append('<p>Destination: ' + cargo.finalDestination + ' (at ' + cargo.arrivalDeadline + ')</p>')
-
-            if (cargo.currentLocation) {
-              $('#result').append('<p>Status: ' + cargo.currentStatus + ' ' + cargo.currentLocation + '</p>');
-            } else if (cargo.currentVoyage) {
-              $('#result').append('<p>Status: ' + cargo.currentStatus + ' ' + cargo.currentVoyage + '</p>');
-            }
-
-            $('#result').append('<p>Updated on: ' + cargo.lastUpdatedOn + '</p>');
-
-            for (var handling in json.cargoReport.handlings) {
-              $('#result').append('<p>' + handling['location'] + '</p>');
-            }
-          },
-          error: function(response) {
-            if (response.status == 404) {
-              $('#result').text('No cargo with tracking id ' + $("#query").val());
-            }
-          }
-      });
-    }
   </script>
 </body>
 </html>
