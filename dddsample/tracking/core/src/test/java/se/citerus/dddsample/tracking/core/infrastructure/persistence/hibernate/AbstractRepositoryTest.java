@@ -9,8 +9,6 @@ import se.citerus.dddsample.tracking.core.application.util.SampleDataGenerator;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
 
-import java.lang.reflect.Field;
-
 public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
 
   SessionFactory sessionFactory;
@@ -26,14 +24,8 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
     this.handlingEventRepository = handlingEventRepository;
   }
 
-  /*protected AbstractRepositoryTest() {
-    setAutowireMode(AUTOWIRE_BY_NAME);
-    setDependencyCheck(false);
-  }*/
-
   public void setSessionFactory(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
-    //transactionManager = new HibernateTransactionManager(sessionFactory);
   }
 
   public SessionFactory getSessionFactory() {
@@ -55,7 +47,8 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
   @Override
   protected void onSetUpInTransaction() throws Exception {
     // TODO store Sample* and object instances here instead of handwritten SQL
-    SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
+    //SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
+    SampleDataGenerator.loadHibernateData(new TransactionTemplate(transactionManager), sessionFactory, handlingEventFactory, handlingEventRepository);
     sjt = new SimpleJdbcTemplate(jdbcTemplate);
   }
 
@@ -63,18 +56,4 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
     return sessionFactory.getCurrentSession();
   }
 
-  // Instead of exposing a getId() on persistent classes
-  protected Long getLongId(Object o) {
-    if (getSession().contains(o)) {
-      return (Long) getSession().getIdentifier(o);
-    } else {
-      try {
-        Field id = o.getClass().getDeclaredField("id");
-        id.setAccessible(true);
-        return (Long) id.get(o);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
 }
