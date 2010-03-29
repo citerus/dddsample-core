@@ -121,15 +121,13 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
   @Override
   public void afterPropertiesSet() throws Exception {
     if (uploadDirectory.equals(parseFailureDirectory)) {
-      throw new Exception("Upload and parse failed directories must not be the same directory: " + uploadDirectory);
+      throw new IOException("Upload and parse failed directories must not be the same directory: " + uploadDirectory);
     }
-    if (!uploadDirectory.exists()) {
-      //noinspection ResultOfMethodCallIgnored
-      uploadDirectory.mkdirs();
+    if (!uploadDirectory.exists() && !uploadDirectory.mkdirs()) {
+      throw new IOException("Failed to create " + uploadDirectory.getAbsolutePath());
     }
-    if (!parseFailureDirectory.exists()) {
-      //noinspection ResultOfMethodCallIgnored
-      parseFailureDirectory.mkdirs();
+    if (!parseFailureDirectory.exists() && !parseFailureDirectory.mkdirs()) {
+      throw new IOException("Failed to create " + parseFailureDirectory.getAbsolutePath());
     }
   }
 
