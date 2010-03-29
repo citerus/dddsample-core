@@ -23,41 +23,33 @@
   <ciManagement/>
   <developers>
     <developer>
-      <id>eric_evans</id>
-      <name>Eric Evans</name>
-      <organization>Domain Language, Inc.</organization>
-      <organizationUrl>http://www.domainlanguage.com</organizationUrl>
-      <timezone>-8</timezone>
-    </developer>
-    <developer>
-      <id>peba</id>
       <name>Peter Backlund</name>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>+1</timezone>
     </developer>
-    <developer>
-      <id>patrikfr</id>
-      <name>Patrik Fredriksson</name>
-      <organization>Citerus</organization>
-      <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>jeham</id>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Eric Evans</name>
+      <organization>Domain Language, Inc.</organization>
+      <organizationUrl>http://www.domainlanguage.com</organizationUrl>
+    </contributor>
+    <contributor>
       <name>Jesper Hammarback</name>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>jorgen_falk</id>
+    </contributor>
+    <contributor>
       <name>Jorgen Falk</name>
       <organization>Citerus</organization>
       <organizationUrl>http://www.citerus.se</organizationUrl>
-      <timezone>+1</timezone>
-    </developer>
-  </developers>
+    </contributor>
+    <contributor>
+      <name>Patrik Fredriksson</name>
+      <organization>Citerus</organization>
+      <organizationUrl>http://www.citerus.se</organizationUrl>
+    </contributor>
+  </contributors>
   <licenses>
     <license>
       <name>MIT</name>
@@ -71,11 +63,11 @@
   </scm>
   <properties>
     <spring.version>2.5.6</spring.version>
-    <cxf.version>2.2.2</cxf.version>
-    <slf4j.version>1.5.8</slf4j.version>
+    <cxf.version>2.2.7</cxf.version>
+    <slf4j.version>1.5.11</slf4j.version>
   </properties>
   <build>
-    <defaultGoal>package</defaultGoal>
+    <defaultGoal>install</defaultGoal>
     <pluginManagement>
       <plugins>
         <plugin>
