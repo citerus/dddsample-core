@@ -123,10 +123,10 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
     assertEquals("AAA", map.get("TRACKING_ID"));
 
-    Long originId = getLongId(origin);
+    Long originId = (Long) getSession().getIdentifier(cargo);
     assertEquals(originId, map.get("SPEC_ORIGIN_ID"));
 
-    Long destinationId = getLongId(destination);
+    Long destinationId = (Long) getSession().getIdentifier(cargo);
     assertEquals(destinationId, map.get("SPEC_DESTINATION_ID"));
 
     getSession().clear();
@@ -137,7 +137,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   public void testReplaceItinerary() {
     Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
-    Long cargoId = getLongId(cargo);
+    Long cargoId = (Long) getSession().getIdentifier(cargo);
     assertEquals(3, sjt.queryForInt("select count(*) from Leg where cargo_id = ?", cargoId));
 
     Location legFrom = locationRepository.find(new UnLocode("DEHAM"));
