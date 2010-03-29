@@ -1,7 +1,7 @@
 package se.citerus.dddsample.tracking.core.domain.model.location;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.tracking.core.domain.patterns.entity.EntitySupport;
+import se.citerus.dddsample.tracking.core.domain.patterns.valueobject.ValueObjectSupport;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  * A geographical zone within which there are no customs restrictions or checks.
  */
-public class CustomsZone extends EntitySupport<CustomsZone,String> {
+public class CustomsZone extends ValueObjectSupport<CustomsZone> {
 
   private final String code;
   private final String name;
@@ -36,11 +36,6 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
     this.name = name;
   }
   
-  @Override
-  public String identity() {
-    return code;
-  }
-
   /**
    * Where would a Cargo enter this CustomsZone if it were
    * following this route. Note that specific voyages, etc do not
@@ -110,7 +105,7 @@ public class CustomsZone extends EntitySupport<CustomsZone,String> {
   }
 
   boolean includes(final Location location) {
-    return this.sameAs(location.customsZone());
+    return this.sameValueAs(location.customsZone());
   }
 
   @Override
