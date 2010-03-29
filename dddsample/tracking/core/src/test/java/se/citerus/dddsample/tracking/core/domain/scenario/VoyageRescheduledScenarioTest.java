@@ -1,20 +1,21 @@
 package se.citerus.dddsample.tracking.core.domain.scenario;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.*;
-import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.MISROUTED;
-import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.ROUTED;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.Voyage;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.tracking.core.infrastructure.persistence.inmemory.TrackingIdFactoryInMem;
 
 import java.util.Date;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.MISROUTED;
+import static se.citerus.dddsample.tracking.core.domain.model.cargo.RoutingStatus.ROUTED;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.tracking.core.domain.model.voyage.SampleVoyages.*;
 
 public class VoyageRescheduledScenarioTest {
 
@@ -80,8 +81,6 @@ public class VoyageRescheduledScenarioTest {
     // voyage1 arrives in NYC. This makes it impossible to
     // keep the latter part of the old itinerary, and the new itinerary
     // is therefore truncated after unload in NYC.
-
-    // TODO delay the arrival instead of advancing the departure
 
     Date newDepartureTime = toDate("2008-10-23", "18:30");
     voyage2.departureRescheduled(NEWYORK, newDepartureTime);
