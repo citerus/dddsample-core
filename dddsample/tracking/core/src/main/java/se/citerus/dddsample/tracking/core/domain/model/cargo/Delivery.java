@@ -152,15 +152,15 @@ class Delivery extends ValueObjectSupport<Delivery> {
     return routingStatus(itinerary, routeSpecification) == ROUTED && !isMisdirected(itinerary);
   }
 
+  boolean isUnloadedIn(final Location location) {
+    return hasBeenHandled() &&
+      mostRecentHandlingActivity.location().sameAs(location) &&
+      mostRecentHandlingActivity().type() == UNLOAD;
+  }
+
   Delivery() {
     // Needed by Hibernate
     lastUpdatedOn = null;
     mostRecentHandlingActivity = mostRecentPhysicalHandlingActivity = null;
-  }
-
-  boolean isUnloadedIn(Location customsClearancePoint) {
-    return hasBeenHandled() &&
-           mostRecentHandlingActivity.location().sameAs(customsClearancePoint) &&
-           mostRecentHandlingActivity().type() == UNLOAD;
   }
 }
