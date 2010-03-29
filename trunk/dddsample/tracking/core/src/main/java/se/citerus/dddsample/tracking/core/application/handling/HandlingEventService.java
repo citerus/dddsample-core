@@ -1,7 +1,6 @@
 package se.citerus.dddsample.tracking.core.application.handling;
 
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.tracking.core.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
@@ -33,6 +32,6 @@ public interface HandlingEventService {
                              VoyageNumber voyageNumber,
                              UnLocode unLocode,
                              HandlingActivityType type,
-                             OperatorCode operatorCode) throws CannotCreateHandlingEventException;
+                             OperatorCode operatorCode);
 
 }
