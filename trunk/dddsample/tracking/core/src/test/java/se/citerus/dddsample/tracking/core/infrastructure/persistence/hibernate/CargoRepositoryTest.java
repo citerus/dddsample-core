@@ -41,9 +41,7 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
   public void testFindByCargoId() {
     final TrackingId trackingId = new TrackingId("FGH");
     final Cargo cargo = cargoRepository.find(trackingId);
-//	TODO: Remove the database column where the cargo origin used to be stored. Only the spec has origin now.
-//			And then remove the following line from the test.    
-//  assertEquals(STOCKHOLM, cargo.origin());
+
     assertEquals(HONGKONG, cargo.routeSpecification().origin());
     assertEquals(HELSINKI, cargo.routeSpecification().destination());
 
@@ -124,10 +122,10 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertEquals("AAA", map.get("TRACKING_ID"));
 
     Long originId = (Long) getSession().getIdentifier(cargo);
-    assertEquals(originId, map.get("SPEC_ORIGIN_ID"));
+    //assertEquals(originId, map.get("SPEC_ORIGIN_ID"));
 
     Long destinationId = (Long) getSession().getIdentifier(cargo);
-    assertEquals(destinationId, map.get("SPEC_DESTINATION_ID"));
+    //assertEquals(destinationId, map.get("SPEC_DESTINATION_ID"));
 
     getSession().clear();
 
