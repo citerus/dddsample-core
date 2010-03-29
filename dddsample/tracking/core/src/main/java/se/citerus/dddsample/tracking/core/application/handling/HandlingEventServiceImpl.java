@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.tracking.core.application.event.SystemEvents;
 import se.citerus.dddsample.tracking.core.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.tracking.core.domain.model.handling.*;
+import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventFactory;
+import se.citerus.dddsample.tracking.core.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.tracking.core.domain.model.handling.OperatorCode;
 import se.citerus.dddsample.tracking.core.domain.model.location.UnLocode;
 import se.citerus.dddsample.tracking.core.domain.model.shared.HandlingActivityType;
 import se.citerus.dddsample.tracking.core.domain.model.voyage.VoyageNumber;
@@ -20,7 +23,8 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   private final SystemEvents systemEvents;
   private final HandlingEventRepository handlingEventRepository;
   private final HandlingEventFactory handlingEventFactory;
-  private final Log logger = LogFactory.getLog(HandlingEventServiceImpl.class);
+
+  private static final Log LOG = LogFactory.getLog(HandlingEventServiceImpl.class);
 
   @Autowired
   public HandlingEventServiceImpl(final HandlingEventRepository handlingEventRepository,
@@ -35,7 +39,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
   @Transactional
   public void registerHandlingEvent(final Date completionTime, final TrackingId trackingId,
                                     final VoyageNumber voyageNumber, final UnLocode unLocode,
-                                    final HandlingActivityType type, final OperatorCode operatorCode) throws CannotCreateHandlingEventException {
+                                    final HandlingActivityType type, final OperatorCode operatorCode) {
 
     /* Using a factory to create a HandlingEvent (aggregate). This is where
        it is determined wether the incoming data, the attempt, actually is capable
@@ -53,7 +57,7 @@ public final class HandlingEventServiceImpl implements HandlingEventService {
     /* Publish a system event */
     systemEvents.notifyOfHandlingEvent(handlingEvent);
 
-    logger.info("Registered handling event: " + handlingEvent);
+    LOG.info("Registered handling event: " + handlingEvent);
   }
 
 }
