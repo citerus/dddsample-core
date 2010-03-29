@@ -1,0 +1,8 @@
+  ------------
+  Geting started
+  ------------
+
+  DDD is about separating domain complexity from technical complexity by buiding a model of the domain.
+  The model is used to transfer and structure knowledge from someone with intimate knowledge of how the
+  domain works (a domain expert) to the developer, and make that the foundation of the application.
+
