@@ -214,7 +214,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * @return Customs clearance point.
    */
   public Location customsClearancePoint() {
-    if (itinerary == null) {
+    if (routingStatus() == NOT_ROUTED) {
       return Location.NONE;
     } else {
       return customsZone().entryPoint(itinerary.locations());
@@ -247,7 +247,7 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
   public Location earliestReroutingLocation() {
     if (isMisdirected()) {
       if (transportStatus() == ONBOARD_CARRIER) {
-        return currentVoyage().arrivalLocationAfterDepartureFrom(lastKnownLocation());
+        return currentVoyage().arrivalLocationWhenDepartedFrom(lastKnownLocation());
       } else {
         return lastKnownLocation();
       }
@@ -262,13 +262,11 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
    * that describes a continuous route even if the cargo is currently misdirected.
    */
   public Itinerary itineraryMergedWith(final Itinerary other) {
-    if (this.itinerary == null) {
+    if (routingStatus() == NOT_ROUTED) {
       return other;
-    }
-
-    if (isMisdirected() && transportStatus() == ONBOARD_CARRIER) {
+    } else if (isMisdirected() && transportStatus() == ONBOARD_CARRIER) {
       final Leg currentLeg = Leg.deriveLeg(
-        currentVoyage(), lastKnownLocation(), currentVoyage().arrivalLocationAfterDepartureFrom(lastKnownLocation())
+        currentVoyage(), lastKnownLocation(), currentVoyage().arrivalLocationWhenDepartedFrom(lastKnownLocation())
       );
 
       return this.itinerary().
@@ -284,7 +282,9 @@ public class Cargo extends EntitySupport<Cargo,TrackingId> {
 
   private boolean succedsMostRecentActivity(final HandlingActivity newHandlingActivity) {
     if (delivery.hasBeenHandled()) {
-      final HandlingActivity priorActivity = itinerary.strictlyPriorOf(delivery.mostRecentPhysicalHandlingActivity(), newHandlingActivity);
+      final HandlingActivity priorActivity = itinerary.strictlyPriorOf(
+        delivery.mostRecentPhysicalHandlingActivity(), newHandlingActivity
+      );
       return !newHandlingActivity.sameValueAs(priorActivity);
     } else {
       return true;
