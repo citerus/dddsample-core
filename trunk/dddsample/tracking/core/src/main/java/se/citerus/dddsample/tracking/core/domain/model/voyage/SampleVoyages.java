@@ -1,13 +1,13 @@
 package se.citerus.dddsample.tracking.core.domain.model.voyage;
 
-import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static se.citerus.dddsample.tracking.core.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.tracking.core.domain.model.location.SampleLocations.*;
 
 /**
  * Sample carrier movements, for test purposes.
@@ -42,11 +42,11 @@ public class SampleVoyages {
 
   public final static Voyage continental3 = new Voyage.Builder(new VoyageNumber("CNT3"), SEATTLE).
     addMovement(CHICAGO, toDate("2009-03-06"), toDate("2009-03-08")).
-    addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-14")).
+    addMovement(NEWYORK, toDate("2009-03-10"), toDate("2009-03-13")).
     build();
 
   public final static Voyage atlantic1 = new Voyage.Builder(new VoyageNumber("ATC1"), NEWYORK).
-      addMovement(ROTTERDAM, toDate("2009-03-15"), toDate("2009-03-18")).
+      addMovement(ROTTERDAM, toDate("2009-03-13"), toDate("2009-03-18")).
       addMovement(HAMBURG, toDate("2009-03-19"), toDate("2009-03-20")).
       addMovement(HELSINKI, toDate("2009-03-21"), toDate("2009-03-22")).
       addMovement(NEWYORK, toDate("2009-03-24"), toDate("2009-03-30")).

@@ -25,6 +25,9 @@ public class CargoLifecycle {
   public void cargoIsProperlyDelivered() throws Exception {
     Cargo cargo = setupCargoFromHongkongToStockholm();
 
+    // Hamcrest matchers:
+    // assertEquals(1 + 1, 2) <=> assertThat(1 + 1, is(2)) <=> assertThat(1 + 1, equalTo(2))
+
     // Initial state, before routing
     assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
     assertThat(cargo.routingStatus(), is(NOT_ROUTED));
@@ -43,7 +46,11 @@ public class CargoLifecycle {
     // Routed
     assertThat(cargo.transportStatus(), is(NOT_RECEIVED));
     assertThat(cargo.routingStatus(), is(ROUTED));
+
+    // Static factory + builder:
+    // [HandlingActivity.]receiveIn(HONGKONG) <=> new HandlingActivity(RECEIVE, HONGKONG)
     assertThat(cargo.nextExpectedActivity(), is(receiveIn(HONGKONG)));
+
     assertNotNull(cargo.estimatedTimeOfArrival());
     assertThat(cargo.customsClearancePoint(), is(STOCKHOLM));
 
@@ -110,14 +117,13 @@ public class CargoLifecycle {
     assertThat(cargo.nextExpectedActivity(), is(claimIn(STOCKHOLM)));
 
     cargo.handled(claimIn(STOCKHOLM));
-    
+
+    assertThat(cargo.transportStatus(), is(CLAIMED));
     assertNull(cargo.nextExpectedActivity());
   }
 
-  // TODO misdirected cargo, loaded onto wrong voyage
-                                                      
   @Test
-  public void cargoIsMisdirectedAndRerouted() throws Exception {
+  public void cargoIsUnloadedInWrongLocation() throws Exception {
 
     Cargo cargo = setupCargoFromHongkongToStockholm();
 
@@ -269,7 +275,6 @@ public class CargoLifecycle {
     // Etc
   }
 
-
   @Test
   public void customerRequestsChangeOfDestination() throws Exception {
     Cargo cargo = setupCargoFromHongkongToStockholm();
@@ -320,9 +325,7 @@ public class CargoLifecycle {
     assertThat(cargo.nextExpectedActivity(), is(loadOnto(continental1).in(LONGBEACH)));
 
     // Customer wants cargo to go to Rotterdam instead of Stockholm
-    RouteSpecification toRotterdam = cargo.routeSpecification().
-      withDestination(ROTTERDAM);
-
+    RouteSpecification toRotterdam = cargo.routeSpecification().withDestination(ROTTERDAM);
     cargo.specifyNewRoute(toRotterdam);
 
     // Misrouted
@@ -359,6 +362,8 @@ public class CargoLifecycle {
     assertThat(cargo.nextExpectedActivity(), is(claimIn(ROTTERDAM)));
   }
 
+  // --- Support ---
+
   private Cargo setupCargoFromHongkongToStockholm() {
     TrackingId trackingId = trackingIdFactory.nextTrackingId();
     Date arrivalDeadline = toDate("2009-04-10");
@@ -367,7 +372,6 @@ public class CargoLifecycle {
     return new Cargo(trackingId, routeSpecification);
   }
 
-  // Stubbed out customer selection process
   private Itinerary selectAppropriateRoute(List<Itinerary> itineraries) {
     return itineraries.get(0);
   }
