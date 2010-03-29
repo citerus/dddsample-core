@@ -9,5 +9,4 @@
     <constructor-arg value="classpath:sample_data.sql"/>
   </bean>
 
-
 </beans>
