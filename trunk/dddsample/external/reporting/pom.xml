@@ -8,6 +8,9 @@
     <artifactId>external</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
+  <properties>
+    <jetty.port>8080</jetty.port>
+  </properties>
   <packaging>war</packaging>
   <name>External: Reporting context</name>
   <version>${project.parent.version}</version>
