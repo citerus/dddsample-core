@@ -8,6 +8,9 @@
     <artifactId>tracking</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
+  <properties>
+    <jetty.port>8081</jetty.port>
+  </properties>
   <packaging>war</packaging>
   <name>Tracking context: Booking UI</name>
   <version>${project.parent.version}</version>
@@ -46,20 +49,17 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <version>1.2</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
-        <configuration>
-          <systemProperties>
-            <systemProperty>
-              <name>jetty.port</name>
-              <value>8081</value>
-            </systemProperty>
-          </systemProperties>
-        </configuration>
       </plugin>
     </plugins>
   </build>
