@@ -15,9 +15,8 @@ public class CargoAdminControllerTest extends TestCase {
   MockHttpServletResponse response;
 
   public CargoAdminControllerTest() {
-    controller = new CargoAdminController();
     bookingServiceFacade = EasyMock.createMock(BookingServiceFacade.class);
-    controller.setBookingServiceFacade(bookingServiceFacade);
+    controller = new CargoAdminController(bookingServiceFacade);
   }
 
   public void testAssignItinerary() throws Exception {

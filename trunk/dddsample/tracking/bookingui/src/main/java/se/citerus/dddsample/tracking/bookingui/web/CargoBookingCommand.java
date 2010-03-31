@@ -1,9 +1,6 @@
 package se.citerus.dddsample.tracking.bookingui.web;
 
-/**
- *
- */
-public final class RegistrationCommand {
+public final class CargoBookingCommand {
 
   private String originUnlocode;
   private String destinationUnlocode;

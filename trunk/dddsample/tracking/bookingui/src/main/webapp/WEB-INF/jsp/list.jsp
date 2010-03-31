@@ -1,10 +1,9 @@
 <html>
 <head>
-  <title>Cargo Administration</title>
+  <title>List all cargos</title>
 </head>
 <body>
   <table border="1" width="600">
-    <caption>All cargos</caption>
     <thead>
       <tr>
         <td>Tracking ID</td>

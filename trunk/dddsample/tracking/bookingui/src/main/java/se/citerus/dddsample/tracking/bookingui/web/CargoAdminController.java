@@ -1,5 +1,8 @@
 package se.citerus.dddsample.tracking.bookingui.web;
 
+import org.codehaus.jettison.AbstractXMLStreamWriter;
+import org.codehaus.jettison.mapped.MappedNamespaceConvention;
+import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
@@ -7,6 +10,8 @@ import se.citerus.dddsample.tracking.booking.api.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.XMLStreamException;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -19,35 +24,35 @@ import java.util.*;
  * this approach is generally preferred to the one taken in the tracking controller. However,
  * there is never any one perfect solution for all situations, so we've chosen to demonstrate
  * two polarized ways to build user interfaces.
- *
  */
 public final class CargoAdminController extends MultiActionController {
 
   private BookingServiceFacade bookingServiceFacade;
+  private static final CustomDateEditor DATE_EDITOR = new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), false);
+  private static final UnLocodeComparator UN_LOCODE_COMPARATOR = new UnLocodeComparator();
+
+  public CargoAdminController(BookingServiceFacade bookingServiceFacade) {
+    this.bookingServiceFacade = bookingServiceFacade;
+  }
 
   @Override
   protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
     super.initBinder(request, binder);
-    binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), false));
+    binder.registerCustomEditor(Date.class, DATE_EDITOR);
   }
 
-  public Map registrationForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  public Map cargoBookingForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
     Map<String, Object> map = new HashMap<String, Object>();
+
     List<LocationDTO> dtoList = bookingServiceFacade.listShippingLocations();
-
-    List<String> unLocodeStrings = new ArrayList<String>();
-
-    for (LocationDTO dto : dtoList) {
-      unLocodeStrings.add(dto.getUnLocode());
-    }
-
-    map.put("unlocodes", unLocodeStrings);
+    Collections.sort(dtoList, UN_LOCODE_COMPARATOR);
+    
     map.put("locations", dtoList);
     return map;
   }
 
-  public void register(HttpServletRequest request, HttpServletResponse response,
-                       RegistrationCommand command) throws Exception {
+  public void bookCargo(HttpServletRequest request, HttpServletResponse response,
+                        CargoBookingCommand command) throws Exception {
     Date arrivalDeadline = new SimpleDateFormat("M/dd/yyyy").parse(command.getArrivalDeadline());
     String trackingId = bookingServiceFacade.bookNewCargo(
       command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline
@@ -101,7 +106,6 @@ public final class CargoAdminController extends MultiActionController {
     bookingServiceFacade.assignCargoToRoute(command.getTrackingId(), selectedRoute);
 
     response.sendRedirect("show.html?trackingId=" + command.getTrackingId());
-    //response.sendRedirect("list.html");
   }
 
   public Map pickNewDestination(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -124,7 +128,71 @@ public final class CargoAdminController extends MultiActionController {
     response.sendRedirect("show.html?trackingId=" + trackingId);
   }
 
-  public void setBookingServiceFacade(BookingServiceFacade bookingServiceFacade) {
-    this.bookingServiceFacade = bookingServiceFacade;
+  public Map voyageDelayedForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    Map<String, List<String>> departures = new HashMap<String, List<String>>();
+    Map<String, List<String>> arrivals = new HashMap<String, List<String>>();
+
+    List<VoyageDTO> voyages = bookingServiceFacade.listAllVoyages();
+
+    for (VoyageDTO voyage : voyages) {
+      List<String> departureLocations = getLocationsList(departures, voyage);
+      List<String> arrivalLocations = getLocationsList(arrivals, voyage);
+      for (CarrierMovementDTO dto : voyage.getMovements()) {
+        departureLocations.add(dto.getDepartureLocation().getUnLocode());
+        arrivalLocations.add(dto.getArrivalLocation().getUnLocode());
+      }
+    }
+
+    Map<String, Object> model = new HashMap<String, Object>();
+
+    model.put("departures", toJSON(departures));
+    model.put("arrivals", toJSON(arrivals));
+    model.put("voyages", voyages);
+
+    return model;
+  }
+
+  public void voyageDelayed(HttpServletRequest request, HttpServletResponse response, VoyageDelayCommand command) throws Exception {
+    if (command.getType() == VoyageDelayCommand.DelayType.DEPT) {
+      bookingServiceFacade.departureDelayed(new VoyageDelayDTO(command.getVoyageNumber(), command.getHours() * 60));
+    } else if (command.getType() == VoyageDelayCommand.DelayType.ARR) {
+      bookingServiceFacade.arrivalDelayed(new VoyageDelayDTO(command.getVoyageNumber(), command.getHours() * 60));
+    }
+
+    response.sendRedirect("list.html");
+  }
+
+  private String toJSON(Map<String, List<String>> locationMap) throws XMLStreamException {
+    StringWriter stringWriter = new StringWriter();
+    MappedNamespaceConvention con = new MappedNamespaceConvention();
+    AbstractXMLStreamWriter w = new MappedXMLStreamWriter(con, stringWriter);
+
+    w.writeStartDocument();
+    for (Map.Entry<String, List<String>> e : locationMap.entrySet()) {
+      for (String location : e.getValue()) {
+        w.writeStartElement(e.getKey());
+        w.writeCharacters(location);
+        w.writeEndElement();
+      }
+    }
+    w.writeEndDocument();
+
+    return stringWriter.toString();
+  }
+
+  private List<String> getLocationsList(Map<String, List<String>> map, VoyageDTO voyage) {
+    List<String> locations = map.get(voyage.getVoyageNumber());
+    if (locations == null) {
+      locations = new ArrayList<String>();
+      map.put(voyage.getVoyageNumber(), locations);
+    }
+    return locations;
+  }
+
+  private static class UnLocodeComparator implements Comparator<LocationDTO> {
+    @Override
+    public int compare(LocationDTO o1, LocationDTO o2) {
+      return o1.getUnLocode().compareTo(o2.getUnLocode());
+    }
   }
 }
