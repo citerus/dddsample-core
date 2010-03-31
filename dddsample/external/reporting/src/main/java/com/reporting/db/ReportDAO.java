@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ReportDAO {
@@ -80,7 +81,7 @@ public class ReportDAO {
         cargoDetails.getCurrentStatus(),
         cargoDetails.getCurrentVoyage(),
         cargoDetails.getCurrentLocation(),
-        cargoDetails.getLastUpdatedOn(),
+        new Date(),
         cargoDetails.getTrackingId()
       };
     } else {

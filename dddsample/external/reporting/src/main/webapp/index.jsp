@@ -17,7 +17,7 @@
     <div id="form">
       <form action="" method="get" onsubmit="search(); return false;">
         Track cargo or voyage:
-        <input id="query" name="query" type="text" size="30" value="ABC"/>
+        <input id="query" name="query" type="text" value="ABC"/>
         <input id="submit" name="submit" type="submit" value="Track"/>
       </form>
     </div>

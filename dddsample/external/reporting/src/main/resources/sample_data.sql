@@ -43,15 +43,38 @@ insert into cargo (
   current_location,
   last_updated_on
 ) values (
-  'DEF',
-  'Hongkong',
-  'Stockholm',
-  '2009-06-15 12:00:00.000',
-  '2009-06-12 18:30:00.000',
-  'In port',
-  null,
-  'Tokyo',
-  '2009-06-08 14:23:12.123'
+  'C0217', 'Hongkong', 'Hamburg', '2009-06-15 12:00:00.000',
+  '2009-06-12 18:30:00.000', 'Onboard voyage', 'V0200', null, '2009-06-08 14:23:12.123'
+);
+
+insert into cargo (
+  cargo_tracking_id,
+  received_in,
+  destination,
+  arrival_deadline,
+  eta,
+  current_status,
+  current_voyage_number,
+  current_location,
+  last_updated_on
+) values (
+  'C0219', 'Hongkong', 'Helsinki', '2009-06-15 12:00:00.000',
+  '2009-06-12 18:30:00.000', 'Onboard voyage', 'V0200', null, '2009-06-08 14:23:12.123'
+);
+
+insert into cargo (
+  cargo_tracking_id,
+  received_in,
+  destination,
+  arrival_deadline,
+  eta,
+  current_status,
+  current_voyage_number,
+  current_location,
+  last_updated_on
+) values (
+  'C0301', 'Hongkong', 'Rotterdam', '2009-06-15 12:00:00.000',
+  '2009-06-12 18:30:00.000', 'Onboard voyage', 'V0200', null, '2009-06-08 14:23:12.123'
 );
 
 
