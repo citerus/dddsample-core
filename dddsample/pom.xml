@@ -65,6 +65,7 @@
     <spring.version>2.5.6</spring.version>
     <cxf.version>2.2.7</cxf.version>
     <slf4j.version>1.5.11</slf4j.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <build>
     <defaultGoal>install</defaultGoal>
@@ -88,6 +89,14 @@
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>maven-jetty-plugin</artifactId>
           <version>6.1.19</version>
+          <configuration>
+            <systemProperties>
+              <systemProperty>
+                <name>jetty.port</name>
+                <value>${jetty.port}</value>
+              </systemProperty>
+            </systemProperties>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -216,7 +225,7 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
-        <version>3.3.1.GA</version>
+        <version>3.3.2.GA</version>
       </dependency>
       <dependency>
         <groupId>javassist</groupId>
