@@ -57,6 +57,7 @@ div#footer {
 input#query {
   padding: 5px;
   font-size: large;
+  width: 250px;
 }
 
 input#submit {

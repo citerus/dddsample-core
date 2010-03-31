@@ -28,14 +28,17 @@ public class PDFCargoReportProvider extends PDFMessageBodyWriter<CargoReport> {
     try {
       CargoDetails cargoDetails = cargoReport.getCargo();
       document.add(new Paragraph("Cargo " + cargoDetails.getTrackingId(), getFont(HELVETICA_BOLD, 18.0f)));
+      document.add(new Paragraph(" "));
       document.add(new Paragraph("Status: " + cargoDetails.getCurrentStatus()));
       document.add(new Paragraph("Location: " + cargoDetails.getCurrentLocation()));
       document.add(new Paragraph("Voyage: " + cargoDetails.getCurrentVoyage()));
       document.add(new Paragraph("Destination: " + cargoDetails.getFinalDestination()));
       document.add(new Paragraph("Arrival deadline: " + cargoDetails.getArrivalDeadline()));
       document.add(new Paragraph("ETA: " + cargoDetails.getEta()));
-
+      document.add(new Paragraph(" "));
       document.add(new Paragraph("Handling history", getFont(HELVETICA_BOLD)));
+      document.add(new Paragraph(" "));
+
       PdfPTable table = new PdfPTable(4);
       for (Handling handling : cargoReport.getHandlings()) {
         table.addCell(handling.getType());
@@ -43,6 +46,7 @@ public class PDFCargoReportProvider extends PDFMessageBodyWriter<CargoReport> {
         table.addCell(handling.getVoyage());
         table.addCell(handling.getCompletedOnAsString());
       }
+      document.add(table);
     } catch (DocumentException e) {
       throw new RuntimeException(e);
     }
