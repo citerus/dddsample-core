@@ -31,7 +31,7 @@
 
   <servlet>
     <servlet-name>booking</servlet-name>
-    <servlet-class>se.citerus.dddsample.tracking.bookingui.web.BookingDispatcherServlet</servlet-class>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>

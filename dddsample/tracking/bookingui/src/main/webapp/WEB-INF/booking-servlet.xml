@@ -5,14 +5,23 @@
 
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-    <property name="prefix" value="/WEB-INF/jsp/admin/"/>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
     <property name="suffix" value=".jsp"/>
     <property name="requestContextAttribute" value="rc"/>
     <property name="cache" value="false"/>
   </bean>
 
+  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+      <map>
+        <entry key="java.rmi.RemoteException" value="backend_error"/>
+        <entry key="org.springframework.remoting.RemoteAccessException" value="backend_error"/>
+      </map>
+    </property>
+  </bean>
+
   <bean name="/*" class="se.citerus.dddsample.tracking.bookingui.web.CargoAdminController">
-    <property name="bookingServiceFacade" ref="remoteBookingService"/>
+    <constructor-arg ref="remoteBookingService"/>
   </bean>
 
 </beans>

@@ -25,4 +25,10 @@ public interface BookingServiceFacade extends Remote {
 
   List<CargoRoutingDTO> listAllCargos() throws RemoteException;
 
+  List<VoyageDTO> listAllVoyages() throws RemoteException;
+
+  void departureDelayed(VoyageDelayDTO delay) throws RemoteException;
+
+  void arrivalDelayed(VoyageDelayDTO delay) throws RemoteException;
+  
 }
