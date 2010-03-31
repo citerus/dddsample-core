@@ -1,0 +1,48 @@
+<project name="dddsample" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant" default="quickstart">
+
+  <path id="maven-ant-tasks.classpath" path="antlib/maven-ant-tasks-2.0.10.jar"/>
+
+  <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+           uri="antlib:org.apache.maven.artifact.ant"
+           classpathref="maven-ant-tasks.classpath"/>
+
+  <artifact:pom file="pom.xml" id="maven"/>
+
+  <artifact:dependencies pathId="webapps">
+    <dependency groupId="se.citerus.dddsample.tracking" artifactId="core" version="${maven.version}" type="war"/>
+    <dependency groupId="se.citerus.dddsample.tracking" artifactId="bookingui" version="${maven.version}" type="war"/>
+    <dependency groupId="se.citerus.dddsample.external" artifactId="pathfinder" version="${maven.version}" type="war"/>
+    <dependency groupId="se.citerus.dddsample.external" artifactId="reporting" version="${maven.version}" type="war"/>
+  </artifact:dependencies>
+
+  <artifact:dependencies pathId="jetty.classpath">
+    <dependency groupId="org.mortbay.jetty" artifactId="jetty-ant" version="6.1.19"/>
+    <dependency groupId="org.slf4j" artifactId="slf4j-log4j12" version="1.5.11"/>
+  </artifact:dependencies>
+
+  <taskdef classpathref="jetty.classpath" resource="tasks.properties" loaderref="jetty.loader"/>
+
+  <target name="prepare">
+    <echo>Building...</echo>
+    <artifact:mvn>
+      <arg value="-q"/>
+      <arg value="-DskipTests"/>
+      <arg value="clean"/>
+      <arg value="install"/>
+    </artifact:mvn>
+    <echo>Done.</echo>
+  </target>
+
+
+  <target name="jetty.run">
+    <jetty tempDirectory="target/jetty-temp">
+      <webApp name="Core" warfile="${se.citerus.dddsample.tracking:core:war}" contextpath="/core"/>
+      <webApp name="Pathfinder" warfile="${se.citerus.dddsample.external:pathfinder:war}" contextpath="/pathfinder"/>
+      <webApp name="Booking" warfile="${se.citerus.dddsample.tracking:bookingui:war}" contextpath="/booking"/>
+      <webApp name="Reporting" warfile="${se.citerus.dddsample.external:reporting:war}" contextpath="/reporting"/>
+    </jetty>
+  </target>
+
+  <target name="quickstart" depends="prepare,jetty.run"/>
+
+</project>
