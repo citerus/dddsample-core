@@ -28,7 +28,6 @@
     </component>
 
     <component name="itinerary">
-      <!-- cascade=all-delete-orphan would be better, but it doesn't seem to work inside a component -->
       <list name="legs" lazy="true" cascade="all">
         <key column="cargo_id" foreign-key="itinerary_fk"/>
         <index column="leg_index"/>

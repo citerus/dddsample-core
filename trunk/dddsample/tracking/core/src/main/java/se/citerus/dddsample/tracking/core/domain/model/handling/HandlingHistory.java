@@ -11,6 +11,8 @@ import static java.util.Collections.sort;
 
 /**
  * The handling history of a cargo.
+ *
+ * TODO eliminate from 1.2
  */
 public class HandlingHistory implements ValueObject<HandlingHistory> {
 

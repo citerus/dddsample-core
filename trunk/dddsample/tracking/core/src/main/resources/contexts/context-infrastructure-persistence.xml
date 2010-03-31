@@ -24,7 +24,14 @@
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
     <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+    <property name="eventListeners">
+      <map>
+        <entry key="post-load" value-ref="cargoPostLoadEventListener"/>
+      </map>
+    </property>
   </bean>
+
+  <bean id="cargoPostLoadEventListener" class="se.citerus.dddsample.tracking.core.infrastructure.persistence.hibernate.CargoPostLoadEventListener"/>
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory"/>
