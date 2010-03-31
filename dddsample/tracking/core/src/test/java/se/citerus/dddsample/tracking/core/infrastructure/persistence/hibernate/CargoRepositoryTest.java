@@ -107,6 +107,12 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
     cargoRepository.store(cargo);
 
+    getSession().flush();
+    getSession().clear();
+
+    cargo = cargoRepository.find(trackingId);
+    assertNull(cargo.itinerary());
+
     cargo.assignToRoute(new Itinerary(
       Leg.deriveLeg(
         voyageRepository.find(new VoyageNumber("0101")),

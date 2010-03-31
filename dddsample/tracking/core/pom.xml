@@ -8,6 +8,9 @@
     <artifactId>tracking</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
+  <properties>
+    <jetty.port>8082</jetty.port>
+  </properties>
   <packaging>war</packaging>
   <name>Tracking context: Core</name>
   <version>${project.parent.version}</version>
