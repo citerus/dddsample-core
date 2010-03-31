@@ -103,7 +103,8 @@ public class ReportServiceTest {
     assertEquals("In transit", voyage.get("currentStatus"));
     assertEquals(0, voyage.get("delayedByMinutes"));
     assertEquals("6/6/09 2:01 PM", voyage.get("lastUpdatedOn"));
-    assertFalse(voyageReport.has("onboardCargos"));
+    assertTrue(voyageReport.has("onboardCargos"));
+    // TODO verify onboard cargos content 
   }
 
   @Test(expected = FileNotFoundException.class)
