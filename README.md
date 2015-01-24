@@ -5,4 +5,4 @@ Our intention is to move everything from SourceForge to GitHub in due time while
 
 Discussion group: https://groups.google.com/forum/#!forum/dddsample
 
-![Build Status](https://travis-ci.org/citerus/dddsample.svg)
+[![Build Status](https://travis-ci.org/citerus/dddsample.svg?branch=master)](https://travis-ci.org/citerus/dddsample)
