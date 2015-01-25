@@ -12,13 +12,9 @@
   </bean>
 
   <bean name="/track" class="se.citerus.dddsample.interfaces.tracking.CargoTrackingController">
-    <property name="sessionForm" value="true"/>
-    <property name="commandName" value="trackCommand"/>
-    <property name="formView" value="track"/>
-    <property name="successView" value="start"/>
-    <property name="validator" ref="trackCommandValidator"/>
     <property name="cargoRepository" ref="cargoRepository"/>
     <property name="handlingEventRepository" ref="handlingEventRepository"/>
+    <property name="messageSource" ref="messageSource"/>
   </bean>
 
   <bean id="trackCommandValidator" class="se.citerus.dddsample.interfaces.tracking.TrackCommandValidator"/>

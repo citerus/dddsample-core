@@ -6,7 +6,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 
-public class CargoAdminControllerTest extends TestCase {
+/*public class CargoAdminControllerTest extends TestCase {
 
   CargoAdminController controller;
   BookingServiceFacade bookingServiceFacade;
@@ -27,3 +27,4 @@ public class CargoAdminControllerTest extends TestCase {
   }
 
 }
+*/

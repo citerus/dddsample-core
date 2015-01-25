@@ -2,7 +2,7 @@ package se.citerus.dddsample.domain.shared.experimental;
 
 import junit.framework.TestCase;
 
-public class EntitySupportTest extends TestCase {
+/*public class EntitySupportTest extends TestCase {
 
     public void testNoIdentityAnnotationFail() {
         NoAnnotationEntity entity = new NoAnnotationEntity();
@@ -60,3 +60,4 @@ public class EntitySupportTest extends TestCase {
     }
 
 }
+*/

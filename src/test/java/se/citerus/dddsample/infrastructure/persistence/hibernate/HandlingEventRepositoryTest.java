@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
+/*public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
 
   HandlingEventRepository handlingEventRepository;
   CargoRepository cargoRepository;
@@ -57,4 +57,4 @@ public class HandlingEventRepositoryTest extends AbstractRepositoryTest {
     assertEquals(12, handlingEvents.size());
   }
 
-}
+}*/

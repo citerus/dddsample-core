@@ -6,7 +6,7 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 
 import java.util.List;
 
-public class LocationRepositoryTest extends AbstractRepositoryTest {
+/*public class LocationRepositoryTest extends AbstractRepositoryTest {
   private LocationRepository locationRepository;
   
   public void testFind() throws Exception {
@@ -28,4 +28,4 @@ public class LocationRepositoryTest extends AbstractRepositoryTest {
   public void setLocationRepository(LocationRepository locationRepository) {
     this.locationRepository = locationRepository;
   }
-}
+}*/

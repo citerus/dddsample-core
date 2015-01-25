@@ -1,10 +1,7 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
 import org.springframework.transaction.support.TransactionTemplate;
 import se.citerus.dddsample.application.util.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
@@ -12,7 +9,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
 import java.lang.reflect.Field;
 
-public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
+/*public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSourceSpringContextTests {
 
   SessionFactory sessionFactory;
   SimpleJdbcTemplate sjt;
@@ -76,3 +73,4 @@ public abstract class AbstractRepositoryTest extends AbstractTransactionalDataSo
     }
   }
 }
+*/

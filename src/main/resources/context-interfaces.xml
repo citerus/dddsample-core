@@ -8,7 +8,7 @@
 
   <import resource="classpath:META-INF/cxf/cxf.xml"/>
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+  <!--import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/-->
   <import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml"/>
 
 
@@ -25,11 +25,11 @@
   <!-- File upload directory scanner -->
 
 
-  <bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+  <!--bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
     <property name="period" value="5000"/>
     <property name="delay" value="5000"/>
     <property name="timerTask" ref="uploadDirectoryScanner"/>
-  </bean>
+  </bean-->
 
   <bean id="uploadDirectoryScanner" class="se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner">
     <property name="uploadDirectory" value="/tmp/upload"/>
@@ -39,13 +39,13 @@
 
   <bean id="handlingReportConsumptionSupport" class="se.citerus.dddsample.interfaces.handling.HandlingReportParser"/>
 
-  <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+  <!--bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
     <property name="scheduledTimerTasks">
       <list>
         <ref bean="scheduledTask"/>
       </list>
     </property>
-  </bean>
+  </bean-->
 
 
   <!-- RMI exposed booking service facade, which operates in an open Hibernate session -->

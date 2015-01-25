@@ -6,7 +6,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 
 import java.util.List;
 
-public class ItinerarySelectionCommandTest extends TestCase {
+/*public class ItinerarySelectionCommandTest extends TestCase {
 
   RouteAssignmentCommand command;
   MockHttpServletRequest request;
@@ -46,3 +46,4 @@ public class ItinerarySelectionCommandTest extends TestCase {
 
 
 }
+*/

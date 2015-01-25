@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class CargoRepositoryTest extends AbstractRepositoryTest {
+/*public class CargoRepositoryTest extends AbstractRepositoryTest {
 
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
@@ -168,4 +168,4 @@ public class CargoRepositoryTest extends AbstractRepositoryTest {
     assertFalse(trackingId.equals(trackingId2));
   }
 
-}
+}*/

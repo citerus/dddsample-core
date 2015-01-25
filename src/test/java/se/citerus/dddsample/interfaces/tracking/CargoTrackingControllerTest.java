@@ -16,7 +16,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 
-public class CargoTrackingControllerTest extends TestCase {
+/*public class CargoTrackingControllerTest extends TestCase {
   CargoTrackingController controller;
   MockHttpServletRequest request;
   MockHttpServletResponse response;
@@ -94,4 +94,4 @@ public class CargoTrackingControllerTest extends TestCase {
     assertEquals(command.getTrackingId(), fe.getArguments()[0]);
   }
 
-}
+}*/
