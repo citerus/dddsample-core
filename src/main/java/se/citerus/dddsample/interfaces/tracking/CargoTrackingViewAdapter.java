@@ -21,8 +21,9 @@ public final class CargoTrackingViewAdapter {
   private final Locale locale;
   private final List<HandlingEventViewAdapter> events;
   private final String FORMAT = "yyyy-MM-dd hh:mm";
+  private final TimeZone timeZone;
 
-  /**
+    /**
    * Constructor.
    *
    * @param cargo
@@ -31,15 +32,28 @@ public final class CargoTrackingViewAdapter {
    * @param handlingEvents
    */
   public CargoTrackingViewAdapter(Cargo cargo, MessageSource messageSource, Locale locale, List<HandlingEvent> handlingEvents) {
-    this.messageSource = messageSource;
-    this.locale = locale;
-    this.cargo = cargo;
-
-    this.events = new ArrayList<HandlingEventViewAdapter>(handlingEvents.size());
-    for (HandlingEvent handlingEvent : handlingEvents) {
-      events.add(new HandlingEventViewAdapter(handlingEvent));
-    }
+    this(cargo, messageSource, locale, handlingEvents, TimeZone.getDefault());
   }
+
+    /**
+     * Constructor.
+     *
+     * @param cargo
+     * @param messageSource
+     * @param locale
+     * @param handlingEvents
+     */
+    public CargoTrackingViewAdapter(Cargo cargo, MessageSource messageSource, Locale locale, List<HandlingEvent> handlingEvents, TimeZone tz) {
+      this.messageSource = messageSource;
+      this.locale = locale;
+      this.cargo = cargo;
+      this.timeZone = tz;
+
+      this.events = new ArrayList<HandlingEventViewAdapter>(handlingEvents.size());
+        for (HandlingEvent handlingEvent : handlingEvents) {
+          events.add(new HandlingEventViewAdapter(handlingEvent));
+        }
+    }
 
   /**
    * @param location a location
@@ -165,7 +179,9 @@ public final class CargoTrackingViewAdapter {
      * @return Time when the event was completed.
      */
     public String getTime() {
-      return new SimpleDateFormat(FORMAT).format(handlingEvent.completionTime());
+      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+      sdf.setTimeZone(timeZone);
+      return sdf.format(handlingEvent.completionTime());
     }
 
     /**
