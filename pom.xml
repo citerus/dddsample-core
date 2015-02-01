@@ -61,8 +61,8 @@
     </license>
   </licenses>
   <scm>
-    <developerConnection>scm:svn:https://dddsample.svn.sourceforge.net/svnroot/dddsample</developerConnection>
-    <url>http://ddd.sventon.org</url>
+    <developerConnection>scm:git:https://github.com/citerus/dddsample-core</developerConnection>
+    <url>https://github.com/citerus/dddsample-core</url>
   </scm>
   <properties>
     <spring.version>2.5.6</spring.version>
