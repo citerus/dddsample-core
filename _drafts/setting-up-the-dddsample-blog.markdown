@@ -3,6 +3,7 @@ layout: post
 title:  "Setting up the DDD Sample blog"
 date:   2015-03-08 22:37:00
 categories: blog meta
+author: patrik_fredriksson
 ---
 So, when we decided to resurrect the DDD Sample app, we also decided to create a blog to go with it. We expect to learn a bunch of new stuff during this exercise, and thought it would be fun to share some of these learnings with you as we
 went along.
