@@ -8,7 +8,7 @@ author: patrik_fredriksson
 
 Having a way of adding a reference to the blog post author is nice, and as it turns out this is supported by default in Jekyll by adding a `author: Author Name` to the [Front Matter](http://jekyllrb.com/docs/frontmatter/) part of the post. But to make it a bit more interesting you can easily add a few tweaks.
 
-With inspiration from [this post](http://blog.sorryapp.com/blogging-with-jekyll/2014/02/06/adding-authors-to-your-jekyll-site.html) I added a list of authors as laid out in the post, and then tweaked the `post.html` file in the `_layouts` directory to look like this:
+With inspiration from [this post](http://blog.sorryapp.com/blogging-with-jekyll/2014/02/06/adding-authors-to-your-jekyll-site.html) I added a list of authors as laid out in the post, and then tweaked the `post.html` file in the [`_layouts`](http://jekyllrb.com/docs/datafiles/) directory to look like this:
 
 {% highlight html %}
 ---
