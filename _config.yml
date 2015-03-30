@@ -2,7 +2,7 @@
 title: DDD Sample 2.0
 email: info@citerus.se
 description: > # this means to ignore newlines until "baseurl:"
-  This is the DDD Sample App 2.0 Development blog!
+  This is the DDD Sample App 2.0 dev blog!
 baseurl: "/dddsample-core" # the subpath of your site, e.g. /blog/
 url: "http://github.com/citerus/dddsample-core" # the base hostname & protocol for your site
 twitter_username: citerus_se

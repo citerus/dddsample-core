@@ -2,7 +2,7 @@
 layout: post
 title:  "DDD Sample App 2.0 Rationale"
 date:   2015-03-28 12:34:40
-categories: general
+tags: general
 author: patrik_fredriksson
 ---
 

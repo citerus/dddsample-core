@@ -2,7 +2,7 @@
 layout: post
 title:  "Adding author attribution to the blog"
 date:   2015-03-30 18:03:00
-categories: blog meta
+tags: blog meta
 author: patrik_fredriksson
 ---
 
