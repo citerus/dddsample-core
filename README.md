@@ -7,4 +7,6 @@ Discussion group: https://groups.google.com/forum/#!forum/dddsample
 
 Development blog: https://citerus.github.io/dddsample-core/
 
+Trello board: https://trello.com/b/PTDFRyxd
+
 [![Build Status](https://travis-ci.org/citerus/dddsample-core.svg?branch=master)](https://travis-ci.org/citerus/dddsample-core)
