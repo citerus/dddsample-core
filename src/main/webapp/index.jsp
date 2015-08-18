@@ -17,7 +17,7 @@
 <li>Administration of <a href="admin/list">booking and routing</a>.</li>
 </ul>
 <p>The Incident Logging application, that is used to register handling events, is a stand-alone application and a separate download.</p>
-<p>Please visit the <a href="http://dddsample.sf.net">project website</a> for more information and a screencast demonstration of how the application works.</p>
+<p>Please visit the <a href="https://github.com/citerus/dddsample-core/">project website</a> for more information and a screencast demonstration of how the application works.</p>
 <p><i>This project is a joint effort by Eric Evans' company <a href="http://www.domainlanguage.com" class="externalLink">Domain Language</a>
  and the Swedish software consulting company <a href="http://www.citerus.se" class="externalLink">Citerus</a>.</i></p>
 </body>

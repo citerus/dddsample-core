@@ -30,7 +30,7 @@ public class CargoTrackingViewAdapterTest extends TestCase {
     applicationContext.addMessage("cargo.status.IN_PORT", Locale.GERMAN, "In port {0}");
     applicationContext.refresh();
 
-    CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, applicationContext, Locale.GERMAN, events);
+    CargoTrackingViewAdapter adapter = new CargoTrackingViewAdapter(cargo, applicationContext, Locale.GERMAN, events, TimeZone.getTimeZone("Europe/Stockholm"));
 
     assertEquals("XYZ", adapter.getTrackingId());
     assertEquals("Hangzhou", adapter.getOrigin());

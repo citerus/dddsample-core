@@ -1,29 +1,22 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 
-public class CargoAdminControllerTest extends TestCase {
+public class CargoAdminControllerTest {
 
-  CargoAdminController controller;
-  BookingServiceFacade bookingServiceFacade;
-  MockHttpServletRequest request;
-  MockHttpServletResponse response;
+    @Test
+    public void testAssignItinerary() throws Exception {
+        CargoAdminController cargoAdminController = new CargoAdminController();
+        BookingServiceFacade bookingServiceFacade = EasyMock.createMock(BookingServiceFacade.class);
+        cargoAdminController.setBookingServiceFacade(bookingServiceFacade);
 
-  public CargoAdminControllerTest() {
-    controller = new CargoAdminController();
-    bookingServiceFacade = EasyMock.createMock(BookingServiceFacade.class);
-    controller.setBookingServiceFacade(bookingServiceFacade);
-  }
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "assignItinerary.html");
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-  public void testAssignItinerary() throws Exception {
-    request = new MockHttpServletRequest("GET","assignItinerary.html");
-    response = new MockHttpServletResponse();
-
-    controller.handleRequest(request, response);
-  }
-
+        cargoAdminController.handleRequest(request, response);
+    }
 }

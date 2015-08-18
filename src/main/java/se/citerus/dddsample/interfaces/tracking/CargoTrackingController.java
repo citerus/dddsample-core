@@ -1,9 +1,12 @@
 package se.citerus.dddsample.interfaces.tracking;
 
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -12,7 +15,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,35 +35,36 @@ import java.util.Map;
  * @see se.citerus.dddsample.interfaces.booking.web.CargoAdminController
  *
  */
-public final class CargoTrackingController extends SimpleFormController {
+@Controller
+public final class CargoTrackingController {
 
   private CargoRepository cargoRepository;
   private HandlingEventRepository handlingEventRepository;
+  private MessageSource messageSource;
 
-  public CargoTrackingController() {
-    setCommandClass(TrackCommand.class);
+  @RequestMapping(method = RequestMethod.GET)
+  public Map<String, CargoTrackingViewAdapter> get(final TrackCommand trackCommand) {
+      return new HashMap<>();
   }
 
-  @Override
-  protected ModelAndView onSubmit(final HttpServletRequest request, final HttpServletResponse response,
-                                  final Object command, final BindException errors) throws Exception {
+  @RequestMapping(method = RequestMethod.POST)
+  protected Map<String, CargoTrackingViewAdapter> onSubmit(final HttpServletRequest request,
+                                                           final TrackCommand command,
+                                                           final BindingResult bindingResult) {
+    new TrackCommandValidator().validate(command, bindingResult);
 
-    final TrackCommand trackCommand = (TrackCommand) command;
-    final String trackingIdString = trackCommand.getTrackingId();
-
-    final TrackingId trackingId = new TrackingId(trackingIdString);
+    final TrackingId trackingId = new TrackingId(command.getTrackingId());
     final Cargo cargo = cargoRepository.find(trackingId);
 
     final Map<String, CargoTrackingViewAdapter> model = new HashMap<String, CargoTrackingViewAdapter>();
     if (cargo != null) {
-      final MessageSource messageSource = getApplicationContext();
       final Locale locale = RequestContextUtils.getLocale(request);
       final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
       model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale, handlingEvents));
     } else {
-      errors.rejectValue("trackingId", "cargo.unknown_id", new Object[]{trackCommand.getTrackingId()}, "Unknown tracking id");
+      bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "Unknown tracking id");
     }
-    return showForm(request, response, errors, model);
+    return model;
   }
 
   public void setCargoRepository(CargoRepository cargoRepository) {
@@ -70,6 +73,10 @@ public final class CargoTrackingController extends SimpleFormController {
 
   public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
     this.handlingEventRepository = handlingEventRepository;
+  }
+
+  public void setMessageSource(MessageSource messageSource) {
+      this.messageSource = messageSource;
   }
 
 }
