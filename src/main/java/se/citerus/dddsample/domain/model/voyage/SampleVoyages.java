@@ -20,8 +20,8 @@ public class SampleVoyages {
   public static final Voyage CM005 = createVoyage("CM005", CHICAGO, HAMBURG);
   public static final Voyage CM006 = createVoyage("CM006", HAMBURG, HANGZOU);
   private static Voyage createVoyage(String id, Location from, Location to) {
-    return new Voyage(new VoyageNumber(id), new Schedule(Arrays.asList(
-      new CarrierMovement(from, to, new Date(), new Date())
+    return new Voyage(new VoyageNumber(id), new Schedule(Collections.singletonList(
+            new CarrierMovement(from, to, new Date(), new Date())
     )));
   }
 
@@ -108,7 +108,7 @@ public class SampleVoyages {
       addMovement(HONGKONG, toDate("2008-11-24", "07:00"), toDate("2008-11-28", "13:37")).
       build();
 
-  public static final Map<VoyageNumber, Voyage> ALL = new HashMap();
+  public static final Map<VoyageNumber, Voyage> ALL = new HashMap<>();
 
   static {
     for (Field field : SampleVoyages.class.getDeclaredFields()) {
@@ -124,7 +124,7 @@ public class SampleVoyages {
   }
 
   public static List<Voyage> getAll() {
-    return new ArrayList(ALL.values());
+    return new ArrayList<>(ALL.values());
   }
 
   public static Voyage lookup(VoyageNumber voyageNumber) {

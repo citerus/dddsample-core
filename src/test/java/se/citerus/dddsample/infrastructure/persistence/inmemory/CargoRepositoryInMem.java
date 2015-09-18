@@ -28,7 +28,7 @@ public class CargoRepositoryInMem implements CargoRepository {
    * Constructor.
    */
   public CargoRepositoryInMem() {
-    cargoDb = new HashMap<String, Cargo>();
+    cargoDb = new HashMap<>();
   }
 
   public Cargo find(final TrackingId trackingId) {
@@ -47,7 +47,7 @@ public class CargoRepositoryInMem implements CargoRepository {
   }
 
   public List<Cargo> findAll() {
-    return new ArrayList(cargoDb.values());
+    return new ArrayList<>(cargoDb.values());
   }
 
   public void init() throws Exception {

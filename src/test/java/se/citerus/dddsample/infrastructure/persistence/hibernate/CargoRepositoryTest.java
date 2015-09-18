@@ -23,19 +23,19 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
 
 import javax.sql.DataSource;
-
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {"/context-infrastructure-persistence.xml", "/context-domain.xml"})
@@ -146,7 +146,7 @@ public class CargoRepositoryTest {
         Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
         cargoRepository.store(cargo);
 
-        cargo.assignToRoute(new Itinerary(Arrays.asList(
+        cargo.assignToRoute(new Itinerary(Collections.singletonList(
                 new Leg(
                         voyageRepository.find(new VoyageNumber("0101")),
                         locationRepository.find(STOCKHOLM.unLocode()),
@@ -181,7 +181,7 @@ public class CargoRepositoryTest {
 
         Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
         Location legTo = locationRepository.find(new UnLocode("DEHAM"));
-        Itinerary newItinerary = new Itinerary(Arrays.asList(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
+        Itinerary newItinerary = new Itinerary(Collections.singletonList(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
 
         cargo.assignToRoute(newItinerary);
 

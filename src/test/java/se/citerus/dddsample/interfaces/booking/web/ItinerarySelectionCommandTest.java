@@ -1,6 +1,5 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.ServletRequestDataBinder;
