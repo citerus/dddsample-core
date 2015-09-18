@@ -22,59 +22,58 @@ import java.util.Map;
  * Controller for tracking cargo. This interface sits immediately on top of the
  * domain layer, unlike the booking interface which has a a remote facade and supporting
  * DTOs in between.
- * <p/>
+ * <p>
  * An adapter class, designed for the tracking use case, is used to wrap the domain model
  * to make it easier to work with in a web page rendering context. We do not want to apply
  * view rendering constraints to the design of our domain model, and the adapter
- * helps us shield the domain model classes. 
- * <p/>
+ * helps us shield the domain model classes.
+ * <p>
  *
  * @eee se.citerus.dddsample.application.web.CargoTrackingViewAdapter
  * @see se.citerus.dddsample.interfaces.booking.web.CargoAdminController
- *
  */
 @Controller
 public final class CargoTrackingController {
 
-  private CargoRepository cargoRepository;
-  private HandlingEventRepository handlingEventRepository;
-  private MessageSource messageSource;
+    private CargoRepository cargoRepository;
+    private HandlingEventRepository handlingEventRepository;
+    private MessageSource messageSource;
 
-  @RequestMapping(method = RequestMethod.GET)
-  public Map<String, CargoTrackingViewAdapter> get(final TrackCommand trackCommand) {
-      return new HashMap<>();
-  }
-
-  @RequestMapping(method = RequestMethod.POST)
-  protected Map<String, CargoTrackingViewAdapter> onSubmit(final HttpServletRequest request,
-                                                           final TrackCommand command,
-                                                           final BindingResult bindingResult) {
-    new TrackCommandValidator().validate(command, bindingResult);
-
-    final TrackingId trackingId = new TrackingId(command.getTrackingId());
-    final Cargo cargo = cargoRepository.find(trackingId);
-
-    final Map<String, CargoTrackingViewAdapter> model = new HashMap<String, CargoTrackingViewAdapter>();
-    if (cargo != null) {
-      final Locale locale = RequestContextUtils.getLocale(request);
-      final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
-      model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale, handlingEvents));
-    } else {
-      bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "Unknown tracking id");
+    @RequestMapping(method = RequestMethod.GET)
+    public Map<String, CargoTrackingViewAdapter> get(final TrackCommand trackCommand) {
+        return new HashMap<>();
     }
-    return model;
-  }
 
-  public void setCargoRepository(CargoRepository cargoRepository) {
-    this.cargoRepository = cargoRepository;
-  }
+    @RequestMapping(method = RequestMethod.POST)
+    protected Map<String, CargoTrackingViewAdapter> onSubmit(final HttpServletRequest request,
+                                                             final TrackCommand command,
+                                                             final BindingResult bindingResult) {
+        new TrackCommandValidator().validate(command, bindingResult);
 
-  public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
-    this.handlingEventRepository = handlingEventRepository;
-  }
+        final TrackingId trackingId = new TrackingId(command.getTrackingId());
+        final Cargo cargo = cargoRepository.find(trackingId);
 
-  public void setMessageSource(MessageSource messageSource) {
-      this.messageSource = messageSource;
-  }
+        final Map<String, CargoTrackingViewAdapter> model = new HashMap<String, CargoTrackingViewAdapter>();
+        if (cargo != null) {
+            final Locale locale = RequestContextUtils.getLocale(request);
+            final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
+            model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale, handlingEvents));
+        } else {
+            bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "Unknown tracking id");
+        }
+        return model;
+    }
+
+    public void setCargoRepository(CargoRepository cargoRepository) {
+        this.cargoRepository = cargoRepository;
+    }
+
+    public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
+        this.handlingEventRepository = handlingEventRepository;
+    }
+
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
 }
