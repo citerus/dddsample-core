@@ -1,7 +1,7 @@
 package se.citerus.dddsample.application.util;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
