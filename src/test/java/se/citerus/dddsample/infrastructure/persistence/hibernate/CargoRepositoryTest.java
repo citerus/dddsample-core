@@ -177,7 +177,7 @@ public class CargoRepositoryTest {
     public void testReplaceItinerary() {
         Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
         Long cargoId = getLongId(cargo);
-        assertEquals(3, jdbcTemplate.queryForInt("select count(*) from Leg where cargo_id = ?", cargoId));
+        assertEquals(3, jdbcTemplate.queryForObject("select count(*) from Leg where cargo_id = ?", new Object[]{cargoId}, Integer.class).intValue());
 
         Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
         Location legTo = locationRepository.find(new UnLocode("DEHAM"));
@@ -188,7 +188,7 @@ public class CargoRepositoryTest {
         cargoRepository.store(cargo);
         flush();
 
-        assertEquals(1, jdbcTemplate.queryForInt("select count(*) from Leg where cargo_id = ?", cargoId));
+        assertEquals(1, jdbcTemplate.queryForObject("select count(*) from Leg where cargo_id = ?", new Object[]{cargoId}, Integer.class).intValue());
     }
 
     @Test
