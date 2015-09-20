@@ -39,7 +39,7 @@
     <!-- RMI exposed booking service facade, which operates in an open Hibernate session -->
 
 
-    <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+    <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate4.support.OpenSessionInterceptor">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
@@ -87,7 +87,7 @@
     </bean>
 
     <bean id="openSessionInViewInterceptor"
-          class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+          class="org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 

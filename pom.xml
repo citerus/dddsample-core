@@ -169,7 +169,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>3.3.1.GA</version>
+      <version>4.3.5.Final</version>
       <!-- God, what is it with Java and logging frameworks... http://forum.hibernate.org/viewtopic.php?p=2401380 -->
       <exclusions>
         <exclusion>
@@ -178,7 +178,12 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
+      <dependency>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+          <version>3.2.1</version>
+      </dependency>
+      <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.5.6</version>
@@ -199,11 +204,6 @@
       <version>3.8.0.GA</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.4.0.GA</version>
-    </dependency>
-    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.3</version>
@@ -219,9 +219,9 @@
       <version>1.2.2</version>
     </dependency>
     <dependency>
-      <groupId>hsqldb</groupId>
+      <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>1.8.0.7</version>
+      <version>2.3.3</version>
     </dependency>
       <dependency>
           <groupId>javax.servlet</groupId>
