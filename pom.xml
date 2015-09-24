@@ -65,18 +65,27 @@
     <url>https://github.com/citerus/dddsample-core</url>
   </scm>
   <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Dependencies -->
     <spring.version>4.2.1.RELEASE</spring.version>
     <cxf.version>3.0.3</cxf.version>
+    <!-- Plugin versions -->
+    <maven-jetty-plugin.version>8.1.16.v20140903</maven-jetty-plugin.version>
+    <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+    <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
   </properties>
   <build>
     <plugins>
       <!-- Compiler -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <encoding>UTF-8</encoding>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
       </plugin>
 
@@ -84,10 +93,12 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
+        <version>${maven-jetty-plugin.version}</version>
       </plugin>
 
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
         <executions>
 
           <!-- Package booking service facade classes in separate jar -->
@@ -114,6 +125,7 @@
       <!-- Assembly -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-assembly-plugin.version}</version>
         <configuration>
           <descriptorRefs>
             <descriptorRef>src</descriptorRef>
