@@ -78,11 +78,7 @@ public class RouteAssignmentCommand {
     }
 
     public static Factory factory() {
-      return new Factory() {
-        public Object create() {
-          return new LegCommand();
-        }
-      };
+      return LegCommand::new;
     }
 
   }
