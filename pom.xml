@@ -71,7 +71,6 @@
     <spring.version>4.2.1.RELEASE</spring.version>
     <cxf.version>3.0.3</cxf.version>
     <!-- Plugin versions -->
-    <maven-jetty-plugin.version>8.1.16.v20140903</maven-jetty-plugin.version>
     <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
     <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
@@ -93,7 +92,6 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
-        <version>${maven-jetty-plugin.version}</version>
       </plugin>
 
       <plugin>
