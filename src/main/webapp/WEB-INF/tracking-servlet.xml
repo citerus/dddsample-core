@@ -19,4 +19,18 @@
 
   <bean id="trackCommandValidator" class="se.citerus.dddsample.interfaces.tracking.TrackCommandValidator"/>
 
+  <bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+    <property name="templateMode" value="HTML5" />
+    <property name="prefix" value="/WEB-INF/thymeleaf/pub/"/>
+    <property name="suffix" value=".html"/>
+  </bean>
+
+  <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+    <property name="templateResolver" ref="templateResolver" />
+  </bean>
+
+  <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+    <property name="templateEngine" ref="templateEngine" />
+  </bean>
+
 </beans>
