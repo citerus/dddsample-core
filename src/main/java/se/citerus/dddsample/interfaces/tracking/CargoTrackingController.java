@@ -33,7 +33,6 @@ import java.util.Map;
  * @see se.citerus.dddsample.interfaces.booking.web.CargoAdminController
  */
 @Controller
-@RequestMapping("/track")
 public final class CargoTrackingController {
 
     private CargoRepository cargoRepository;
@@ -41,8 +40,8 @@ public final class CargoTrackingController {
     private MessageSource messageSource;
 
     @RequestMapping(method = RequestMethod.GET)
-    public TrackCommand get() {
-        return new TrackCommand();
+    public Map<String, CargoTrackingViewAdapter> get(final TrackCommand trackCommand) {
+        return new HashMap<>();
     }
 
     @RequestMapping(method = RequestMethod.POST)
