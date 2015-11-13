@@ -65,27 +65,5 @@
     <url-pattern>/ws/*</url-pattern>
   </servlet-mapping>
 
-  <filter>
-    <filter-name>sitemesh</filter-name>
-    <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>sitemesh</filter-name>
-    <servlet-name>booking</servlet-name>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>sitemesh</filter-name>
-    <servlet-name>tracking</servlet-name>
-  </filter-mapping>
-
-  <jsp-config>
-    <jsp-property-group>
-      <url-pattern>*.jsp</url-pattern>
-      <include-prelude>/WEB-INF/jspf/include.jspf</include-prelude>
-      <trim-directive-whitespaces>true</trim-directive-whitespaces>
-    </jsp-property-group>
-  </jsp-config>
 
 </web-app>

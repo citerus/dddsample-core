@@ -1,0 +1,24 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<th:block th:fragment="adminbody">
+    <img id="logotype" th:src="@{/images/dddsample_logotype_small.png}" alt=""/>
+    <h1>Cargo Booking and Routing</h1>
+    <ul id="menu">
+        <li>
+            <a th:href="@{/admin/list.html}">
+                List all cargos
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admin/registration}">
+                Book new cargo
+            </a>
+        </li>
+    </ul>
+</th:block>
+</body>
+</html>

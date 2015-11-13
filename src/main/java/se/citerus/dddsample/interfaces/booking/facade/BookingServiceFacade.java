@@ -11,9 +11,9 @@ import java.util.List;
 
 /**
  * This facade shields the domain layer - model, services, repositories -
- * from concerns about such things as the user interface and remoting.
+ * from concerns about such things as the user interface.
  */
-public interface BookingServiceFacade extends Remote {
+public interface BookingServiceFacade {
 
   String bookNewCargo(String origin, String destination, Date arrivalDeadline) throws RemoteException;
 
