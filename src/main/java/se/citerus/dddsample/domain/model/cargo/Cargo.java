@@ -1,5 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import java.util.Collections;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
@@ -93,7 +94,7 @@ public class Cargo implements Entity<Cargo> {
    * @return The itinerary. Never null.
    */
   public Itinerary itinerary() {
-    return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+    return DomainObjectUtils.nullSafe(this.itinerary, new Itinerary(Collections.emptyList()));
   }
 
   /**

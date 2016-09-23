@@ -76,6 +76,8 @@
     <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
   </properties>
   <build>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
     <plugins>
       <!-- Compiler -->
       <plugin>
@@ -87,7 +89,11 @@
           <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.1</version>
+      </plugin>
       <!-- Jetty plugin -->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
@@ -130,10 +136,15 @@
           </descriptorRefs>
         </configuration>
       </plugin>
-      
+
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>2.11.8</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

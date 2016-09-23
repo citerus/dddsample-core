@@ -1,6 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
@@ -82,28 +83,6 @@ public class ItineraryTest extends TestCase {
 
     event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, ROTTERDAM);
     assertFalse(itinerary.isExpected(event));
-
-  }
-
-  public void testNextExpectedEvent() throws Exception {
-
-  }
-
-  public void testCreateItinerary() throws Exception {
-    try {
-      new Itinerary(new ArrayList<Leg>());
-      fail("An empty itinerary is not OK");
-    } catch (IllegalArgumentException iae) {
-      //Expected
-    }
-
-    try {
-      List<Leg> legs = null;
-      new Itinerary(legs);
-      fail("Null itinerary is not OK");
-    } catch (IllegalArgumentException iae) {
-      //Expected
-    }
   }
 
 }
