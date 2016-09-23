@@ -8,6 +8,8 @@ import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.location.Location$;
+import se.citerus.dddsample.domain.model.location.Locations;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.ValueObject;
@@ -101,7 +103,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {
-    return DomainObjectUtils.nullSafe(lastKnownLocation, Location.UNKNOWN);
+    return DomainObjectUtils.nullSafe(lastKnownLocation, Locations.UNKNOWN);
   }
 
   /**

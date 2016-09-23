@@ -25,13 +25,13 @@ case class Itinerary(legs: java.util.List[Leg]) {
 
     event.`type`() match {
       case RECEIVE =>
-        legs.get(0).loadLocation == event.location
+        legs.get(0).loadLocation === event.location
       case LOAD =>
-        legs.asScala.exists(leg => leg.loadLocation.sameIdentityAs(event.location) && leg.voyage.sameIdentityAs(event.voyage))
+        legs.asScala.exists(leg => leg.loadLocation === event.location && leg.voyage.sameIdentityAs(event.voyage))
       case UNLOAD =>
-        legs.asScala.exists(leg => leg.unloadLocation.sameIdentityAs(event.location) && leg.voyage.sameIdentityAs(event.voyage))
+        legs.asScala.exists(leg => leg.unloadLocation === event.location && leg.voyage.sameIdentityAs(event.voyage))
       case CLAIM =>
-        legs.asScala.last.unloadLocation.sameIdentityAs(event.location)
+        legs.asScala.last.unloadLocation === event.location
       case _ => true
     }
   }

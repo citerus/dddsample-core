@@ -21,7 +21,7 @@ public class LocationTest extends TestCase {
     assertFalse(location.equals(null));
 
     // Special UNKNOWN location is equal to itself
-    assertTrue(Location.UNKNOWN.equals(Location.UNKNOWN));
+    assertTrue(Locations.UNKNOWN.equals(Locations.UNKNOWN));
 
     try {
       new Location(null, null);

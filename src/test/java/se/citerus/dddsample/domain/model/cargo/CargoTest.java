@@ -8,6 +8,8 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+
+import se.citerus.dddsample.domain.model.location.Locations;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
@@ -42,7 +44,7 @@ public class CargoTest extends TestCase {
 
     assertEquals(NOT_ROUTED, cargo.delivery().routingStatus());
     assertEquals(NOT_RECEIVED, cargo.delivery().transportStatus());
-    assertEquals(Location.UNKNOWN, cargo.delivery().lastKnownLocation());
+    assertEquals(Locations.UNKNOWN, cargo.delivery().lastKnownLocation());
     assertEquals(Voyage.NONE, cargo.delivery().currentVoyage());    
   }
 
@@ -71,7 +73,7 @@ public class CargoTest extends TestCase {
   public void testlastKnownLocationUnknownWhenNoEvents() throws Exception {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
 
-    assertEquals(Location.UNKNOWN, cargo.delivery().lastKnownLocation());
+    assertEquals(Locations.UNKNOWN, cargo.delivery().lastKnownLocation());
   }
 
   public void testlastKnownLocationReceived() throws Exception {

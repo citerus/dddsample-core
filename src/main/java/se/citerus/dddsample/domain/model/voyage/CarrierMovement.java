@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.location.Locations;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
@@ -21,7 +22,7 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
-    Location.UNKNOWN, Location.UNKNOWN,
+    Locations.UNKNOWN, Locations.UNKNOWN,
     new Date(0), new Date(0)
   );
 
