@@ -11,10 +11,7 @@ import scala.collection.JavaConverters._
 /**
   * Created by dan on 2016-09-23.
   */
-
-
 case class Itinerary(legs: java.util.List[Leg]) {
-  private val END_OF_DAYS: Date = new Date(Long.MaxValue)
 
   require(legs != null, "Legs cannot be null")
   require(!legs.contains(null), "Legs cannot have null elements")
@@ -57,6 +54,4 @@ case class Itinerary(legs: java.util.List[Leg]) {
       new Date(legs.asScala.last.unloadTime.getTime)
     }
   }
-
-  private val id: Long = 0L
 }
