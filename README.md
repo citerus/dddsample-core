@@ -1,7 +1,17 @@
-# DDDSample
-This is the new home of the original DDD Sample app hosted at SourceForge. 
+# DDDSample (scala port)
 
-Our intention is to move everything from SourceForge to GitHub in due time while starting upgrading both the technical aspects as well as the DDD aspects of the DDD Sample.
+This is an ongoing project to port the original DDD Sample app to Scala.
+
+Build with [SBT](http://www.scala-sbt.org/)
+
+## Automatic code reloading
+
+SBT allows for compilation and server restart when source files change:
+
+```bash
+$ sbt
+> ~;jetty:stop;jetty:start
+```
 
 Discussion group: https://groups.google.com/forum/#!forum/dddsample
 
