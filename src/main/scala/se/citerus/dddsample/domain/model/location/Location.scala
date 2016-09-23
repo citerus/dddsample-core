@@ -18,7 +18,3 @@ case class Location(unLocode: UnLocode, name: String) extends Entity[Location] {
 
   private val id: Long = 0L
 }
-
-object Location {
-  val UNKNOWN = new Location(new UnLocode("XXXXX"), "Unknown location")
-}

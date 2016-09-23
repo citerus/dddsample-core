@@ -4,7 +4,7 @@ import java.util.{Collections, Date}
 
 import se.citerus.dddsample.domain.model.handling.HandlingEvent
 import se.citerus.dddsample.domain.model.handling.HandlingEvent.Type._
-import se.citerus.dddsample.domain.model.location.Location
+import se.citerus.dddsample.domain.model.location.{Location, Locations}
 
 import scala.collection.JavaConverters._
 
@@ -37,12 +37,12 @@ case class Itinerary(legs: java.util.List[Leg]) {
   }
 
   private[cargo]  def initialDepartureLocation: Location = {
-    if (legs.isEmpty) Location.UNKNOWN
+    if (legs.isEmpty) Locations.UNKNOWN
     else legs.asScala.head.loadLocation
   }
 
   private[cargo]  def finalArrivalLocation: Location = {
-    if (legs.isEmpty) Location.UNKNOWN
+    if (legs.isEmpty) Locations.UNKNOWN
     else legs.asScala.last.unloadLocation
   }
 
