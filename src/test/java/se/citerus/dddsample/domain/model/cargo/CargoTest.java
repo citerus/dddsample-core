@@ -48,11 +48,11 @@ public class CargoTest extends TestCase {
 
   public void testRoutingStatus() throws Exception {
     final Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(STOCKHOLM, MELBOURNE, new Date()));
-    final ItineraryScala good = new ItineraryScala();
-    final ItineraryScala bad = new ItineraryScala();
+    final Itinerary good = new Itinerary();
+    final Itinerary bad = new Itinerary();
     final RouteSpecification acceptOnlyGood = new RouteSpecification(cargo.origin(), cargo.routeSpecification().destination(), new Date()) {
       @Override
-      public boolean isSatisfiedBy(ItineraryScala itinerary) {
+      public boolean isSatisfiedBy(Itinerary itinerary) {
         return itinerary == good;
       }
     };
@@ -289,7 +289,7 @@ public class CargoTest extends TestCase {
   private Cargo setUpCargoWithItinerary(Location origin, Location midpoint, Location destination) {
     Cargo cargo = new Cargo(new TrackingId("CARGO1"), new RouteSpecification(origin, destination, new Date()));
 
-    ItineraryScala itinerary = new ItineraryScala(
+    Itinerary itinerary = new Itinerary(
       Arrays.asList(
         new Leg(voyage, origin, midpoint, new Date(), new Date()),
         new Leg(voyage, midpoint, destination, new Date(), new Date())
