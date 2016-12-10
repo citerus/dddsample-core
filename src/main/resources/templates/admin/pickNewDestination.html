@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<div th:replace="templates/adminDecorator :: adminbody"/>
+<div th:replace="adminDecorator :: adminbody"/>
 <div id="container">
   <form th:action="@{/admin/changeDestination}" method="post">
   <input type="hidden" name="trackingId" th:value="${cargo.trackingId}"/>

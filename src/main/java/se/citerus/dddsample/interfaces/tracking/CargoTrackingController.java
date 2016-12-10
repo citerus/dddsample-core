@@ -13,7 +13,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,20 +40,21 @@ public final class CargoTrackingController {
     private MessageSource messageSource;
 
     @RequestMapping(method = RequestMethod.GET)
-    public TrackCommand get() {
-        return new TrackCommand();
+    public String get(final Map<String, Object> model) {
+        model.put("trackCommand", new TrackCommand());
+        return "track";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected Map<String, CargoTrackingViewAdapter> onSubmit(final HttpServletRequest request,
+    protected String onSubmit(final HttpServletRequest request,
                                                              final TrackCommand command,
+                                                             final Map<String, Object> model,
                                                              final BindingResult bindingResult) {
         new TrackCommandValidator().validate(command, bindingResult);
 
         final TrackingId trackingId = new TrackingId(command.getTrackingId());
         final Cargo cargo = cargoRepository.find(trackingId);
 
-        final Map<String, CargoTrackingViewAdapter> model = new HashMap<String, CargoTrackingViewAdapter>();
         if (cargo != null) {
             final Locale locale = RequestContextUtils.getLocale(request);
             final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
@@ -62,7 +62,7 @@ public final class CargoTrackingController {
         } else {
             bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "Unknown tracking id");
         }
-        return model;
+        return "track";
     }
 
     public void setCargoRepository(CargoRepository cargoRepository) {

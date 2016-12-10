@@ -15,7 +15,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.util.Date;
 
-public final class HandlingEventServiceImpl implements HandlingEventService {
+public class HandlingEventServiceImpl implements HandlingEventService {
 
   private final ApplicationEvents applicationEvents;
   private final HandlingEventRepository handlingEventRepository;

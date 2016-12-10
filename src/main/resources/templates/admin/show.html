@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
 </head>
 <body>
-<div th:replace="templates/adminDecorator :: adminbody"/>
+<div th:replace="adminDecorator :: adminbody"/>
 <div id="container">
     <table>
         <caption th:text="'Details for cargo ' + ${cargo.trackingId}"></caption>

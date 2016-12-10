@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public final class BookingServiceImpl implements BookingService {
+public class BookingServiceImpl implements BookingService {
 
   private final CargoRepository cargoRepository;
   private final LocationRepository locationRepository;
