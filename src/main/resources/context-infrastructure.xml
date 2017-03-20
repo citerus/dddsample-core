@@ -16,7 +16,7 @@
   </bean>
 
   <bean id="graphTraversalService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-    <property name="serviceUrl" value="rmi://localhost:1099/PathFinder"/>
+    <property name="serviceUrl" value="rmi://localhost:1199/PathFinder"/>
     <property name="serviceInterface" value="com.pathfinder.api.GraphTraversalService"/>
   </bean>
 
