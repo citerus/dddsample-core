@@ -15,11 +15,6 @@ public class CarrierMovementTest extends TestCase {
     } catch (IllegalArgumentException expected) {}
 
     try {
-      new CarrierMovement(null, null, new Date(), new Date());
-      fail("Should not accept null constructor arguments");
-    } catch (IllegalArgumentException expected) {}
-
-    try {
       new CarrierMovement(STOCKHOLM, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
     } catch (IllegalArgumentException expected) {}
