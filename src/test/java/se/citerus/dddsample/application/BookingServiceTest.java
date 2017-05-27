@@ -1,18 +1,20 @@
 package se.citerus.dddsample.application;
 
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
 import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
 public class BookingServiceTest extends TestCase {
 
@@ -42,7 +44,7 @@ public class BookingServiceTest extends TestCase {
     replay(cargoRepository, locationRepository);
 
     TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
-    assertEquals(expectedTrackingId, trackingId);
+    assertThat(trackingId).isEqualTo(expectedTrackingId);
   }
 
   protected void tearDown() throws Exception {

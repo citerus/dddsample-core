@@ -1,12 +1,14 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class RouteSpecificationTest extends TestCase {
 
@@ -38,7 +40,7 @@ public class RouteSpecificationTest extends TestCase {
       HONGKONG, CHICAGO, toDate("2009-03-01")
     );
 
-    assertTrue(routeSpecification.isSatisfiedBy(itinerary));
+    assertThat(routeSpecification.isSatisfiedBy(itinerary)).isTrue();
   }
 
   public void testIsSatisfiedBy_WrongOrigin() {
@@ -46,7 +48,7 @@ public class RouteSpecificationTest extends TestCase {
       HANGZOU, CHICAGO, toDate("2009-03-01")
     );
 
-    assertFalse(routeSpecification.isSatisfiedBy(itinerary));
+    assertThat(routeSpecification.isSatisfiedBy(itinerary)).isFalse();
   }
 
   public void testIsSatisfiedBy_WrongDestination() {
@@ -54,7 +56,7 @@ public class RouteSpecificationTest extends TestCase {
       HONGKONG, DALLAS, toDate("2009-03-01")
     );
 
-    assertFalse(routeSpecification.isSatisfiedBy(itinerary));
+    assertThat(routeSpecification.isSatisfiedBy(itinerary)).isFalse();
   }
 
   public void testIsSatisfiedBy_MissedDeadline() {
@@ -62,7 +64,7 @@ public class RouteSpecificationTest extends TestCase {
       HONGKONG, CHICAGO, toDate("2009-02-15")
     );
 
-    assertFalse(routeSpecification.isSatisfiedBy(itinerary));
+    assertThat(routeSpecification.isSatisfiedBy(itinerary)).isFalse();
   }
 
 }

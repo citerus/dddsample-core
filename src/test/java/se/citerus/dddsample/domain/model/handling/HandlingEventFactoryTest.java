@@ -1,16 +1,12 @@
 package se.citerus.dddsample.domain.model.handling;
 
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.location.UnLocode;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
@@ -18,6 +14,12 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationReposito
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
 import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 
 public class HandlingEventFactoryTest extends TestCase {
 
@@ -53,12 +55,12 @@ public class HandlingEventFactoryTest extends TestCase {
       new Date(), new Date(100), trackingId, voyageNumber, unLocode, Type.LOAD
     );
 
-    assertNotNull(handlingEvent);
-    assertEquals(STOCKHOLM, handlingEvent.location());
-    assertEquals(CM001, handlingEvent.voyage());
-    assertEquals(cargo, handlingEvent.cargo());
-    assertEquals(new Date(100), handlingEvent.completionTime());
-    assertTrue(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1)));
+    assertThat(handlingEvent).isNotNull();
+    assertThat(handlingEvent.location()).isEqualTo(STOCKHOLM);
+    assertThat(handlingEvent.voyage()).isEqualTo(CM001);
+    assertThat(handlingEvent.cargo()).isEqualTo(cargo);
+    assertThat(handlingEvent.completionTime()).isEqualTo(new Date(100));
+    assertThat(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1))).isTrue();
   }
 
   public void testCreateHandlingEventWithoutCarrierMovement() throws Exception {
@@ -71,12 +73,12 @@ public class HandlingEventFactoryTest extends TestCase {
       new Date(), new Date(100), trackingId, null, unLocode, Type.CLAIM
     );
 
-    assertNotNull(handlingEvent);
-    assertEquals(STOCKHOLM, handlingEvent.location());
-    assertEquals(Voyage.NONE, handlingEvent.voyage());
-    assertEquals(cargo, handlingEvent.cargo());
-    assertEquals(new Date(100), handlingEvent.completionTime());
-    assertTrue(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1)));
+    assertThat(handlingEvent).isNotNull();
+    assertThat(handlingEvent.location()).isEqualTo(STOCKHOLM);
+    assertThat(handlingEvent.voyage()).isEqualTo(Voyage.NONE);
+    assertThat(handlingEvent.cargo()).isEqualTo(cargo);
+    assertThat(handlingEvent.completionTime()).isEqualTo(new Date(100));
+    assertThat(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1))).isTrue();
   }
 
   public void testCreateHandlingEventUnknownLocation() throws Exception {
