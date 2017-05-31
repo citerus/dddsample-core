@@ -4,11 +4,9 @@ import com.pathfinder.api.GraphTraversalService;
 import com.pathfinder.internal.GraphDAO;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
@@ -17,6 +15,10 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationReposito
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class ExternalRoutingServiceTest extends TestCase {
 
@@ -54,23 +56,23 @@ public class ExternalRoutingServiceTest extends TestCase {
     replay(voyageRepository);
 
     List<Itinerary> candidates = externalRoutingService.fetchRoutesForSpecification(routeSpecification);
-    assertNotNull(candidates);
+    assertThat(candidates).isNotNull();
 
     for (Itinerary itinerary : candidates) {
       List<Leg> legs = itinerary.legs();
-      assertNotNull(legs);
-      assertFalse(legs.isEmpty());
+      assertThat(legs).isNotNull();
+      assertThat(legs.isEmpty()).isFalse();
 
       // Cargo origin and start of first leg should match
-      assertEquals(cargo.origin(), legs.get(0).loadLocation());
+      assertThat(legs.get(0).loadLocation()).isEqualTo(cargo.origin());
 
       // Cargo final destination and last leg stop should match
       Location lastLegStop = legs.get(legs.size() - 1).unloadLocation();
-      assertEquals(cargo.routeSpecification().destination(), lastLegStop);
+      assertThat(lastLegStop).isEqualTo(cargo.routeSpecification().destination());
 
       for (int i = 0; i < legs.size() - 1; i++) {
         // Assert that all legs are connected
-        assertEquals(legs.get(i).unloadLocation(), legs.get(i + 1).loadLocation());
+        assertThat(legs.get(i + 1).loadLocation()).isEqualTo(legs.get(i).unloadLocation());
       }
     }
 
