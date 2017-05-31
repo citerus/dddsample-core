@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +15,7 @@ public class AcceptanceTest {
 
     @Before
     public void setup() {
-        driver = new ChromeDriver();
+        driver = new PhantomJSDriver();
     }
 
     @Test
