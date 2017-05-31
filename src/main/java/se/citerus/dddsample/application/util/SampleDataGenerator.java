@@ -1,5 +1,7 @@
 package se.citerus.dddsample.application.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -33,6 +35,7 @@ import java.util.Date;
  * Provides sample data.
  */
 public class SampleDataGenerator implements ServletContextListener {
+  private static final Log logger = LogFactory.getLog(SampleDataGenerator.class);
 
   private static final Timestamp base; 
   static {
@@ -202,7 +205,7 @@ public class SampleDataGenerator implements ServletContextListener {
   }
 
   public static void loadHibernateData(TransactionTemplate tt, final SessionFactory sf, final HandlingEventFactory handlingEventFactory, final HandlingEventRepository handlingEventRepository) {
-    System.out.println("*** Loading Hibernate data ***");
+    logger.info("*** Loading Hibernate data ***");
     tt.execute(new TransactionCallbackWithoutResult() {
       @Override
       protected void doInTransactionWithoutResult(TransactionStatus status) {
