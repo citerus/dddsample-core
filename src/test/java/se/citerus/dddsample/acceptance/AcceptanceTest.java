@@ -1,4 +1,4 @@
-package se.citerus.dddsample;
+package se.citerus.dddsample.acceptance;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,7 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.Assert.assertEquals;
 
-public class AcceptanceTests {
+public class AcceptanceTest {
     private WebDriver driver;
 
     @Before
@@ -27,10 +27,6 @@ public class AcceptanceTests {
         adminLink.click();
 
         assertEquals("Tracking cargo", driver.getTitle());
-//
-//        WebElement trackingIdInput = driver.findElement(By.id("idInput"));
-//        trackingIdInput.submit();
-
     }
 
     @Test
