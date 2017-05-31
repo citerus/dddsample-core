@@ -1,7 +1,6 @@
 package se.citerus.dddsample.acceptance;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
@@ -11,6 +10,7 @@ public abstract class AbstractAcceptanceTest {
     @Before
     public void setup() {
         driver = new PhantomJSDriver();
+        screenshotTestRule.updateDriver(driver);
     }
 
     @After
@@ -18,4 +18,7 @@ public abstract class AbstractAcceptanceTest {
         driver.quit();
 
     }
+    @Rule
+    public ScreenshotTestRule screenshotTestRule = new ScreenshotTestRule();
+
 }
