@@ -88,6 +88,26 @@
         </configuration>
       </plugin>
 
+        <!-- Downloader for Selenium server -->
+        <plugin>
+            <groupId>com.lazerycode.selenium</groupId>
+            <artifactId>driver-binary-downloader-maven-plugin</artifactId>
+            <version>1.0.14</version>
+            <configuration>
+                <!-- root directory that downloaded driver binaries will be stored in -->
+                <rootStandaloneServerDirectory>/tmp</rootStandaloneServerDirectory>
+                <!-- Where you want to store downloaded zip files -->
+                <downloadedZipFileDirectory>/tmp</downloadedZipFileDirectory>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>selenium</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
       <!-- Jetty plugin -->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
@@ -146,7 +166,13 @@
       <version>3.4.0</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
+      <dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+          <version>2.28.0</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
       <version>${spring.version}</version>
