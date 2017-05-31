@@ -3,6 +3,8 @@ package se.citerus.dddsample.acceptance.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,6 +16,8 @@ public class LaunchPage {
         this.driver = driver;
         this.baseUrl = baseUrl;
         driver.get(baseUrl + "dddsample");
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.titleContains("DDDSample"));
 
         assertEquals("DDDSample", driver.getTitle());
     }
