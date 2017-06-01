@@ -4,7 +4,10 @@ jdk:
 
 before_script:
   - mvn jetty:run & # start a Web server
-  - sleep 3
+  - sleep 5
+
+script:
+  - mvn test
 
 after_script:
   - mvn jetty:stop
