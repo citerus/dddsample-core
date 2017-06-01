@@ -12,7 +12,7 @@ public class LaunchPage {
     public LaunchPage(WebDriver driver, String baseUrl) {
         this.driver = driver;
         this.baseUrl = baseUrl;
-        driver.get(baseUrl + "dddsample");
+        driver.get(baseUrl);
         assertEquals("DDDSample", driver.getTitle());
     }
 

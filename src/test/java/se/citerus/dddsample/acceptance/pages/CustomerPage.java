@@ -26,4 +26,14 @@ public class CustomerPage {
         WebElement cargoSummary = driver.findElement(By.cssSelector("#result h2"));
         assertTrue(cargoSummary.getText().endsWith(expectedLocation));
     }
+
+    public void expectErrorFor(String expectedErrorMessage) {
+        WebElement error = driver.findElement(By.cssSelector(".error"));
+        assertTrue(error.getText().endsWith(expectedErrorMessage));
+    }
+
+    public void expectNotificationOf(String expectedNotificationMessage) {
+        WebElement error = driver.findElement(By.cssSelector(".notify"));
+        assertTrue(error.getText().endsWith(expectedNotificationMessage));
+    }
 }
