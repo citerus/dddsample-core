@@ -5,5 +5,5 @@ jdk:
 before_script:
   - mvn jetty:run  # start a Web server
 
-script
+script:
   - mvn test
