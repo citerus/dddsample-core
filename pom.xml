@@ -112,6 +112,11 @@
         <plugin>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
+            <configuration>
+                <stopPort>9966</stopPort>
+                <stopKey>foo</stopKey>
+                <stopWait>10</stopWait>
+            </configuration>
         </plugin>
 
         <plugin>
