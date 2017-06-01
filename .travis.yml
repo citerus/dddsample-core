@@ -4,4 +4,3 @@ jdk:
 
 before_script:
   - mvn jetty:run  # start a Web server
-  - sleep 3 # give Web server some time to bind to sockets, etc
