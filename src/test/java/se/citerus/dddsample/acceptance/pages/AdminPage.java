@@ -33,4 +33,10 @@ public class AdminPage {
         Optional<WebElement> matchingCargo = cargoList.stream().filter(cargo -> cargo.getText().equals(expectedTrackingId)).findFirst();
         return matchingCargo.isPresent();
     }
+
+    public CargoDetailsPage showDetailsFor(String cargoTrackingId) {
+        driver.findElement(By.linkText(cargoTrackingId)).click();
+
+        return new CargoDetailsPage(driver);
+    }
 }

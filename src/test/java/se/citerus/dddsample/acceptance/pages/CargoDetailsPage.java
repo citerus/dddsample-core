@@ -4,7 +4,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class CargoDetailsPage {
     public static final String TRACKING_ID_HEADER = "Details for cargo ";
@@ -28,5 +33,29 @@ public class CargoDetailsPage {
         driver.findElement(By.linkText("List all cargos")).click();
 
         return new AdminPage(driver);
+    }
+
+    public void expectOriginOf(String expectedOrigin) {
+        String actualOrigin = driver.findElement(By.xpath("//div[@id='container']/table/tbody/tr[1]/td[2]")).getText();
+
+        assertEquals(expectedOrigin, actualOrigin);
+    }
+
+    public void expectDestinationOf(String expectedDestination) {
+        String actualDestination = driver.findElement(By.xpath("//div[@id='container']/table/tbody/tr[2]/td[2]")).getText();
+
+        assertEquals(expectedDestination, actualDestination);
+    }
+
+    public CargoDestinationPage changeDestination() {
+        driver.findElement(By.linkText("Change destination")).click();
+
+        return new CargoDestinationPage(driver);
+    }
+
+    public void expectArrivalDeadlineOf(LocalDate expectedArrivalDeadline) {
+        String actualArrivalDeadline = driver.findElement(By.xpath("//div[@id='container']/table/tbody/tr[4]/td[2]")).getText();
+
+        assertEquals(expectedArrivalDeadline.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), actualArrivalDeadline);
     }
 }

@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -35,5 +37,11 @@ public class CargoBookingPage {
         driver.findElement(By.name("originUnlocode")).submit();
 
         return new CargoDetailsPage(driver);
+    }
+
+    public void selectArrivalDeadline(LocalDate arrivalDeadline) {
+        WebElement datePicker = driver.findElement(By.id("arrivalDeadline"));
+        datePicker.clear();
+        datePicker.sendKeys(arrivalDeadline.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
     }
 }
