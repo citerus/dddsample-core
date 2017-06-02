@@ -25,14 +25,15 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
     public void adminSiteCanBookNewCargo() {
         LaunchPage home = new LaunchPage(driver,"http://localhost:8080/");
         AdminPage adminPage = home.goToAdminPage();
+
         CargoBookingPage cargoBookingPage = adminPage.bookNewCargo();
         cargoBookingPage.selectOrigin("NLRTM");
         cargoBookingPage.selectDestination("USDAL");
-        LocalDate arrivalDeadline = LocalDate.now().plus(2, ChronoUnit.WEEKS);
+        LocalDate arrivalDeadline = LocalDate.now().plus(3, ChronoUnit.WEEKS);
         cargoBookingPage.selectArrivalDeadline(arrivalDeadline);
         CargoDetailsPage cargoDetailsPage = cargoBookingPage.book();
-        String newCargoTrackingId = cargoDetailsPage.getTrackingId();
 
+        String newCargoTrackingId = cargoDetailsPage.getTrackingId();
         adminPage = cargoDetailsPage.listAllCargo();
         assertTrue("Cargo list doesn't contain " + newCargoTrackingId, adminPage.listedCargoContains(newCargoTrackingId));
 
@@ -43,7 +44,7 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
         CargoDestinationPage cargoDestinationPage = cargoDetailsPage.changeDestination();
         cargoDetailsPage = cargoDestinationPage.selectDestinationTo("AUMEL");
         cargoDetailsPage.expectDestinationOf("AUMEL");
-//        cargoDetailsPage.expectArrivalDeadlineOf(arrivalDeadline);
+        cargoDetailsPage.expectArrivalDeadlineOf(arrivalDeadline);
 
     }
 }
