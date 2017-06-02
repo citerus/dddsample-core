@@ -88,15 +88,40 @@
         </configuration>
       </plugin>
 
-      <!-- Jetty plugin -->
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>maven-jetty-plugin</artifactId>
-      </plugin>
+        <!-- Downloader for Selenium server -->
+        <plugin>
+            <groupId>com.lazerycode.selenium</groupId>
+            <artifactId>driver-binary-downloader-maven-plugin</artifactId>
+            <version>1.0.14</version>
+            <configuration>
+                <!-- root directory that downloaded driver binaries will be stored in -->
+                <rootStandaloneServerDirectory>/tmp</rootStandaloneServerDirectory>
+                <!-- Where you want to store downloaded zip files -->
+                <downloadedZipFileDirectory>/tmp</downloadedZipFileDirectory>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>selenium</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven-jar-plugin.version}</version>
+      <!-- Jetty plugin -->
+        <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <configuration>
+                <stopPort>9966</stopPort>
+                <stopKey>foo</stopKey>
+                <stopWait>10</stopWait>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>${maven-jar-plugin.version}</version>
         <executions>
 
           <!-- Package booking service facade classes in separate jar -->
@@ -141,6 +166,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-server</artifactId>
+      <version>3.4.0</version>
+      <scope>test</scope>
+    </dependency>
+      <dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+          <version>2.28.0</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
       <version>${spring.version}</version>
