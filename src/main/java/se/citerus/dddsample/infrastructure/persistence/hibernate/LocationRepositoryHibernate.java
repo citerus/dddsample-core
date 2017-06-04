@@ -8,7 +8,7 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import java.util.List;
 
 @Repository
-public final class LocationRepositoryHibernate extends HibernateRepository implements LocationRepository {
+public class LocationRepositoryHibernate extends HibernateRepository implements LocationRepository {
 
   public Location find(final UnLocode unLocode) {
     return (Location) getSession().

@@ -33,6 +33,7 @@ import java.util.Map;
  * @see se.citerus.dddsample.interfaces.tracking.CargoTrackingController
  */
 @Controller
+@RequestMapping("/admin")
 public final class CargoAdminController {
 
     private BookingServiceFacade bookingServiceFacade;
@@ -54,7 +55,7 @@ public final class CargoAdminController {
 
         model.put("unlocodes", unLocodeStrings);
         model.put("locations", dtoList);
-        return "templates/admin/registrationForm";
+        return "admin/registrationForm";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -72,7 +73,7 @@ public final class CargoAdminController {
         List<CargoRoutingDTO> cargoList = bookingServiceFacade.listAllCargos();
 
         model.put("cargoList", cargoList);
-        return "templates/admin/list";
+        return "admin/list";
     }
 
     @RequestMapping("/show")
@@ -80,7 +81,7 @@ public final class CargoAdminController {
         String trackingId = request.getParameter("trackingId");
         CargoRoutingDTO dto = bookingServiceFacade.loadCargoForRouting(trackingId);
         model.put("cargo", dto);
-        return "templates/admin/show";
+        return "admin/show";
     }
 
     @RequestMapping("/selectItinerary")
@@ -93,7 +94,7 @@ public final class CargoAdminController {
         CargoRoutingDTO cargoDTO = bookingServiceFacade.loadCargoForRouting(trackingId);
         model.put("cargo", cargoDTO);
 
-        return "templates/admin/selectItinerary";
+        return "admin/selectItinerary";
     }
 
     @RequestMapping(value = "/assignItinerary", method = RequestMethod.POST)
@@ -126,7 +127,7 @@ public final class CargoAdminController {
         CargoRoutingDTO cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
         model.put("cargo", cargo);
 
-        return "templates/admin/pickNewDestination";
+        return "admin/pickNewDestination";
     }
 
     @RequestMapping(value = "/changeDestination", method = RequestMethod.POST)

@@ -9,7 +9,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
  * Hibernate implementation of CarrierMovementRepository.
  */
 @Repository
-public final class VoyageRepositoryHibernate extends HibernateRepository implements VoyageRepository {
+public class VoyageRepositoryHibernate extends HibernateRepository implements VoyageRepository {
 
   public Voyage find(final VoyageNumber voyageNumber) {
     return (Voyage) getSession().
