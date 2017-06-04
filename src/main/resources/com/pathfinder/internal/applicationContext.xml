@@ -8,7 +8,7 @@
     <constructor-arg ref="graphDAO"/>
   </bean>
 
-  <bean id="graphDAO" class="com.pathfinder.internal.GraphDAO"/>
+  <bean id="graphDAO" class="com.pathfinder.internal.GraphDAOStub"/>
 
   <bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
     <property name="port" value="1199"/>

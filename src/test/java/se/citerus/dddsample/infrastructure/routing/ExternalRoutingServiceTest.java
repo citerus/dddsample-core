@@ -1,7 +1,7 @@
 package se.citerus.dddsample.infrastructure.routing;
 
 import com.pathfinder.api.GraphTraversalService;
-import com.pathfinder.internal.GraphDAO;
+import com.pathfinder.internal.GraphDAOStub;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
@@ -31,8 +31,8 @@ public class ExternalRoutingServiceTest extends TestCase {
     voyageRepository = createMock(VoyageRepository.class);
     externalRoutingService.setVoyageRepository(voyageRepository);
 
-    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO() {
-      public List<String> listLocations() {
+    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAOStub() {
+      public List<String> listAllNodes() {
         return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
       }
 

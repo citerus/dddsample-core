@@ -13,14 +13,14 @@ import java.util.Properties;
 public interface GraphTraversalService extends Remote {
 
   /**
-   * @param originUnLocode origin UN Locode
-   * @param destinationUnLocode destination UN Locode
+   * @param origin origin point
+   * @param destination destination point
    * @param limitations restrictions on the path selection, as key-value according to some API specification
    * @return A list of transit paths
    * @throws RemoteException RMI problem
    */
-  List<TransitPath> findShortestPath(String originUnLocode,
-                                     String destinationUnLocode,
+  List<TransitPath> findShortestPath(String origin,
+                                     String destination,
                                      Properties limitations) throws RemoteException;
 
 }

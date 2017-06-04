@@ -18,20 +18,20 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     this.random = new Random();
   }
 
-  public List<TransitPath> findShortestPath(final String originUnLocode,
-                                            final String destinationUnLocode,
+  public List<TransitPath> findShortestPath(final String originNode,
+                                            final String destinationNode,
                                             final Properties limitations) {
     Date date = nextDate(new Date());
 
-    List<String> allVertices = dao.listLocations();
-    allVertices.remove(originUnLocode);
-    allVertices.remove(destinationUnLocode);
+    List<String> allVertices = dao.listAllNodes();
+    allVertices.remove(originNode);
+    allVertices.remove(destinationNode);
 
     final int candidateCount = getRandomNumberOfCandidates();
     final List<TransitPath> candidates = new ArrayList<TransitPath>(candidateCount);
 
     for (int i = 0; i < candidateCount; i++) {
-      allVertices = getRandomChunkOfLocations(allVertices);
+      allVertices = getRandomChunkOfNodes(allVertices);
       final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>(allVertices.size() - 1);
       final String firstLegTo = allVertices.get(0);
 
@@ -40,8 +40,8 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
       date = nextDate(toDate);
 
       transitEdges.add(new TransitEdge(
-        dao.getVoyageNumber(originUnLocode, firstLegTo),
-        originUnLocode, firstLegTo, fromDate, toDate));
+        dao.getTransitEdge(originNode, firstLegTo),
+        originNode, firstLegTo, fromDate, toDate));
 
       for (int j = 0; j < allVertices.size() - 1; j++) {
         final String curr = allVertices.get(j);
@@ -49,15 +49,15 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
         fromDate = nextDate(date);
         toDate = nextDate(fromDate);
         date = nextDate(toDate);
-        transitEdges.add(new TransitEdge(dao.getVoyageNumber(curr, next), curr, next, fromDate, toDate));
+        transitEdges.add(new TransitEdge(dao.getTransitEdge(curr, next), curr, next, fromDate, toDate));
       }
 
       final String lastLegFrom = allVertices.get(allVertices.size() - 1);
       fromDate = nextDate(date);
       toDate = nextDate(fromDate);
       transitEdges.add(new TransitEdge(
-        dao.getVoyageNumber(lastLegFrom, destinationUnLocode),
-        lastLegFrom, destinationUnLocode, fromDate, toDate));
+        dao.getTransitEdge(lastLegFrom, destinationNode),
+        lastLegFrom, destinationNode, fromDate, toDate));
 
       candidates.add(new TransitPath(transitEdges));
     }
@@ -73,11 +73,11 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     return 3 + random.nextInt(3);
   }
 
-  private List<String> getRandomChunkOfLocations(List<String> allLocations) {
-    Collections.shuffle(allLocations);
-    final int total = allLocations.size();
+  private List<String> getRandomChunkOfNodes(List<String> allNodes) {
+    Collections.shuffle(allNodes);
+    final int total = allNodes.size();
     final int chunk = total > 4 ? 1 + new Random().nextInt(5) : total;
-    return allLocations.subList(0, chunk);
+    return allNodes.subList(0, chunk);
   }
 
 }
