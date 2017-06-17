@@ -27,10 +27,7 @@ public class DeliveryTest extends TestCase {
 
     List<HandlingEvent> orderEvents = dh.history();
     assertThat(orderEvents).hasSize(4);
-    assertThat(orderEvents.get(0)).isSameAs(he2);
-    assertThat(orderEvents.get(1)).isSameAs(he4);
-    assertThat(orderEvents.get(2)).isSameAs(he1);
-    assertThat(orderEvents.get(3)).isSameAs(he3);
+    assertThat(orderEvents).containsExactly(he2, he4, he1, he3);
   }
 
   public void testCargoStatusFromLastHandlingEvent() {

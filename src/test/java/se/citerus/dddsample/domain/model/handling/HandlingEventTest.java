@@ -88,7 +88,7 @@ public class HandlingEventTest extends TestCase {
   public void testParseTypeIllegal() throws Exception {
     try {
       valueOf("NOT_A_HANDLING_EVENT_TYPE");
-      assertThat(false).as("Expected IllegaArgumentException to be thrown").isTrue();
+      fail("Expected IllegaArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // All's well
     }
