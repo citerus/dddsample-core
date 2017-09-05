@@ -1,7 +1,7 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
-import org.hibernate.SessionFactory;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = {"/context-infrastructure-persistence.xml", "/context-domain.xml"})
+@ContextConfiguration(value = {"/context-infrastructure-persistence.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager")
 @Transactional
 public class CargoRepositoryTest {

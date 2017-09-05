@@ -15,9 +15,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.domain.service.RoutingService;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,16 +43,11 @@ public class ExternalRoutingService implements RoutingService {
     limitations.setProperty("DEADLINE", routeSpecification.arrivalDeadline().toString());
 
     final List<TransitPath> transitPaths;
-    try {
       transitPaths = graphTraversalService.findShortestPath(
       origin.unLocode().idString(),
       destination.unLocode().idString(),
       limitations
     );
-    } catch (RemoteException e) {
-      log.error(e, e);
-      return Collections.EMPTY_LIST;
-    }
 
     /*
      The returned result is then translated back into our domain model.

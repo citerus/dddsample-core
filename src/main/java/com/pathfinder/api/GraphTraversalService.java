@@ -1,7 +1,5 @@
 package com.pathfinder.api;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Properties;
 
@@ -10,17 +8,16 @@ import java.util.Properties;
  * and used by us (booking and tracking team).
  *
  */
-public interface GraphTraversalService extends Remote {
+public interface GraphTraversalService {
 
   /**
    * @param originUnLocode origin UN Locode
    * @param destinationUnLocode destination UN Locode
    * @param limitations restrictions on the path selection, as key-value according to some API specification
-   * @return A list of transit paths
-   * @throws RemoteException RMI problem
+   * @return A list of transit pathss
    */
   List<TransitPath> findShortestPath(String originUnLocode,
                                      String destinationUnLocode,
-                                     Properties limitations) throws RemoteException;
+                                     Properties limitations);
 
 }

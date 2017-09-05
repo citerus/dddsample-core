@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = {"/context-infrastructure-persistence.xml", "/context-domain.xml"})
+@ContextConfiguration(value = {"/context-infrastructure-persistence.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager")
 @Transactional
 public class CarrierMovementRepositoryTest {
