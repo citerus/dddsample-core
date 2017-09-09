@@ -40,19 +40,19 @@ public class DDDSampleApplicationContext {
     VoyageRepository voyageRepository;
 
     @Autowired
-    RoutingService routingService;
+    GraphTraversalService graphTraversalService;
 
     @Autowired
-    HandlingEventRepository handlingEventRepository;
+    RoutingService routingService;
 
     @Autowired
     HandlingEventFactory handlingEventFactory;
 
     @Autowired
-    ApplicationEvents applicationEvents;
+    HandlingEventRepository handlingEventRepository;
 
     @Autowired
-    GraphTraversalService graphTraversalService;
+    ApplicationEvents applicationEvents;
 
     @Autowired
     PlatformTransactionManager platformTransactionManager;
