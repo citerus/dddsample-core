@@ -61,7 +61,7 @@ public final class CargoAdminController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(HttpServletRequest request, HttpServletResponse response,
                          RegistrationCommand command) throws Exception {
-        Date arrivalDeadline = new SimpleDateFormat("M/dd/yyyy").parse(command.getArrivalDeadline());
+        Date arrivalDeadline = new SimpleDateFormat("dd/MM/yyyy").parse(command.getArrivalDeadline());
         String trackingId = bookingServiceFacade.bookNewCargo(
                 command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline
         );
