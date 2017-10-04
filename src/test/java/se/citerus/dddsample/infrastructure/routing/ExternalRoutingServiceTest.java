@@ -1,14 +1,12 @@
 package se.citerus.dddsample.infrastructure.routing;
 
 import com.pathfinder.api.GraphTraversalService;
-import com.pathfinder.internal.GraphDAO;
+import com.pathfinder.internal.GraphDAOStub;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
@@ -17,6 +15,9 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationReposito
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static org.easymock.EasyMock.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class ExternalRoutingServiceTest extends TestCase {
 
@@ -31,8 +32,8 @@ public class ExternalRoutingServiceTest extends TestCase {
     voyageRepository = createMock(VoyageRepository.class);
     externalRoutingService.setVoyageRepository(voyageRepository);
 
-    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAO() {
-      public List<String> listLocations() {
+    GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAOStub() {
+      public List<String> listAllNodes() {
         return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
       }
 

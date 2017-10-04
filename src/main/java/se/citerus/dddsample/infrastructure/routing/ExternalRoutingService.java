@@ -77,9 +77,9 @@ public class ExternalRoutingService implements RoutingService {
 
   private Leg toLeg(TransitEdge edge) {
     return new Leg(
-      voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
-      locationRepository.find(new UnLocode(edge.getFromUnLocode())),
-      locationRepository.find(new UnLocode(edge.getToUnLocode())),
+      voyageRepository.find(new VoyageNumber(edge.getEdge())),
+      locationRepository.find(new UnLocode(edge.getFromNode())),
+      locationRepository.find(new UnLocode(edge.getToNode())),
       edge.getFromDate(), edge.getToDate()
     );
   }
