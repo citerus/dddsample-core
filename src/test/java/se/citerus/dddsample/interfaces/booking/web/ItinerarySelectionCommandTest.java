@@ -1,10 +1,11 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,18 +32,8 @@ public class ItinerarySelectionCommandTest {
         ServletRequestDataBinder binder = new ServletRequestDataBinder(command);
         binder.bind(request);
 
-        List<RouteAssignmentCommand.LegCommand> legs = command.getLegs();
-        assertThat(legs).hasSize(2);
-
-        RouteAssignmentCommand.LegCommand leg = legs.get(0);
-        assertThat(leg.getVoyageNumber()).isEqualTo("CM01");
-        assertThat(leg.getFromUnLocode()).isEqualTo("AAAAA");
-        assertThat(leg.getToUnLocode()).isEqualTo("BBBBB");
-
-        leg = legs.get(1);
-        assertThat(leg.getVoyageNumber()).isEqualTo("CM02");
-        assertThat(leg.getFromUnLocode()).isEqualTo("CCCCC");
-        assertThat(leg.getToUnLocode()).isEqualTo("DDDDD");
+        assertThat(command.getLegs()).hasSize(2).extracting("voyageNumber", "fromUnLocode", "toUnLocode")
+                .containsAll(Arrays.asList(Tuple.tuple("CM01", "AAAAA", "BBBBB"), Tuple.tuple("CM02", "CCCCC", "DDDDD")));
 
         assertThat(command.getTrackingId()).isEqualTo("XYZ");
     }
