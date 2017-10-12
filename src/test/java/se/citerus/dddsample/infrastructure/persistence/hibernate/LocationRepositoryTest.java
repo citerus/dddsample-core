@@ -19,7 +19,7 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {"/context-infrastructure-persistence.xml"})
@@ -45,18 +45,18 @@ public class LocationRepositoryTest {
     public void testFind() throws Exception {
         final UnLocode melbourne = new UnLocode("AUMEL");
         Location location = locationRepository.find(melbourne);
-        assertNotNull(location);
-        assertEquals(melbourne, location.unLocode());
+        assertThat(location).isNotNull();
+        assertThat(location.unLocode()).isEqualTo(melbourne);
 
-        assertNull(locationRepository.find(new UnLocode("NOLOC")));
+        assertThat(locationRepository.find(new UnLocode("NOLOC"))).isNull();
     }
 
     @Test
     public void testFindAll() throws Exception {
         List<Location> allLocations = locationRepository.findAll();
 
-        assertNotNull(allLocations);
-        assertEquals(7, allLocations.size());
+        assertThat(allLocations).isNotNull();
+        assertThat(allLocations).hasSize(7);
     }
 
 }

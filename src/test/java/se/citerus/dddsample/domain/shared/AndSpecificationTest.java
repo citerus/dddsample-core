@@ -2,6 +2,8 @@ package se.citerus.dddsample.domain.shared;
 
 import junit.framework.TestCase;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class AndSpecificationTest extends TestCase {
 
   public void testAndIsSatisifedBy() throws Exception {
@@ -9,16 +11,16 @@ public class AndSpecificationTest extends TestCase {
     AlwaysFalseSpec falseSpec = new AlwaysFalseSpec();
 
     AndSpecification<Object> andSpecification = new AndSpecification<Object>(trueSpec, trueSpec);
-    assertTrue(andSpecification.isSatisfiedBy(new Object()));
+    assertThat(andSpecification.isSatisfiedBy(new Object())).isTrue();
 
     andSpecification = new AndSpecification<Object>(falseSpec, trueSpec);
-    assertFalse(andSpecification.isSatisfiedBy(new Object()));
+    assertThat(andSpecification.isSatisfiedBy(new Object())).isFalse();
 
     andSpecification = new AndSpecification<Object>(trueSpec, falseSpec);
-    assertFalse(andSpecification.isSatisfiedBy(new Object()));
+    assertThat(andSpecification.isSatisfiedBy(new Object())).isFalse();
 
     andSpecification = new AndSpecification<Object>(falseSpec, falseSpec);
-    assertFalse(andSpecification.isSatisfiedBy(new Object()));
+    assertThat(andSpecification.isSatisfiedBy(new Object())).isFalse();
 
   }
 }

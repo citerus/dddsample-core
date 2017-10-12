@@ -1,17 +1,19 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
 
 import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
 
 public class DeliveryTest extends TestCase {
 
   private Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, NEWYORK, new Date()));
 
   public void testToSilenceWarnings() throws Exception {
-    assertTrue(true);
+    assertThat(true).isTrue();
   }
   
   /*
@@ -24,51 +26,48 @@ public class DeliveryTest extends TestCase {
     Delivery dh = new Delivery(Arrays.asList(he1, he2, he3, he4));
 
     List<HandlingEvent> orderEvents = dh.history();
-    assertEquals(4, orderEvents.size());
-    assertSame(he2, orderEvents.get(0));
-    assertSame(he4, orderEvents.get(1));
-    assertSame(he1, orderEvents.get(2));
-    assertSame(he3, orderEvents.get(3));
+    assertThat(orderEvents).hasSize(4);
+    assertThat(orderEvents).containsExactly(he2, he4, he1, he3);
   }
 
   public void testCargoStatusFromLastHandlingEvent() {
     Set<HandlingEvent> events = new HashSet<HandlingEvent>();
     Delivery delivery = new Delivery(events);
 
-    assertEquals(TransportStatus.NOT_RECEIVED, delivery.transportStatus());
+    assertThat(delivery.transportStatus()).isEqualTo(TransportStatus.NOT_RECEIVED);
 
     events.add(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG));
     delivery = new Delivery(events);
-    assertEquals(TransportStatus.IN_PORT, delivery.transportStatus());
+    assertThat(delivery.transportStatus()).isEqualTo(TransportStatus.IN_PORT);
 
     events.add(new HandlingEvent(cargo, new Date(20), new Date(21), HandlingEvent.Type.LOAD, HAMBURG, CM005));
     delivery = new Delivery(events);
-    assertEquals(TransportStatus.ONBOARD_CARRIER, delivery.transportStatus());
+    assertThat(delivery.transportStatus()).isEqualTo(TransportStatus.ONBOARD_CARRIER);
 
     events.add(new HandlingEvent(cargo, new Date(30), new Date(31), HandlingEvent.Type.UNLOAD, HAMBURG, CM006));
     delivery = new Delivery(events);
-    assertEquals(TransportStatus.IN_PORT, delivery.transportStatus());
+    assertThat(delivery.transportStatus()).isEqualTo(TransportStatus.IN_PORT);
 
     events.add(new HandlingEvent(cargo, new Date(40), new Date(41), HandlingEvent.Type.CLAIM, HAMBURG));
     delivery = new Delivery(events);
-    assertEquals(TransportStatus.CLAIMED, delivery.transportStatus());
+    assertThat(delivery.transportStatus()).isEqualTo(TransportStatus.CLAIMED);
   }
 
   public void testLastKnownLocation() throws Exception {
     Set<HandlingEvent> events = new HashSet<HandlingEvent>();
     Delivery delivery = new Delivery(events);
 
-    assertEquals(Location.UNKNOWN, delivery.lastKnownLocation());
+    assertThat(delivery.lastKnownLocation()).isEqualTo(Location.UNKNOWN);
 
     events.add(new HandlingEvent(cargo, new Date(10), new Date(11), HandlingEvent.Type.RECEIVE, HAMBURG));
     delivery = new Delivery(events);
 
-    assertEquals(HAMBURG, delivery.lastKnownLocation());
+    assertThat(delivery.lastKnownLocation()).isEqualTo(HAMBURG);
 
     events.add(new HandlingEvent(cargo, new Date(20), new Date(21), HandlingEvent.Type.LOAD, HAMBURG, CM003));
     delivery = new Delivery(events);
 
-    assertEquals(HAMBURG, delivery.lastKnownLocation());
+    assertThat(delivery.lastKnownLocation()).isEqualTo(HAMBURG);
   }
   */
   

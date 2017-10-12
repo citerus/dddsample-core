@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.*;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
@@ -33,7 +34,7 @@ public class ExternalRoutingServiceTest extends TestCase {
     externalRoutingService.setVoyageRepository(voyageRepository);
 
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAOStub() {
-      public List<String> listAllNodes() {
+      public List<String> listLocations() {
         return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
       }
 
@@ -55,23 +56,23 @@ public class ExternalRoutingServiceTest extends TestCase {
     replay(voyageRepository);
 
     List<Itinerary> candidates = externalRoutingService.fetchRoutesForSpecification(routeSpecification);
-    assertNotNull(candidates);
+    assertThat(candidates).isNotNull();
 
     for (Itinerary itinerary : candidates) {
       List<Leg> legs = itinerary.legs();
-      assertNotNull(legs);
-      assertFalse(legs.isEmpty());
+      assertThat(legs).isNotNull();
+      assertThat(legs.isEmpty()).isFalse();
 
       // Cargo origin and start of first leg should match
-      assertEquals(cargo.origin(), legs.get(0).loadLocation());
+      assertThat(legs.get(0).loadLocation()).isEqualTo(cargo.origin());
 
       // Cargo final destination and last leg stop should match
       Location lastLegStop = legs.get(legs.size() - 1).unloadLocation();
-      assertEquals(cargo.routeSpecification().destination(), lastLegStop);
+      assertThat(lastLegStop).isEqualTo(cargo.routeSpecification().destination());
 
       for (int i = 0; i < legs.size() - 1; i++) {
         // Assert that all legs are connected
-        assertEquals(legs.get(i).unloadLocation(), legs.get(i + 1).loadLocation());
+        assertThat(legs.get(i + 1).loadLocation()).isEqualTo(legs.get(i).unloadLocation());
       }
     }
 

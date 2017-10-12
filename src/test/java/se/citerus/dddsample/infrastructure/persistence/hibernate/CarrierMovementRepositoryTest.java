@@ -19,8 +19,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import javax.sql.DataSource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {"/context-infrastructure-persistence.xml"})
@@ -51,13 +50,13 @@ public class CarrierMovementRepositoryTest {
     @Test
     public void testFind() throws Exception {
         Voyage voyage = voyageRepository.find(new VoyageNumber("0101"));
-        assertNotNull(voyage);
-        assertEquals("0101", voyage.voyageNumber().idString());
+        assertThat(voyage).isNotNull();
+        assertThat(voyage.voyageNumber().idString()).isEqualTo("0101");
     /* TODO adapt
-    assertEquals(STOCKHOLM, carrierMovement.departureLocation());
-    assertEquals(HELSINKI, carrierMovement.arrivalLocation());
-    assertEquals(DateTestUtil.toDate("2007-09-23", "02:00"), carrierMovement.departureTime());
-    assertEquals(DateTestUtil.toDate("2007-09-23", "03:00"), carrierMovement.arrivalTime());
+    assertThat(carrierMovement.departureLocation()).isEqualTo(STOCKHOLM);
+    assertThat(carrierMovement.arrivalLocation()).isEqualTo(HELSINKI);
+    assertThat(carrierMovement.departureTime()).isEqualTo(DateTestUtil.toDate("2007-09-23", "02:00"));
+    assertThat(carrierMovement.arrivalTime()).isEqualTo(DateTestUtil.toDate("2007-09-23", "03:00"));
     */
     }
 

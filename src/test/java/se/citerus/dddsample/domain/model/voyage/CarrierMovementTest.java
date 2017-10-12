@@ -1,10 +1,12 @@
 package se.citerus.dddsample.domain.model.voyage;
 
 import junit.framework.TestCase;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
 import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
 public class CarrierMovementTest extends TestCase {
 
@@ -29,17 +31,17 @@ public class CarrierMovementTest extends TestCase {
     CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
     CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
 
-    assertTrue(cm1.sameValueAs(cm2));
-    assertFalse(cm2.sameValueAs(cm3));
-    assertTrue(cm3.sameValueAs(cm4));
+    assertThat(cm1.sameValueAs(cm2)).isTrue();
+    assertThat(cm2.sameValueAs(cm3)).isFalse();
+    assertThat(cm3.sameValueAs(cm4)).isTrue();
     
-    assertTrue(cm1.equals(cm2));
-    assertFalse(cm2.equals(cm3));
-    assertTrue(cm3.equals(cm4));
+    assertThat(cm1.equals(cm2)).isTrue();
+    assertThat(cm2.equals(cm3)).isFalse();
+    assertThat(cm3.equals(cm4)).isTrue();
 
-    assertTrue(cm1.hashCode() == cm2.hashCode());
-    assertFalse(cm2.hashCode() == cm3.hashCode());
-    assertTrue(cm3.hashCode() == cm4.hashCode());
+    assertThat(cm1.hashCode() == cm2.hashCode()).isTrue();
+    assertThat(cm2.hashCode() == cm3.hashCode()).isFalse();
+    assertThat(cm3.hashCode() == cm4.hashCode()).isTrue();
   }
 
 }

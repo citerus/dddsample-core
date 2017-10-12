@@ -2,6 +2,8 @@ package se.citerus.dddsample.domain.shared.experimental;
 
 import junit.framework.TestCase;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ValueObjectSupportTest extends TestCase {
 
@@ -10,13 +12,13 @@ public class ValueObjectSupportTest extends TestCase {
         final AValueObject vo2 = new AValueObject("A");
         final BValueObject vo3 = new BValueObject("A", 1);
 
-        assertEquals(vo1, vo2);
-        assertEquals(vo2, vo1);
-        assertFalse(vo2.equals(vo3));
-        assertFalse(vo3.equals(vo2));
+        assertThat(vo2).isEqualTo(vo1);
+        assertThat(vo1).isEqualTo(vo2);
+        assertThat(vo2.equals(vo3)).isFalse();
+        assertThat(vo3.equals(vo2)).isFalse();
 
-        assertTrue(vo1.sameValueAs(vo2));
-        assertFalse(vo2.sameValueAs(vo3));
+        assertThat(vo1.sameValueAs(vo2)).isTrue();
+        assertThat(vo2.sameValueAs(vo3)).isFalse();
     }
 
     class AValueObject extends ValueObjectSupport<AValueObject> {

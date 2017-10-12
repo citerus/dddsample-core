@@ -25,11 +25,12 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {"/context-infrastructure-persistence.xml"})
@@ -77,10 +78,13 @@ public class HandlingEventRepositoryTest {
         flush();
 
         Map<String, Object> result = jdbcTemplate.queryForMap("select * from HandlingEvent where id = ?", getLongId(event));
-        assertEquals(1L, result.get("CARGO_ID"));
-        assertEquals(new Date(10), result.get("COMPLETIONTIME"));
-        assertEquals(new Date(20), result.get("REGISTRATIONTIME"));
-        assertEquals("CLAIM", result.get("TYPE"));
+
+        assertThat(result.get("CARGO_ID")).isEqualTo(1L);
+        Date completionDate = new Date(((Timestamp) result.get("COMPLETIONTIME")).getTime()); // equals call is not symmetric between java.sql.Timestamp and java.util.Date, so we should convert Timestamp Date
+        assertThat(completionDate).isEqualTo(new Date(10));
+        Date registrationDate = new Date(((Timestamp) result.get("REGISTRATIONTIME")).getTime()); // equals call is not symmetric between java.sql.Timestamp and java.util.Date, so we should convert Timestamp Date
+        assertThat(registrationDate).isEqualTo(new Date(20));
+        assertThat(result.get("TYPE")).isEqualTo("CLAIM");
         // TODO: the rest of the columns
     }
 
@@ -107,7 +111,7 @@ public class HandlingEventRepositoryTest {
     public void testFindEventsForCargo() throws Exception {
         TrackingId trackingId = new TrackingId("XYZ");
         List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
-        assertEquals(12, handlingEvents.size());
+        assertThat(handlingEvents).hasSize(12);
     }
 
 }

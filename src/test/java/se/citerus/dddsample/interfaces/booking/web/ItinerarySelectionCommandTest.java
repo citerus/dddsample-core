@@ -6,7 +6,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ItinerarySelectionCommandTest {
 
@@ -32,18 +32,18 @@ public class ItinerarySelectionCommandTest {
         binder.bind(request);
 
         List<RouteAssignmentCommand.LegCommand> legs = command.getLegs();
-        assertEquals(2, legs.size());
+        assertThat(legs).hasSize(2);
 
         RouteAssignmentCommand.LegCommand leg = legs.get(0);
-        assertEquals("CM01", leg.getVoyageNumber());
-        assertEquals("AAAAA", leg.getFromUnLocode());
-        assertEquals("BBBBB", leg.getToUnLocode());
+        assertThat(leg.getVoyageNumber()).isEqualTo("CM01");
+        assertThat(leg.getFromUnLocode()).isEqualTo("AAAAA");
+        assertThat(leg.getToUnLocode()).isEqualTo("BBBBB");
 
         leg = legs.get(1);
-        assertEquals("CM02", leg.getVoyageNumber());
-        assertEquals("CCCCC", leg.getFromUnLocode());
-        assertEquals("DDDDD", leg.getToUnLocode());
+        assertThat(leg.getVoyageNumber()).isEqualTo("CM02");
+        assertThat(leg.getFromUnLocode()).isEqualTo("CCCCC");
+        assertThat(leg.getToUnLocode()).isEqualTo("DDDDD");
 
-        assertEquals("XYZ", command.getTrackingId());
+        assertThat(command.getTrackingId()).isEqualTo("XYZ");
     }
 }
