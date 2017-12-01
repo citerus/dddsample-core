@@ -1,18 +1,20 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
-import junit.framework.TestCase;
-import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
-
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
-public class LocationDTOAssemblerTest extends TestCase {
+import java.util.Arrays;
+import java.util.List;
 
+import org.junit.Test;
+
+import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
+
+public class LocationDTOAssemblerTest {
+
+  @Test
   public void testToDTOList() {
     final LocationDTOAssembler assembler = new LocationDTOAssembler();
     final List<Location> locationList = Arrays.asList(STOCKHOLM, HAMBURG);

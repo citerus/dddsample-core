@@ -1,30 +1,38 @@
 package se.citerus.dddsample.domain.model.voyage;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 public class VoyageNumberTest extends TestCase {
 
-    public void testEquals() throws Exception {
+    @Test
+    public void testEquals() {
         //TODO: Test goes here...
     }
 
-    public void testHashCode() throws Exception {
+    @Test
+    public void testHashCode() {
         //TODO: Test goes here...
     }
 
-    public void testSameValueAs() throws Exception {
+    @Test
+    public void testSameValueAs() {
         //TODO: Test goes here...
     }
 
-    public void testCopy() throws Exception {
+    @Test
+    public void testCopy() {
         //TODO: Test goes here...
     }
 
-    public void testToString() throws Exception {
+    @Test
+    public void testToString() {
         //TODO: Test goes here...
     }
 
-    public void testIdString() throws Exception {
+    @Test
+    public void testIdString() {
         //TODO: Test goes here...
     }
 

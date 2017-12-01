@@ -1,6 +1,25 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.ROTTERDAM;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.SHANGHAI;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Test;
+
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -11,19 +30,10 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepository
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+public class ItineraryCandidateDTOAssemblerTest {
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-public class ItineraryCandidateDTOAssemblerTest extends TestCase {
-
-  public void testToDTO() throws Exception {
+  @Test
+  public void testToDTO() {
     final ItineraryCandidateDTOAssembler assembler = new ItineraryCandidateDTOAssembler();
 
     final Location origin = STOCKHOLM;
@@ -50,7 +60,8 @@ public class ItineraryCandidateDTOAssemblerTest extends TestCase {
     assertThat(legDTO.getTo()).isEqualTo("AUMEL");
   }
 
-  public void testFromDTO() throws Exception {
+  @Test
+  public void testFromDTO() {
     final ItineraryCandidateDTOAssembler assembler = new ItineraryCandidateDTOAssembler();
 
     final List<LegDTO> legs = new ArrayList<LegDTO>();

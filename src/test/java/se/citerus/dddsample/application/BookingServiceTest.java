@@ -1,6 +1,20 @@
 package se.citerus.dddsample.application;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+
+import java.util.Date;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -9,27 +23,22 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
-import java.util.Date;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-
-public class BookingServiceTest extends TestCase {
+public class BookingServiceTest {
 
   BookingServiceImpl bookingService;
   CargoRepository cargoRepository;
   LocationRepository locationRepository;
   RoutingService routingService;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     cargoRepository = createMock(CargoRepository.class);
     locationRepository = createMock(LocationRepository.class);
     routingService = createMock(RoutingService.class);
     bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
   }
 
+  @Test
   public void testRegisterNew() {
     TrackingId expectedTrackingId = new TrackingId("TRK1");
     UnLocode fromUnlocode = new UnLocode("USCHI");
@@ -47,7 +56,8 @@ public class BookingServiceTest extends TestCase {
     assertThat(trackingId).isEqualTo(expectedTrackingId);
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     verify(cargoRepository, locationRepository);
   }
 }

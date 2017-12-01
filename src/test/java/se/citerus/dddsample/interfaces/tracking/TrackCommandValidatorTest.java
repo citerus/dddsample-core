@@ -1,25 +1,28 @@
 package se.citerus.dddsample.interfaces.tracking;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class TrackCommandValidatorTest extends TestCase {
+public class TrackCommandValidatorTest {
 
   TrackCommandValidator validator;
   TrackCommand command;
   BindingResult errors;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     validator = new TrackCommandValidator();
     command = new TrackCommand();
     errors = new BeanPropertyBindingResult(command, "command");
   }
 
-  public void testValidateIllegalId() throws Exception {
+  @Test
+  public void testValidateIllegalId() {
     validator.validate(command, errors);
 
     assertThat(errors.getErrorCount()).isEqualTo(1);
@@ -28,8 +31,9 @@ public class TrackCommandValidatorTest extends TestCase {
     assertThat(error.getRejectedValue()).isNull();
     assertThat(error.getCode()).isEqualTo("error.required");
   }
-    
-  public void testValidateSuccess() throws Exception {
+
+  @Test
+  public void testValidateSuccess() {
     command.setTrackingId("non-empty");
     validator.validate(command, errors);
 

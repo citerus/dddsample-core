@@ -1,6 +1,23 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+
+import java.util.Date;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -13,15 +30,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
-import java.util.Date;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.*;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-public class HandlingEventFactoryTest extends TestCase {
+public class HandlingEventFactoryTest {
 
   HandlingEventFactory factory;
   CargoRepository cargoRepository;
@@ -30,7 +39,8 @@ public class HandlingEventFactoryTest extends TestCase {
   TrackingId trackingId;
   Cargo cargo;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
 
     cargoRepository = createMock(CargoRepository.class);
     voyageRepository = new VoyageRepositoryInMem();
@@ -44,6 +54,7 @@ public class HandlingEventFactoryTest extends TestCase {
     cargo = new Cargo(trackingId, routeSpecification);
   }
 
+  @Test
   public void testCreateHandlingEventWithCarrierMovement() throws Exception {
     expect(cargoRepository.find(trackingId)).andReturn(cargo);
 
@@ -63,6 +74,7 @@ public class HandlingEventFactoryTest extends TestCase {
     assertThat(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1))).isTrue();
   }
 
+  @Test
   public void testCreateHandlingEventWithoutCarrierMovement() throws Exception {
     expect(cargoRepository.find(trackingId)).andReturn(cargo);
 
@@ -81,6 +93,7 @@ public class HandlingEventFactoryTest extends TestCase {
     assertThat(handlingEvent.registrationTime().before(new Date(System.currentTimeMillis() + 1))).isTrue();
   }
 
+  @Test
   public void testCreateHandlingEventUnknownLocation() throws Exception {
     expect(cargoRepository.find(trackingId)).andReturn(cargo);
 
@@ -95,6 +108,7 @@ public class HandlingEventFactoryTest extends TestCase {
     } catch (UnknownLocationException expected) {}
   }
 
+  @Test
   public void testCreateHandlingEventUnknownCarrierMovement() throws Exception {
     expect(cargoRepository.find(trackingId)).andReturn(cargo);
 
@@ -109,6 +123,7 @@ public class HandlingEventFactoryTest extends TestCase {
     } catch (UnknownVoyageException expected) {}
   }
 
+  @Test
   public void testCreateHandlingEventUnknownTrackingId() throws Exception {
     expect(cargoRepository.find(trackingId)).andReturn(null);
 
@@ -122,7 +137,8 @@ public class HandlingEventFactoryTest extends TestCase {
     } catch (UnknownCargoException expected) {}
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     verify(cargoRepository);
   }
 }

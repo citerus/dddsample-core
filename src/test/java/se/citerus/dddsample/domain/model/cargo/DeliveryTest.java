@@ -1,18 +1,19 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import junit.framework.TestCase;
-
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
 
-public class DeliveryTest extends TestCase {
+import java.util.Date;
+
+import org.junit.Test;
+
+public class DeliveryTest {
 
   private Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HONGKONG, NEWYORK, new Date()));
 
-  public void testToSilenceWarnings() throws Exception {
+  @Test
+  public void testToSilenceWarnings() {
     assertThat(true).isTrue();
   }
   

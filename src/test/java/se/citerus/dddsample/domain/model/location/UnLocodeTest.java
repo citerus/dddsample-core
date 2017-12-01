@@ -1,12 +1,15 @@
 package se.citerus.dddsample.domain.model.location;
 
-import junit.framework.TestCase;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-public class UnLocodeTest extends TestCase {
+import org.junit.Test;
 
-  public void testNew() throws Exception {
+public class UnLocodeTest {
+
+
+  @Test
+  public void testNew() {
     assertValid("AA234");
     assertValid("AAA9B");
     assertValid("AAAAA");
@@ -20,11 +23,13 @@ public class UnLocodeTest extends TestCase {
     assertInvalid(null);
   }
 
-  public void testIdString() throws Exception {
+  @Test
+  public void testIdString() {
     assertThat(new UnLocode("AbcDe").idString()).isEqualTo("ABCDE");
   }
 
-  public void testEquals() throws Exception {
+  @Test
+  public void testEquals() {
     UnLocode allCaps = new UnLocode("ABCDE");
     UnLocode mixedCase = new UnLocode("aBcDe");
 
@@ -36,7 +41,8 @@ public class UnLocodeTest extends TestCase {
     assertThat(allCaps.equals(new UnLocode("FGHIJ"))).isFalse();
   }
 
-  public void testHashCode() throws Exception {
+  @Test
+  public void testHashCode() {
     UnLocode allCaps = new UnLocode("ABCDE");
     UnLocode mixedCase = new UnLocode("aBcDe");
 
