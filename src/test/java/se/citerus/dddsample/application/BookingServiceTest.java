@@ -1,11 +1,18 @@
 package se.citerus.dddsample.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+
+import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
@@ -14,7 +21,6 @@ import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -32,9 +38,9 @@ public class BookingServiceTest {
 
   @Before
   public void setUp() {
-    cargoRepository = createMock(CargoRepository.class);
-    locationRepository = createMock(LocationRepository.class);
-    routingService = createMock(RoutingService.class);
+    cargoRepository = mock(CargoRepository.class);
+    locationRepository = mock(LocationRepository.class);
+    routingService = mock(RoutingService.class);
     bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
   }
 
@@ -44,13 +50,9 @@ public class BookingServiceTest {
     UnLocode fromUnlocode = new UnLocode("USCHI");
     UnLocode toUnlocode = new UnLocode("SESTO");
 
-    expect(cargoRepository.nextTrackingId()).andReturn(expectedTrackingId);
-    expect(locationRepository.find(fromUnlocode)).andReturn(CHICAGO);
-    expect(locationRepository.find(toUnlocode)).andReturn(STOCKHOLM);
-
-    cargoRepository.store(isA(Cargo.class));
-
-    replay(cargoRepository, locationRepository);
+    when(cargoRepository.nextTrackingId()).thenReturn(expectedTrackingId);
+    when(locationRepository.find(fromUnlocode)).thenReturn(CHICAGO);
+    when(locationRepository.find(toUnlocode)).thenReturn(STOCKHOLM);
 
     TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
     assertThat(trackingId).isEqualTo(expectedTrackingId);
@@ -58,6 +60,7 @@ public class BookingServiceTest {
 
   @After
   public void tearDown() {
-    verify(cargoRepository, locationRepository);
+    verify(cargoRepository, times(1)).store(isA(Cargo.class));
+    verify(locationRepository, times(2)).find(any(UnLocode.class));
   }
 }

@@ -1,10 +1,10 @@
 package se.citerus.dddsample.application;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
@@ -39,11 +39,11 @@ public class HandlingEventServiceTest {
 
   @Before
   public void setUp() {
-    cargoRepository = createMock(CargoRepository.class);
-    voyageRepository = createMock(VoyageRepository.class);
-    handlingEventRepository = createMock(HandlingEventRepository.class);
-    locationRepository = createMock(LocationRepository.class);
-    applicationEvents = createMock(ApplicationEvents.class);
+    cargoRepository = mock(CargoRepository.class);
+    voyageRepository = mock(VoyageRepository.class);
+    handlingEventRepository = mock(HandlingEventRepository.class);
+    locationRepository = mock(LocationRepository.class);
+    applicationEvents = mock(ApplicationEvents.class);
 
     HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     service = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
@@ -51,18 +51,15 @@ public class HandlingEventServiceTest {
 
   @After
   public void tearDown() {
-    verify(cargoRepository, voyageRepository, handlingEventRepository, applicationEvents);
+    verify(handlingEventRepository, times(1)).store(isA(HandlingEvent.class));
+    verify(applicationEvents, times(1)).cargoWasHandled(isA(HandlingEvent.class));
   }
 
   @Test
   public void testRegisterEvent() throws Exception {
-    expect(cargoRepository.find(cargo.trackingId())).andReturn(cargo);
-    expect(voyageRepository.find(CM001.voyageNumber())).andReturn(CM001);
-    expect(locationRepository.find(STOCKHOLM.unLocode())).andReturn(STOCKHOLM);
-    handlingEventRepository.store(isA(HandlingEvent.class));
-    applicationEvents.cargoWasHandled(isA(HandlingEvent.class));
-
-    replay(cargoRepository, voyageRepository, handlingEventRepository, locationRepository, applicationEvents);
+    when(cargoRepository.find(cargo.trackingId())).thenReturn(cargo);
+    when(voyageRepository.find(CM001.voyageNumber())).thenReturn(CM001);
+    when(locationRepository.find(STOCKHOLM.unLocode())).thenReturn(STOCKHOLM);
 
     service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
   }
