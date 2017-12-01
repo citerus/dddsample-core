@@ -1,39 +1,27 @@
 package se.citerus.dddsample.infrastructure.routing;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.GOTHENBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.pathfinder.api.GraphTraversalService;
 import com.pathfinder.internal.GraphDAOStub;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
-
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.domain.model.cargo.Leg;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import org.junit.Before;
+import org.junit.Test;
+import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class ExternalRoutingServiceTest {
 
@@ -46,7 +34,7 @@ public class ExternalRoutingServiceTest {
     LocationRepository locationRepository = new LocationRepositoryInMem();
     externalRoutingService.setLocationRepository(locationRepository);
 
-    voyageRepository = createMock(VoyageRepository.class);
+    voyageRepository = mock(VoyageRepository.class);
     externalRoutingService.setVoyageRepository(voyageRepository);
 
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAOStub() {
@@ -67,9 +55,7 @@ public class ExternalRoutingServiceTest {
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, new Date());
     Cargo cargo = new Cargo(trackingId, routeSpecification);
 
-    expect(voyageRepository.find(isA(VoyageNumber.class))).andStubReturn(SampleVoyages.CM002);
-    
-    replay(voyageRepository);
+    when(voyageRepository.find(isA(VoyageNumber.class))).thenReturn(SampleVoyages.CM002);
 
     List<Itinerary> candidates = externalRoutingService.fetchRoutesForSpecification(routeSpecification);
     assertThat(candidates).isNotNull();
@@ -91,8 +77,6 @@ public class ExternalRoutingServiceTest {
         assertThat(legs.get(i + 1).loadLocation()).isEqualTo(legs.get(i).unloadLocation());
       }
     }
-
-    verify(voyageRepository);
   }
 
 }
