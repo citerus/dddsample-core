@@ -1,22 +1,29 @@
 package se.citerus.dddsample.interfaces.tracking;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import org.junit.Test;
 import org.springframework.context.support.StaticApplicationContext;
+
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
-import java.util.*;
+public class CargoTrackingViewAdapterTest {
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-public class CargoTrackingViewAdapterTest extends TestCase {
-
+  @Test
   public void testCreate() {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HANGZOU, HELSINKI, new Date()));
 

@@ -1,12 +1,12 @@
 package se.citerus.dddsample.domain.shared.experimental;
 
-import junit.framework.TestCase;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Test;
 
-public class ValueObjectSupportTest extends TestCase {
+public class ValueObjectSupportTest {
 
+    @Test
     public void testEquals() {
         final AValueObject vo1 = new AValueObject("A");
         final AValueObject vo2 = new AValueObject("A");

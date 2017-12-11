@@ -1,10 +1,13 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.fail;
 
-public class TrackingIdTest extends TestCase {
+import org.junit.Test;
 
-  public void testConstructor() throws Exception {
+public class TrackingIdTest {
+
+  @Test
+  public void testConstructor() {
     try {
       new TrackingId(null);
       fail("Should not accept null constructor arguments");

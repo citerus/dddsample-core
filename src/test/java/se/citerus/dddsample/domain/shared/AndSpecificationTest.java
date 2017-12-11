@@ -1,12 +1,13 @@
 package se.citerus.dddsample.domain.shared;
 
-import junit.framework.TestCase;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AndSpecificationTest extends TestCase {
+import org.junit.Test;
 
-  public void testAndIsSatisifedBy() throws Exception {
+public class AndSpecificationTest {
+
+  @Test
+  public void testAndIsSatisifedBy() {
     AlwaysTrueSpec trueSpec = new AlwaysTrueSpec();
     AlwaysFalseSpec falseSpec = new AlwaysFalseSpec();
 

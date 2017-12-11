@@ -1,30 +1,44 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import junit.framework.TestCase;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CUSTOMS;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.valueOf;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
 
-import java.util.Date;
-
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
-
-public class HandlingEventTest extends TestCase {
+public class HandlingEventTest {
   private Cargo cargo;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() {
     TrackingId trackingId = new TrackingId("XYZ");
     RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, NEWYORK, new Date());
     cargo = new Cargo(trackingId, routeSpecification);
   }
 
-  public void testNewWithCarrierMovement() throws Exception {
+  @Test
+  public void testNewWithCarrierMovement() {
 
     HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, HONGKONG, CM003);
     assertThat(e1.location()).isEqualTo(HONGKONG);
@@ -49,43 +63,50 @@ public class HandlingEventTest extends TestCase {
     }
   }
 
-  public void testNewWithLocation() throws Exception {
+  @Test
+  public void testNewWithLocation() {
     HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, HELSINKI);
     assertThat(e1.location()).isEqualTo(HELSINKI);
   }
 
-  public void testCurrentLocationLoadEvent() throws Exception {
+  @Test
+  public void testCurrentLocationLoadEvent() {
 
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), LOAD, CHICAGO, CM004);
     
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
   
-  public void testCurrentLocationUnloadEvent() throws Exception {
+  public void testCurrentLocationUnloadEvent() {
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HAMBURG, CM004);
     
     assertThat(ev.location()).isEqualTo(HAMBURG);
   }
-  
-  public void testCurrentLocationReceivedEvent() throws Exception {
+
+  @Test
+  public void testCurrentLocationReceivedEvent() {
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, CHICAGO);
 
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
-  public void testCurrentLocationClaimedEvent() throws Exception {
+
+  @Test
+  public void testCurrentLocationClaimedEvent() {
     HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, CHICAGO);
 
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
-  
-  public void testParseType() throws Exception {
+
+  @Test
+  public void testParseType() {
     assertThat(valueOf("CLAIM")).isEqualTo(CLAIM);
     assertThat(valueOf("LOAD")).isEqualTo(LOAD);
     assertThat(valueOf("UNLOAD")).isEqualTo(UNLOAD);
     assertThat(valueOf("RECEIVE")).isEqualTo(RECEIVE);
   }
-  
-  public void testParseTypeIllegal() throws Exception {
+
+  @Test
+  public void testParseTypeIllegal() {
     try {
       valueOf("NOT_A_HANDLING_EVENT_TYPE");
       fail("Expected IllegaArgumentException to be thrown");
@@ -93,8 +114,9 @@ public class HandlingEventTest extends TestCase {
       // All's well
     }
   }
-  
-  public void testEqualsAndSameAs() throws Exception {
+
+  @Test
+  public void testEqualsAndSameAs() {
     Date timeOccured = new Date();
     Date timeRegistered = new Date();
 

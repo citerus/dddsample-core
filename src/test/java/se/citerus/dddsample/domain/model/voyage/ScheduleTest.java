@@ -1,26 +1,31 @@
 package se.citerus.dddsample.domain.model.voyage;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ScheduleTest extends TestCase {
+public class ScheduleTest {
 
-    public void testCarrierMovements() throws Exception {
+    @Test
+    public void testCarrierMovements() {
         //TODO: Test goes here...
     }
 
-    public void testSameValueAs() throws Exception {
+    @Test
+    public void testSameValueAs() {
         //TODO: Test goes here...
     }
 
-    public void testCopy() throws Exception {
+    @Test
+    public void testCopy() {
         //TODO: Test goes here...
     }
 
-    public void testEquals() throws Exception {
+    @Test
+    public void testEquals() {
         //TODO: Test goes here...
     }
 
-    public void testHashCode() throws Exception {
+    @Test
+    public void testHashCode() {
         //TODO: Test goes here...
     }
 

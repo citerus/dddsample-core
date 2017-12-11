@@ -1,11 +1,13 @@
 package se.citerus.dddsample.domain.model.location;
 
-import junit.framework.TestCase;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-public class LocationTest extends TestCase {
+import org.junit.Test;
 
+public class LocationTest {
+
+  @Test
   public void testEquals() {
     // Same UN locode - equal
     assertThat(new Location(new UnLocode("ATEST"),"test-name").

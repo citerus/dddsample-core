@@ -1,10 +1,13 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.fail;
 
-public class LegTest extends TestCase {
+import org.junit.Test;
 
-  public void testConstructor() throws Exception {
+public class LegTest {
+
+  @Test
+  public void testConstructor() {
     try {
       new Leg(null,null,null,null,null);
       fail("Should not accept null constructor arguments");

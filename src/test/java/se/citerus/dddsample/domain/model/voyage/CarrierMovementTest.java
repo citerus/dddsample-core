@@ -1,16 +1,18 @@
 package se.citerus.dddsample.domain.model.voyage;
 
-import junit.framework.TestCase;
-
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
 
-public class CarrierMovementTest extends TestCase {
+import java.util.Date;
 
-  public void testConstructor() throws Exception {
+import org.junit.Test;
+
+public class CarrierMovementTest {
+
+  @Test
+  public void testConstructor() {
     try {
       new CarrierMovement(null, null, new Date(), new Date());
       fail("Should not accept null constructor arguments");
@@ -25,7 +27,8 @@ public class CarrierMovementTest extends TestCase {
     new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
   }
 
-  public void testSameValueAsEqualsHashCode() throws Exception {
+  @Test
+  public void testSameValueAsEqualsHashCode() {
     CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
     CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
     CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
