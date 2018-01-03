@@ -1,9 +1,8 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
@@ -68,14 +67,12 @@ public class ItineraryCandidateDTOAssemblerTest {
     legs.add(new LegDTO("CM001", "AAAAA", "BBBBB", new Date(), new Date()));
     legs.add(new LegDTO("CM001", "BBBBB", "CCCCC", new Date(), new Date()));
 
-    final LocationRepository locationRepository = createMock(LocationRepository.class);
-    expect(locationRepository.find(new UnLocode("AAAAA"))).andReturn(HONGKONG);
-    expect(locationRepository.find(new UnLocode("BBBBB"))).andReturn(TOKYO).times(2);
-    expect(locationRepository.find(new UnLocode("CCCCC"))).andReturn(CHICAGO);
+    final LocationRepository locationRepository = mock(LocationRepository.class);
+    when(locationRepository.find(new UnLocode("AAAAA"))).thenReturn(HONGKONG);
+    when(locationRepository.find(new UnLocode("BBBBB"))).thenReturn(TOKYO);
+    when(locationRepository.find(new UnLocode("CCCCC"))).thenReturn(CHICAGO);
 
     final VoyageRepository voyageRepository = new VoyageRepositoryInMem();
-
-    replay(locationRepository);
 
 
     // Tested call

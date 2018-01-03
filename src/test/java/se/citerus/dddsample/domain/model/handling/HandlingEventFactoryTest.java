@@ -2,10 +2,8 @@ package se.citerus.dddsample.domain.model.handling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
@@ -14,7 +12,6 @@ import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 
 import java.util.Date;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,22 +29,20 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepository
 
 public class HandlingEventFactoryTest {
 
-  HandlingEventFactory factory;
-  CargoRepository cargoRepository;
-  VoyageRepository voyageRepository;
-  LocationRepository locationRepository;
-  TrackingId trackingId;
-  Cargo cargo;
+  private HandlingEventFactory factory;
+  private CargoRepository cargoRepository;
+  private VoyageRepository voyageRepository;
+  private LocationRepository locationRepository;
+  private TrackingId trackingId;
+  private Cargo cargo;
 
   @Before
   public void setUp() {
 
-    cargoRepository = createMock(CargoRepository.class);
+    cargoRepository = mock(CargoRepository.class);
     voyageRepository = new VoyageRepositoryInMem();
     locationRepository = new LocationRepositoryInMem();
     factory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
-
-
 
     trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(TOKYO, HELSINKI, new Date());
@@ -56,9 +51,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventWithCarrierMovement() throws Exception {
-    expect(cargoRepository.find(trackingId)).andReturn(cargo);
-
-    replay(cargoRepository);
+    when(cargoRepository.find(trackingId)).thenReturn(cargo);
 
     VoyageNumber voyageNumber = CM001.voyageNumber();
     UnLocode unLocode = STOCKHOLM.unLocode();
@@ -76,9 +69,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventWithoutCarrierMovement() throws Exception {
-    expect(cargoRepository.find(trackingId)).andReturn(cargo);
-
-    replay(cargoRepository);
+    when(cargoRepository.find(trackingId)).thenReturn(cargo);
 
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
@@ -95,9 +86,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventUnknownLocation() throws Exception {
-    expect(cargoRepository.find(trackingId)).andReturn(cargo);
-
-    replay(cargoRepository);
+    when(cargoRepository.find(trackingId)).thenReturn(cargo);
 
     UnLocode invalid = new UnLocode("NOEXT");
     try {
@@ -110,9 +99,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventUnknownCarrierMovement() throws Exception {
-    expect(cargoRepository.find(trackingId)).andReturn(cargo);
-
-    replay(cargoRepository);
+    when(cargoRepository.find(trackingId)).thenReturn(cargo);
 
     try {
       VoyageNumber invalid = new VoyageNumber("XXX");
@@ -125,9 +112,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventUnknownTrackingId() throws Exception {
-    expect(cargoRepository.find(trackingId)).andReturn(null);
-
-    replay(cargoRepository);
+    when(cargoRepository.find(trackingId)).thenReturn(null);
 
     try {
       factory.createHandlingEvent(
@@ -137,8 +122,4 @@ public class HandlingEventFactoryTest {
     } catch (UnknownCargoException expected) {}
   }
 
-  @After
-  public void tearDown() {
-    verify(cargoRepository);
-  }
 }
