@@ -13,7 +13,7 @@ RUN mvn package \
 
 FROM java:8-jdk-alpine as runner
 EXPOSE 8080
-RUN addgroup -S app && adduser -S -G app app 
+RUN adduser -S app 
 USER app
 WORKDIR /app
 
