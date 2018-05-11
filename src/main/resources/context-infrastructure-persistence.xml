@@ -9,10 +9,6 @@
 
   <!-- Persistence - database, Hibernate, transactions, repository implementations -->
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:/jdbc.properties"/>
-  </bean>
-
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="url" value="${hibernate.connection.url}"/>
     <property name="driverClassName" value="${hibernate.connection.driver_class}"/>
