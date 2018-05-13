@@ -1,0 +1,22 @@
+version: '3.6'
+services:
+    app:
+      build: .
+      restart: on-failure
+      ports:
+      - 8080
+      depends_on: 
+      - db
+      environment: 
+        hibernate.connection.driver_class: com.mysql.jdbc.Driver
+        hibernate.connection.url: jdbc:mysql://db/dddsample
+        hibernate.connection.username: dddsample
+        hibernate.connection.password: password
+    db:
+      image: mysql:5
+      environment: 
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_USER: dddsample
+        MYSQL_DATABASE: dddsample
+        MYSQL_PASSWORD: password
+
