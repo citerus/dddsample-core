@@ -9,6 +9,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.10.RELEASE</version>
+        <relativePath></relativePath>
     </parent>
     <description>This application shows a few key concepts of
         Domain Driven Design implemented in Enterprise Java.
