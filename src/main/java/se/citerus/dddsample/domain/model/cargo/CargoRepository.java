@@ -1,7 +1,5 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 public interface CargoRepository {

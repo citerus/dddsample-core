@@ -8,8 +8,6 @@
 
   <session-factory>
     <!-- Properties defined here are shared between test and production -->
-    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
-    
     <mapping resource="se/citerus/dddsample/infrastructure/persistence/hibernate/Cargo.hbm.xml" />
     <mapping resource="se/citerus/dddsample/infrastructure/persistence/hibernate/Voyage.hbm.xml" />
     <mapping resource="se/citerus/dddsample/infrastructure/persistence/hibernate/Leg.hbm.xml" />
