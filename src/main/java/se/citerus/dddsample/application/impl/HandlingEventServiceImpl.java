@@ -39,7 +39,7 @@ public class HandlingEventServiceImpl implements HandlingEventService {
                                     final HandlingEvent.Type type) throws CannotCreateHandlingEventException {
     final Date registrationTime = new Date();
     /* Using a factory to create a HandlingEvent (aggregate). This is where
-       it is determined wether the incoming data, the attempt, actually is capable
+       it is determined whether the incoming data, the attempt, actually is capable
        of representing a real handling event. */
     final HandlingEvent event = handlingEventFactory.createHandlingEvent(
       registrationTime, completionTime, trackingId, voyageNumber, unLocode, type

@@ -14,10 +14,10 @@ import java.util.Date;
 
 /**
  * A HandlingEvent is used to register the event when, for instance,
- * a cargo is unloaded from a carrier at a some loacation at a given time.
+ * a cargo is unloaded from a carrier at some location at a given time.
  * <p/>
  * The HandlingEvent's are sent from different Incident Logging Applications
- * some time after the event occured and contain information about the
+ * some time after the event occurred and contain information about the
  * {@link se.citerus.dddsample.domain.model.cargo.TrackingId}, {@link se.citerus.dddsample.domain.model.location.Location}, timestamp of the completion of the event,
  * and possibly, if applicable a {@link se.citerus.dddsample.domain.model.voyage.Voyage}.
  * <p/>

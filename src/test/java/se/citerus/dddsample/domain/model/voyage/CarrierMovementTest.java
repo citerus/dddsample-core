@@ -29,10 +29,16 @@ public class CarrierMovementTest {
 
   @Test
   public void testSameValueAsEqualsHashCode() {
-    CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
-    CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
-    CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
-    CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(), new Date());
+    long referenceTime = System.currentTimeMillis();
+
+    // One could, in theory, use the same Date(referenceTime) for all of these movements
+    // However, in practice, carrier movements will be initialized by different processes
+    // so we might have different Date that reference the same time, and we want to be
+    // certain that sameValueAs does the right thing in that case.
+    CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(referenceTime), new Date(referenceTime));
+    CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(referenceTime), new Date(referenceTime));
+    CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(referenceTime), new Date(referenceTime));
+    CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(referenceTime), new Date(referenceTime));
 
     assertThat(cm1.sameValueAs(cm2)).isTrue();
     assertThat(cm2.sameValueAs(cm3)).isFalse();

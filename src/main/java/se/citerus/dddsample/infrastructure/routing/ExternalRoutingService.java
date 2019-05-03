@@ -43,7 +43,7 @@ public class ExternalRoutingService implements RoutingService {
     limitations.setProperty("DEADLINE", routeSpecification.arrivalDeadline().toString());
 
     final List<TransitPath> transitPaths;
-      transitPaths = graphTraversalService.findShortestPath(
+    transitPaths = graphTraversalService.findShortestPath(
       origin.unLocode().idString(),
       destination.unLocode().idString(),
       limitations

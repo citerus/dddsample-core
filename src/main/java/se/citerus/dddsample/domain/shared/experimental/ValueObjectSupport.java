@@ -9,7 +9,7 @@ import se.citerus.dddsample.domain.shared.ValueObject;
  *
  * @param <T>
  */
-public abstract class ValueObjectSupport<T extends ValueObject> implements ValueObject<T> {
+public abstract class ValueObjectSupport<T extends ValueObject<T>> implements ValueObject<T> {
 
   private transient int cachedHashCode = 0;
 

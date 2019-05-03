@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.10.RELEASE</version>
+        <version>2.0.1.RELEASE</version>
         <relativePath></relativePath>
     </parent>
     <description>This application shows a few key concepts of
@@ -72,8 +72,8 @@
     </scm>
     <properties>
         <java.version>1.8</java.version>
-        <assertj.version>3.8.0</assertj.version>
-        <hibernate.version>4.3.5.Final</hibernate.version>
+        <!--<assertj.version>3.8.0</assertj.version>-->
+        <!--<hibernate.version>4.3.5.Final</hibernate.version>-->
     </properties>
     <build>
         <plugins>
@@ -103,12 +103,13 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-            <version>3.1.12</version>
+            <version>3.2.4</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
@@ -117,16 +118,16 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.3</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -144,7 +145,7 @@
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
-            <version>3.4.3</version>
+            <version>4.8</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -161,21 +162,31 @@
             <artifactId>selenium-java</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>htmlunit-driver</artifactId>
+        </dependency>
     </dependencies>
 
     <reporting>
         <plugins>
             <!-- Javadoc -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
             </plugin>
             <!-- Source code cross reference -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
             </plugin>
             <!-- Test report -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.20.1</version>
             </plugin>
             <!-- Test coverage -->
             <plugin>
@@ -184,11 +195,14 @@
             </plugin>
             <!-- CheckStyle report -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
                 <configuration>
                     <configLocation>src/main/config/checkstyle.xml</configLocation>
                     <!-- Java source code generated from WSDL -->
                     <excludes>**/com/aggregator/**/*</excludes>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>

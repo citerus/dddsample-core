@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
@@ -31,13 +31,13 @@ import se.citerus.dddsample.domain.shared.Entity;
  * of the cargo is contained in the Delivery value object, which is replaced whenever a cargo
  * is handled by an asynchronous event triggered by the registration of the handling event.
  *
- * The delivery can also be affected by routing changes, i.e. when a the route specification
+ * The delivery can also be affected by routing changes, i.e. when the route specification
  * changes, or the cargo is assigned to a new route. In that case, the delivery update is performed
  * synchronously within the cargo aggregate.
  *
  * The life cycle of a cargo ends when the cargo is claimed by the customer.
  *
- * The cargo aggregate, and the entre domain model, is built to solve the problem
+ * The cargo aggregate, and the entire domain model, is built to solve the problem
  * of booking and tracking cargo. All important business rules for determining whether
  * or not a cargo is misdirected, what the current status of the cargo is (on board carrier,
  * in port etc), are captured in this aggregate.
@@ -140,7 +140,7 @@ public class Cargo implements Entity<Cargo> {
    * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
    * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
    * but changes to the delivery history (when a cargo is handled) cause the status update
-   * to happen <b>asynchronously</b> since {@link HandlingEvent} is in a different aggregate.
+   * to happen <b>asynchronously</b> since {@link se.citerus.dddsample.domain.model.handling.HandlingEvent} is in a different aggregate.
    *
    * @param handlingHistory handling history
    */

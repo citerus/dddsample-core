@@ -17,9 +17,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -54,7 +54,7 @@ public class HandlingEventRepositoryTest {
     private DataSource dataSource;
 
     @Autowired
-    private HibernateTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
 
     private JdbcTemplate jdbcTemplate;
 
