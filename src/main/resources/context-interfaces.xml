@@ -8,11 +8,9 @@
        xsi:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
                            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-                           http://www.springframework.org/schema/mvc
-                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
-
 
     <!-- Handling report web service -->
 
@@ -21,7 +19,6 @@
     <bean id="handlingReportService" class="se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl">
         <property name="applicationEvents" ref="applicationEvents"/>
     </bean>
-
 
     <!-- File upload directory scanner -->
 
@@ -70,7 +67,7 @@
     </bean>
 
     <mvc:interceptors>
-        <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor">
+        <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate5.support.OpenSessionInViewInterceptor">
             <property name="sessionFactory" ref="sessionFactory"/>
         </bean>
     </mvc:interceptors>

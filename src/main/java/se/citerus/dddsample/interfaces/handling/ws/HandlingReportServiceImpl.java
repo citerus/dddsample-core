@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * This web service endpoint implementation performs basic validation and parsing
  * of incoming data, and in case of a valid registration attempt, sends an asynchronous message
- * with the informtion to the handling event registration system for proper registration.
+ * with the information to the handling event registration system for proper registration.
  *  
  */
 @WebService(endpointInterface = "com.aggregator.HandlingReportService")
