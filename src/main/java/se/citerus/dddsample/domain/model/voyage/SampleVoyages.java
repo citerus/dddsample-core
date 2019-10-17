@@ -19,7 +19,7 @@ public class SampleVoyages {
     public static final Voyage CM003 = createVoyage("CM003", HONGKONG, NEWYORK);
     public static final Voyage CM004 = createVoyage("CM004", NEWYORK, CHICAGO);
     public static final Voyage CM005 = createVoyage("CM005", CHICAGO, HAMBURG);
-    public static final Voyage CM006 = createVoyage("CM006", HAMBURG, HANGZOU);
+    public static final Voyage CM006 = createVoyage("CM006", HAMBURG, HANGZHOU);
 
     private static Voyage createVoyage(String id, Location from, Location to) {
         return new Voyage(new VoyageNumber(id), new Schedule(Collections.singletonList(
@@ -57,7 +57,7 @@ public class SampleVoyages {
      */
     public static final Voyage HONGKONG_TO_NEW_YORK =
             new Voyage.Builder(new VoyageNumber("0100S"), HONGKONG).
-                    addMovement(HANGZOU, toDate("2008-10-01", "12:00"), toDate("2008-10-03", "14:30")).
+                    addMovement(HANGZHOU, toDate("2008-10-01", "12:00"), toDate("2008-10-03", "14:30")).
                     addMovement(TOKYO, toDate("2008-10-03", "21:00"), toDate("2008-10-06", "06:15")).
                     addMovement(MELBOURNE, toDate("2008-10-06", "11:00"), toDate("2008-10-12", "11:30")).
                     addMovement(NEWYORK, toDate("2008-10-14", "12:00"), toDate("2008-10-23", "23:10")).

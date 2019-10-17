@@ -22,7 +22,7 @@ public class SampleLocations {
   public static final Location SHANGHAI = new Location(new UnLocode("CNSHA"), "Shanghai");
   public static final Location ROTTERDAM = new Location(new UnLocode("NLRTM"), "Rotterdam");
   public static final Location GOTHENBURG = new Location(new UnLocode("SEGOT"), "Göteborg");
-  public static final Location HANGZOU = new Location(new UnLocode("CNHGH"), "Hangzhou");
+  public static final Location HANGZHOU = new Location(new UnLocode("CNHGH"), "Hangzhou");
   public static final Location NEWYORK = new Location(new UnLocode("USNYC"), "New York");
   public static final Location DALLAS = new Location(new UnLocode("USDAL"), "Dallas");
 

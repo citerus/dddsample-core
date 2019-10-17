@@ -3,7 +3,7 @@ package se.citerus.dddsample.domain.model.cargo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.GOTHENBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.ROTTERDAM;
@@ -82,7 +82,7 @@ public class ItineraryTest {
     assertThat(itinerary.isExpected(event)).isTrue();
 
     //Received at the wrong location
-    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU);
+    event = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZHOU);
     assertThat(itinerary.isExpected(event)).isFalse();
 
     //Loaded to onto the wrong ship, correct location

@@ -7,7 +7,7 @@ import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.ROUTED;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.GOTHENBURG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
@@ -142,16 +142,16 @@ public class CargoTest {
 
   @Test
   public void testIsUnloadedAtFinalDestination() {
-    Cargo cargo = setUpCargoWithItinerary(HANGZOU, TOKYO, NEWYORK);
+    Cargo cargo = setUpCargoWithItinerary(HANGZHOU, TOKYO, NEWYORK);
     assertThat(cargo.delivery().isUnloadedAtDestination()).isFalse();
 
     // Adding an event unrelated to unloading at final destination
     events.add(
-      new HandlingEvent(cargo, new Date(10), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU));
+      new HandlingEvent(cargo, new Date(10), new Date(), HandlingEvent.Type.RECEIVE, HANGZHOU));
     cargo.deriveDeliveryProgress(new HandlingHistory(events));
     assertThat(cargo.delivery().isUnloadedAtDestination()).isFalse();
 
-    Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZOU).
+    Voyage voyage = new Voyage.Builder(new VoyageNumber("0123"), HANGZHOU).
       addMovement(NEWYORK, new Date(), new Date()).
       build();
 
@@ -281,7 +281,7 @@ public class CargoTest {
     cargo = setUpCargoWithItinerary(SHANGHAI, ROTTERDAM, GOTHENBURG);
     handlingEvents = new ArrayList<HandlingEvent>();
 
-    handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZOU));
+    handlingEvents.add(new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, HANGZHOU));
     events.addAll(handlingEvents);
     cargo.deriveDeliveryProgress(new HandlingHistory(events));
 
