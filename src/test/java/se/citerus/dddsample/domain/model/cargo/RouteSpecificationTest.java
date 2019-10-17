@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.DALLAS;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
@@ -52,7 +52,7 @@ public class RouteSpecificationTest {
   @Test
   public void testIsSatisfiedBy_WrongOrigin() {
     RouteSpecification routeSpecification = new RouteSpecification(
-      HANGZOU, CHICAGO, toDate("2009-03-01")
+            HANGZHOU, CHICAGO, toDate("2009-03-01")
     );
 
     assertThat(routeSpecification.isSatisfiedBy(itinerary)).isFalse();
