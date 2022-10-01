@@ -12,13 +12,14 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
-import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 /**
  * This web service endpoint implementation performs basic validation and parsing
@@ -29,8 +30,12 @@ import java.util.List;
 @WebService(endpointInterface = "com.aggregator.HandlingReportService")
 public class HandlingReportServiceImpl implements HandlingReportService {
 
-  private ApplicationEvents applicationEvents;
+  private final ApplicationEvents applicationEvents;
   private final static Log logger = LogFactory.getLog(HandlingReportServiceImpl.class);
+
+  public HandlingReportServiceImpl(ApplicationEvents applicationEvents) {
+    this.applicationEvents = applicationEvents;
+  }
 
   @Override
   public void submitReport(@WebParam(name = "arg0", targetNamespace = "") HandlingReport handlingReport) throws HandlingReportErrors_Exception {
@@ -57,11 +62,5 @@ public class HandlingReportServiceImpl implements HandlingReportService {
         throw new HandlingReportErrors_Exception(errors.toString(), faultInfo);
       }
     }
-
   }
-
-  public void setApplicationEvents(ApplicationEvents applicationEvents) {
-    this.applicationEvents = applicationEvents;
-  }
-
 }

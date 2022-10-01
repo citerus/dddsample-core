@@ -9,9 +9,11 @@ import static junit.framework.TestCase.assertTrue;
 
 public class CargoDestinationPage {
     private final WebDriver driver;
+    private final int port;
 
-    public CargoDestinationPage(WebDriver driver) {
+    public CargoDestinationPage(WebDriver driver, int port) {
         this.driver = driver;
+        this.port = port;
         WebElement cargoDestinationHeader = driver.findElement(By.cssSelector("table caption"));
 
         assertTrue(cargoDestinationHeader.getText().startsWith("Change destination for cargo "));
@@ -24,6 +26,7 @@ public class CargoDestinationPage {
 
         destinationPicker.submit();
 
-        return new CargoDetailsPage(driver);
+        CargoDetailsPage cargoDetailsPage = new CargoDetailsPage(driver, port);
+        return cargoDetailsPage;
     }
 }

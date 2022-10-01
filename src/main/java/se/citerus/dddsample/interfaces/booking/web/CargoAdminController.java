@@ -38,6 +38,10 @@ public final class CargoAdminController {
 
     private BookingServiceFacade bookingServiceFacade;
 
+    public CargoAdminController(BookingServiceFacade bookingServiceFacade) {
+        this.bookingServiceFacade = bookingServiceFacade;
+    }
+
     @InitBinder
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), false));
@@ -114,8 +118,7 @@ public final class CargoAdminController {
 
         bookingServiceFacade.assignCargoToRoute(command.getTrackingId(), selectedRoute);
 
-        response.sendRedirect("show.html?trackingId=" + command.getTrackingId());
-        //response.sendRedirect("list.html");
+        response.sendRedirect("show?trackingId=" + command.getTrackingId());
     }
 
     @RequestMapping(value = "/pickNewDestination")
@@ -135,10 +138,6 @@ public final class CargoAdminController {
         String trackingId = request.getParameter("trackingId");
         String unLocode = request.getParameter("unlocode");
         bookingServiceFacade.changeDestination(trackingId, unLocode);
-        response.sendRedirect("show.html?trackingId=" + trackingId);
-    }
-
-    public void setBookingServiceFacade(BookingServiceFacade bookingServiceFacade) {
-        this.bookingServiceFacade = bookingServiceFacade;
+        response.sendRedirect("show?trackingId=" + trackingId);
     }
 }

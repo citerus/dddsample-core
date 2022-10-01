@@ -49,7 +49,7 @@ public final class CargoTrackingViewAdapter {
       this.cargo = cargo;
       this.timeZone = tz;
 
-      this.events = new ArrayList<HandlingEventViewAdapter>(handlingEvents.size());
+      this.events = new ArrayList<>(handlingEvents.size());
         for (HandlingEvent handlingEvent : handlingEvents) {
           events.add(new HandlingEventViewAdapter(handlingEvent));
         }

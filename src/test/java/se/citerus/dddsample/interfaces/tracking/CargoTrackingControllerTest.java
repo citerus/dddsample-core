@@ -3,11 +3,15 @@ package se.citerus.dddsample.interfaces.tracking;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -38,9 +42,9 @@ public class CargoTrackingControllerTest {
         cargoRepository.setHandlingEventRepository(new HandlingEventRepositoryInMem());
         cargoRepository.init();
 
-        CargoTrackingController controller = new CargoTrackingController();
-        controller.setCargoRepository(cargoRepository);
-        controller.setHandlingEventRepository(new HandlingEventRepositoryInMem());
+        CargoTrackingController controller = new CargoTrackingController(cargoRepository,
+                new HandlingEventRepositoryInMem(),
+                new FakeMessageSource());
 
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/jsp/");
@@ -57,7 +61,7 @@ public class CargoTrackingControllerTest {
     }
 
     @Test
-    public void cannnotGetUnknownCargo() throws Exception {
+    public void cannotGetUnknownCargo() throws Exception {
         String trackingId = "UNKNOWN";
         Map<String, Object> model = mockMvc.perform(post("/track").param("trackingId", trackingId)).andReturn().getModelAndView().getModel();
         Errors errors = (Errors) model.get(BindingResult.MODEL_KEY_PREFIX + "trackCommand");
@@ -67,4 +71,20 @@ public class CargoTrackingControllerTest {
         assertThat(fe.getArguments()[0]).isEqualTo(trackingId);
     }
 
+    private static class FakeMessageSource implements MessageSource {
+        @Override
+        public String getMessage(String s, Object[] objects, String s1, Locale locale) {
+            return "test";
+        }
+
+        @Override
+        public String getMessage(String s, Object[] objects, Locale locale) throws NoSuchMessageException {
+            return "test";
+        }
+
+        @Override
+        public String getMessage(MessageSourceResolvable messageSourceResolvable, Locale locale) throws NoSuchMessageException {
+            return "test";
+        }
+    }
 }

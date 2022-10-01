@@ -11,10 +11,12 @@ import static org.junit.Assert.assertEquals;
 
 public class AdminPage {
     private final WebDriver driver;
+    private final int port;
 
-    public AdminPage(WebDriver driver) {
+    public AdminPage(WebDriver driver, int port) {
         this.driver = driver;
-        driver.get("http://localhost:8080/dddsample/admin/list");
+        this.port = port;
+        driver.get(String.format("http://localhost:%d/dddsample/admin/list", port));
         assertEquals("Cargo Administration", driver.getTitle());
     }
 
@@ -26,7 +28,7 @@ public class AdminPage {
     public CargoBookingPage bookNewCargo() {
         driver.findElement(By.linkText("Book new cargo")).click();
 
-        return new CargoBookingPage(driver);
+        return new CargoBookingPage(driver, port);
     }
 
     public boolean listedCargoContains(String expectedTrackingId) {
@@ -38,6 +40,6 @@ public class AdminPage {
     public CargoDetailsPage showDetailsFor(String cargoTrackingId) {
         driver.findElement(By.linkText(cargoTrackingId)).click();
 
-        return new CargoDetailsPage(driver);
+        return new CargoDetailsPage(driver, port);
     }
 }

@@ -15,7 +15,7 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
 
     @Test
     public void adminSiteCargoListContainsCannedCargo() {
-        AdminPage page = new AdminPage(driver);
+        AdminPage page = new AdminPage(driver, port);
         page.listAllCargo();
 
         assertTrue("Cargo list doesn't contain ABC123", page.listedCargoContains("ABC123"));
@@ -24,7 +24,7 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
 
     @Test
     public void adminSiteCanBookNewCargo() {
-        AdminPage adminPage = new AdminPage(driver);
+        AdminPage adminPage = new AdminPage(driver, port);
 
         CargoBookingPage cargoBookingPage = adminPage.bookNewCargo();
         cargoBookingPage.selectOrigin("NLRTM");
@@ -45,6 +45,5 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
         cargoDetailsPage = cargoDestinationPage.selectDestinationTo("AUMEL");
         cargoDetailsPage.expectDestinationOf("AUMEL");
         cargoDetailsPage.expectArrivalDeadlineOf(arrivalDeadline);
-
     }
 }
