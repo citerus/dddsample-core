@@ -10,7 +10,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
-import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
+
+import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 /**
  * Periodically scans a certain directory for files and attempts
@@ -33,6 +34,12 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
 
   private final static Log logger = LogFactory.getLog(UploadDirectoryScanner.class);
   private ApplicationEvents applicationEvents;
+
+  public UploadDirectoryScanner(File uploadDirectory, File parseFailureDirectory, ApplicationEvents applicationEvents) {
+    this.uploadDirectory = uploadDirectory;
+    this.parseFailureDirectory = parseFailureDirectory;
+    this.applicationEvents = applicationEvents;
+  }
 
   @Override
   public void run() {
@@ -127,17 +134,5 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     if (!parseFailureDirectory.exists()) {
       parseFailureDirectory.mkdirs();
     }
-  }
-
-  public void setUploadDirectory(File uploadDirectory) {
-    this.uploadDirectory = uploadDirectory;
-  }
-
-  public void setParseFailureDirectory(File parseFailureDirectory) {
-    this.parseFailureDirectory = parseFailureDirectory;
-  }
-
-  public void setApplicationEvents(ApplicationEvents applicationEvents) {
-    this.applicationEvents = applicationEvents;
   }
 }

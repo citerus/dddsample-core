@@ -13,10 +13,12 @@ import static org.junit.Assert.assertEquals;
 public class CargoDetailsPage {
     public static final String TRACKING_ID_HEADER = "Details for cargo ";
     private final WebDriver driver;
+    private final int port;
     private String trackingId;
 
-    public CargoDetailsPage(WebDriver driver) {
+    public CargoDetailsPage(WebDriver driver, int port) {
         this.driver = driver;
+        this.port = port;
 
         WebElement newCargoTableCaption = driver.findElement(By.cssSelector("table caption"));
 
@@ -31,7 +33,7 @@ public class CargoDetailsPage {
     public AdminPage listAllCargo() {
         driver.findElement(By.linkText("List all cargos")).click();
 
-        return new AdminPage(driver);
+        return new AdminPage(driver, port);
     }
 
     public void expectOriginOf(String expectedOrigin) {
@@ -49,7 +51,7 @@ public class CargoDetailsPage {
     public CargoDestinationPage changeDestination() {
         driver.findElement(By.linkText("Change destination")).click();
 
-        return new CargoDestinationPage(driver);
+        return new CargoDestinationPage(driver, port);
     }
 
     public void expectArrivalDeadlineOf(LocalDate expectedArrivalDeadline) {

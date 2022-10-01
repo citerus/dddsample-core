@@ -9,7 +9,7 @@ public class CustomerAcceptanceTest extends AbstractAcceptanceTest {
 
     @Before
     public void goToCustomerPage() {
-        customerPage = new CustomerPage(driver);
+        customerPage = new CustomerPage(driver, port);
     }
 
     @Test

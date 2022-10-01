@@ -13,9 +13,11 @@ import static org.junit.Assert.assertEquals;
 public class CargoBookingPage {
 
     private final WebDriver driver;
+    private final int port;
 
-    public CargoBookingPage(WebDriver driver) {
+    public CargoBookingPage(WebDriver driver, int port) {
         this.driver = driver;
+        this.port = port;
 
         WebElement newCargoTableCaption = driver.findElement(By.cssSelector("table caption"));
 
@@ -35,7 +37,7 @@ public class CargoBookingPage {
     public CargoDetailsPage book() {
         driver.findElement(By.name("originUnlocode")).submit();
 
-        return new CargoDetailsPage(driver);
+        return new CargoDetailsPage(driver, port);
     }
 
     public void selectArrivalDeadline(LocalDate arrivalDeadline) {

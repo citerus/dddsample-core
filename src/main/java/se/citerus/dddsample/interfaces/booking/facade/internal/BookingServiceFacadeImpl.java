@@ -38,6 +38,13 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   private CargoRepository cargoRepository;
   private VoyageRepository voyageRepository;
 
+  public BookingServiceFacadeImpl(BookingService bookingService, LocationRepository locationRepository, CargoRepository cargoRepository, VoyageRepository voyageRepository) {
+    this.bookingService = bookingService;
+    this.locationRepository = locationRepository;
+    this.cargoRepository = cargoRepository;
+    this.voyageRepository = voyageRepository;
+  }
+
   @Override
   public List<LocationDTO> listShippingLocations() {
     final List<Location> allLocations = locationRepository.findAll();
@@ -97,21 +104,5 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
     }
 
     return routeCandidates;
-  }
-
-  public void setBookingService(BookingService bookingService) {
-    this.bookingService = bookingService;
-  }
-
-  public void setLocationRepository(LocationRepository locationRepository) {
-    this.locationRepository = locationRepository;
-  }
-
-  public void setCargoRepository(CargoRepository cargoRepository) {
-    this.cargoRepository = cargoRepository;
-  }
-
-  public void setVoyageRepository(VoyageRepository voyageRepository) {
-    this.voyageRepository = voyageRepository;
   }
 }

@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.transaction.PlatformTransactionManager;
 import se.citerus.dddsample.application.ApplicationEvents;
@@ -22,12 +23,13 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.domain.service.RoutingService;
 import se.citerus.dddsample.infrastructure.routing.ExternalRoutingService;
+import se.citerus.dddsample.interfaces.InterfacesApplicationContext;
 
 @Configuration
 @ImportResource({
-        "classpath:context-interfaces.xml",
         "classpath:context-infrastructure-messaging.xml",
         "classpath:context-infrastructure-persistence.xml"})
+@Import(InterfacesApplicationContext.class)
 public class DDDSampleApplicationContext {
 
     @Autowired

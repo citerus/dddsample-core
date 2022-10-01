@@ -10,9 +10,9 @@ import static org.junit.Assert.assertTrue;
 public class CustomerPage {
     private final WebDriver driver;
 
-    public CustomerPage(WebDriver driver) {
+    public CustomerPage(WebDriver driver, int port) {
         this.driver = driver;
-        driver.get("http://localhost:8080/dddsample/track");
+        driver.get(String.format("http://localhost:%d/dddsample/track", port));
         assertEquals("Tracking cargo", driver.getTitle());
     }
 

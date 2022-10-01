@@ -11,18 +11,16 @@ import org.springframework.validation.FieldError;
 public class TrackCommandValidatorTest {
 
   TrackCommandValidator validator;
-  TrackCommand command;
-  BindingResult errors;
 
   @Before
   public void setUp() {
     validator = new TrackCommandValidator();
-    command = new TrackCommand();
-    errors = new BeanPropertyBindingResult(command, "command");
   }
 
   @Test
   public void testValidateIllegalId() {
+    TrackCommand command = new TrackCommand();
+    BindingResult errors = new BeanPropertyBindingResult(command, "command");
     validator.validate(command, errors);
 
     assertThat(errors.getErrorCount()).isEqualTo(1);
@@ -34,10 +32,11 @@ public class TrackCommandValidatorTest {
 
   @Test
   public void testValidateSuccess() {
+    TrackCommand command = new TrackCommand();
     command.setTrackingId("non-empty");
+    BindingResult errors = new BeanPropertyBindingResult(command, "command");
     validator.validate(command, errors);
 
     assertThat(errors.hasErrors()).isFalse();
   }
-
 }

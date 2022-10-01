@@ -39,9 +39,15 @@ public final class CargoTrackingController {
     private HandlingEventRepository handlingEventRepository;
     private MessageSource messageSource;
 
+    public CargoTrackingController(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
+        this.cargoRepository = cargoRepository;
+        this.handlingEventRepository = handlingEventRepository;
+        this.messageSource = messageSource;
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public String get(final Map<String, Object> model) {
-        model.put("trackCommand", new TrackCommand());
+        model.put("trackCommand", new TrackCommand()); // TODO why is this method adding a TrackCommand without id?
         return "track";
     }
 
@@ -64,17 +70,4 @@ public final class CargoTrackingController {
         }
         return "track";
     }
-
-    public void setCargoRepository(CargoRepository cargoRepository) {
-        this.cargoRepository = cargoRepository;
-    }
-
-    public void setHandlingEventRepository(HandlingEventRepository handlingEventRepository) {
-        this.handlingEventRepository = handlingEventRepository;
-    }
-
-    public void setMessageSource(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
-
 }
