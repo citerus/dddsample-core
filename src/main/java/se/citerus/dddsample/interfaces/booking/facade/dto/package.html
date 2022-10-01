@@ -14,14 +14,14 @@
   to the domain model to the UI layer.
 </p>
 <p>
-  Futhermore, we have a clear contract for what part of the object graph is loaded from the database
+  Furthermore, we have a clear contract for what part of the object graph is loaded from the database
   when the service layer call returns. If domain model objects are passed on to the UI layer, it will
   be necessary to keep the database access window (the Hibernate session in this case) open during the entire processing of
   the view (the Open Session In View pattern), otherwise an uninitialized part of the model could
   accidentally be accessed, causing an error. For example, if the UI layer were to receive a Cargo instance,
   that could be navigated to access the Itinerary, iterate over the Legs of the itinerary, access the Leg's CarrierMovement and
   then the CarrierMovement's Location and so on.
-  In addition to effectively tying the UI layer and the rest of the aplication to the same JVM,
+  In addition to effectively tying the UI layer and the rest of the application to the same JVM,
   letting the UI layer decide when to initialize data may be very inefficient. DTOs are a natural way
   of loading only the relevant data for a particular use case, and blocking access to the rest.
 </p>
