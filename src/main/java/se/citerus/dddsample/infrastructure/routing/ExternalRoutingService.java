@@ -26,11 +26,17 @@ import java.util.Properties;
  *
  */
 public class ExternalRoutingService implements RoutingService {
-
-  private GraphTraversalService graphTraversalService;
-  private LocationRepository locationRepository;
-  private VoyageRepository voyageRepository;
   private static final Log log = LogFactory.getLog(ExternalRoutingService.class);
+
+  private final GraphTraversalService graphTraversalService;
+  private final LocationRepository locationRepository;
+  private final VoyageRepository voyageRepository;
+
+  public ExternalRoutingService(GraphTraversalService graphTraversalService, LocationRepository locationRepository, VoyageRepository voyageRepository) {
+    this.graphTraversalService = graphTraversalService;
+    this.locationRepository = locationRepository;
+    this.voyageRepository = voyageRepository;
+  }
 
   public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
     /*
@@ -83,17 +89,4 @@ public class ExternalRoutingService implements RoutingService {
       edge.getFromDate(), edge.getToDate()
     );
   }
-
-  public void setGraphTraversalService(GraphTraversalService graphTraversalService) {
-    this.graphTraversalService = graphTraversalService;
-  }
-
-  public void setLocationRepository(LocationRepository locationRepository) {
-    this.locationRepository = locationRepository;
-  }
-
-  public void setVoyageRepository(VoyageRepository voyageRepository) {
-    this.voyageRepository = voyageRepository;
-  }
-  
 }
