@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -9,6 +10,10 @@ import java.util.List;
 
 @Repository
 public class LocationRepositoryHibernate extends HibernateRepository implements LocationRepository {
+
+  public LocationRepositoryHibernate(SessionFactory sessionFactory) {
+    super(sessionFactory);
+  }
 
   public Location find(final UnLocode unLocode) {
     return (Location) getSession().

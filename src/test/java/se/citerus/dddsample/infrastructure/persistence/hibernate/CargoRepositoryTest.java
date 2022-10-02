@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +49,8 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(value = {"/context-infrastructure-persistence.xml"})
+@ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
+@TestPropertySource(locations = {"/application.properties", "/config/application.properties"})
 @Transactional
 public class CargoRepositoryTest {
 
