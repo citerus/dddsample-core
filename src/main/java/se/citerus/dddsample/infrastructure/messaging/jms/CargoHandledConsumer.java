@@ -18,10 +18,14 @@ import javax.jms.TextMessage;
  */
 public class CargoHandledConsumer implements MessageListener {
 
-  private CargoInspectionService cargoInspectionService;
+  private final CargoInspectionService cargoInspectionService;
   private final Log logger = LogFactory.getLog(getClass());
 
-  @Override  
+  public CargoHandledConsumer(CargoInspectionService cargoInspectionService) {
+    this.cargoInspectionService = cargoInspectionService;
+  }
+
+  @Override
   public void onMessage(final Message message) {
     try {
       final TextMessage textMessage = (TextMessage) message;
@@ -31,9 +35,5 @@ public class CargoHandledConsumer implements MessageListener {
     } catch (Exception e) {
       logger.error(e, e);
     }
-  }
-
-  public void setCargoInspectionService(CargoInspectionService cargoInspectionService) {
-    this.cargoInspectionService = cargoInspectionService;
   }
 }
