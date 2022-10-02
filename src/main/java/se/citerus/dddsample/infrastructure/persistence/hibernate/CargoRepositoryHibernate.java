@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -13,6 +14,10 @@ import java.util.UUID;
  */
 @Repository
 public class CargoRepositoryHibernate extends HibernateRepository implements CargoRepository {
+
+  public CargoRepositoryHibernate(SessionFactory sessionFactory) {
+    super(sessionFactory);
+  }
 
   public Cargo find(TrackingId tid) {
     return (Cargo) getSession().

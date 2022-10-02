@@ -9,16 +9,12 @@ import java.util.*;
 
 public class HandlingEventRepositoryInMem implements HandlingEventRepository {
 
-  private Map<TrackingId, List<HandlingEvent>> eventMap = new HashMap<TrackingId, List<HandlingEvent>>();
+  private final Map<TrackingId, List<HandlingEvent>> eventMap = new HashMap<>();
 
   @Override
   public void store(HandlingEvent event) {
     final TrackingId trackingId = event.cargo().trackingId();
-    List<HandlingEvent> list = eventMap.get(trackingId);
-    if (list == null) {
-      list = new ArrayList<HandlingEvent>();
-      eventMap.put(trackingId, list);
-    }
+    List<HandlingEvent> list = eventMap.computeIfAbsent(trackingId, k -> new ArrayList<>());
     list.add(event);
   }
 
@@ -29,5 +25,4 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
     
     return new HandlingHistory(events);
   }
-
 }

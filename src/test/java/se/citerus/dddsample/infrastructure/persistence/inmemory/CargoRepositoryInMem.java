@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class CargoRepositoryInMem implements CargoRepository {
 
-    private Map<String, Cargo> cargoDb;
+    private final Map<String, Cargo> cargoDb;
     private HandlingEventRepository handlingEventRepository;
 
     /**
