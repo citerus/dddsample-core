@@ -22,14 +22,13 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.domain.service.RoutingService;
+import se.citerus.dddsample.infrastructure.messaging.jms.InfrastructureMessagingJmsConfig;
 import se.citerus.dddsample.infrastructure.routing.ExternalRoutingService;
 import se.citerus.dddsample.interfaces.InterfacesApplicationContext;
 
 @Configuration
-@ImportResource({
-        "classpath:context-infrastructure-messaging.xml",
-        "classpath:context-infrastructure-persistence.xml"})
-@Import(InterfacesApplicationContext.class)
+@ImportResource({"classpath:context-infrastructure-persistence.xml"})
+@Import({InterfacesApplicationContext.class, InfrastructureMessagingJmsConfig.class})
 public class DDDSampleApplicationContext {
 
     @Autowired

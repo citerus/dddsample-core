@@ -16,8 +16,12 @@ import javax.jms.ObjectMessage;
  */
 public class HandlingEventRegistrationAttemptConsumer implements MessageListener {
 
-  private HandlingEventService handlingEventService;
+  private final HandlingEventService handlingEventService;
   private static final Log logger = LogFactory.getLog(HandlingEventRegistrationAttemptConsumer.class);
+
+  public HandlingEventRegistrationAttemptConsumer(HandlingEventService handlingEventService) {
+    this.handlingEventService = handlingEventService;
+  }
 
   @Override
   public void onMessage(final Message message) {
@@ -35,9 +39,4 @@ public class HandlingEventRegistrationAttemptConsumer implements MessageListener
       logger.error(e, e);
     }
   }
-
-  public void setHandlingEventService(HandlingEventService handlingEventService) {
-    this.handlingEventService = handlingEventService;
-  }
-
 }
