@@ -30,13 +30,8 @@ public class ExternalRoutingServiceTest {
 
   @Before
   public void setUp() {
-    externalRoutingService = new ExternalRoutingService();
     LocationRepository locationRepository = new LocationRepositoryInMem();
-    externalRoutingService.setLocationRepository(locationRepository);
-
     voyageRepository = mock(VoyageRepository.class);
-    externalRoutingService.setVoyageRepository(voyageRepository);
-
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAOStub() {
       public List<String> listLocations() {
         return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
@@ -45,7 +40,7 @@ public class ExternalRoutingServiceTest {
       public void storeCarrierMovementId(String cmId, String from, String to) {
       }
     });
-    externalRoutingService.setGraphTraversalService(graphTraversalService);
+    externalRoutingService = new ExternalRoutingService(graphTraversalService, locationRepository, voyageRepository);
   }
 
   // TODO this test belongs in com.pathfinder
@@ -78,5 +73,4 @@ public class ExternalRoutingServiceTest {
       }
     }
   }
-
 }
