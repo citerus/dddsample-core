@@ -22,8 +22,6 @@ import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
-import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
-import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
 import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
 import se.citerus.dddsample.interfaces.handling.HandlingReportParser;
 import se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner;
@@ -77,13 +75,8 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public CargoAdminController cargoAdminController(BookingServiceFacade bookingServiceFacade) {
-        return new CargoAdminController(bookingServiceFacade);
-    }
-
-    @Bean
-    public BookingServiceFacade bookingServiceFacade(BookingService bookingService, LocationRepository locationRepository, CargoRepository cargoRepository, VoyageRepository voyageRepository) {
-        return new BookingServiceFacadeImpl(bookingService, locationRepository, cargoRepository, voyageRepository);
+    public CargoAdminController cargoAdminController(LocationRepository locationRepository, BookingService bookingService, CargoRepository cargoRepository, VoyageRepository voyageRepository) {
+        return new CargoAdminController(locationRepository, bookingService, cargoRepository, voyageRepository);
     }
 
     @Bean

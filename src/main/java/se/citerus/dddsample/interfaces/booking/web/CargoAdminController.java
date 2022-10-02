@@ -6,11 +6,22 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
+import se.citerus.dddsample.application.BookingService;
+import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.cargo.CargoRepository;
+import se.citerus.dddsample.domain.model.cargo.Itinerary;
+import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.location.LocationRepository;
+import se.citerus.dddsample.domain.model.location.UnLocode;
+import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.CargoRoutingDTOAssembler;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.ItineraryCandidateDTOAssembler;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.LocationDTOAssembler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,10 +47,16 @@ import java.util.Map;
 @RequestMapping("/admin")
 public final class CargoAdminController {
 
-    private BookingServiceFacade bookingServiceFacade;
+    private final LocationRepository locationRepository;
+    private final BookingService bookingService;
+    private final CargoRepository cargoRepository;
+    private final VoyageRepository voyageRepository;
 
-    public CargoAdminController(BookingServiceFacade bookingServiceFacade) {
-        this.bookingServiceFacade = bookingServiceFacade;
+    public CargoAdminController(LocationRepository locationRepository, BookingService bookingService, CargoRepository cargoRepository, VoyageRepository voyageRepository) {
+        this.locationRepository = locationRepository;
+        this.bookingService = bookingService;
+        this.cargoRepository = cargoRepository;
+        this.voyageRepository = voyageRepository;
     }
 
     @InitBinder
@@ -49,9 +66,9 @@ public final class CargoAdminController {
 
     @RequestMapping("/registration")
     public String registration(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
-        List<LocationDTO> dtoList = bookingServiceFacade.listShippingLocations();
+        List<LocationDTO> dtoList = listAllCargo();
 
-        List<String> unLocodeStrings = new ArrayList<String>();
+        List<String> unLocodeStrings = new ArrayList<>();
 
         for (LocationDTO dto : dtoList) {
             unLocodeStrings.add(dto.getUnLocode());
@@ -66,24 +83,30 @@ public final class CargoAdminController {
     public void register(HttpServletRequest request, HttpServletResponse response,
                          RegistrationCommand command) throws Exception {
         Date arrivalDeadline = new SimpleDateFormat("dd/MM/yyyy").parse(command.getArrivalDeadline());
-        String trackingId = bookingServiceFacade.bookNewCargo(
-                command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline
+        TrackingId trackingId = bookingService.bookNewCargo(
+                new UnLocode(command.getOriginUnlocode()),
+                new UnLocode(command.getDestinationUnlocode()),
+                arrivalDeadline
         );
-        response.sendRedirect("show?trackingId=" + trackingId);
+        response.sendRedirect("show?trackingId=" + trackingId.idString());
     }
 
     @RequestMapping("/list")
     public String list(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
-        List<CargoRoutingDTO> cargoList = bookingServiceFacade.listAllCargos();
+        final List<Cargo> cargoList = cargoRepository.findAll();
+        final List<CargoRoutingDTO> dtoList = new ArrayList<>(cargoList.size());
+        for (Cargo cargo : cargoList) {
+            dtoList.add(CargoRoutingDTOAssembler.toDTO(cargo));
+        }
 
-        model.put("cargoList", cargoList);
+        model.put("cargoList", dtoList);
         return "admin/list";
     }
 
     @RequestMapping("/show")
     public String show(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
         String trackingId = request.getParameter("trackingId");
-        CargoRoutingDTO dto = bookingServiceFacade.loadCargoForRouting(trackingId);
+        CargoRoutingDTO dto = loadCargoForRouting(trackingId);
         model.put("cargo", dto);
         return "admin/show";
     }
@@ -92,10 +115,15 @@ public final class CargoAdminController {
     public String selectItinerary(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
         String trackingId = request.getParameter("trackingId");
 
-        List<RouteCandidateDTO> routeCandidates = bookingServiceFacade.requestPossibleRoutesForCargo(trackingId);
+        final List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
+
+        final List<RouteCandidateDTO> routeCandidates = new ArrayList<>(itineraries.size());
+        for (Itinerary itinerary : itineraries) {
+            routeCandidates.add(ItineraryCandidateDTOAssembler.toDTO(itinerary));
+        }
         model.put("routeCandidates", routeCandidates);
 
-        CargoRoutingDTO cargoDTO = bookingServiceFacade.loadCargoForRouting(trackingId);
+        CargoRoutingDTO cargoDTO = loadCargoForRouting(trackingId);
         model.put("cargo", cargoDTO);
 
         return "admin/selectItinerary";
@@ -103,7 +131,7 @@ public final class CargoAdminController {
 
     @RequestMapping(value = "/assignItinerary", method = RequestMethod.POST)
     public void assignItinerary(HttpServletRequest request, HttpServletResponse response, RouteAssignmentCommand command) throws Exception {
-        List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
+        List<LegDTO> legDTOs = new ArrayList<>(command.getLegs().size());
         for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
             legDTOs.add(new LegDTO(
                             leg.getVoyageNumber(),
@@ -116,18 +144,21 @@ public final class CargoAdminController {
 
         RouteCandidateDTO selectedRoute = new RouteCandidateDTO(legDTOs);
 
-        bookingServiceFacade.assignCargoToRoute(command.getTrackingId(), selectedRoute);
+        final Itinerary itinerary = ItineraryCandidateDTOAssembler.fromDTO(selectedRoute, voyageRepository, locationRepository);
+        final TrackingId trackingId = new TrackingId(command.getTrackingId());
+
+        bookingService.assignCargoToRoute(itinerary, trackingId);
 
         response.sendRedirect("show?trackingId=" + command.getTrackingId());
     }
 
     @RequestMapping(value = "/pickNewDestination")
     public String pickNewDestination(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
-        List<LocationDTO> locations = bookingServiceFacade.listShippingLocations();
+        List<LocationDTO> locations = listAllCargo();
         model.put("locations", locations);
 
         String trackingId = request.getParameter("trackingId");
-        CargoRoutingDTO cargo = bookingServiceFacade.loadCargoForRouting(trackingId);
+        CargoRoutingDTO cargo = loadCargoForRouting(trackingId);
         model.put("cargo", cargo);
 
         return "admin/pickNewDestination";
@@ -137,7 +168,17 @@ public final class CargoAdminController {
     public void changeDestination(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String trackingId = request.getParameter("trackingId");
         String unLocode = request.getParameter("unlocode");
-        bookingServiceFacade.changeDestination(trackingId, unLocode);
+        bookingService.changeDestination(new TrackingId(trackingId), new UnLocode(unLocode));
         response.sendRedirect("show?trackingId=" + trackingId);
+    }
+
+    private CargoRoutingDTO loadCargoForRouting(String trackingId) {
+        final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
+        return CargoRoutingDTOAssembler.toDTO(cargo);
+    }
+
+    private List<LocationDTO> listAllCargo() {
+        final List<Location> allLocations = locationRepository.findAll();
+        return LocationDTOAssembler.toDTOList(allLocations);
     }
 }

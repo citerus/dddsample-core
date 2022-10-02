@@ -23,8 +23,8 @@ public class ItineraryCandidateDTOAssembler {
    * @param itinerary itinerary
    * @return A route candidate DTO
    */
-  public RouteCandidateDTO toDTO(final Itinerary itinerary) {
-    final List<LegDTO> legDTOs = new ArrayList<LegDTO>(itinerary.legs().size());
+  public static RouteCandidateDTO toDTO(final Itinerary itinerary) {
+    final List<LegDTO> legDTOs = new ArrayList<>(itinerary.legs().size());
     for (Leg leg : itinerary.legs()) {
       legDTOs.add(toLegDTO(leg));
     }
@@ -35,7 +35,7 @@ public class ItineraryCandidateDTOAssembler {
    * @param leg leg
    * @return A leg DTO
    */
-  protected LegDTO toLegDTO(final Leg leg) {
+  protected static LegDTO toLegDTO(final Leg leg) {
     final VoyageNumber voyageNumber = leg.voyage().voyageNumber();
     final UnLocode from = leg.loadLocation().unLocode();
     final UnLocode to = leg.unloadLocation().unLocode();
@@ -48,10 +48,10 @@ public class ItineraryCandidateDTOAssembler {
    * @param locationRepository location repository
    * @return An itinerary
    */
-  public Itinerary fromDTO(final RouteCandidateDTO routeCandidateDTO,
+  public static Itinerary fromDTO(final RouteCandidateDTO routeCandidateDTO,
                            final VoyageRepository voyageRepository,
                            final LocationRepository locationRepository) {
-    final List<Leg> legs = new ArrayList<Leg>(routeCandidateDTO.getLegs().size());
+    final List<Leg> legs = new ArrayList<>(routeCandidateDTO.getLegs().size());
     for (LegDTO legDTO : routeCandidateDTO.getLegs()) {
       final VoyageNumber voyageNumber = new VoyageNumber(legDTO.getVoyageNumber());
       final Voyage voyage = voyageRepository.find(voyageNumber);
