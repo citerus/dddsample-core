@@ -1,11 +1,11 @@
 package se.citerus.dddsample.config;
 
 import com.pathfinder.api.GraphTraversalService;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.BookingService;
@@ -23,12 +23,11 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.domain.service.RoutingService;
 import se.citerus.dddsample.infrastructure.messaging.jms.InfrastructureMessagingJmsConfig;
-import se.citerus.dddsample.infrastructure.persistence.hibernate.InfrastructurePersistenceHibernateConfig;
 import se.citerus.dddsample.infrastructure.routing.ExternalRoutingService;
 import se.citerus.dddsample.interfaces.InterfacesApplicationContext;
 
 @Configuration
-@Import({InfrastructurePersistenceHibernateConfig.class, InterfacesApplicationContext.class, InfrastructureMessagingJmsConfig.class})
+@Import({InterfacesApplicationContext.class, InfrastructureMessagingJmsConfig.class})
 public class DDDSampleApplicationContext {
 
     @Autowired
@@ -59,7 +58,7 @@ public class DDDSampleApplicationContext {
     PlatformTransactionManager platformTransactionManager;
 
     @Autowired
-    SessionFactory sessionFactory;
+    JdbcTemplate jdbcTemplate;
 
     @Bean
     public CargoFactory cargoFactory() {
@@ -93,6 +92,8 @@ public class DDDSampleApplicationContext {
 
     @Bean
     public SampleDataGenerator sampleDataGenerator() {
-        return new SampleDataGenerator(platformTransactionManager, sessionFactory, cargoRepository, voyageRepository, locationRepository, handlingEventRepository);
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(cargoRepository, voyageRepository, locationRepository, handlingEventRepository, platformTransactionManager);
+        sampleDataGenerator.generate(); // TODO investigate if this can be called with initMethod in the annotation
+        return sampleDataGenerator;
     }
 }

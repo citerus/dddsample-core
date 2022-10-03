@@ -1,8 +1,7 @@
 package se.citerus.dddsample.application.util;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -30,36 +29,25 @@ import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
  */
 public class SampleDataGenerator {
 
-    private static final Timestamp base;
+    private static final Timestamp base = getBaseTimeStamp();
 
-    static {
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2008-01-01");
-            base = new Timestamp(date.getTime() - 1000L * 60 * 60 * 24 * 100);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private final PlatformTransactionManager transactionManager;
-    private final SessionFactory sf;
     private final CargoRepository cargoRepository;
     private final VoyageRepository voyageRepository;
     private final LocationRepository locationRepository;
     private final HandlingEventRepository handlingEventRepository;
+    private final PlatformTransactionManager transactionManager;
 
-    public SampleDataGenerator(PlatformTransactionManager transactionManager,
-                               SessionFactory sf,
-                               CargoRepository cargoRepository,
-                               VoyageRepository voyageRepository,
-                               LocationRepository locationRepository,
-                               HandlingEventRepository handlingEventRepository) {
-        this.transactionManager = requireNonNull(transactionManager);
-        this.sf = requireNonNull(sf);
+    public SampleDataGenerator(@NonNull CargoRepository cargoRepository,
+                               @NonNull VoyageRepository voyageRepository,
+                               @NonNull LocationRepository locationRepository,
+                               @NonNull HandlingEventRepository handlingEventRepository,
+                               @NonNull PlatformTransactionManager transactionManager) {
+        // TODO can the requireNonNull calls be replaced by annotations?
         this.cargoRepository = requireNonNull(cargoRepository);
         this.voyageRepository = requireNonNull(voyageRepository);
         this.locationRepository = requireNonNull(locationRepository);
         this.handlingEventRepository = requireNonNull(handlingEventRepository);
+        this.transactionManager = requireNonNull(transactionManager);
     }
 
     private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
@@ -201,31 +189,29 @@ public class SampleDataGenerator {
 
     public void generate() {
         TransactionTemplate tt = new TransactionTemplate(transactionManager);
-        //loadSampleData(new JdbcTemplate(dataSource), tt);
+        //loadSampleData(jdbcTemplate, tt);
 
         HandlingEventFactory handlingEventFactory = new HandlingEventFactory(
                 cargoRepository,
                 voyageRepository,
                 locationRepository);
-        loadHibernateData(tt, sf, handlingEventFactory, handlingEventRepository);
+        loadHibernateData(tt, handlingEventFactory);
     }
 
-    public static void loadHibernateData(TransactionTemplate tt, final SessionFactory sf, final HandlingEventFactory handlingEventFactory, final HandlingEventRepository handlingEventRepository) {
+    public void loadHibernateData(TransactionTemplate tt, final HandlingEventFactory handlingEventFactory) {
         System.out.println("*** Loading Hibernate data ***");
         tt.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                Session session = sf.getCurrentSession();
-
                 for (Location location : SampleLocations.getAll()) {
-                    session.save(location);
+                    locationRepository.store(location);
                 }
 
-                session.save(HONGKONG_TO_NEW_YORK);
-                session.save(NEW_YORK_TO_DALLAS);
-                session.save(DALLAS_TO_HELSINKI);
-                session.save(HELSINKI_TO_HONGKONG);
-                session.save(DALLAS_TO_HELSINKI_ALT);
+                voyageRepository.store(HONGKONG_TO_NEW_YORK);
+                voyageRepository.store(NEW_YORK_TO_DALLAS);
+                voyageRepository.store(DALLAS_TO_HELSINKI);
+                voyageRepository.store(HELSINKI_TO_HONGKONG);
+                voyageRepository.store(DALLAS_TO_HELSINKI_ALT);
 
                 RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, toDate("2009-03-15"));
                 TrackingId trackingId = new TrackingId("ABC123");
@@ -238,23 +224,23 @@ public class SampleDataGenerator {
                 ));
                 abc123.assignToRoute(itinerary);
 
-                session.save(abc123);
+                cargoRepository.store(abc123);
 
                 try {
                     HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
                     );
-                    session.save(event1);
+                    handlingEventRepository.store(event1);
 
                     HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
                     );
-                    session.save(event2);
+                    handlingEventRepository.store(event2);
 
                     HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
                     );
-                    session.save(event3);
+                    handlingEventRepository.store(event3);
                 } catch (CannotCreateHandlingEventException e) {
                     throw new RuntimeException(e);
                 }
@@ -262,7 +248,7 @@ public class SampleDataGenerator {
                 HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
                 abc123.deriveDeliveryProgress(handlingHistory);
 
-                session.update(abc123);
+                cargoRepository.store(abc123);
 
                 // Cargo JKL567
 
@@ -277,28 +263,28 @@ public class SampleDataGenerator {
                 ));
                 jkl567.assignToRoute(itinerary1);
 
-                session.save(jkl567);
+                cargoRepository.store(jkl567);
 
                 try {
                     HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-01"), trackingId1, null, HANGZHOU.unLocode(), HandlingEvent.Type.RECEIVE
                     );
-                    session.save(event1);
+                    handlingEventRepository.store(event1);
 
                     HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU.unLocode(), HandlingEvent.Type.LOAD
                     );
-                    session.save(event2);
+                    handlingEventRepository.store(event2);
 
                     HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
                     );
-                    session.save(event3);
+                    handlingEventRepository.store(event3);
 
                     HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
                             new Date(), toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
                     );
-                    session.save(event4);
+                    handlingEventRepository.store(event4);
 
                 } catch (CannotCreateHandlingEventException e) {
                     throw new RuntimeException(e);
@@ -307,7 +293,7 @@ public class SampleDataGenerator {
                 HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId1);
                 jkl567.deriveDeliveryProgress(handlingHistory1);
 
-                session.update(jkl567);
+                cargoRepository.store(jkl567);
             }
         });
     }
@@ -336,5 +322,14 @@ public class SampleDataGenerator {
 
     public static Date offset(int hours) {
         return new Date(ts(hours).getTime());
+    }
+
+    private static Timestamp getBaseTimeStamp() {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2008-01-01");
+            return new Timestamp(date.getTime() - 1000L * 60 * 60 * 24 * 100);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

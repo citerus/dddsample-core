@@ -11,17 +11,21 @@
         <version>2.0.1.RELEASE</version>
         <relativePath></relativePath>
     </parent>
+
     <description>This application shows a few key concepts of
         Domain Driven Design implemented in Enterprise Java.
     </description>
     <url>http://dddsample.sourceforge.net</url>
+
     <distributionManagement>
         <site>
             <id>sf</id>
             <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>
         </site>
     </distributionManagement>
+
     <ciManagement/>
+
     <developers>
         <developer>
             <id>eric_evans</id>
@@ -59,6 +63,7 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
+
     <licenses>
         <license>
             <name>MIT</name>
@@ -66,15 +71,17 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <scm>
         <developerConnection>scm:git:https://github.com/citerus/dddsample-core</developerConnection>
         <url>https://github.com/citerus/dddsample-core</url>
     </scm>
+
     <properties>
         <java.version>11</java.version>
         <!--<assertj.version>3.8.0</assertj.version>-->
-        <!--<hibernate.version>4.3.5.Final</hibernate.version>-->
     </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -83,6 +90,7 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -97,16 +105,12 @@
             <artifactId>spring-boot-starter-activemq</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -122,10 +126,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>

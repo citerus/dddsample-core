@@ -1,13 +1,13 @@
 package se.citerus.dddsample.interfaces;
 
-import org.hibernate.SessionFactory;
+import com.aggregator.HandlingReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.orm.hibernate5.support.OpenSessionInViewInterceptor;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -27,6 +27,8 @@ import se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl;
 import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 
+import javax.persistence.EntityManager;
+import javax.xml.ws.Endpoint;
 import java.io.File;
 import java.util.Locale;
 
@@ -40,7 +42,7 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     public String parseFailureDirectory;
 
     @Autowired
-    public SessionFactory sessionFactory;
+    public EntityManager entityManager;
 
     @Bean
     public MessageSource messageSource() {
@@ -91,8 +93,8 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        OpenSessionInViewInterceptor openSessionInViewInterceptor = new OpenSessionInViewInterceptor();
-        openSessionInViewInterceptor.setSessionFactory(sessionFactory);
+        OpenEntityManagerInViewInterceptor openSessionInViewInterceptor = new OpenEntityManagerInViewInterceptor();
+        openSessionInViewInterceptor.setEntityManagerFactory(entityManager.getEntityManagerFactory());
         registry.addWebRequestInterceptor(openSessionInViewInterceptor);
     }
 

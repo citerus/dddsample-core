@@ -1,4 +1,4 @@
-package se.citerus.dddsample.infrastructure.persistence.hibernate;
+package se.citerus.dddsample.infrastructure.persistence.jpa;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 public class LocationRepositoryTest {

@@ -19,4 +19,5 @@ public interface LocationRepository {
    */
   List<Location> findAll();
 
+  Location store(Location location);
 }
