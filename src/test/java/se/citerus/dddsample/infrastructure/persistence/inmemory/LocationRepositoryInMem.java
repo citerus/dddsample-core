@@ -21,5 +21,10 @@ public class LocationRepositoryInMem implements LocationRepository {
   public List<Location> findAll() {
     return SampleLocations.getAll();
   }
-  
+
+  @Override
+  public Location store(Location location) {
+    return location;
+  }
+
 }
