@@ -10,4 +10,5 @@ public interface VoyageRepository {
    */
   Voyage find(VoyageNumber voyageNumber);
 
+  void store(Voyage voyage);
 }

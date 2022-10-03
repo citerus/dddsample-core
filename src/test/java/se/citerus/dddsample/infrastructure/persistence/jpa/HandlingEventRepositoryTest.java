@@ -1,4 +1,4 @@
-package se.citerus.dddsample.infrastructure.persistence.hibernate;
+package se.citerus.dddsample.infrastructure.persistence.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,6 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
 @TestPropertySource(locations = {"/application.properties", "/config/application.properties"})
 @Transactional
 public class HandlingEventRepositoryTest {

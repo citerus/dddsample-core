@@ -1,4 +1,4 @@
-package se.citerus.dddsample.infrastructure.persistence.hibernate;
+package se.citerus.dddsample.infrastructure.persistence.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -49,7 +51,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
+@DataJpaTest
 @TestPropertySource(locations = {"/application.properties", "/config/application.properties"})
 @Transactional
 public class CargoRepositoryTest {
@@ -70,16 +72,13 @@ public class CargoRepositoryTest {
     SessionFactory sessionFactory;
 
     @Autowired
-    private DataSource dataSource;
+    PlatformTransactionManager transactionManager;
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
-
-    private JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
     @Before
     public void setup() {
-        jdbcTemplate = new JdbcTemplate(dataSource);
         SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
     }
 
