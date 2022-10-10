@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * This implementation has additional support from the infrastructure, for exposing as an RMI
  * service and for keeping the OR-mapper unit-of-work open during DTO assembly,
@@ -47,7 +44,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
   @Override
   public List<LocationDTO> listShippingLocations() {
-    final List<Location> allLocations = locationRepository.findAll();
+    final List<Location> allLocations = locationRepository.getAll();
     final LocationDTOAssembler assembler = new LocationDTOAssembler();
     return assembler.toDTOList(allLocations);
   }
@@ -84,7 +81,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
   @Override
   public List<CargoRoutingDTO> listAllCargos() {
-    final List<Cargo> cargoList = cargoRepository.findAll();
+    final List<Cargo> cargoList = cargoRepository.getAll();
     final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(cargoList.size());
     final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
     for (Cargo cargo : cargoList) {

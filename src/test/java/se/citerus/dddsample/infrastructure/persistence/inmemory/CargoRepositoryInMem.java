@@ -8,7 +8,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 import java.util.*;
 
@@ -47,7 +47,7 @@ public class CargoRepositoryInMem implements CargoRepository {
         );
     }
 
-    public List<Cargo> findAll() {
+    public List<Cargo> getAll() {
         return new ArrayList<>(cargoDb.values());
     }
 

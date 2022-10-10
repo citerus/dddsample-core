@@ -10,6 +10,7 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainEvent;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -28,14 +29,35 @@ import java.util.Date;
  * <p/>
  * All other events must be of {@link Type#RECEIVE}, {@link Type#CLAIM} or {@link Type#CUSTOMS}.
  */
+@Entity(name = "HandlingEvent")
+@Table(name = "HandlingEvent")
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
-  private Type type;
-  private Voyage voyage;
-  private Location location;
-  private Date completionTime;
-  private Date registrationTime;
-  private Cargo cargo;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "voyage_id")
+  public Voyage voyage;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "location_id")
+  public Location location;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "cargo_id")
+  public Cargo cargo;
+
+  @Column
+  public Date completionTime;
+
+  @Column
+  public Date registrationTime;
+
+  @Column
+  @Enumerated(value = EnumType.STRING)
+  public HandlingEvent.Type type;
 
   /**
    * Handling event type. Either requires or prohibits a carrier movement
@@ -218,9 +240,4 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   HandlingEvent() {
     // Needed by Hibernate
   }
-
-
-  // Auto-generated surrogate key
-  private Long id;
-
 }

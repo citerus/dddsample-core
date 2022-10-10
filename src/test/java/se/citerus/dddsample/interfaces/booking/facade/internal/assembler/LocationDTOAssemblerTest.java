@@ -7,8 +7,8 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
 
 public class LocationDTOAssemblerTest {
 

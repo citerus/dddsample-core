@@ -1,4 +1,7 @@
-package se.citerus.dddsample.domain.model.location;
+package se.citerus.dddsample.infrastructure.sampledata;
+
+import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.location.UnLocode;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ public class SampleLocations {
   public static final Location NEWYORK = new Location(new UnLocode("USNYC"), "New York");
   public static final Location DALLAS = new Location(new UnLocode("USDAL"), "Dallas");
 
-  public static final Map<UnLocode, Location> ALL = new HashMap<UnLocode, Location>();
+  public static final Map<UnLocode, Location> ALL = new HashMap<>();
 
   static {
     for (Field field : SampleLocations.class.getDeclaredFields()) {
@@ -42,7 +45,7 @@ public class SampleLocations {
   }
 
   public static List<Location> getAll() {
-    return new ArrayList<Location>(ALL.values());
+    return new ArrayList<>(ALL.values());
   }
 
   public static Location lookup(UnLocode unLocode) {

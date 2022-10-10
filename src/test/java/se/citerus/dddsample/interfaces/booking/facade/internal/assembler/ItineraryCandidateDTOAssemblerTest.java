@@ -1,5 +1,22 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.MELBOURNE;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.ROTTERDAM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.SHANGHAI;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.TOKYO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM001;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Test;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.Leg;
@@ -10,16 +27,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 
 public class ItineraryCandidateDTOAssemblerTest {
 

@@ -7,6 +7,10 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.AbstractSpecification;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 
 /**
@@ -14,11 +18,19 @@ import java.util.Date;
  * and the arrival deadline.
  * 
  */
+@Embeddable
 public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
 
-  private Location origin;
-  private Location destination;
-  private Date arrivalDeadline;
+  @ManyToOne()
+  @JoinColumn(name = "spec_origin_id")
+  public Location origin;
+
+  @ManyToOne()
+  @JoinColumn(name = "spec_destination_id")
+  public Location destination;
+
+  @Column(name = "spec_arrival_deadline", nullable = false)
+  public Date arrivalDeadline;
 
   /**
    * @param origin origin location - can't be the same as the destination

@@ -5,6 +5,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Itinerary implements ValueObject<Itinerary> {
    * @return the legs of this itinerary, as an <b>immutable</b> list.
    */
   public List<Leg> legs() {
-    return Collections.unmodifiableList(legs);
+    return new ArrayList<>(legs); // Note: due to JPA requirements, the returned list must be modifiable.
   }
 
   /**

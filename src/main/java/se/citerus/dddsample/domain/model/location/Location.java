@@ -3,17 +3,27 @@ package se.citerus.dddsample.domain.model.location;
 import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.shared.Entity;
 
+import javax.persistence.*;
+
 /**
  * A location is our model is stops on a journey, such as cargo
  * origin or destination, or carrier movement endpoints.
- *
  * It is uniquely identified by a UN Locode.
  *
  */
+@javax.persistence.Entity(name = "Location")
+@Table(name = "Location")
 public final class Location implements Entity<Location> {
 
-  private UnLocode unLocode;
-  private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public long id;
+
+  @Column(nullable = false, unique = true, updatable = false)
+  public String unlocode;
+
+  @Column(nullable = false)
+  public String name;
 
   /**
    * Special Location object that marks an unknown location.
@@ -23,17 +33,23 @@ public final class Location implements Entity<Location> {
   );
 
   /**
-   * Package-level constructor, visible for test only.
+   * Package-level constructor, visible for test and sample data purposes.
    *
    * @param unLocode UN Locode
    * @param name     location name
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  Location(final UnLocode unLocode, final String name) {
+  public Location(final UnLocode unLocode, final String name) {
     Validate.notNull(unLocode);
     Validate.notNull(name);
     
-    this.unLocode = unLocode;
+    this.unlocode = unLocode.idString();
+    this.name = name;
+  }
+
+  // Used by JPA
+  public Location(String unloCode, String name) {
+    this.unlocode = unloCode;
     this.name = name;
   }
 
@@ -41,7 +57,7 @@ public final class Location implements Entity<Location> {
    * @return UN Locode for this location.
    */
   public UnLocode unLocode() {
-    return unLocode;
+    return new UnLocode(unlocode);
   }
 
   /**
@@ -72,7 +88,7 @@ public final class Location implements Entity<Location> {
 
   @Override
   public boolean sameIdentityAs(final Location other) {
-    return this.unLocode.sameValueAs(other.unLocode);
+    return this.unlocode.equals(other.unlocode);
   }
 
   /**
@@ -80,18 +96,19 @@ public final class Location implements Entity<Location> {
    */
   @Override
   public int hashCode() {
-    return unLocode.hashCode();
+    return unlocode.hashCode();
   }
 
   @Override
   public String toString() {
-    return name + " [" + unLocode + "]";
+    return name + " [" + unlocode + "]";
   }
 
   Location() {
     // Needed by Hibernate
   }
 
-  private Long id;
-
+  public void setId(long id) {
+    this.id = id;
+  }
 }

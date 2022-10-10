@@ -36,7 +36,7 @@ import java.util.Map;
 @RequestMapping("/admin")
 public final class CargoAdminController {
 
-    private BookingServiceFacade bookingServiceFacade;
+    private final BookingServiceFacade bookingServiceFacade;
 
     public CargoAdminController(BookingServiceFacade bookingServiceFacade) {
         this.bookingServiceFacade = bookingServiceFacade;

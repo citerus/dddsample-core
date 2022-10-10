@@ -8,7 +8,7 @@ import org.junit.Test;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
-import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
+import se.citerus.dddsample.infrastructure.sampledata.SampleVoyages;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 public class ExternalRoutingServiceTest {
 

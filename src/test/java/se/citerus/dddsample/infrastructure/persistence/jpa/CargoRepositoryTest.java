@@ -1,21 +1,15 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.junit.Before;
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-import se.citerus.dddsample.application.util.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
@@ -26,23 +20,25 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-import javax.sql.DataSource;
-import java.lang.reflect.Field;
+import javax.persistence.EntityManager;
+import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.HELSINKI_TO_HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.NEW_YORK_TO_DALLAS;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@ContextConfiguration(classes = TestRepositoryConfig.class)
 @Transactional
 public class CargoRepositoryTest {
-
     @Autowired
     CargoRepository cargoRepository;
 
@@ -56,82 +52,54 @@ public class CargoRepositoryTest {
     HandlingEventRepository handlingEventRepository;
 
     @Autowired
-    SessionFactory sessionFactory;
-
-    @Autowired
-    PlatformTransactionManager transactionManager;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setup() {
-        SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
-    }
+    EntityManager entityManager;
 
     @Test
     public void testFindByCargoId() {
-        final TrackingId trackingId = new TrackingId("FGH");
+        final TrackingId trackingId = new TrackingId("ABC123");
         final Cargo cargo = cargoRepository.find(trackingId);
-        assertThat(cargo.origin()).isEqualTo(STOCKHOLM);
+        assertThat(cargo).isNotNull();
+        assertThat(cargo.origin()).isEqualTo(HONGKONG);
         assertThat(cargo.routeSpecification().origin()).isEqualTo(HONGKONG);
         assertThat(cargo.routeSpecification().destination()).isEqualTo(HELSINKI);
 
         assertThat(cargo.delivery()).isNotNull();
 
         final List<HandlingEvent> events = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
-        assertThat(events).hasSize(2);
+        assertThat(events).hasSize(3);
 
         HandlingEvent firstEvent = events.get(0);
-        assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, 100, 160, Voyage.NONE);
+        assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, toDate("2009-03-01"), new Date(), Voyage.NONE.voyageNumber());
 
         HandlingEvent secondEvent = events.get(1);
 
-        Voyage hongkongMelbourneTokyoAndBack = new Voyage.Builder(
-                new VoyageNumber("0303"), HONGKONG).
-                addMovement(MELBOURNE, new Date(), new Date()).
-                addMovement(TOKYO, new Date(), new Date()).
-                addMovement(HONGKONG, new Date(), new Date()).
-                build();
-
-        assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, 150, 110, hongkongMelbourneTokyoAndBack);
+        assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, toDate("2009-03-02"), new Date(), new VoyageNumber("0100S"));
 
         List<Leg> legs = cargo.itinerary().legs();
-        assertThat(legs).hasSize(3);
-
-        Leg firstLeg = legs.get(0);
-        assertLeg(firstLeg, "0101", HONGKONG, MELBOURNE);
-
-        Leg secondLeg = legs.get(1);
-        assertLeg(secondLeg, "0101", MELBOURNE, STOCKHOLM);
-
-        Leg thirdLeg = legs.get(2);
-        assertLeg(thirdLeg, "0101", STOCKHOLM, HELSINKI);
+        assertThat(legs).hasSize(3)
+                .extracting("voyage.voyageNumber", "loadLocation", "unloadLocation")
+                .containsExactly(
+                    Tuple.tuple(null, HONGKONG, NEWYORK),
+                    Tuple.tuple("0200T", NEWYORK, DALLAS),
+                    Tuple.tuple("0300A", DALLAS, HELSINKI));
     }
 
-    private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType, Location expectedLocation, int completionTimeMs, int registrationTimeMs, Voyage voyage) {
+    private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType,
+                                     Location expectedLocation, Date expectedCompletionTime, Date expectedRegistrationTime, VoyageNumber voyage) {
         assertThat(event.type()).isEqualTo(expectedEventType);
         assertThat(event.location()).isEqualTo(expectedLocation);
 
-        Date expectedCompletionTime = SampleDataGenerator.offset(completionTimeMs);
         assertThat(event.completionTime()).isEqualTo(expectedCompletionTime);
 
-        Date expectedRegistrationTime = SampleDataGenerator.offset(registrationTimeMs);
-        assertThat(event.registrationTime()).isEqualTo(expectedRegistrationTime);
+        assertThat(event.registrationTime()).isEqualToIgnoringSeconds(expectedRegistrationTime);
 
-        assertThat(event.voyage()).isEqualTo(voyage);
+        assertThat(event.voyage().voyageNumber()).isEqualTo(voyage);
         assertThat(event.cargo()).isEqualTo(cargo);
     }
 
     @Test
     public void testFindByCargoIdUnknownId() {
         assertThat(cargoRepository.find(new TrackingId("UNKNOWN"))).isNull();
-    }
-
-    private void assertLeg(Leg firstLeg, String vn, Location expectedFrom, Location expectedTo) {
-        assertThat(firstLeg.voyage().voyageNumber()).isEqualTo(new VoyageNumber(vn));
-        assertThat(firstLeg.loadLocation()).isEqualTo(expectedFrom);
-        assertThat(firstLeg.unloadLocation()).isEqualTo(expectedTo);
     }
 
     @Test
@@ -143,9 +111,11 @@ public class CargoRepositoryTest {
         Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
         cargoRepository.store(cargo);
 
+        Voyage voyage = voyageRepository.find(NEW_YORK_TO_DALLAS.voyageNumber());
+        assertThat(voyage).isNotNull();
         cargo.assignToRoute(new Itinerary(List.of(
                 new Leg(
-                        voyageRepository.find(new VoyageNumber("0101")),
+                        voyage,
                         locationRepository.find(STOCKHOLM.unLocode()),
                         locationRepository.find(MELBOURNE.unLocode()),
                         new Date(), new Date())
@@ -153,18 +123,13 @@ public class CargoRepositoryTest {
 
         flush();
 
-        Map<String, Object> map = jdbcTemplate.queryForMap(
-                "select * from Cargo where tracking_id = ?", trackingId.idString());
+        Cargo result = entityManager.createQuery(
+                String.format("from Cargo c where c.trackingId = '%s'", trackingId.idString()), Cargo.class).getSingleResult();
+        assertThat(result.trackingId().idString()).isEqualTo("AAA");
+        assertThat(result.routeSpecification.origin.id).isEqualTo(origin.id);
+        assertThat(result.routeSpecification.destination.id).isEqualTo(destination.id);
 
-        assertThat(map.get("TRACKING_ID")).isEqualTo("AAA");
-
-        Long originId = getLongId(origin);
-        assertThat(map.get("SPEC_ORIGIN_ID")).isEqualTo(originId);
-
-        Long destinationId = getLongId(destination);
-        assertThat(map.get("SPEC_DESTINATION_ID")).isEqualTo(destinationId);
-
-        sessionFactory.getCurrentSession().clear();
+        entityManager.clear();
 
         final Cargo loadedCargo = cargoRepository.find(trackingId);
         assertThat(loadedCargo.itinerary().legs()).hasSize(1);
@@ -172,27 +137,29 @@ public class CargoRepositoryTest {
 
     @Test
     public void testReplaceItinerary() {
-        Cargo cargo = cargoRepository.find(new TrackingId("FGH"));
-        Long cargoId = getLongId(cargo);
-        assertThat(jdbcTemplate.queryForObject("select count(*) from Leg where cargo_id = ?", new Object[]{cargoId}, Integer.class).intValue()).isEqualTo(3);
+        Cargo cargo = cargoRepository.find(new TrackingId("JKL567"));
+        assertThat(cargo).isNotNull();
+        long cargoId = cargo.id;
+        assertThat(countLegsForCargo(cargoId)).isEqualTo(3);
 
         Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
-        Location legTo = locationRepository.find(new UnLocode("DEHAM"));
-        Itinerary newItinerary = new Itinerary(List.of(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
+        Location legTo = locationRepository.find(new UnLocode("CNHKG"));
+        Voyage voyage = voyageRepository.find(HELSINKI_TO_HONGKONG.voyageNumber());
+        Itinerary newItinerary = new Itinerary(List.of(new Leg(voyage, legFrom, legTo, new Date(), new Date())));
 
         cargo.assignToRoute(newItinerary);
 
         cargoRepository.store(cargo);
         flush();
 
-        assertThat(jdbcTemplate.queryForObject("select count(*) from Leg where cargo_id = ?", new Object[]{cargoId}, Integer.class).intValue()).isEqualTo(1);
+        assertThat(countLegsForCargo(cargoId)).isEqualTo(1);
     }
 
     @Test
     public void testFindAll() {
-        List<Cargo> all = cargoRepository.findAll();
+        List<Cargo> all = cargoRepository.getAll();
         assertThat(all).isNotNull();
-        assertThat(all).hasSize(6);
+        assertThat(all).hasSize(2);
     }
 
     @Test
@@ -205,24 +172,11 @@ public class CargoRepositoryTest {
         assertThat(trackingId.equals(trackingId2)).isFalse();
     }
 
-
     private void flush() {
-        sessionFactory.getCurrentSession().flush();
+        entityManager.flush();
     }
 
-    private Long getLongId(Object o) {
-        final Session session = sessionFactory.getCurrentSession();
-        if (session.contains(o)) {
-            return (Long) session.getIdentifier(o);
-        } else {
-            try {
-                Field id = o.getClass().getDeclaredField("id");
-                id.setAccessible(true);
-                return (Long) id.get(o);
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-        }
+    private int countLegsForCargo(long cargoId) {
+        return ((BigInteger) entityManager.createNativeQuery(String.format("select count(*) from Leg l where l.cargo_id = %d", cargoId)).getSingleResult()).intValue();
     }
-
 }

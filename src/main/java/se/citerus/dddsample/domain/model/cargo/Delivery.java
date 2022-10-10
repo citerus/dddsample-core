@@ -3,36 +3,62 @@ package se.citerus.dddsample.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
-
-import org.apache.commons.lang3.ObjectUtils;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
+import org.apache.commons.lang3.ObjectUtils;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Iterator;
+
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 
 /**
  * The actual transportation of the cargo, as opposed to
  * the customer requirement (RouteSpecification) and the plan (Itinerary). 
  *
  */
+@Embeddable
 public class Delivery implements ValueObject<Delivery> {
 
-  private TransportStatus transportStatus;
-  private Location lastKnownLocation;
-  private Voyage currentVoyage;
-  private boolean misdirected;
-  private Date eta;
-  private HandlingActivity nextExpectedActivity;
-  private boolean isUnloadedAtDestination;
-  private RoutingStatus routingStatus;
-  private Date calculatedAt;
-  private HandlingEvent lastEvent;
+  @Column
+  public boolean misdirected;
+
+  @Column
+  public Date eta;
+
+  @Column(name = "calculated_at")
+  public Date calculatedAt;
+
+  @Column(name = "unloaded_at_dest")
+  public boolean isUnloadedAtDestination;
+
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "routing_status")
+  public RoutingStatus routingStatus;
+
+  @Embedded
+  public HandlingActivity nextExpectedActivity;
+
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "transport_status")
+  public TransportStatus transportStatus;
+
+  @ManyToOne
+  @JoinColumn(name = "current_voyage_id")
+  public Voyage currentVoyage;
+
+  @ManyToOne()
+  @JoinColumn(name = "last_known_location_id")
+  public Location lastKnownLocation;
+
+  @ManyToOne
+  @JoinColumn(name = "last_event_id")
+  public HandlingEvent lastEvent;
 
   private static final Date ETA_UNKNOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;
@@ -77,7 +103,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @param itinerary itinerary
    * @param routeSpecification route specification
    */
-  private Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
+  public Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
     this.calculatedAt = new Date();
     this.lastEvent = lastEvent;
 

@@ -10,8 +10,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM001;
 
 public class CargoRoutingDTOAssemblerTest {
 

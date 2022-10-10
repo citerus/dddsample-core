@@ -8,19 +8,30 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import javax.persistence.*;
+
 /**
  * A handling activity represents how and where a cargo can be handled,
  * and can be used to express predictions about what is expected to
  * happen to a cargo in the future.
  *
  */
+@Embeddable
 public class HandlingActivity implements ValueObject<HandlingActivity> {
 
   // TODO make HandlingActivity a part of HandlingEvent too? There is some overlap. 
 
-  private HandlingEvent.Type type;
-  private Location location;
-  private Voyage voyage;
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "next_expected_handling_event_type")
+  public HandlingEvent.Type type;
+
+  @ManyToOne()
+  @JoinColumn(name = "next_expected_location_id")
+  public Location location;
+
+  @ManyToOne
+  @JoinColumn(name = "next_expected_voyage_id")
+  public Voyage voyage;
 
   public HandlingActivity(final HandlingEvent.Type type, final Location location) {
     Validate.notNull(type, "Handling event type is required");

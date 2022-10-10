@@ -2,8 +2,8 @@ package se.citerus.dddsample.domain.model.voyage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
 
 import java.util.Date;
 

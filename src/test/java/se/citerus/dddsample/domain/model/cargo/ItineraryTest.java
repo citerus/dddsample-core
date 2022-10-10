@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 public class ItineraryTest {
   private final CarrierMovement abc = new CarrierMovement(SHANGHAI, ROTTERDAM, new Date(), new Date());

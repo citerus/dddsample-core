@@ -1,5 +1,15 @@
 package se.citerus.dddsample.domain.model.handling;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.DALLAS;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.SHANGHAI;
+
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
@@ -7,13 +17,6 @@ import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
-
-import java.util.Date;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class HandlingHistoryTest {
   Cargo cargo;

@@ -5,10 +5,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.TOKYO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM001;
 
 import java.util.Date;
 

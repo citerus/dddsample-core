@@ -2,7 +2,7 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.citerus.dddsample.application.util.DateTestUtil;
+import se.citerus.dddsample.application.util.DateUtils;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -12,15 +12,12 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 public class CargoTest {
 
@@ -41,7 +38,7 @@ public class CargoTest {
   @Test
   public void testConstruction() {
     final TrackingId trackingId = new TrackingId("XYZ");
-    final Date arrivalDeadline = DateTestUtil.toDate("2009-03-13");
+    final Date arrivalDeadline = DateUtils.toDate("2009-03-13");
     final RouteSpecification routeSpecification = new RouteSpecification(
       STOCKHOLM, MELBOURNE, arrivalDeadline
     );

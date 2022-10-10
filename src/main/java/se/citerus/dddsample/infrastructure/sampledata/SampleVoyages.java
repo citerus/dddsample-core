@@ -1,12 +1,16 @@
-package se.citerus.dddsample.domain.model.voyage;
+package se.citerus.dddsample.infrastructure.sampledata;
 
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
+import se.citerus.dddsample.domain.model.voyage.Schedule;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 /**
  * Sample carrier movements, for test purposes.

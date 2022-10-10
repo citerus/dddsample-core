@@ -1,56 +1,32 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
-import org.hibernate.SessionFactory;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-import se.citerus.dddsample.application.util.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-import javax.sql.DataSource;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@DataJpaTest
+@ContextConfiguration(classes = TestRepositoryConfig.class)
 @Transactional
 public class CarrierMovementRepositoryTest {
 
     @Autowired
     VoyageRepository voyageRepository;
 
-    @Autowired
-    SessionFactory sessionFactory;
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setup() {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));
-    }
-
     @Test
     public void testFind() {
-        Voyage voyage = voyageRepository.find(new VoyageNumber("0101"));
+        Voyage voyage = voyageRepository.find(new VoyageNumber("0100S"));
         assertThat(voyage).isNotNull();
-        assertThat(voyage.voyageNumber().idString()).isEqualTo("0101");
+        assertThat(voyage.voyageNumber().idString()).isEqualTo("0100S");
     /* TODO adapt
     assertThat(carrierMovement.departureLocation()).isEqualTo(STOCKHOLM);
     assertThat(carrierMovement.arrivalLocation()).isEqualTo(HELSINKI);

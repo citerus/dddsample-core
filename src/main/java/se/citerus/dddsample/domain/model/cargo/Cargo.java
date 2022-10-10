@@ -1,11 +1,12 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-
-import org.apache.commons.lang3.ObjectUtils;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.Entity;
+
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -43,26 +44,56 @@ import se.citerus.dddsample.domain.shared.Entity;
  * in port etc), are captured in this aggregate.
  *
  */
+@javax.persistence.Entity(name = "Cargo")
+@Table(name = "Cargo")
 public class Cargo implements Entity<Cargo> {
 
-  private TrackingId trackingId;
-  private Location origin;
-  private RouteSpecification routeSpecification;
-  private Itinerary itinerary;
-  private Delivery delivery;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public long id;
+
+  @Column(name = "tracking_id", unique = true)
+  public String trackingId;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "origin_id")
+  public Location origin;
+
+  @Embedded
+  public RouteSpecification routeSpecification;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "cargo_id")
+  public List<Leg> itinerary; // TODO figure out if we can map an Itinerary object instead
+
+  @Embedded
+  public Delivery delivery;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
     Validate.notNull(trackingId, "Tracking ID is required");
     Validate.notNull(routeSpecification, "Route specification is required");
 
-    this.trackingId = trackingId;
+    this.trackingId = trackingId.idString();
     // Cargo origin never changes, even if the route specification changes.
-    // However, at creation, cargo orgin can be derived from the initial route specification.
+    // However, at creation, cargo origin can be derived from the initial route specification.
     this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
 
     this.delivery = Delivery.derivedFrom(
-      this.routeSpecification, this.itinerary, HandlingHistory.EMPTY
+      this.routeSpecification, null, HandlingHistory.EMPTY
+    );
+  }
+
+  public Cargo(TrackingId trackingId, RouteSpecification routeSpecification, Itinerary itinerary) {
+    Validate.notNull(trackingId, "Tracking ID is required");
+    Validate.notNull(routeSpecification, "Route specification is required");
+    this.trackingId = trackingId.idString();
+    this.origin = routeSpecification.origin();
+    this.routeSpecification = routeSpecification;
+    this.itinerary = itinerary.legs();
+
+    this.delivery = Delivery.derivedFrom(
+            this.routeSpecification, new Itinerary(this.itinerary), HandlingHistory.EMPTY
     );
   }
 
@@ -72,7 +103,7 @@ public class Cargo implements Entity<Cargo> {
    * @return Tracking id.
    */
   public TrackingId trackingId() {
-    return trackingId;
+    return new TrackingId(trackingId);
   }
 
   /**
@@ -93,7 +124,10 @@ public class Cargo implements Entity<Cargo> {
    * @return The itinerary. Never null.
    */
   public Itinerary itinerary() {
-    return ObjectUtils.defaultIfNull(this.itinerary, Itinerary.EMPTY_ITINERARY);
+    if (itinerary == null || itinerary.isEmpty()) {
+      return Itinerary.EMPTY_ITINERARY;
+    }
+    return new Itinerary(itinerary);
   }
 
   /**
@@ -112,8 +146,9 @@ public class Cargo implements Entity<Cargo> {
     Validate.notNull(routeSpecification, "Route specification is required");
 
     this.routeSpecification = routeSpecification;
+    Itinerary itineraryForRouting = this.itinerary != null && !this.itinerary.isEmpty() ? new Itinerary(this.itinerary) : null;
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
+    this.delivery = delivery.updateOnRouting(this.routeSpecification, itineraryForRouting);
   }
 
   /**
@@ -124,9 +159,9 @@ public class Cargo implements Entity<Cargo> {
   public void assignToRoute(final Itinerary itinerary) {
     Validate.notNull(itinerary, "Itinerary is required for assignment");
 
-    this.itinerary = itinerary;
+    this.itinerary = itinerary.legs();
     // Handling consistency within the Cargo aggregate synchronously
-    this.delivery = delivery.updateOnRouting(this.routeSpecification, this.itinerary);
+    this.delivery = delivery.updateOnRouting(this.routeSpecification, itinerary);
   }
 
   /**
@@ -147,12 +182,12 @@ public class Cargo implements Entity<Cargo> {
   public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
     // Delivery is a value object, so we can simply discard the old one
     // and replace it with a new
-    this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory.filterOnCargo(this.trackingId));
+    this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory.filterOnCargo(new TrackingId(this.trackingId)));
   }
 
   @Override
   public boolean sameIdentityAs(final Cargo other) {
-    return other != null && trackingId.sameValueAs(other.trackingId);
+    return other != null && trackingId.equals(other.trackingId);
   }
 
   /**
@@ -179,14 +214,11 @@ public class Cargo implements Entity<Cargo> {
 
   @Override
   public String toString() {
-    return trackingId.toString();
+    return trackingId;
   }
 
   Cargo() {
     // Needed by Hibernate
   }
-
-  // Auto-generated surrogate key
-  private Long id;
 
 }
