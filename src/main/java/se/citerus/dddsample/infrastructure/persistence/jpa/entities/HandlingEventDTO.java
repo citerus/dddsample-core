@@ -39,4 +39,16 @@ public class HandlingEventDTO {
         CLAIM,
         CUSTOMS,
     }
+
+    public HandlingEventDTO() {
+    }
+
+    public HandlingEventDTO(VoyageDTO voyage, LocationDTO location, CargoDTO cargo, Date completionTime, Date registrationTime, Type type) {
+        this.voyage = voyage;
+        this.location = location;
+        this.cargo = cargo;
+        this.completionTime = completionTime;
+        this.registrationTime = registrationTime;
+        this.type = type;
+    }
 }

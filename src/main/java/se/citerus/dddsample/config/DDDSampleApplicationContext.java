@@ -87,7 +87,12 @@ public class DDDSampleApplicationContext {
     @Bean
     public SampleDataGenerator sampleDataGenerator() {
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(cargoRepository, voyageRepository, locationRepository, handlingEventRepository, platformTransactionManager);
-        sampleDataGenerator.generate(); // TODO investigate if this can be called with initMethod in the annotation
+        try {
+            sampleDataGenerator.generate(); // TODO investigate if this can be called with initMethod in the annotation
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         return sampleDataGenerator;
     }
 }

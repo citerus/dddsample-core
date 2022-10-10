@@ -14,6 +14,14 @@ public class VoyageDTO {
     public String voyageNumber;
 
     @OneToMany
-    @JoinColumn(name = "voyage_fk", referencedColumnName = "voyage_id")
+    @JoinColumn(name = "voyage_id")
     public Collection<CarrierMovementDTO> carrierMovements;
+
+    public VoyageDTO() {
+    }
+
+    public VoyageDTO(String voyageNumber, Collection<CarrierMovementDTO> carrierMovements) {
+        this.voyageNumber = voyageNumber;
+        this.carrierMovements = carrierMovements;
+    }
 }

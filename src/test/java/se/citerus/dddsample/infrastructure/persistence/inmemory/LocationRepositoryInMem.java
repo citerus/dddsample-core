@@ -18,7 +18,7 @@ public class LocationRepositoryInMem implements LocationRepository {
     return null;
   }
 
-  public List<Location> findAll() {
+  public List<Location> getAll() {
     return SampleLocations.getAll();
   }
 

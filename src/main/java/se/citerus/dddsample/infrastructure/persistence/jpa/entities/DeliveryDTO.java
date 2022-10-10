@@ -6,6 +6,7 @@ import se.citerus.dddsample.domain.model.cargo.TransportStatus;
 import javax.persistence.*;
 import java.util.Date;
 
+@Embeddable
 public class DeliveryDTO {
     @Column
     public boolean misdirected;
@@ -23,6 +24,7 @@ public class DeliveryDTO {
     @Column(name = "routing_status")
     public RoutingStatus routingStatus;
 
+    @Embedded
     public HandlingActivityDTO nextExpectedActivity;
 
     @Enumerated(value = EnumType.STRING)
@@ -30,14 +32,30 @@ public class DeliveryDTO {
     public TransportStatus transportStatus;
 
     @ManyToOne
-    @JoinColumn(name = "current_voyage_fk", referencedColumnName = "current_voyage_id")
+    @JoinColumn(name = "current_voyage_id")
     public VoyageDTO currentVoyage;
 
     @ManyToOne
-    @JoinColumn(name = "last_known_location_fk", referencedColumnName = "last_known_location_id")
+    @JoinColumn(name = "last_known_location_id")
     public LocationDTO lastKnownLocation;
 
     @ManyToOne
-    @JoinColumn(name = "last_event_fk", referencedColumnName = "last_event_id")
+    @JoinColumn(name = "last_event_id")
     public HandlingEventDTO lastEvent;
+
+    public DeliveryDTO() {
+    }
+
+    public DeliveryDTO(boolean misdirected, Date eta, Date calculatedAt, boolean isUnloadedAtDestination, RoutingStatus routingStatus, HandlingActivityDTO nextExpectedActivity, TransportStatus transportStatus, VoyageDTO currentVoyage, LocationDTO lastKnownLocation, HandlingEventDTO lastEvent) {
+        this.misdirected = misdirected;
+        this.eta = eta;
+        this.calculatedAt = calculatedAt;
+        this.isUnloadedAtDestination = isUnloadedAtDestination;
+        this.routingStatus = routingStatus;
+        this.nextExpectedActivity = nextExpectedActivity;
+        this.transportStatus = transportStatus;
+        this.currentVoyage = currentVoyage;
+        this.lastKnownLocation = lastKnownLocation;
+        this.lastEvent = lastEvent;
+    }
 }

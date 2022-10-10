@@ -14,4 +14,12 @@ public class LocationDTO {
 
     @Column(nullable = false)
     public String name;
+
+    public LocationDTO() {
+    }
+
+    public LocationDTO(String unlocode, String name) {
+        this.unlocode = unlocode;
+        this.name = name;
+    }
 }

@@ -11,11 +11,11 @@ public class CarrierMovementDTO {
     public long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "arrival_location_fk", referencedColumnName = "arrival_location_id", nullable = false)
+    @JoinColumn(name = "arrival_location_id", nullable = false)
     public LocationDTO arrivalLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departure_location_fk", referencedColumnName = "departure_location_id", nullable = false)
+    @JoinColumn(name = "departure_location_id", nullable = false)
     public LocationDTO departureLocation;
 
     @Column(name = "arrival_time", nullable = false)
@@ -23,4 +23,14 @@ public class CarrierMovementDTO {
 
     @Column(name = "departure_time", nullable = false)
     public Date departureTime;
+
+    public CarrierMovementDTO() {
+    }
+
+    public CarrierMovementDTO(LocationDTO arrivalLocation, LocationDTO departureLocation, Date arrivalTime, Date departureTime) {
+        this.arrivalLocation = arrivalLocation;
+        this.departureLocation = departureLocation;
+        this.arrivalTime = arrivalTime;
+        this.departureTime = departureTime;
+    }
 }

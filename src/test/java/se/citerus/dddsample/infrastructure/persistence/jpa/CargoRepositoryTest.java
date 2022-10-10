@@ -16,18 +16,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -203,7 +199,7 @@ public class CargoRepositoryTest {
 
     @Test
     public void testFindAll() {
-        List<Cargo> all = cargoRepository.findAll();
+        List<Cargo> all = cargoRepository.getAll();
         assertThat(all).isNotNull();
         assertThat(all).hasSize(6);
     }

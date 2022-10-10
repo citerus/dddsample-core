@@ -47,7 +47,7 @@ public class CargoRepositoryInMem implements CargoRepository {
         );
     }
 
-    public List<Cargo> findAll() {
+    public List<Cargo> getAll() {
         return new ArrayList<>(cargoDb.values());
     }
 

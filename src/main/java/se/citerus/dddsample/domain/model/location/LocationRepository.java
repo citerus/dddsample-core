@@ -17,7 +17,7 @@ public interface LocationRepository {
    *
    * @return All locations.
    */
-  List<Location> findAll();
+  List<Location> getAll();
 
   Location store(Location location);
 }

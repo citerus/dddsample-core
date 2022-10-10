@@ -93,7 +93,7 @@ public final class CargoAdminController {
 
     @RequestMapping("/list")
     public String list(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
-        final List<Cargo> cargoList = cargoRepository.findAll();
+        final List<Cargo> cargoList = cargoRepository.getAll();
         final List<CargoRoutingDTO> dtoList = new ArrayList<>(cargoList.size());
         for (Cargo cargo : cargoList) {
             dtoList.add(CargoRoutingDTOAssembler.toDTO(cargo));
@@ -178,7 +178,7 @@ public final class CargoAdminController {
     }
 
     private List<LocationDTO> listAllCargo() {
-        final List<Location> allLocations = locationRepository.findAll();
+        final List<Location> allLocations = locationRepository.getAll();
         return LocationDTOAssembler.toDTOList(allLocations);
     }
 }

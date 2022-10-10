@@ -15,16 +15,27 @@ public class LegDTO {
     public VoyageDTO voyage;
 
     @ManyToOne
-    @JoinColumn(name = "load_location_fk", referencedColumnName = "load_location_id")
+    @JoinColumn(name = "load_location_id")
     public LocationDTO loadLocation;
 
     @Column(name = "load_time")
     public Date loadTime;
 
     @ManyToOne
-    @JoinColumn(name = "unload_location_fk", referencedColumnName = "unload_location_id")
+    @JoinColumn(name = "unload_location_id")
     public LocationDTO unloadLocation;
 
     @Column(name = "unload_time")
     public Date unloadTime;
+
+    public LegDTO() {
+    }
+
+    public LegDTO(VoyageDTO voyage, LocationDTO loadLocation, Date loadTime, LocationDTO unloadLocation, Date unloadTime) {
+        this.voyage = voyage;
+        this.loadLocation = loadLocation;
+        this.loadTime = loadTime;
+        this.unloadLocation = unloadLocation;
+        this.unloadTime = unloadTime;
+    }
 }

@@ -198,7 +198,7 @@ public class SampleDataGenerator {
         loadHibernateData(tt, handlingEventFactory);
     }
 
-    public void loadHibernateData(TransactionTemplate tt, final HandlingEventFactory handlingEventFactory) {
+    private void loadHibernateData(TransactionTemplate tt, final HandlingEventFactory handlingEventFactory) {
         System.out.println("*** Loading Hibernate data ***");
         tt.execute(new TransactionCallbackWithoutResult() {
             @Override

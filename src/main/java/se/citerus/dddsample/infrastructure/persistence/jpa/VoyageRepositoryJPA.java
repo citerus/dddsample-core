@@ -4,20 +4,24 @@ import org.springframework.data.repository.CrudRepository;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
+import se.citerus.dddsample.infrastructure.persistence.jpa.converters.VoyageDTOConverter;
+import se.citerus.dddsample.infrastructure.persistence.jpa.entities.VoyageDTO;
 
 /**
  * Hibernate implementation of CarrierMovementRepository.
  */
-public interface VoyageRepositoryJpa extends CrudRepository<Voyage, Long>, VoyageRepository {
+public interface VoyageRepositoryJPA extends CrudRepository<VoyageDTO, Long>, VoyageRepository {
 
   default Voyage find(final VoyageNumber voyageNumber) {
     return findByVoyageNumber(voyageNumber.idString());
   }
 
-  Voyage findByVoyageNumber(String voyageNumber);
+  default Voyage findByVoyageNumber(String voyageNumber) {
+    return null; // TODO implement this
+  }
 
   @Override
   default void store(Voyage voyage) {
-    save(voyage);
+    save(VoyageDTOConverter.toDto(voyage));
   }
 }

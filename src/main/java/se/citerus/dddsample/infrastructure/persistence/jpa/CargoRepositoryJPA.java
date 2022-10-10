@@ -4,18 +4,31 @@ import org.springframework.data.repository.CrudRepository;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.infrastructure.persistence.jpa.converters.CargoDTOConverter;
+import se.citerus.dddsample.infrastructure.persistence.jpa.entities.CargoDTO;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Hibernate implementation of CargoRepository.
  */
-public interface CargoRepositoryJpa extends CrudRepository<Cargo, Long>, CargoRepository {
+public interface CargoRepositoryJPA extends CrudRepository<CargoDTO, Long>, CargoRepository {
 
-  Cargo find(TrackingId trackingId);
+  default Cargo find(TrackingId trackingId) {
+    return null; // TODO implement this;
+  }
 
   default void store(final Cargo cargo) {
-    save(cargo);
+    save(new CargoDTO());
+  }
+
+  default List<Cargo> getAll() {
+    return StreamSupport.stream(findAll().spliterator(), false)
+            .map(CargoDTOConverter::fromDto)
+            .collect(Collectors.toList());
   }
 
   default TrackingId nextTrackingId() {

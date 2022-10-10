@@ -12,18 +12,31 @@ public class CargoDTO {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_fk", referencedColumnName = "origin_id")
-    public LocationDTO origin;
-
     @Column(name = "tracking_id", unique = true)
     public String trackingId;
 
-    public DeliveryDTO delivery;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "origin_id")
+    public LocationDTO origin;
 
+    @Embedded
     public RouteSpecificationDTO routeSpecification;
 
     @OneToMany
-    @JoinColumn(name = "itinerary_fk", referencedColumnName = "cargo_id")
-    public Collection<Leg> itinerary;
+    @JoinColumn(name = "cargo_id")
+    public Collection<LegDTO> itinerary;
+
+    @Embedded
+    public DeliveryDTO delivery;
+
+    public CargoDTO() {
+    }
+
+    public CargoDTO(String trackingId, LocationDTO origin, RouteSpecificationDTO routeSpecification, Collection<LegDTO> itinerary, DeliveryDTO delivery) {
+        this.trackingId = trackingId;
+        this.origin = origin;
+        this.routeSpecification = routeSpecification;
+        this.itinerary = itinerary;
+        this.delivery = delivery;
+    }
 }

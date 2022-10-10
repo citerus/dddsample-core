@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -52,7 +51,7 @@ public class LocationRepositoryTest {
 
     @Test
     public void testFindAll() {
-        List<Location> allLocations = locationRepository.findAll();
+        List<Location> allLocations = locationRepository.getAll();
 
         assertThat(allLocations).isNotNull();
         assertThat(allLocations).hasSize(7);
