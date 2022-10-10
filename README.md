@@ -16,6 +16,12 @@ Development blog: https://citerus.github.io/dddsample-core/
 
 Trello board: https://trello.com/b/PTDFRyxd
 
+## Entity relationships
+
+![](./dddsample.drawio.png)
+
+The diagram was created with diagrams.net (formerly draw.io).
+
 ## Using the HandlingReportService ("regapp") web service
 
 Using your favorite SOAP client, send an HTTP POST message to http://localhost:8080/dddsample/ws/RegisterEvent with the following body:
