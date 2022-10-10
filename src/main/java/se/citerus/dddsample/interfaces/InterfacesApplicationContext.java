@@ -1,12 +1,16 @@
 package se.citerus.dddsample.interfaces;
 
-import com.aggregator.HandlingReportService;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
+import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,18 +26,17 @@ import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
 import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
 import se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
-import se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl;
 import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 
 import javax.persistence.EntityManager;
-import javax.xml.ws.Endpoint;
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.util.Locale;
 
 @Configuration
 public class InterfacesApplicationContext implements WebMvcConfigurer {
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Value("${uploadDirectory}")
     public String uploadDirectory;
@@ -64,11 +67,6 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public HandlingReportService handlingReportService(ApplicationEvents applicationEvents) {
-        return new HandlingReportServiceImpl(applicationEvents);
-    }
-
-    @Bean
     public TrackCommandValidator trackCommandValidator() {
         return new TrackCommandValidator();
     }
@@ -84,8 +82,10 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public UploadDirectoryScanner uploadDirectoryScanner(ApplicationEvents applicationEvents) {
+    public UploadDirectoryScanner uploadDirectoryScanner(ApplicationEvents applicationEvents, Environment env) {
         // TODO should we create these dirs if not existing?
+        Validate.isTrue(!uploadDirectory.contains("${"));
+        Validate.isTrue(!parseFailureDirectory.contains("${"));
         File uploadDirectoryFile = new File(uploadDirectory);
         File parseFailureDirectoryFile = new File(parseFailureDirectory);
         return new UploadDirectoryScanner(uploadDirectoryFile, parseFailureDirectoryFile, applicationEvents);
@@ -99,7 +99,11 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public ThreadPoolTaskScheduler myScheduler(UploadDirectoryScanner scanner){
+    public ThreadPoolTaskScheduler myScheduler(@Nullable UploadDirectoryScanner scanner) {
+        if (scanner == null) {
+            log.info("No UploadDirectoryScannerBean found, skipping creation of scheduler.");
+            return null;
+        }
         ThreadPoolTaskScheduler threadPoolTaskScheduler
                 = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(10);

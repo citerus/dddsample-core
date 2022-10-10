@@ -17,7 +17,7 @@ public interface CargoRepository {
    *
    * @return All cargo.
    */
-  List<Cargo> findAll();
+  List<Cargo> getAll();
 
   /**
    * Saves given cargo.

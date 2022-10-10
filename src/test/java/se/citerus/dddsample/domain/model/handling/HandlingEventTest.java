@@ -1,21 +1,31 @@
 package se.citerus.dddsample.domain.model.handling;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CUSTOMS;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.valueOf;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.NEWYORK;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM003;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM004;
+
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
-
-import java.util.Date;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
+import se.citerus.dddsample.infrastructure.sampledata.SampleVoyages;
 
 public class HandlingEventTest {
   private Cargo cargo;
@@ -99,7 +109,7 @@ public class HandlingEventTest {
   public void testParseTypeIllegal() {
     try {
       valueOf("NOT_A_HANDLING_EVENT_TYPE");
-      fail("Expected IllegaArgumentException to be thrown");
+      fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // All's well
     }

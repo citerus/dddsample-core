@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.Entity;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,10 +12,20 @@ import java.util.List;
 /**
  * A Voyage.
  */
+@javax.persistence.Entity(name = "Voyage")
+@Table(name = "Voyage")
 public class Voyage implements Entity<Voyage> {
 
-  private VoyageNumber voyageNumber;
-  private Schedule schedule;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public long id;
+
+  @Column(name = "voyage_number", unique = true)
+  public String voyageNumber;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "voyage_id")
+  public List<CarrierMovement> carrierMovements;
 
   // Null object pattern
   public static final Voyage NONE = new Voyage(
@@ -25,22 +36,22 @@ public class Voyage implements Entity<Voyage> {
     Validate.notNull(voyageNumber, "Voyage number is required");
     Validate.notNull(schedule, "Schedule is required");
 
-    this.voyageNumber = voyageNumber;
-    this.schedule = schedule;
+    this.voyageNumber = voyageNumber.idString();
+    this.carrierMovements = schedule.carrierMovements();
   }
 
   /**
    * @return Voyage number.
    */
   public VoyageNumber voyageNumber() {
-    return voyageNumber;
+    return new VoyageNumber(voyageNumber);
   }
 
   /**
    * @return Schedule.
    */
   public Schedule schedule() {
-    return schedule;
+    return new Schedule(carrierMovements);
   }
 
   @Override
@@ -73,16 +84,13 @@ public class Voyage implements Entity<Voyage> {
     // Needed by Hibernate
   }
 
-  // Needed by Hibernate
-  private Long id;
-
   /**
    * Builder pattern is used for incremental construction
    * of a Voyage aggregate. This serves as an aggregate factory. 
    */
   public static final class Builder {
 
-    private final List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>();
+    private final List<CarrierMovement> carrierMovements = new ArrayList<>();
     private final VoyageNumber voyageNumber;
     private Location departureLocation;
 

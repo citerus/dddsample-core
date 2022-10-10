@@ -8,7 +8,7 @@ import java.util.Date;
  * A few utils for working with Date in tests.
  *
  */
-public final class DateTestUtil {
+public final class DateUtils {
 
   /**
    * @param date date string as yyyy-MM-dd
@@ -34,6 +34,6 @@ public final class DateTestUtil {
   /**
    * Prevent instantiation.
    */
-  private DateTestUtil() {
+  private DateUtils() {
   }
 }

@@ -7,18 +7,37 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * An itinerary consists of one or more legs.
  */
+@Entity(name = "Leg")
+@Table(name = "Leg")
 public class Leg implements ValueObject<Leg> {
 
-  private Voyage voyage;
-  private Location loadLocation;
-  private Location unloadLocation;
-  private Date loadTime;
-  private Date unloadTime;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public long id;
+
+  @ManyToOne
+  @JoinColumn(name="voyage_id")
+  public Voyage voyage;
+
+  @ManyToOne
+  @JoinColumn(name = "load_location_id")
+  public Location loadLocation;
+
+  @Column(name = "load_time")
+  public Date loadTime;
+
+  @ManyToOne
+  @JoinColumn(name = "unload_location_id")
+  public Location unloadLocation;
+
+  @Column(name = "unload_time")
+  public Date unloadTime;
 
   public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
     Validate.noNullElements(new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
@@ -85,8 +104,4 @@ public class Leg implements ValueObject<Leg> {
   Leg() {
     // Needed by Hibernate
   }
-
-  // Auto-generated surrogate key
-  private Long id;
-
 }
