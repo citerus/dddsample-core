@@ -6,10 +6,10 @@ import se.citerus.dddsample.infrastructure.persistence.jpa.entities.CargoDTO;
 public class CargoDTOConverter {
 
     public static CargoDTO toDto(Cargo source) {
-        return new CargoDTO();
+        return new CargoDTO(); // TODO implement this
     }
 
     public static Cargo fromDto(CargoDTO source) {
-        return null;
+        return null; // TODO implement this
     }
 }

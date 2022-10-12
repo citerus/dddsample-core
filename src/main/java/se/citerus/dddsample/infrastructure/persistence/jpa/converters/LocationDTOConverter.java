@@ -1,6 +1,5 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa.converters;
 
-import org.springframework.core.convert.converter.Converter;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.LocationDTO;
 
@@ -10,6 +9,6 @@ public class LocationDTOConverter {
     }
 
     public static Location fromDto(LocationDTO source) {
-        return null;
+        return null; // TODO implement this
     }
 }

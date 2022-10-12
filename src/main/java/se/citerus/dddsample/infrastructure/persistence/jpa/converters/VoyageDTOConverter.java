@@ -1,18 +1,21 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa.converters;
 
+import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.CarrierMovementDTO;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.LocationDTO;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.VoyageDTO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class VoyageDTOConverter {
 
     public static VoyageDTO toDto(Voyage source) {
-        VoyageDTO voyageDTO = new VoyageDTO();
-        voyageDTO.voyageNumber = source.voyageNumber().idString();
-        voyageDTO.carrierMovements = source.schedule().carrierMovements().stream().map(cm -> {
+        String voyageNumber = source.voyageNumber().idString();
+        List<CarrierMovementDTO> carrierMovementDTOS = source.schedule().carrierMovements().stream().map(cm -> {
             CarrierMovementDTO dto = new CarrierMovementDTO();
             dto.arrivalLocation = new LocationDTO(
                     cm.arrivalLocation().unLocode().idString(),
@@ -24,10 +27,20 @@ public class VoyageDTOConverter {
             dto.departureTime = cm.departureTime();
             return dto;
         }).collect(Collectors.toList());
-        return voyageDTO;
+        return new VoyageDTO(voyageNumber, carrierMovementDTOS);
     }
 
     public static Voyage fromDto(VoyageDTO source) {
-        return null;
+        List<CarrierMovementDTO> carrierMovements = new ArrayList<>(source.carrierMovements);
+        Location departureLocation = LocationDTOConverter.fromDto(carrierMovements.get(0).departureLocation);
+        Voyage.Builder builder = new Voyage.Builder(new VoyageNumber(source.voyageNumber), departureLocation);
+        for (CarrierMovementDTO dto: carrierMovements) {
+            builder.addMovement(
+                    LocationDTOConverter.fromDto(dto.arrivalLocation),
+                    dto.departureTime,
+                    dto.arrivalTime
+            );
+        }
+        return builder.build();
     }
 }

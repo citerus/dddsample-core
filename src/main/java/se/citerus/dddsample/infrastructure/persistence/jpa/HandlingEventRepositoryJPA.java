@@ -8,6 +8,10 @@ import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.infrastructure.persistence.jpa.converters.HandlingEventDTOConverter;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.HandlingEventDTO;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 /**
  * Hibernate implementation of HandlingEventRepository.
  *
@@ -19,7 +23,12 @@ public interface HandlingEventRepositoryJPA extends CrudRepository<HandlingEvent
   }
 
   default HandlingHistory lookupHandlingHistoryOfCargo(final TrackingId trackingId) {
-    return null; // TODO implement this
+    // TODO replace with SQL code in annotation
+    List<HandlingEvent> handlingEventDtos = StreamSupport.stream(findAll().spliterator(), false)
+            .filter(el -> el.cargo.trackingId.equalsIgnoreCase(trackingId.idString()))
+            .map(HandlingEventDTOConverter::fromDto)
+            .collect(Collectors.toList());
+    return new HandlingHistory(handlingEventDtos);
   }
 
 }

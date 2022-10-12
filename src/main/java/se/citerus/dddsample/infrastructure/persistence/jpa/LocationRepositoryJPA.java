@@ -8,6 +8,7 @@ import se.citerus.dddsample.infrastructure.persistence.jpa.converters.LocationDT
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.LocationDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -18,7 +19,9 @@ public interface LocationRepositoryJPA extends CrudRepository<LocationDTO, Long>
   }
 
   default Location findByUnLoCode(String unlocode) {
-    return null; // TODO implement this
+    // TODO replace with SQL code in annotation
+    Optional<LocationDTO> maybeLocation = StreamSupport.stream(findAll().spliterator(), false).filter(el -> el.unlocode.equalsIgnoreCase(unlocode)).findFirst();
+    return maybeLocation.map(LocationDTOConverter::fromDto).orElse(null);
   }
 
   @Override

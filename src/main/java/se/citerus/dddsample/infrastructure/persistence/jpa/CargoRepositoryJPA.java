@@ -8,6 +8,7 @@ import se.citerus.dddsample.infrastructure.persistence.jpa.converters.CargoDTOCo
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.CargoDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -18,7 +19,11 @@ import java.util.stream.StreamSupport;
 public interface CargoRepositoryJPA extends CrudRepository<CargoDTO, Long>, CargoRepository {
 
   default Cargo find(TrackingId trackingId) {
-    return null; // TODO implement this;
+    // TODO replace with SQL code in annotation
+    Optional<CargoDTO> maybeCargo = StreamSupport.stream(findAll().spliterator(), false)
+            .filter(el -> el.trackingId.equalsIgnoreCase(trackingId.idString()))
+            .findFirst();
+    return maybeCargo.map(CargoDTOConverter::fromDto).orElse(null);
   }
 
   default void store(final Cargo cargo) {
@@ -31,7 +36,7 @@ public interface CargoRepositoryJPA extends CrudRepository<CargoDTO, Long>, Carg
             .collect(Collectors.toList());
   }
 
-  default TrackingId nextTrackingId() {
+  default TrackingId nextTrackingId() { // TODO replace with SQL code in annotation
     // TODO use an actual DB sequence here, UUID is for in-mem
     final String random = UUID.randomUUID().toString().toUpperCase();
     return new TrackingId(

@@ -7,6 +7,9 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.jpa.converters.VoyageDTOConverter;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.VoyageDTO;
 
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 /**
  * Hibernate implementation of CarrierMovementRepository.
  */
@@ -17,7 +20,11 @@ public interface VoyageRepositoryJPA extends CrudRepository<VoyageDTO, Long>, Vo
   }
 
   default Voyage findByVoyageNumber(String voyageNumber) {
-    return null; // TODO implement this
+    // TODO replace with SQL code in annotation
+    Optional<VoyageDTO> maybeVoyage = StreamSupport.stream(findAll().spliterator(), false)
+            .filter(el -> el.voyageNumber.equalsIgnoreCase(voyageNumber))
+            .findFirst();
+    return maybeVoyage.map(VoyageDTOConverter::fromDto).orElse(null);
   }
 
   @Override
