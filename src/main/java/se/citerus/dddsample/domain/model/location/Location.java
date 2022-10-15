@@ -37,6 +37,12 @@ public final class Location implements Entity<Location> {
     this.name = name;
   }
 
+  // Used by JPA
+  public Location(String unloCode, String name) {
+    this.unLocode = new UnLocode(unloCode);
+    this.name = name;
+  }
+
   /**
    * @return UN Locode for this location.
    */

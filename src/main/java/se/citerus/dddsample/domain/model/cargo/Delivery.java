@@ -76,7 +76,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @param itinerary itinerary
    * @param routeSpecification route specification
    */
-  private Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
+  public Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
     this.calculatedAt = new Date();
     this.lastEvent = lastEvent;
 

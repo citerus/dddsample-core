@@ -9,6 +9,6 @@ public class LocationDTOConverter {
     }
 
     public static Location fromDto(LocationDTO source) {
-        return null; // TODO implement this
+        return new Location(source.unlocode, source.name);
     }
 }

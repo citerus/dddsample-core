@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -8,7 +9,6 @@ import se.citerus.dddsample.infrastructure.persistence.jpa.converters.CargoDTOCo
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.CargoDTO;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -19,15 +19,23 @@ import java.util.stream.StreamSupport;
 public interface CargoRepositoryJPA extends CrudRepository<CargoDTO, Long>, CargoRepository {
 
   default Cargo find(TrackingId trackingId) {
-    // TODO replace with SQL code in annotation
-    Optional<CargoDTO> maybeCargo = StreamSupport.stream(findAll().spliterator(), false)
-            .filter(el -> el.trackingId.equalsIgnoreCase(trackingId.idString()))
-            .findFirst();
-    return maybeCargo.map(CargoDTOConverter::fromDto).orElse(null);
+    CargoDTO dto = findByTrackingId(trackingId.idString());
+    return CargoDTOConverter.fromDto(dto);
   }
 
+  @Query("select c from Cargo c where c.trackingId = :trackingId")
+  CargoDTO findByTrackingId(String trackingId);
+
+//  default Cargo find(TrackingId trackingId) {
+//    // TODO replace with SQL code in annotation
+//    Optional<CargoDTO> maybeCargo = StreamSupport.stream(findAll().spliterator(), false)
+//            .filter(el -> el.trackingId.equalsIgnoreCase(trackingId.idString()))
+//            .findFirst();
+//    return maybeCargo.map(CargoDTOConverter::fromDto).orElse(null);
+//  }
+
   default void store(final Cargo cargo) {
-    save(new CargoDTO());
+    save(CargoDTOConverter.toDto(cargo));
   }
 
   default List<Cargo> getAll() {
@@ -43,4 +51,7 @@ public interface CargoRepositoryJPA extends CrudRepository<CargoDTO, Long>, Carg
       random.substring(0, random.indexOf("-"))
     );
   }
+
+//  @Query(value = "SELECT (SELECT NEXT VALUE FOR tracking_id_sequence) AS id", nativeQuery = true)
+//  TrackingId nextTrackingId();
 }

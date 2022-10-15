@@ -9,7 +9,7 @@ public class LocationDTO {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     public String unlocode;
 
     @Column(nullable = false)

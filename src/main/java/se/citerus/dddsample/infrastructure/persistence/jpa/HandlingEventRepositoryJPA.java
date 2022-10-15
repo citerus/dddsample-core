@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -10,7 +11,6 @@ import se.citerus.dddsample.infrastructure.persistence.jpa.entities.HandlingEven
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Hibernate implementation of HandlingEventRepository.
@@ -23,12 +23,22 @@ public interface HandlingEventRepositoryJPA extends CrudRepository<HandlingEvent
   }
 
   default HandlingHistory lookupHandlingHistoryOfCargo(final TrackingId trackingId) {
-    // TODO replace with SQL code in annotation
-    List<HandlingEvent> handlingEventDtos = StreamSupport.stream(findAll().spliterator(), false)
-            .filter(el -> el.cargo.trackingId.equalsIgnoreCase(trackingId.idString()))
+    List<HandlingEvent> list = getHandlingHistoryOfCargo(trackingId).stream()
             .map(HandlingEventDTOConverter::fromDto)
             .collect(Collectors.toList());
-    return new HandlingHistory(handlingEventDtos);
+    return new HandlingHistory(list);
   }
+
+  @Query("select he from HandlingEvent he where he.cargo.trackingId = :trackingId")
+  List<HandlingEventDTO> getHandlingHistoryOfCargo(TrackingId trackingId);
+
+//  default HandlingHistory lookupHandlingHistoryOfCargo(final TrackingId trackingId) {
+//    // TODO replace with SQL code in annotation
+//    List<HandlingEvent> handlingEventDtos = StreamSupport.stream(findAll().spliterator(), false)
+//            .filter(el -> el.cargo.trackingId.equalsIgnoreCase(trackingId.idString()))
+//            .map(HandlingEventDTOConverter::fromDto)
+//            .collect(Collectors.toList());
+//    return new HandlingHistory(handlingEventDtos);
+//  }
 
 }

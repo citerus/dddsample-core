@@ -25,6 +25,8 @@ import se.citerus.dddsample.infrastructure.messaging.jms.InfrastructureMessaging
 import se.citerus.dddsample.infrastructure.routing.ExternalRoutingService;
 import se.citerus.dddsample.interfaces.InterfacesApplicationContext;
 
+import javax.persistence.EntityManager;
+
 @Configuration
 @Import({InterfacesApplicationContext.class, InfrastructureMessagingJmsConfig.class})
 public class DDDSampleApplicationContext {
@@ -85,8 +87,10 @@ public class DDDSampleApplicationContext {
     }
 
     @Bean
-    public SampleDataGenerator sampleDataGenerator() {
-        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(cargoRepository, voyageRepository, locationRepository, handlingEventRepository, platformTransactionManager);
+    public SampleDataGenerator sampleDataGenerator(CargoRepository cargoRepository, VoyageRepository voyageRepository,
+                                                   LocationRepository locationRepository, HandlingEventRepository handlingEventRepository,
+                                                   PlatformTransactionManager platformTransactionManager, EntityManager entityManager) {
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(cargoRepository, voyageRepository, locationRepository, handlingEventRepository, platformTransactionManager, entityManager);
         try {
             sampleDataGenerator.generate(); // TODO investigate if this can be called with initMethod in the annotation
         } catch (Exception e) {

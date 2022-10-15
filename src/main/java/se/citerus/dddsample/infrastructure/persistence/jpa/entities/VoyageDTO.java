@@ -13,7 +13,7 @@ public class VoyageDTO {
     @Column(name = "voyage_number", unique = true)
     public String voyageNumber;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "voyage_id")
     public Collection<CarrierMovementDTO> carrierMovements;
 

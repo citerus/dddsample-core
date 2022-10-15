@@ -13,6 +13,7 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.SampleLocations;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,18 +37,21 @@ public class SampleDataGenerator {
     private final LocationRepository locationRepository;
     private final HandlingEventRepository handlingEventRepository;
     private final PlatformTransactionManager transactionManager;
+    private final EntityManager entityManager;
 
     public SampleDataGenerator(@NonNull CargoRepository cargoRepository,
                                @NonNull VoyageRepository voyageRepository,
                                @NonNull LocationRepository locationRepository,
                                @NonNull HandlingEventRepository handlingEventRepository,
-                               @NonNull PlatformTransactionManager transactionManager) {
+                               @NonNull PlatformTransactionManager transactionManager,
+                               @NonNull EntityManager entityManager) {
         // TODO can the requireNonNull calls be replaced by annotations?
         this.cargoRepository = requireNonNull(cargoRepository);
         this.voyageRepository = requireNonNull(voyageRepository);
         this.locationRepository = requireNonNull(locationRepository);
         this.handlingEventRepository = requireNonNull(handlingEventRepository);
         this.transactionManager = requireNonNull(transactionManager);
+        this.entityManager = entityManager;
     }
 
     private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
@@ -203,6 +207,7 @@ public class SampleDataGenerator {
         tt.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
+                // TODO make SampleLocations and SampleVoyages into DTOs by default
                 for (Location location : SampleLocations.getAll()) {
                     locationRepository.store(location);
                 }
@@ -298,6 +303,10 @@ public class SampleDataGenerator {
         });
     }
 
+    /**
+     * Deprecated, use RepositoryJPA beans instead.
+     */
+    @Deprecated
     public static void loadSampleData(final JdbcTemplate jdbcTemplate, TransactionTemplate transactionTemplate) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             protected void doInTransactionWithoutResult(TransactionStatus status) {

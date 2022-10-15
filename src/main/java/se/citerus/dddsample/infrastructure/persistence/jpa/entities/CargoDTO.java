@@ -22,7 +22,7 @@ public class CargoDTO {
     @Embedded
     public RouteSpecificationDTO routeSpecification;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "cargo_id")
     public Collection<LegDTO> itinerary;
 
