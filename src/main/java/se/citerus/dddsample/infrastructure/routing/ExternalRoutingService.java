@@ -18,6 +18,7 @@ import se.citerus.dddsample.domain.service.RoutingService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Our end of the routing service. This is basically a data model
@@ -58,23 +59,26 @@ public class ExternalRoutingService implements RoutingService {
     /*
      The returned result is then translated back into our domain model.
     */
-    final List<Itinerary> itineraries = new ArrayList<Itinerary>();
-
-    for (TransitPath transitPath : transitPaths) {
-      final Itinerary itinerary = toItinerary(transitPath);
-      // Use the specification to safe-guard against invalid itineraries
-      if (routeSpecification.isSatisfiedBy(itinerary)) {
-        itineraries.add(itinerary);
-      } else {
-        log.warn("Received itinerary that did not satisfy the route specification");
-      }
-    }
+    // Use the specification to safe-guard against invalid itineraries
+    final List<Itinerary> itineraries = transitPaths.stream()
+            .map(this::toItinerary)
+            .filter(itinerary -> isSatisfyingRouteSpec(itinerary, routeSpecification))
+            .collect(Collectors.toList());
 
     return itineraries;
   }
 
+  private static boolean isSatisfyingRouteSpec(Itinerary itinerary, RouteSpecification routeSpecification) {
+    if (routeSpecification.isSatisfiedBy(itinerary)) {
+      return true;
+    } else {
+      log.warn("Received itinerary that did not satisfy the route specification");
+      return false;
+    }
+  }
+
   private Itinerary toItinerary(TransitPath transitPath) {
-    List<Leg> legs = new ArrayList<Leg>(transitPath.getTransitEdges().size());
+    List<Leg> legs = new ArrayList<>(transitPath.getTransitEdges().size());
     for (TransitEdge edge : transitPath.getTransitEdges()) {
       legs.add(toLeg(edge));
     }
@@ -83,10 +87,11 @@ public class ExternalRoutingService implements RoutingService {
 
   private Leg toLeg(TransitEdge edge) {
     return new Leg(
-      voyageRepository.find(new VoyageNumber(edge.getEdge())),
-      locationRepository.find(new UnLocode(edge.getFromNode())),
-      locationRepository.find(new UnLocode(edge.getToNode())),
-      edge.getFromDate(), edge.getToDate()
+            voyageRepository.find(new VoyageNumber(edge.getEdge())),
+            locationRepository.find(new UnLocode(edge.getFromNode())),
+            locationRepository.find(new UnLocode(edge.getToNode())),
+            edge.getFromDate(),
+            edge.getToDate()
     );
   }
 }
