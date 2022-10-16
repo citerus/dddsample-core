@@ -1,10 +1,16 @@
-package se.citerus.dddsample.domain.model.voyage;
+package se.citerus.dddsample.infrastructure.sampledata;
 
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
 
 import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
+import se.citerus.dddsample.domain.model.voyage.Schedule;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.infrastructure.persistence.jpa.entities.CarrierMovementDTO;
+import se.citerus.dddsample.infrastructure.persistence.jpa.entities.VoyageDTO;
 
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -109,7 +115,38 @@ public class SampleVoyages {
                     addMovement(HONGKONG, toDate("2008-11-24", "07:00"), toDate("2008-11-28", "13:37")).
                     build();
 
+    // JPA DTOs
+    public static final VoyageDTO HONGKONG_TO_NEW_YORK_DTO =
+            new VoyageDTO("0100S", Arrays.asList(
+                new CarrierMovementDTO(HANGZOU_DTO, HONGKONG_DTO, toDate("2008-10-01", "12:00"), toDate("2008-10-03", "14:30")),
+                new CarrierMovementDTO(TOKYO_DTO, HANGZOU_DTO, toDate("2008-10-03", "21:00"), toDate("2008-10-06", "06:15")),
+                new CarrierMovementDTO(MELBOURNE_DTO, TOKYO_DTO, toDate("2008-10-06", "11:00"), toDate("2008-10-12", "11:30")),
+                new CarrierMovementDTO(NEWYORK_DTO, MELBOURNE_DTO, toDate("2008-10-14", "12:00"), toDate("2008-10-23", "23:10"))
+            ));
+    public static final VoyageDTO NEW_YORK_TO_DALLAS_DTO =
+            new VoyageDTO(("0200T"), Arrays.asList(
+                new CarrierMovementDTO(CHICAGO_DTO, NEWYORK_DTO, toDate("2008-10-24", "07:00"), toDate("2008-10-24", "17:45")),
+                new CarrierMovementDTO(DALLAS_DTO, CHICAGO_DTO, toDate("2008-10-24", "21:25"), toDate("2008-10-25", "19:30"))
+            ));
+    public static final VoyageDTO DALLAS_TO_HELSINKI_DTO =
+            new VoyageDTO(("0300A"), Arrays.asList(
+                new CarrierMovementDTO(HAMBURG_DTO, DALLAS_DTO, toDate("2008-10-29", "03:30"), toDate("2008-10-31", "14:00")),
+                new CarrierMovementDTO(STOCKHOLM_DTO, HAMBURG_DTO, toDate("2008-11-01", "15:20"), toDate("2008-11-01", "18:40")),
+                new CarrierMovementDTO(HELSINKI_DTO, STOCKHOLM_DTO, toDate("2008-11-02", "09:00"), toDate("2008-11-02", "11:15"))
+            ));
+    public static final VoyageDTO DALLAS_TO_HELSINKI_ALT_DTO =
+            new VoyageDTO(("0301S"), Arrays.asList(
+                new CarrierMovementDTO(HELSINKI_DTO, DALLAS_DTO, toDate("2008-10-29", "03:30"), toDate("2008-11-05", "15:45"))
+            ));
+    public static final VoyageDTO HELSINKI_TO_HONGKONG_DTO =
+            new VoyageDTO(("0400S"), Arrays.asList(
+                new CarrierMovementDTO(ROTTERDAM_DTO, HELSINKI_DTO, toDate("2008-11-04", "05:50"), toDate("2008-11-06", "14:10")),
+                new CarrierMovementDTO(SHANGHAI_DTO, ROTTERDAM_DTO, toDate("2008-11-10", "21:45"), toDate("2008-11-22", "16:40")),
+                new CarrierMovementDTO(HONGKONG_DTO, SHANGHAI_DTO, toDate("2008-11-24", "07:00"), toDate("2008-11-28", "13:37"))
+            ));
+
     public static final Map<VoyageNumber, Voyage> ALL = new HashMap<>();
+    public static final Map<String, VoyageDTO> ALL_DTOS = new HashMap<>();
 
     static {
         for (Field field : SampleVoyages.class.getDeclaredFields()) {
@@ -120,12 +157,23 @@ public class SampleVoyages {
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
+            } else if (field.getType().equals(VoyageDTO.class)) {
+                try {
+                    VoyageDTO voyage = (VoyageDTO) field.get(null);
+                    ALL_DTOS.put(voyage.voyageNumber, voyage);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
     public static List<Voyage> getAll() {
         return new ArrayList<>(ALL.values());
+    }
+
+    public static Collection<VoyageDTO> getAllDtos() {
+        return ALL_DTOS.values();
     }
 
     public static Voyage lookup(VoyageNumber voyageNumber) {

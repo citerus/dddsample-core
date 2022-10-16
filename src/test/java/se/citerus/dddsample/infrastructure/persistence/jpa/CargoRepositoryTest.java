@@ -3,12 +3,12 @@ package se.citerus.dddsample.infrastructure.persistence.jpa;
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.MELBOURNE;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.TOKYO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM004;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -30,7 +30,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import se.citerus.dddsample.application.util.SampleDataGenerator;
+import se.citerus.dddsample.infrastructure.sampledata.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.Itinerary;

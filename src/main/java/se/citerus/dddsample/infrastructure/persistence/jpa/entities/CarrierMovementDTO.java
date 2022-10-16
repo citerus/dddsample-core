@@ -10,11 +10,11 @@ public class CarrierMovementDTO {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "arrival_location_id", nullable = false)
     public LocationDTO arrivalLocation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "departure_location_id", nullable = false)
     public LocationDTO departureLocation;
 

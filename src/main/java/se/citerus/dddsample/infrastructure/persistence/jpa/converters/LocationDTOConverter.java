@@ -5,6 +5,9 @@ import se.citerus.dddsample.infrastructure.persistence.jpa.entities.LocationDTO;
 
 public class LocationDTOConverter {
     public static LocationDTO toDto(Location source) {
+        if (source == null || source == Location.UNKNOWN) {
+            return null;
+        }
         return new LocationDTO(source.unLocode().idString(), source.name());
     }
 

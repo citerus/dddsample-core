@@ -2,7 +2,7 @@ package se.citerus.dddsample.scenario;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.MISROUTED;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.NOT_ROUTED;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.ROUTED;
@@ -14,16 +14,16 @@ import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAI
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v100;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v200;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v300;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v400;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HAMBURG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.NEWYORK;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.TOKYO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.v100;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.v200;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.v300;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.v400;
 import static se.citerus.dddsample.domain.model.voyage.Voyage.NONE;
 
 import java.util.Arrays;

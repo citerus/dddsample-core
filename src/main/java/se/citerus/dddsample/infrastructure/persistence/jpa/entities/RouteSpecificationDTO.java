@@ -1,18 +1,15 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 @Embeddable
 public class RouteSpecificationDTO {
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "spec_origin_id")
     public LocationDTO origin;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "spec_destination_id")
     public LocationDTO destination;
 

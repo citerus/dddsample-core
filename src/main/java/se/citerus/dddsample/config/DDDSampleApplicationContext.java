@@ -14,7 +14,7 @@ import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.application.impl.CargoInspectionServiceImpl;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
-import se.citerus.dddsample.application.util.SampleDataGenerator;
+import se.citerus.dddsample.infrastructure.sampledata.SampleDataGenerator;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;

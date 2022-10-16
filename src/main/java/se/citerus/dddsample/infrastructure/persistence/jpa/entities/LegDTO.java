@@ -38,4 +38,12 @@ public class LegDTO {
         this.unloadLocation = unloadLocation;
         this.unloadTime = unloadTime;
     }
+
+    public LegDTO(VoyageDTO voyage, LocationDTO loadLocation, LocationDTO unloadLocation, Date loadTime, Date unloadTime) {
+        this.voyage = voyage;
+        this.loadLocation = loadLocation;
+        this.loadTime = loadTime;
+        this.unloadLocation = unloadLocation;
+        this.unloadTime = unloadTime;
+    }
 }

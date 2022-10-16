@@ -1,24 +1,26 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa.converters;
 
-import se.citerus.dddsample.domain.model.cargo.Delivery;
-import se.citerus.dddsample.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.domain.model.cargo.Leg;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
+import se.citerus.dddsample.domain.model.cargo.*;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.infrastructure.persistence.jpa.entities.DeliveryDTO;
+import se.citerus.dddsample.infrastructure.persistence.jpa.entities.HandlingActivityDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DeliveryDTOConverter {
-    public static DeliveryDTO toDto(Delivery source) {
+    public static DeliveryDTO toDto(Delivery source, RouteSpecification routeSpecification) {
+        HandlingActivityDTO nextExpectedActivity = source.nextExpectedActivity() != null
+                ? HandlingActivityDTOConverter.toDto(source.nextExpectedActivity())
+                : HandlingActivityDTOConverter.toDto(new HandlingActivity(HandlingEvent.Type.RECEIVE, routeSpecification.origin()));
         return new DeliveryDTO(
                 source.isMisdirected(),
                 source.estimatedTimeOfArrival(),
                 source.calculatedAt(),
                 source.isUnloadedAtDestination(),
                 source.routingStatus(),
-                HandlingActivityDTOConverter.toDto(source.nextExpectedActivity()),
+                nextExpectedActivity,
                 source.transportStatus(),
                 VoyageDTOConverter.toDto(source.currentVoyage()),
                 LocationDTOConverter.toDto(source.lastKnownLocation()),

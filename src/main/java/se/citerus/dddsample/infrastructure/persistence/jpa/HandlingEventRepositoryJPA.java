@@ -23,14 +23,15 @@ public interface HandlingEventRepositoryJPA extends CrudRepository<HandlingEvent
   }
 
   default HandlingHistory lookupHandlingHistoryOfCargo(final TrackingId trackingId) {
-    List<HandlingEvent> list = getHandlingHistoryOfCargo(trackingId).stream()
+    List<HandlingEventDTO> handlingEventDTOS = getHandlingHistoryOfCargo(trackingId.idString());
+    List<HandlingEvent> list = handlingEventDTOS.stream()
             .map(HandlingEventDTOConverter::fromDto)
             .collect(Collectors.toList());
     return new HandlingHistory(list);
   }
 
-  @Query("select he from HandlingEvent he where he.cargo.trackingId = :trackingId")
-  List<HandlingEventDTO> getHandlingHistoryOfCargo(TrackingId trackingId);
+  @Query("select he from HandlingEvent he where he.cargo.trackingId = :trackingId and he.location != NULL")
+  List<HandlingEventDTO> getHandlingHistoryOfCargo(String trackingId);
 
 //  default HandlingHistory lookupHandlingHistoryOfCargo(final TrackingId trackingId) {
 //    // TODO replace with SQL code in annotation

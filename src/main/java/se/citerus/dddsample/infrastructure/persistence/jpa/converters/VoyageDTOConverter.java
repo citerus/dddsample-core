@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class VoyageDTOConverter {
 
     public static VoyageDTO toDto(Voyage source) {
-        if (source == null) {
+        if (source == null || source == Voyage.NONE) {
             return null;
         }
         String voyageNumber = source.voyageNumber().idString();
@@ -28,6 +28,9 @@ public class VoyageDTOConverter {
     }
 
     public static Voyage fromDto(VoyageDTO source) {
+        if (source.carrierMovements == null || source.carrierMovements.isEmpty()) {
+            return null;
+        }
         List<CarrierMovementDTO> carrierMovements = new ArrayList<>(source.carrierMovements);
         Location departureLocation = LocationDTOConverter.fromDto(carrierMovements.get(0).departureLocation);
         Voyage.Builder builder = new Voyage.Builder(new VoyageNumber(source.voyageNumber), departureLocation);

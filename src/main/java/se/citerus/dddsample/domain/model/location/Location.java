@@ -23,13 +23,13 @@ public final class Location implements Entity<Location> {
   );
 
   /**
-   * Package-level constructor, visible for test only.
+   * Package-level constructor, visible for test and sample data purposes.
    *
    * @param unLocode UN Locode
    * @param name     location name
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  Location(final UnLocode unLocode, final String name) {
+  public Location(final UnLocode unLocode, final String name) {
     Validate.notNull(unLocode);
     Validate.notNull(name);
     
@@ -100,4 +100,7 @@ public final class Location implements Entity<Location> {
 
   private Long id;
 
+  public void setId(long id) {
+    this.id = id;
+  }
 }

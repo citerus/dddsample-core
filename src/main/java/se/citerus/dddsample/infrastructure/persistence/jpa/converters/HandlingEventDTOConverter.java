@@ -18,7 +18,7 @@ public class HandlingEventDTOConverter {
     }
 
     public static HandlingEvent fromDto(HandlingEventDTO source) {
-        if (source.voyage != null) {
+        if (source.voyage != null && source.voyage.carrierMovements != null) {
             return new HandlingEvent(
                     CargoDTOConverter.fromDto(source.cargo),
                     source.completionTime,

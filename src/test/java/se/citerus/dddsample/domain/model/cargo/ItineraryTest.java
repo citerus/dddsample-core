@@ -2,13 +2,13 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.GOTHENBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.ROTTERDAM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.SHANGHAI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.GOTHENBURG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.NEWYORK;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.ROTTERDAM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.SHANGHAI;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
 
 import java.util.ArrayList;
 import java.util.Arrays;

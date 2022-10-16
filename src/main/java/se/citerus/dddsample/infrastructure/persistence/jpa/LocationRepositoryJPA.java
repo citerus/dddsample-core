@@ -2,6 +2,7 @@ package se.citerus.dddsample.infrastructure.persistence.jpa;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.util.ReflectionUtils;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -16,7 +17,9 @@ public interface LocationRepositoryJPA extends CrudRepository<LocationDTO, Long>
 
   default Location find(final UnLocode unLocode) {
     LocationDTO locationDTO = findByUnLoCode(unLocode.idString());
-    return LocationDTOConverter.fromDto(locationDTO);
+    Location location = LocationDTOConverter.fromDto(locationDTO);
+    location.setId(locationDTO.id);
+    return location;
   }
 
 //  default Location findByUnLoCode(String unlocode) {

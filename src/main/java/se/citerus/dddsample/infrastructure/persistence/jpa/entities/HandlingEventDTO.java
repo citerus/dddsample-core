@@ -14,7 +14,7 @@ public class HandlingEventDTO {
     @JoinColumn(name = "voyage_id")
     public VoyageDTO voyage;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     public LocationDTO location;
 
@@ -40,9 +40,6 @@ public class HandlingEventDTO {
         CUSTOMS,
     }
 
-    public HandlingEventDTO() {
-    }
-
     public HandlingEventDTO(VoyageDTO voyage, LocationDTO location, CargoDTO cargo, Date completionTime, Date registrationTime, Type type) {
         this.voyage = voyage;
         this.location = location;
@@ -50,5 +47,22 @@ public class HandlingEventDTO {
         this.completionTime = completionTime;
         this.registrationTime = registrationTime;
         this.type = type;
+    }
+
+    /**
+     * Constructor used for events before a voyage has been selected for the cargo. Registration time defaults to now.
+     */
+    public HandlingEventDTO(LocationDTO location, CargoDTO cargo, Date completionTime, Type type) {
+        this(null, location, cargo, completionTime, new Date(), type);
+    }
+
+    /**
+     * Constructor that defaults registration time to now.
+     */
+    public HandlingEventDTO(VoyageDTO voyage, LocationDTO location, CargoDTO cargo, Date completionTime, Type type) {
+        this(voyage, location, cargo, completionTime, new Date(), type);
+    }
+
+    public HandlingEventDTO() {
     }
 }

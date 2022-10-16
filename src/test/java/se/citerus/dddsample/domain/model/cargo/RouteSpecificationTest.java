@@ -1,13 +1,13 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.DALLAS;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.DALLAS;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HANGZOU;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HONGKONG;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.NEWYORK;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.TOKYO;
 
 import java.util.Arrays;
 

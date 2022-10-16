@@ -35,7 +35,7 @@ public class DeliveryDTO {
     @JoinColumn(name = "current_voyage_id")
     public VoyageDTO currentVoyage;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "last_known_location_id")
     public LocationDTO lastKnownLocation;
 
