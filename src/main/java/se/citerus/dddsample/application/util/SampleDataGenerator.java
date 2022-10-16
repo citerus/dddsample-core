@@ -266,12 +266,12 @@ public class SampleDataGenerator {
 
                 // Cargo JKL567
 
-                RouteSpecification routeSpecification1 = new RouteSpecification(HANGZOU, STOCKHOLM, toDate("2009-03-18"));
+                RouteSpecification routeSpecification1 = new RouteSpecification(HANGZHOU, STOCKHOLM, toDate("2009-03-18"));
                 TrackingId trackingId1 = new TrackingId("JKL567");
                 Cargo jkl567 = new Cargo(trackingId1, routeSpecification1);
 
                 Itinerary itinerary1 = new Itinerary(asList(
-                        new Leg(HONGKONG_TO_NEW_YORK, HANGZOU, NEWYORK, toDate("2009-03-03"), toDate("2009-03-05")),
+                        new Leg(HONGKONG_TO_NEW_YORK, HANGZHOU, NEWYORK, toDate("2009-03-03"), toDate("2009-03-05")),
                         new Leg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
                         new Leg(DALLAS_TO_HELSINKI, DALLAS, STOCKHOLM, toDate("2009-03-09"), toDate("2009-03-11"))
                 ));
@@ -281,12 +281,12 @@ public class SampleDataGenerator {
 
                 try {
                     HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-01"), trackingId1, null, HANGZOU.unLocode(), HandlingEvent.Type.RECEIVE
+                            new Date(), toDate("2009-03-01"), trackingId1, null, HANGZHOU.unLocode(), HandlingEvent.Type.RECEIVE
                     );
                     session.save(event1);
 
                     HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZOU.unLocode(), HandlingEvent.Type.LOAD
+                            new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU.unLocode(), HandlingEvent.Type.LOAD
                     );
                     session.save(event2);
 
