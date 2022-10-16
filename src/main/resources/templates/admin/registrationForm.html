@@ -40,7 +40,7 @@
             <tr>
                 <td>Arrival deadline:</td>
                 <td>
-                    <input name="arrivalDeadline" type="text" size="10" id="arrivalDeadline" th:value="${#dates.format(#dates.createNow(),'dd/MM/yyyy')}"/>
+                    <input name="arrivalDeadline" type="text" size="10" id="arrivalDeadline"/>
                     <p class="glyphicon glyphicon-calendar"></p>
                 </td>
             </tr>
@@ -60,9 +60,10 @@
 <script th:src="@{/js/bootstrap-datepicker.js}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        var today = new Date();
         $('#arrivalDeadline').datepicker({
             format: "dd/mm/yyyy"
-        });
+        }).val(today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear());
     });
 </script>
 </body>

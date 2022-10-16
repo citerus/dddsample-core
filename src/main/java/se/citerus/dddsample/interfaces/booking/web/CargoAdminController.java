@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static se.citerus.dddsample.interfaces.booking.facade.internal.assembler.AssemblerUtils.toDTODate;
+
 /**
  * Handles cargo booking and routing. Operates against a dedicated remoting service facade,
  * and could easily be rewritten as a thick Swing client. Completely separated from the domain layer,
@@ -109,8 +111,8 @@ public final class CargoAdminController {
                             leg.getVoyageNumber(),
                             leg.getFromUnLocode(),
                             leg.getToUnLocode(),
-                            leg.getFromDate(),
-                            leg.getToDate())
+                            toDTODate(leg.getFromDate()),
+                            toDTODate(leg.getToDate()))
             );
         }
 

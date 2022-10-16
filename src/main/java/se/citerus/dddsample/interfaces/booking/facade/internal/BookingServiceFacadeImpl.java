@@ -18,12 +18,9 @@ import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.Itinera
 import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.LocationDTOAssembler;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
 
 /**
  * This implementation has additional support from the infrastructure, for exposing as an RMI
@@ -33,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 public class BookingServiceFacadeImpl implements BookingServiceFacade {
 
-  private BookingService bookingService;
-  private LocationRepository locationRepository;
-  private CargoRepository cargoRepository;
-  private VoyageRepository voyageRepository;
+  private final BookingService bookingService;
+  private final LocationRepository locationRepository;
+  private final CargoRepository cargoRepository;
+  private final VoyageRepository voyageRepository;
 
   public BookingServiceFacadeImpl(BookingService bookingService, LocationRepository locationRepository, CargoRepository cargoRepository, VoyageRepository voyageRepository) {
     this.bookingService = bookingService;
@@ -48,8 +45,7 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   @Override
   public List<LocationDTO> listShippingLocations() {
     final List<Location> allLocations = locationRepository.findAll();
-    final LocationDTOAssembler assembler = new LocationDTOAssembler();
-    return assembler.toDTOList(allLocations);
+    return LocationDTOAssembler.toDTOList(allLocations);
   }
 
   @Override
@@ -65,13 +61,12 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   @Override
   public CargoRoutingDTO loadCargoForRouting(String trackingId) {
     final Cargo cargo = cargoRepository.find(new TrackingId(trackingId));
-    final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
-    return assembler.toDTO(cargo);
+    return CargoRoutingDTOAssembler.toDTO(cargo);
   }
 
   @Override
   public void assignCargoToRoute(String trackingIdStr, RouteCandidateDTO routeCandidateDTO) {
-    final Itinerary itinerary = new ItineraryCandidateDTOAssembler().fromDTO(routeCandidateDTO, voyageRepository, locationRepository);
+    final Itinerary itinerary = ItineraryCandidateDTOAssembler.fromDTO(routeCandidateDTO, voyageRepository, locationRepository);
     final TrackingId trackingId = new TrackingId(trackingIdStr);
 
     bookingService.assignCargoToRoute(itinerary, trackingId);
@@ -85,24 +80,16 @@ public class BookingServiceFacadeImpl implements BookingServiceFacade {
   @Override
   public List<CargoRoutingDTO> listAllCargos() {
     final List<Cargo> cargoList = cargoRepository.findAll();
-    final List<CargoRoutingDTO> dtoList = new ArrayList<CargoRoutingDTO>(cargoList.size());
-    final CargoRoutingDTOAssembler assembler = new CargoRoutingDTOAssembler();
-    for (Cargo cargo : cargoList) {
-      dtoList.add(assembler.toDTO(cargo));
-    }
-    return dtoList;
+    return cargoList.stream()
+            .map(CargoRoutingDTOAssembler::toDTO)
+            .collect(Collectors.toList());
   }
 
   @Override
   public List<RouteCandidateDTO> requestPossibleRoutesForCargo(String trackingId) throws RemoteException {
     final List<Itinerary> itineraries = bookingService.requestPossibleRoutesForCargo(new TrackingId(trackingId));
-
-    final List<RouteCandidateDTO> routeCandidates = new ArrayList<RouteCandidateDTO>(itineraries.size());
-    final ItineraryCandidateDTOAssembler dtoAssembler = new ItineraryCandidateDTOAssembler();
-    for (Itinerary itinerary : itineraries) {
-      routeCandidates.add(dtoAssembler.toDTO(itinerary));
-    }
-
-    return routeCandidates;
+    return itineraries.stream()
+            .map(ItineraryCandidateDTOAssembler::toDTO)
+            .collect(Collectors.toList());
   }
 }
