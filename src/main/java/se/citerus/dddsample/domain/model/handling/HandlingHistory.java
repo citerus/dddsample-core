@@ -1,9 +1,11 @@
 package se.citerus.dddsample.domain.model.handling;
 
 import org.apache.commons.lang.Validate;
+import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 
@@ -45,6 +47,18 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
         }
     }
 
+    /**
+     * Filters handling history events to remove events for unrelated cargo.
+     * @param trackingId the trackingId of the cargo to filter events for.
+     * @return A new handling history with events matching the supplied tracking id.
+     */
+    public HandlingHistory filterOnCargo(TrackingId trackingId) {
+        List<HandlingEvent> events = handlingEvents.stream()
+                .filter(he -> he.cargo().trackingId().sameValueAs(trackingId))
+                .collect(Collectors.toList());
+        return new HandlingHistory(events);
+    }
+
     @Override
     public boolean sameValueAs(HandlingHistory other) {
         return other != null && this.handlingEvents.equals(other.handlingEvents);
@@ -65,6 +79,6 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
     }
 
     private static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR =
-            (he1, he2) -> he1.completionTime().compareTo(he2.completionTime());
+            Comparator.comparing(HandlingEvent::completionTime);
 
 }

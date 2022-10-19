@@ -2,9 +2,9 @@ package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
 
+import org.apache.commons.lang3.ObjectUtils;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.Entity;
 
 /**
@@ -93,7 +93,7 @@ public class Cargo implements Entity<Cargo> {
    * @return The itinerary. Never null.
    */
   public Itinerary itinerary() {
-    return DomainObjectUtils.nullSafe(this.itinerary, Itinerary.EMPTY_ITINERARY);
+    return ObjectUtils.defaultIfNull(this.itinerary, Itinerary.EMPTY_ITINERARY);
   }
 
   /**
@@ -145,11 +145,9 @@ public class Cargo implements Entity<Cargo> {
    * @param handlingHistory handling history
    */
   public void deriveDeliveryProgress(final HandlingHistory handlingHistory) {
-    // TODO filter events on cargo (must be same as this cargo)
-
     // Delivery is a value object, so we can simply discard the old one
     // and replace it with a new
-    this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory);
+    this.delivery = Delivery.derivedFrom(routeSpecification(), itinerary(), handlingHistory.filterOnCargo(this.trackingId));
   }
 
   @Override
