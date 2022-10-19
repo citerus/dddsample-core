@@ -38,6 +38,7 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
                          Location arrivalLocation,
                          Date departureTime,
                          Date arrivalTime) {
+    //noinspection ObviousNullCheck
     Validate.noNullElements(new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
     this.departureTime = departureTime;
     this.arrivalTime = arrivalTime;

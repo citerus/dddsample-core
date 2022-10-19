@@ -35,13 +35,8 @@ public class BookingServiceImpl implements BookingService {
   public TrackingId bookNewCargo(final UnLocode originUnLocode,
                                  final UnLocode destinationUnLocode,
                                  final Date arrivalDeadline) {
-    // TODO modeling this as a cargo factory might be suitable
-    final TrackingId trackingId = cargoRepository.nextTrackingId();
-    final Location origin = locationRepository.find(originUnLocode);
-    final Location destination = locationRepository.find(destinationUnLocode);
-    final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);
-
-    final Cargo cargo = new Cargo(trackingId, routeSpecification);
+    CargoFactory cargoFactory = new CargoFactory(locationRepository, cargoRepository);
+    Cargo cargo = cargoFactory.createCargo(originUnLocode, destinationUnLocode, arrivalDeadline);
 
     cargoRepository.store(cargo);
     logger.info("Booked new cargo with tracking id {}", cargo.trackingId().idString());

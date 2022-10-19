@@ -3,11 +3,11 @@ package se.citerus.dddsample.domain.model.handling;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.ObjectUtils;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainEvent;
-import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
@@ -148,7 +148,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public Voyage voyage() {
-    return DomainObjectUtils.nullSafe(this.voyage, Voyage.NONE);
+    return ObjectUtils.defaultIfNull(this.voyage, Voyage.NONE);
   }
 
   public Date completionTime() {
