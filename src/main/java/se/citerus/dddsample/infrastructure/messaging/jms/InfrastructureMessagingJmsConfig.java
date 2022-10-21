@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,8 +15,8 @@ import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.application.HandlingEventService;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
+import javax.jms.*;
+import java.util.Arrays;
 
 @EnableJms
 @Configuration
@@ -24,14 +25,39 @@ public class InfrastructureMessagingJmsConfig {
     @Value("${brokerUrl}")
     private String brokerUrl;
 
-    @Bean
-    public SimpleLoggingConsumer simpleLoggingConsumer() {
-        return new SimpleLoggingConsumer();
+    @Bean(value = "cargoHandledConsumer", destroyMethod = "close")
+    public MessageConsumer cargoHandledConsumer(Session session, @Qualifier("cargoHandledQueue") Destination destination, CargoInspectionService cargoInspectionService) throws JMSException {
+        MessageConsumer consumer = session.createConsumer(destination);
+        consumer.setMessageListener(new CargoHandledConsumer(cargoInspectionService));
+        return consumer;
     }
 
-    @Bean
-    public CargoHandledConsumer cargoHandledConsumer(CargoInspectionService cargoInspectionService) {
-        return new CargoHandledConsumer(cargoInspectionService);
+    @Bean(value = "handlingEventRegistrationAttemptConsumer", destroyMethod = "close")
+    public MessageConsumer handlingEventRegistrationAttemptConsumer(Session session, @Qualifier("handlingEventRegistrationAttemptQueue") Destination destination, HandlingEventService handlingEventService) throws JMSException {
+        MessageConsumer consumer = session.createConsumer(destination);
+        consumer.setMessageListener(new HandlingEventRegistrationAttemptConsumer(handlingEventService));
+        return consumer;
+    }
+
+    @Bean(value = "misdirectedCargoConsumer", destroyMethod = "close")
+    public MessageConsumer misdirectedCargoConsumer(Session session, @Qualifier("misdirectedCargoQueue") Destination destination) throws JMSException {
+        MessageConsumer consumer = session.createConsumer(destination);
+        consumer.setMessageListener(new SimpleLoggingConsumer());
+        return consumer;
+    }
+
+    @Bean(value = "deliveredCargoConsumer", destroyMethod = "close")
+    public MessageConsumer deliveredCargoConsumer(Session session, @Qualifier("deliveredCargoQueue") Destination destination) throws JMSException {
+        MessageConsumer consumer = session.createConsumer(destination);
+        consumer.setMessageListener(new SimpleLoggingConsumer());
+        return consumer;
+    }
+
+    @Bean(value = "rejectedRegistrationAttemptsConsumer", destroyMethod = "close")
+    public MessageConsumer rejectedRegistrationAttemptsConsumer(Session session, @Qualifier("rejectedRegistrationAttemptsQueue") Destination destination) throws JMSException {
+        MessageConsumer consumer = session.createConsumer(destination);
+        consumer.setMessageListener(new SimpleLoggingConsumer());
+        return consumer;
     }
 
     @Bean
@@ -74,12 +100,26 @@ public class InfrastructureMessagingJmsConfig {
 
     @Bean
     public ConnectionFactory jmsConnectionFactory() {
-        return new ActiveMQConnectionFactory(brokerUrl);
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
+        factory.setTrustedPackages(Arrays.asList("se.citerus.dddsample.interfaces.handling", "se.citerus.dddsample.domain", "java.util"));
+        return factory;
     }
 
     @Bean
     public JmsOperations jmsOperations(ConnectionFactory jmsConnectionFactory) {
         return new JmsTemplate(jmsConnectionFactory);
+    }
+
+    @Bean(destroyMethod = "close")
+    public Connection connection(ConnectionFactory connectionFactory) throws JMSException {
+        QueueConnection queueConnection = ((ActiveMQConnectionFactory) connectionFactory).createQueueConnection();
+        queueConnection.start();
+        return queueConnection;
+    }
+
+    @Bean
+    public Session session(Connection connection) throws JMSException {
+        return ((ActiveMQConnection) connection).createSession(false, Session.AUTO_ACKNOWLEDGE);
     }
 
     @Bean
