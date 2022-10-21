@@ -6,11 +6,11 @@
             <arg0>
                 <completionTime>2022-01-01T00:00:00</completionTime>
                 <!--1 or more repetitions:-->
-                <trackingIds>2</trackingIds>
+                <trackingIds>ABC123</trackingIds>
                 <type>LOAD</type>
-                <unLocode>AA234</unLocode>
+                <unLocode>SESTO</unLocode>
                 <!--Optional:-->
-                <voyageNumber>5</voyageNumber>
+                <voyageNumber>0100S</voyageNumber>
             </arg0>
         </ws:submitReport>
     </soapenv:Body>
