@@ -1,13 +1,14 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Consumes JMS messages and delegates notification of misdirected
@@ -19,7 +20,7 @@ import javax.jms.TextMessage;
 public class CargoHandledConsumer implements MessageListener {
 
   private final CargoInspectionService cargoInspectionService;
-  private final Log logger = LogFactory.getLog(getClass());
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public CargoHandledConsumer(CargoInspectionService cargoInspectionService) {
     this.cargoInspectionService = cargoInspectionService;
@@ -33,7 +34,7 @@ public class CargoHandledConsumer implements MessageListener {
       
       cargoInspectionService.inspectCargo(new TrackingId(trackingidString));
     } catch (Exception e) {
-      logger.error(e, e);
+      logger.error("Error consuming CargoHandled message", e);
     }
   }
 }

@@ -4,8 +4,8 @@ import com.aggregator.HandlingReport;
 import com.aggregator.HandlingReportErrors;
 import com.aggregator.HandlingReportErrors_Exception;
 import com.aggregator.HandlingReportService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -15,6 +15,7 @@ import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 public class HandlingReportServiceImpl implements HandlingReportService {
 
   private final ApplicationEvents applicationEvents;
-  private final static Log logger = LogFactory.getLog(HandlingReportServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public HandlingReportServiceImpl(ApplicationEvents applicationEvents) {
     this.applicationEvents = applicationEvents;
