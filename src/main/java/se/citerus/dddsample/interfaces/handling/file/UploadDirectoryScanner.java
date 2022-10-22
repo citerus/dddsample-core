@@ -1,8 +1,8 @@
 package se.citerus.dddsample.interfaces.handling.file;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -13,6 +13,7 @@ import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
   private File uploadDirectory;
   private File parseFailureDirectory;
 
-  private final static Log logger = LogFactory.getLog(UploadDirectoryScanner.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private ApplicationEvents applicationEvents;
 
   public UploadDirectoryScanner(File uploadDirectory, File parseFailureDirectory, ApplicationEvents applicationEvents) {
@@ -47,9 +48,9 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
       try {
         parse(file);
         delete(file);
-        logger.info("Import of " + file.getName() + " complete");
+        logger.info("Import of {} complete", file.getName());
       } catch (Exception e) {
-        logger.error(e, e);
+        logger.error("Error parsing uploaded file", e);
         move(file);
       }
     }
@@ -62,7 +63,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
       try {
         parseLine(line);
       } catch (Exception e) {
-        logger.error("Rejected line \n" + line + "\nReason is: " + e);
+        logger.error("Rejected line: {}", line, e);
         rejectedLines.add(line);
       }
     }
@@ -111,7 +112,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
 
   private void delete(final File file) {
     if (!file.delete()) {
-      logger.error("Could not delete " + file.getName());
+      logger.error("Could not delete file: {}", file.getName());
     }
   }
 
@@ -119,7 +120,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     final File destination = new File(parseFailureDirectory, file.getName());
     final boolean result = file.renameTo(destination);
     if (!result) {
-      logger.error("Could not move " + file.getName() + " to " + destination.getAbsolutePath());
+      logger.error("Could not move {} to {}", file.getName(), destination.getAbsolutePath());
     }
   }
 

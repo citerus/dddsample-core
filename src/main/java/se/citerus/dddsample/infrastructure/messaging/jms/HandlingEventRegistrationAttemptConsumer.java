@@ -1,13 +1,14 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Consumes handling event registration attempt messages and delegates to
@@ -17,7 +18,7 @@ import javax.jms.ObjectMessage;
 public class HandlingEventRegistrationAttemptConsumer implements MessageListener {
 
   private final HandlingEventService handlingEventService;
-  private static final Log logger = LogFactory.getLog(HandlingEventRegistrationAttemptConsumer.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public HandlingEventRegistrationAttemptConsumer(HandlingEventService handlingEventService) {
     this.handlingEventService = handlingEventService;
@@ -36,7 +37,7 @@ public class HandlingEventRegistrationAttemptConsumer implements MessageListener
         attempt.getType()
       );
     } catch (Exception e) {
-      logger.error(e, e);
+      logger.error("Error consuming HandlingEventRegistrationAttempt message", e);
     }
   }
 }
