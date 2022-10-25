@@ -1,4 +1,4 @@
-package se.citerus.dddsample.infrastructure.persistence.hibernate;
+package se.citerus.dddsample.infrastructure.persistence.jdbi;
 
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
@@ -20,7 +20,6 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
-import se.citerus.dddsample.infrastructure.persistence.jdbi.InfrastructurePersistenceConfig;
 
 import java.util.Collections;
 import java.util.Date;
@@ -197,6 +196,7 @@ public class CargoRepositoryTest {
     public void testNextTrackingId() {
         TrackingId trackingId = cargoRepository.nextTrackingId();
         assertThat(trackingId).isNotNull();
+        assertThat(trackingId.idString()).doesNotContainPattern("[a-z]+");
 
         TrackingId trackingId2 = cargoRepository.nextTrackingId();
         assertThat(trackingId2).isNotNull();

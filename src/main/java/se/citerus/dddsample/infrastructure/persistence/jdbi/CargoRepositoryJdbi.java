@@ -104,7 +104,7 @@ public class CargoRepositoryJdbi implements CargoRepository {
 
     @Override
     public void store(Cargo cargo) {
-        jdbi.useHandle(outerHandle -> outerHandle.useTransaction(h -> {
+        jdbi.useTransaction(h -> {
             boolean exists = h.select("SELECT COUNT(id) FROM Cargo WHERE trackingId = :trackingId")
                     .bind("trackingId", cargo.trackingId().idString())
                     .mapTo(Integer.class)
@@ -114,7 +114,11 @@ public class CargoRepositoryJdbi implements CargoRepository {
             } else {
                 create(cargo, h);
             }
-        }));
+        });
+    }
+
+    public void update(Cargo cargo) {
+        jdbi.useTransaction(h -> update(cargo, h));
     }
 
     private static void update(Cargo cargo, Handle h) {
@@ -138,11 +142,11 @@ public class CargoRepositoryJdbi implements CargoRepository {
                 ))
                 .execute();
 
-        // TODO update cargo
+        // TODO update cargo (hibernate migration)
 
         insertItinerary(h, cargoId, cargo.itinerary());
 
-        // TODO update lastEvent?
+        // TODO update lastEvent? (hibernate migration)
     }
 
     private static void create(Cargo cargo, Handle h) {
@@ -203,12 +207,12 @@ public class CargoRepositoryJdbi implements CargoRepository {
 
         insertItinerary(h, cargoId, cargo.itinerary());
 
-        // TODO check for lastEvent and find and insert id if found?
+        // TODO check for lastEvent and find and insert id if found? (hibernate migration)
     }
 
     @Override
     public TrackingId nextTrackingId() {
-        return jdbi.withHandle(h -> h.createQuery("SELECT SUBSTR(CAST(UUID() AS VARCHAR(38)), 0, 9) AS id FROM (VALUES(0))")
+        return jdbi.withHandle(h -> h.createQuery("SELECT UPPER(SUBSTR(CAST(UUID() AS VARCHAR(38)), 0, 9)) AS id FROM (VALUES(0))")
                 .mapTo(TrackingId.class)
                 .findOnly());
     }
