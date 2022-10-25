@@ -1,7 +1,10 @@
 package se.citerus.dddsample.config;
 
 import com.pathfinder.api.GraphTraversalService;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -77,6 +80,12 @@ public class DDDSampleApplicationContext {
         return new ExternalRoutingService(graphTraversalService, locationRepository, voyageRepository);
     }
 
+    @Bean
+    public FlywayMigrationInitializer flywayMigrationInitializer(Flyway flyway) {
+        return new FlywayMigrationInitializer(flyway);
+    }
+
+    @ConditionalOnBean(FlywayMigrationInitializer.class)
     @Bean
     public SampleDataGenerator sampleDataGenerator() {
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(cargoRepository, voyageRepository, locationRepository, handlingEventRepository);
