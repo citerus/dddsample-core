@@ -13,7 +13,7 @@ public class HandlingEventRepositoryInMem implements HandlingEventRepository {
 
   @Override
   public void store(HandlingEvent event) {
-    final TrackingId trackingId = event.cargo().trackingId();
+    final TrackingId trackingId = event.cargo();
     List<HandlingEvent> list = eventMap.computeIfAbsent(trackingId, k -> new ArrayList<>());
     list.add(event);
   }

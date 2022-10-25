@@ -1,20 +1,14 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.DALLAS;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
+import org.junit.Test;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import se.citerus.dddsample.domain.model.voyage.Voyage;
-import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class RouteSpecificationTest {
 
@@ -35,9 +29,9 @@ public class RouteSpecificationTest {
   // it shouldn't be possible to create Legs that have load/unload locations
   // and/or dates that don't match the voyage's carrier movements.
   final Itinerary itinerary = new Itinerary(Arrays.asList(
-      new Leg(hongKongTokyoNewYork, HONGKONG, NEWYORK,
+      new Leg(hongKongTokyoNewYork.voyageNumber(), HONGKONG, NEWYORK,
               toDate("2009-02-01"), toDate("2009-02-10")),
-      new Leg(dallasNewYorkChicago, NEWYORK, CHICAGO,
+      new Leg(dallasNewYorkChicago.voyageNumber(), NEWYORK, CHICAGO,
               toDate("2009-02-12"), toDate("2009-02-20")))
   );
   @Test

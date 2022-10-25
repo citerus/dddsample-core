@@ -1,21 +1,8 @@
 package se.citerus.dddsample.application;
 
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-import java.util.Date;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -26,6 +13,13 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
+
+import java.util.Date;
+
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
 
 public class HandlingEventServiceTest {
   private HandlingEventServiceImpl service;
@@ -45,7 +39,7 @@ public class HandlingEventServiceTest {
     locationRepository = mock(LocationRepository.class);
     applicationEvents = mock(ApplicationEvents.class);
 
-    HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
+    HandlingEventFactory handlingEventFactory = new HandlingEventFactory(voyageRepository, locationRepository);
     service = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
   }
 

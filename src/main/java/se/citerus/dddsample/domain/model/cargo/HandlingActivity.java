@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 /**
@@ -18,9 +18,9 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
 
   // TODO make HandlingActivity a part of HandlingEvent too? There is some overlap. 
 
-  private HandlingEvent.Type type;
-  private Location location;
-  private Voyage voyage;
+  private final HandlingEvent.Type type;
+  private final Location location;
+  private final VoyageNumber voyage;
 
   public HandlingActivity(final HandlingEvent.Type type, final Location location) {
     Validate.notNull(type, "Handling event type is required");
@@ -28,9 +28,10 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
 
     this.type = type;
     this.location = location;
+    this.voyage = null;
   }
 
-  public HandlingActivity(final HandlingEvent.Type type, final Location location, final Voyage voyage) {
+  public HandlingActivity(final HandlingEvent.Type type, final Location location, final VoyageNumber voyage) {
     Validate.notNull(type, "Handling event type is required");
     Validate.notNull(location, "Location is required");
     Validate.notNull(location, "Voyage is required");
@@ -48,7 +49,7 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
     return location;
   }
 
-  public Voyage voyage() {
+  public VoyageNumber voyage() {
     return voyage;
   }
 
@@ -79,10 +80,6 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
     HandlingActivity other = (HandlingActivity) obj;
 
     return sameValueAs(other);
-  }
-
-  HandlingActivity() {
-    // Needed by Hibernate
   }
   
 }

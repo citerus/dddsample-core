@@ -1,25 +1,27 @@
 package se.citerus.dddsample.application.util;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
+import com.google.common.collect.ImmutableMap;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.argument.NullArgument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.SampleLocations;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
+import se.citerus.dddsample.infrastructure.persistence.jdbi.CargoRepositoryJdbi;
+import se.citerus.dddsample.infrastructure.persistence.jdbi.LocationRepositoryJdbi;
+import se.citerus.dddsample.infrastructure.persistence.jdbi.VoyageRepositoryJdbi;
 
+import java.lang.invoke.MethodHandles;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -29,6 +31,7 @@ import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
  * Provides sample data.
  */
 public class SampleDataGenerator {
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private static final Timestamp base;
 
@@ -41,293 +44,370 @@ public class SampleDataGenerator {
         }
     }
 
-    private final PlatformTransactionManager transactionManager;
-    private final SessionFactory sf;
     private final CargoRepository cargoRepository;
     private final VoyageRepository voyageRepository;
     private final LocationRepository locationRepository;
     private final HandlingEventRepository handlingEventRepository;
 
-    public SampleDataGenerator(PlatformTransactionManager transactionManager,
-                               SessionFactory sf,
-                               CargoRepository cargoRepository,
+    public SampleDataGenerator(CargoRepository cargoRepository,
                                VoyageRepository voyageRepository,
                                LocationRepository locationRepository,
                                HandlingEventRepository handlingEventRepository) {
-        this.transactionManager = requireNonNull(transactionManager);
-        this.sf = requireNonNull(sf);
         this.cargoRepository = requireNonNull(cargoRepository);
         this.voyageRepository = requireNonNull(voyageRepository);
         this.locationRepository = requireNonNull(locationRepository);
         this.handlingEventRepository = requireNonNull(handlingEventRepository);
     }
 
-    private static void loadHandlingEventData(JdbcTemplate jdbcTemplate) {
-        String handlingEventSql =
-                "insert into HandlingEvent (completionTime, registrationTime, type, location_id, voyage_id, cargo_id) " +
-                        "values (?, ?, ?, ?, ?, ?)";
-
-        Object[][] handlingEventArgs = {
-                //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
-                {ts(0), ts((0)), "RECEIVE", 1, null, 1},
-                {ts((4)), ts((5)), "LOAD", 1, 1, 1},
-                {ts((14)), ts((14)), "UNLOAD", 5, 1, 1},
-                {ts((15)), ts((15)), "LOAD", 5, 1, 1},
-                {ts((30)), ts((30)), "UNLOAD", 6, 1, 1},
-                {ts((33)), ts((33)), "LOAD", 6, 1, 1},
-                {ts((34)), ts((34)), "UNLOAD", 3, 1, 1},
-                {ts((60)), ts((60)), "LOAD", 3, 1, 1},
-                {ts((70)), ts((71)), "UNLOAD", 4, 1, 1},
-                {ts((75)), ts((75)), "LOAD", 4, 1, 1},
-                {ts((88)), ts((88)), "UNLOAD", 2, 1, 1},
-                {ts((100)), ts((102)), "CLAIM", 2, null, 1},
-
-                //ZYX (AUMEL - USCHI - DEHAM -)
-                {ts((200)), ts((201)), "RECEIVE", 2, null, 3},
-                {ts((202)), ts((202)), "LOAD", 2, 2, 3},
-                {ts((208)), ts((208)), "UNLOAD", 7, 2, 3},
-                {ts((212)), ts((212)), "LOAD", 7, 2, 3},
-                {ts((230)), ts((230)), "UNLOAD", 6, 2, 3},
-                {ts((235)), ts((235)), "LOAD", 6, 2, 3},
-
-                //ABC
-                {ts((20)), ts((21)), "CLAIM", 2, null, 2},
-
-                //CBA
-                {ts((0)), ts((1)), "RECEIVE", 2, null, 4},
-                {ts((10)), ts((11)), "LOAD", 2, 2, 4},
-                {ts((20)), ts((21)), "UNLOAD", 7, 2, 4},
-
-                //FGH
-                {ts(100), ts(160), "RECEIVE", 3, null, 5},
-                {ts(150), ts(110), "LOAD", 3, 3, 5},
-
-                // JKL
-                {ts(200), ts(220), "RECEIVE", 6, null, 6},
-                {ts(300), ts(330), "LOAD", 6, 3, 6},
-                {ts(400), ts(440), "UNLOAD", 5, 3, 6}  // Unexpected event
-        };
-        executeUpdate(jdbcTemplate, handlingEventSql, handlingEventArgs);
-    }
-
-    private static void loadCarrierMovementData(JdbcTemplate jdbcTemplate) {
-        String voyageSql =
-                "insert into Voyage (id, voyage_number) values (?, ?)";
-        Object[][] voyageArgs = {
-                {1, "0101"},
-                {2, "0202"},
-                {3, "0303"}
-        };
-        executeUpdate(jdbcTemplate, voyageSql, voyageArgs);
-
-        String carrierMovementSql =
-                "insert into CarrierMovement (id, voyage_id, departure_location_id, arrival_location_id, departure_time, arrival_time, cm_index) " +
-                        "values (?,?,?,?,?,?,?)";
-
-        Object[][] carrierMovementArgs = {
-                // SESTO - FIHEL - DEHAM - CNHKG - JPTOK - AUMEL (voyage 0101)
-                {1, 1, 1, 5, ts(1), ts(2), 0},
-                {2, 1, 5, 6, ts(1), ts(2), 1},
-                {3, 1, 6, 3, ts(1), ts(2), 2},
-                {4, 1, 3, 4, ts(1), ts(2), 3},
-                {5, 1, 4, 2, ts(1), ts(2), 4},
-
-                // AUMEL - USCHI - DEHAM - SESTO - FIHEL (voyage 0202)
-                {7, 2, 2, 7, ts(1), ts(2), 0},
-                {8, 2, 7, 6, ts(1), ts(2), 1},
-                {9, 2, 6, 1, ts(1), ts(2), 2},
-                {6, 2, 1, 5, ts(1), ts(2), 3},
-
-                // CNHKG - AUMEL - FIHEL - DEHAM - SESTO - USCHI - JPTKO (voyage 0303)
-                {10, 3, 3, 2, ts(1), ts(2), 0},
-                {11, 3, 2, 5, ts(1), ts(2), 1},
-                {12, 3, 6, 1, ts(1), ts(2), 2},
-                {13, 3, 1, 7, ts(1), ts(2), 3},
-                {14, 3, 7, 4, ts(1), ts(2), 4}
-        };
-        executeUpdate(jdbcTemplate, carrierMovementSql, carrierMovementArgs);
-    }
-
-    private static void loadCargoData(JdbcTemplate jdbcTemplate) {
-        String cargoSql =
-                "insert into Cargo (id, tracking_id, origin_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, transport_status, current_voyage_id, last_known_location_id, is_misdirected, routing_status, calculated_at, unloaded_at_dest) " +
-                        "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        Object[][] cargoArgs = {
-                {1, "XYZ", 1, 1, 2, ts(10), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},
-                {2, "ABC", 1, 1, 5, ts(20), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},
-                {3, "ZYX", 2, 2, 1, ts(30), "IN_PORT", null, 1, false, "NOT_ROUTED", ts(100), false},
-                {4, "CBA", 5, 5, 1, ts(40), "IN_PORT", null, 1, false, "MISROUTED", ts(100), false},
-                {5, "FGH", 1, 3, 5, ts(50), "IN_PORT", null, 1, false, "ROUTED", ts(100), false},  // Cargo origin differs from spec origin
-                {6, "JKL", 6, 6, 4, ts(60), "IN_PORT", null, 1, true, "ROUTED", ts(100), false}
-        };
-        executeUpdate(jdbcTemplate, cargoSql, cargoArgs);
-    }
-
-    private static void loadLocationData(JdbcTemplate jdbcTemplate) {
-        String locationSql =
-                "insert into Location (id, unlocode, name) " +
-                        "values (?, ?, ?)";
-
-        Object[][] locationArgs = {
-                {1, "SESTO", "Stockholm"},
-                {2, "AUMEL", "Melbourne"},
-                {3, "CNHKG", "Hongkong"},
-                {4, "JPTOK", "Tokyo"},
-                {5, "FIHEL", "Helsinki"},
-                {6, "DEHAM", "Hamburg"},
-                {7, "USCHI", "Chicago"}
-        };
-        executeUpdate(jdbcTemplate, locationSql, locationArgs);
-    }
-
-    private static void loadItineraryData(JdbcTemplate jdbcTemplate) {
-        String legSql =
-                "insert into Leg (id, cargo_id, voyage_id, load_location_id, unload_location_id, load_time, unload_time, leg_index) " +
-                        "values (?,?,?,?,?,?,?,?)";
-
-        Object[][] legArgs = {
-                // Cargo 5: Hongkong - Melbourne - Stockholm - Helsinki
-                {1, 5, 1, 3, 2, ts(1), ts(2), 0},
-                {2, 5, 1, 2, 1, ts(3), ts(4), 1},
-                {3, 5, 1, 1, 5, ts(4), ts(5), 2},
-                // Cargo 6: Hamburg - Stockholm - Chicago - Tokyo
-                {4, 6, 2, 6, 1, ts(1), ts(2), 0},
-                {5, 6, 2, 1, 7, ts(3), ts(4), 1},
-                {6, 6, 2, 7, 4, ts(5), ts(6), 2}
-        };
-        executeUpdate(jdbcTemplate, legSql, legArgs);
-    }
-
     public void generate() {
-        TransactionTemplate tt = new TransactionTemplate(transactionManager);
-        //loadSampleData(new JdbcTemplate(dataSource), tt);
-
         HandlingEventFactory handlingEventFactory = new HandlingEventFactory(
-                cargoRepository,
                 voyageRepository,
                 locationRepository);
-        loadHibernateData(tt, sf, handlingEventFactory, handlingEventRepository);
+        loadSampleData(handlingEventFactory, handlingEventRepository);
     }
 
-    public static void loadHibernateData(TransactionTemplate tt, final SessionFactory sf, final HandlingEventFactory handlingEventFactory, final HandlingEventRepository handlingEventRepository) {
-        System.out.println("*** Loading Hibernate data ***");
-        tt.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                Session session = sf.getCurrentSession();
-
-                for (Location location : SampleLocations.getAll()) {
-                    session.save(location);
-                }
-
-                session.save(HONGKONG_TO_NEW_YORK);
-                session.save(NEW_YORK_TO_DALLAS);
-                session.save(DALLAS_TO_HELSINKI);
-                session.save(HELSINKI_TO_HONGKONG);
-                session.save(DALLAS_TO_HELSINKI_ALT);
-
-                RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, toDate("2009-03-15"));
-                TrackingId trackingId = new TrackingId("ABC123");
-                Cargo abc123 = new Cargo(trackingId, routeSpecification);
-
-                Itinerary itinerary = new Itinerary(asList(
-                        new Leg(HONGKONG_TO_NEW_YORK, HONGKONG, NEWYORK, toDate("2009-03-02"), toDate("2009-03-05")),
-                        new Leg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
-                        new Leg(DALLAS_TO_HELSINKI, DALLAS, HELSINKI, toDate("2009-03-09"), toDate("2009-03-12"))
-                ));
-                abc123.assignToRoute(itinerary);
-
-                session.save(abc123);
-
-                try {
-                    HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
-                    );
-                    session.save(event1);
-
-                    HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
-                    );
-                    session.save(event2);
-
-                    HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
-                    );
-                    session.save(event3);
-                } catch (CannotCreateHandlingEventException e) {
-                    throw new RuntimeException(e);
-                }
-
-                HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
-                abc123.deriveDeliveryProgress(handlingHistory);
-
-                session.update(abc123);
-
-                // Cargo JKL567
-
-                RouteSpecification routeSpecification1 = new RouteSpecification(HANGZHOU, STOCKHOLM, toDate("2009-03-18"));
-                TrackingId trackingId1 = new TrackingId("JKL567");
-                Cargo jkl567 = new Cargo(trackingId1, routeSpecification1);
-
-                Itinerary itinerary1 = new Itinerary(asList(
-                        new Leg(HONGKONG_TO_NEW_YORK, HANGZHOU, NEWYORK, toDate("2009-03-03"), toDate("2009-03-05")),
-                        new Leg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
-                        new Leg(DALLAS_TO_HELSINKI, DALLAS, STOCKHOLM, toDate("2009-03-09"), toDate("2009-03-11"))
-                ));
-                jkl567.assignToRoute(itinerary1);
-
-                session.save(jkl567);
-
-                try {
-                    HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-01"), trackingId1, null, HANGZHOU.unLocode(), HandlingEvent.Type.RECEIVE
-                    );
-                    session.save(event1);
-
-                    HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU.unLocode(), HandlingEvent.Type.LOAD
-                    );
-                    session.save(event2);
-
-                    HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
-                    );
-                    session.save(event3);
-
-                    HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
-                    );
-                    session.save(event4);
-
-                } catch (CannotCreateHandlingEventException e) {
-                    throw new RuntimeException(e);
-                }
-
-                HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId1);
-                jkl567.deriveDeliveryProgress(handlingHistory1);
-
-                session.update(jkl567);
-            }
-        });
-    }
-
-    public static void loadSampleData(final JdbcTemplate jdbcTemplate, TransactionTemplate transactionTemplate) {
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                loadLocationData(jdbcTemplate);
-                loadCarrierMovementData(jdbcTemplate);
-                loadCargoData(jdbcTemplate);
-                loadItineraryData(jdbcTemplate);
-                loadHandlingEventData(jdbcTemplate);
-            }
-        });
-    }
-
-    private static void executeUpdate(JdbcTemplate jdbcTemplate, String sql, Object[][] args) {
-        for (Object[] arg : args) {
-            jdbcTemplate.update(sql, arg);
+    public void loadSampleData(final HandlingEventFactory handlingEventFactory, final HandlingEventRepository handlingEventRepository) {
+        log.info("*** Loading sample data ***");
+        for (Location location : SampleLocations.getAll()) {
+            ((LocationRepositoryJdbi) locationRepository).store(location);
         }
+
+        VoyageRepositoryJdbi voyageRepositoryJdbi = (VoyageRepositoryJdbi) voyageRepository;
+        voyageRepositoryJdbi.store(HONGKONG_TO_NEW_YORK);
+        voyageRepositoryJdbi.store(NEW_YORK_TO_DALLAS);
+        voyageRepositoryJdbi.store(DALLAS_TO_HELSINKI);
+        voyageRepositoryJdbi.store(HELSINKI_TO_HONGKONG);
+        voyageRepositoryJdbi.store(DALLAS_TO_HELSINKI_ALT);
+
+        RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, HELSINKI, toDate("2009-03-15"));
+        TrackingId trackingId = new TrackingId("ABC123");
+        Cargo abc123 = new Cargo(trackingId, routeSpecification);
+
+        Itinerary itinerary = new Itinerary(Arrays.asList(
+                new Leg(HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG, NEWYORK, toDate("2009-03-02"), toDate("2009-03-05")),
+                new Leg(NEW_YORK_TO_DALLAS.voyageNumber(), NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
+                new Leg(DALLAS_TO_HELSINKI.voyageNumber(), DALLAS, HELSINKI, toDate("2009-03-09"), toDate("2009-03-12"))
+        ));
+        abc123.assignToRoute(itinerary);
+
+        cargoRepository.store(abc123);
+
+        try {
+            HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
+            );
+            handlingEventRepository.store(event1);
+
+            HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
+            );
+            handlingEventRepository.store(event2);
+
+            HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+            );
+            handlingEventRepository.store(event3);
+        } catch (CannotCreateHandlingEventException e) {
+            throw new RuntimeException(e);
+        }
+
+        HandlingHistory handlingHistory = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+        abc123.deriveDeliveryProgress(handlingHistory);
+
+        ((CargoRepositoryJdbi) cargoRepository).update(abc123);
+
+        // Cargo JKL567
+
+        RouteSpecification routeSpecification1 = new RouteSpecification(HANGZHOU, STOCKHOLM, toDate("2009-03-18"));
+        TrackingId trackingId1 = new TrackingId("JKL567");
+        Cargo jkl567 = new Cargo(trackingId1, routeSpecification1);
+
+        Itinerary itinerary1 = new Itinerary(Arrays.asList(
+                new Leg(HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU, NEWYORK, toDate("2009-03-03"), toDate("2009-03-05")),
+                new Leg(NEW_YORK_TO_DALLAS.voyageNumber(), NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
+                new Leg(DALLAS_TO_HELSINKI.voyageNumber(), DALLAS, STOCKHOLM, toDate("2009-03-09"), toDate("2009-03-11"))
+        ));
+        jkl567.assignToRoute(itinerary1);
+
+        cargoRepository.store(jkl567);
+
+        try {
+            HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-01"), trackingId1, null, HANGZHOU.unLocode(), HandlingEvent.Type.RECEIVE
+            );
+            handlingEventRepository.store(event1);
+
+            HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU.unLocode(), HandlingEvent.Type.LOAD
+            );
+            handlingEventRepository.store(event2);
+
+            HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+            );
+            handlingEventRepository.store(event3);
+
+            HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
+                    new Date(), toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
+            );
+            handlingEventRepository.store(event4);
+
+        } catch (CannotCreateHandlingEventException e) {
+            throw new RuntimeException(e);
+        }
+
+        HandlingHistory handlingHistory1 = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId1);
+        jkl567.deriveDeliveryProgress(handlingHistory1);
+
+        ((CargoRepositoryJdbi) cargoRepository).update(jkl567);
+    }
+
+    public static void loadSampleData(Jdbi jdbi) {
+        loadLocationData(jdbi);
+        loadCarrierMovementData(jdbi);
+        loadCargoData(jdbi);
+        loadItineraryData(jdbi);
+        loadHandlingEventData(jdbi);
+    }
+
+    public static void loadHandlingEventData(Jdbi jdbi) {
+        String handlingEventSql =
+                "insert into HandlingEvent (completionTime, registrationTime, type, location, voyage, cargo) " +
+                        "values (:completionTime, :registrationTime, :type, " +
+                        "(SELECT id FROM Location WHERE unLocode = :locationId), " +
+                        "(SELECT id FROM Voyage WHERE voyageNumber = :voyageId), " +
+                        "(SELECT id FROM Cargo WHERE trackingId = :cargoId))";
+        String handlingEventWithoutVoyageSql =
+                "insert into HandlingEvent (completionTime, registrationTime, type, location, cargo) " +
+                        "values (:completionTime, :registrationTime, :type, " +
+                        "(SELECT id FROM Location WHERE unLocode = :locationId), " +
+                        "(SELECT id FROM Cargo WHERE trackingId = :cargoId))";
+
+        String[] keys = {
+                "completionTime", "registrationTime", "type", "locationId", "voyageId", "cargoId"
+        };
+        Object[][] handlingEventArgs = {
+                //XYZ (SESTO-FIHEL-DEHAM-CNHKG-JPTOK-AUMEL)
+                {ts(0), ts((0)), "RECEIVE", "SESTO", null, "XYZ"},
+                {ts((4)), ts((5)), "LOAD", "SESTO", "0101", "XYZ"},
+                {ts((14)), ts((14)), "UNLOAD", "FIHEL", "0101", "XYZ"},
+                {ts((15)), ts((15)), "LOAD", "FIHEL", "0101", "XYZ"},
+                {ts((30)), ts((30)), "UNLOAD", "DEHAM", "0101", "XYZ"},
+                {ts((33)), ts((33)), "LOAD", "DEHAM", "0101", "XYZ"},
+                {ts((34)), ts((34)), "UNLOAD", "CNHKG", "0101", "XYZ"},
+                {ts((60)), ts((60)), "LOAD", "CNHKG", "0101", "XYZ"},
+                {ts((70)), ts((71)), "UNLOAD", "JPTOK", "0101", "XYZ"},
+                {ts((75)), ts((75)), "LOAD", "JPTOK", "0101", "XYZ"},
+                {ts((88)), ts((88)), "UNLOAD", "AUMEL", "0101", "XYZ"},
+                {ts((100)), ts((102)), "CLAIM", "AUMEL", null, "XYZ"},
+
+                //ZYX (AUMEL - USCHI - DEHAM -)
+                {ts((200)), ts((201)), "RECEIVE", "AUMEL", null, "ZYX"},
+                {ts((202)), ts((202)), "LOAD", "AUMEL", "0202", "ZYX"},
+                {ts((208)), ts((208)), "UNLOAD", "USCHI", "0202", "ZYX"},
+                {ts((212)), ts((212)), "LOAD", "USCHI", "0202", "ZYX"},
+                {ts((230)), ts((230)), "UNLOAD", "DEHAM", "0202", "ZYX"},
+                {ts((235)), ts((235)), "LOAD", "DEHAM", "0202", "ZYX"},
+
+                //ABC
+                {ts((20)), ts((21)), "CLAIM", "AUMEL", null, "ABC"},
+
+                //CBA
+                {ts((0)), ts((1)), "RECEIVE", "AUMEL", null, "CBA"},
+                {ts((10)), ts((11)), "LOAD", "AUMEL", "0202", "CBA"},
+                {ts((20)), ts((21)), "UNLOAD", "USCHI", "0202", "CBA"},
+
+                //FGH
+                {ts(100), ts(160), "RECEIVE", "CNHKG", null, "FGH"},
+                {ts(150), ts(110), "LOAD", "CNHKG", "0303", "FGH"},
+
+                // JKL
+                {ts(200), ts(220), "RECEIVE", "DEHAM", null, "JKL"},
+                {ts(300), ts(330), "LOAD", "DEHAM", "0303", "JKL"},
+                {ts(400), ts(440), "UNLOAD", "FIHEL", "0303", "JKL"}  // Unexpected event
+        };
+        jdbi.useHandle(h -> {
+            for (Object[] handlingEvent : handlingEventArgs) {
+                Map<String, Object> map = joinToMap(keys, handlingEvent);
+                if (map.get("voyageId") instanceof NullArgument) {
+                    map.remove("voyageId");
+                    h.createUpdate(handlingEventWithoutVoyageSql)
+                            .bindMap(map)
+                            .execute();
+                } else {
+                    h.createUpdate(handlingEventSql)
+                            .bindMap(map)
+                            .execute();
+                }
+            }
+        });
+    }
+
+    private static void loadItineraryData(Jdbi jdbi) {
+        String legSql =
+                "insert into Leg (cargo, voyage, loadLocation, unloadLocation, loadTime, unloadTime) " +
+                        "values (" +
+                        "(SELECT id FROM Cargo WHERE trackingId = :cargoId), " +
+                        "(SELECT id FROM Voyage WHERE voyageNumber = :voyageId), " +
+                        "(SELECT id FROM Location WHERE unLocode = :loadLocationId), " +
+                        "(SELECT id FROM Location WHERE unLocode = :unloadLocationId), " +
+                        ":loadTime, " +
+                        ":unloadTime)";
+
+        String[] keys = {
+                "cargoId", "voyageId", "loadLocationId", "unloadLocationId", "loadTime", "unloadTime"
+        };
+        Object[][] legArgs = {
+                // Cargo 5: Hongkong - Melbourne - Stockholm - Helsinki
+                {"FGH", "0101", "CNHKG", "AUMEL", ts(1), ts(2)},
+                {"FGH", "0101", "AUMEL", "SESTO", ts(3), ts(4)},
+                {"FGH", "0101", "SESTO", "FIHEL", ts(4), ts(5)},
+                // Cargo 6: Hamburg - Stockholm - Chicago - Tokyo
+                {"JKL", "0202", "DEHAM", "SESTO", ts(1), ts(2)},
+                {"JKL", "0202", "SESTO", "USCHI", ts(3), ts(4)},
+                {"JKL", "0202", "USCHI", "JPTOK", ts(5), ts(6)}
+        };
+        jdbi.useHandle(h -> {
+            for (Object[] leg : legArgs) {
+                h.createUpdate(legSql)
+                        .bindMap(joinToMap(keys, leg))
+                        .execute();
+            }
+        });
+    }
+
+    private static void loadCargoData(Jdbi jdbi) {
+        Object[][] routeSpecArgs = {
+                {"SESTO", "AUMEL", ts(10)},
+                {"SESTO", "FIHEL", ts(20)},
+                {"AUMEL", "SESTO", ts(30)},
+                {"FIHEL", "SESTO", ts(40)},
+                {"CNHKG", "FIHEL", ts(50)},
+                {"DEHAM", "JPTOK", ts(60)},
+        };
+        List<Integer> routeSpecIds = new ArrayList<>();
+        jdbi.useHandle(h -> {
+            for (Object[] routeSpec: routeSpecArgs) {
+                h.createUpdate("INSERT INTO RouteSpecification(origin, destination, arrivalDeadline) " +
+                                "VALUES(" +
+                                "(SELECT id FROM Location WHERE unLocode = :origin), " +
+                                "(SELECT id FROM Location WHERE unLocode = :destination), " +
+                                ":arrivalDeadline)")
+                        .bindMap(ImmutableMap.of(
+                                "origin", routeSpec[0],
+                                "destination", routeSpec[1],
+                                "arrivalDeadline", routeSpec[2]
+                        ))
+                        .execute();
+                routeSpecIds.add(h.createQuery("CALL IDENTITY()").mapTo(Integer.class).findOnly());
+            }
+        });
+
+        String cargoSql =
+                "insert into Cargo (trackingId, origin, routeSpecification, transportStatus, lastKnownLocation, misdirected, routingStatus, calculatedAt, isUnloadedAtDestination) " +
+                        "values (:trackingId, (SELECT id FROM Location WHERE unLocode = :originId), :routeSpecId, :transportStatus, (SELECT id FROM Location WHERE unLocode = :lastKnownLocationId), :isMisdirected, :routingStatus, :calculatedAt, :unloadedAtDest)";
+
+        String[] keys = {
+                "trackingId", "originId", "routeSpecId", "transportStatus", "lastKnownLocationId", "isMisdirected", "routingStatus", "calculatedAt", "unloadedAtDest"
+        };
+        Object[][] cargoArgs = {
+                {"XYZ", "SESTO", routeSpecIds.get(0), "IN_PORT", "SESTO", false, "ROUTED", ts(100), false},
+                {"ABC", "SESTO", routeSpecIds.get(1), "IN_PORT", "SESTO", false, "ROUTED", ts(100), false},
+                {"ZYX", "AUMEL", routeSpecIds.get(2), "IN_PORT", "SESTO", false, "NOT_ROUTED", ts(100), false},
+                {"CBA", "FIHEL", routeSpecIds.get(3), "IN_PORT", "SESTO", false, "MISROUTED", ts(100), false},
+                {"FGH", "SESTO", routeSpecIds.get(4), "IN_PORT", "SESTO", false, "ROUTED", ts(100), false},  // Cargo origin differs from spec origin
+                {"JKL", "DEHAM", routeSpecIds.get(5), "IN_PORT", "SESTO", true, "ROUTED", ts(100), false},
+        };
+        jdbi.useHandle(h -> {
+            for (Object[] cargo : cargoArgs) {
+                h.createUpdate(cargoSql)
+                        .bindMap(joinToMap(keys, cargo))
+                        .execute();
+            }
+        });
+    }
+
+    public static void loadCarrierMovementData(Jdbi jdbi) {
+        String voyageSql =
+                "insert into Voyage (voyageNumber) values (:voyageNo)";
+        String[] keys = {"voyageNo"};
+        Object[][] voyageArgs = {
+                {"0101"},
+                {"0202"},
+                {"0303"}
+        };
+        List<Integer> voyageIds = new ArrayList<>();
+        jdbi.useHandle(h -> {
+            for (Object[] voyage : voyageArgs) {
+                h.createUpdate(voyageSql)
+                        .bindMap(joinToMap(keys, voyage))
+                        .execute();
+                int voyageId = h.createQuery("CALL IDENTITY()").mapTo(Integer.class).findOnly();
+                voyageIds.add(voyageId);
+            }
+        });
+
+        String carrierMovementSql =
+                "insert into CarrierMovement (voyage, departureLocation, arrivalLocation, departureTime, arrivalTime) " +
+                        "values (:voyageId," +
+                        "(SELECT id FROM Voyage WHERE voyageNumber = :departureLocationId)," +
+                        "(SELECT id FROM Voyage WHERE voyageNumber = :arrivalLocationId)," +
+                        ":departureTime," +
+                        ":arrivalTime)";
+
+        String[] cmKeys = {
+                "voyageId","departureLocationId","arrivalLocationId","departureTime","arrivalTime"
+        };
+        Object[][] carrierMovementArgs = {
+                // SESTO - FIHEL - DEHAM - CNHKG - JPTOK - AUMEL (voyage 0101)
+                {voyageIds.get(0), "SESTO", "FIHEL", ts(1), ts(2)},
+                {voyageIds.get(0), "FIHEL", "DEHAM", ts(1), ts(2)},
+                {voyageIds.get(0), "DEHAM", "CNHKG", ts(1), ts(2)},
+                {voyageIds.get(0), "CNHKG", "JPTOK", ts(1), ts(2)},
+                {voyageIds.get(0), "JPTOK", "AUMEL", ts(1), ts(2)},
+
+                // AUMEL - USCHI - DEHAM - SESTO - FIHEL (voyage 0202)
+                {voyageIds.get(1), "AUMEL", "USCHI", ts(1), ts(2)},
+                {voyageIds.get(1), "USCHI", "DEHAM", ts(1), ts(2)},
+                {voyageIds.get(1), "DEHAM", "SESTO", ts(1), ts(2)},
+                {voyageIds.get(1), "SESTO", "FIHEL", ts(1), ts(2)},
+
+                // CNHKG - AUMEL - FIHEL - DEHAM - SESTO - USCHI - JPTKO (voyage 0303)
+                {voyageIds.get(2), "CNHKG", "AUMEL", ts(1), ts(2)},
+                {voyageIds.get(2), "AUMEL", "FIHEL", ts(1), ts(2)},
+                {voyageIds.get(2), "DEHAM", "SESTO", ts(1), ts(2)},
+                {voyageIds.get(2), "SESTO", "USCHI", ts(1), ts(2)},
+                {voyageIds.get(2), "USCHI", "JPTOK", ts(1), ts(2)}
+        };
+        jdbi.useHandle(h -> {
+            for (Object[] carrierMovement : carrierMovementArgs) {
+                h.createUpdate(carrierMovementSql)
+                        .bindMap(joinToMap(cmKeys, carrierMovement))
+                        .execute();
+            }
+        });
+    }
+
+    public static void loadLocationData(Jdbi jdbi) {
+        String locationSql =
+                "insert into Location (unlocode, name) " +
+                        "values (:unloCode, :name)";
+
+        String[] keys = {"unloCode", "name"};
+        Object[][] locationArgs = {
+                {"SESTO", "Stockholm"},
+                {"AUMEL", "Melbourne"},
+                {"CNHKG", "Hongkong"},
+                {"JPTOK", "Tokyo"},
+                {"FIHEL", "Helsinki"},
+                {"DEHAM", "Hamburg"},
+                {"USCHI", "Chicago"}
+        };
+        jdbi.useHandle(h -> {
+            for (Object[] location : locationArgs) {
+                h.createUpdate(locationSql).bindMap(joinToMap(keys, location)).execute();
+            }
+        });
     }
 
     private static Timestamp ts(int hours) {
@@ -336,5 +416,17 @@ public class SampleDataGenerator {
 
     public static Date offset(int hours) {
         return new Date(ts(hours).getTime());
+    }
+
+    private static Map<String, Object> joinToMap(String[] keys, Object[] values) {
+        Map<String, Object> map = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            Object value = values[i];
+            if (value == null) {
+                value = new NullArgument(Types.NULL);
+            }
+            map.put(keys[i], value);
+        }
+        return map;
     }
 }

@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class Schedule implements ValueObject<Schedule> {
 
-  private List<CarrierMovement> carrierMovements = Collections.EMPTY_LIST;
+  private List<CarrierMovement> carrierMovements = Collections.emptyList();
 
   public static final Schedule EMPTY = new Schedule();
 
-  Schedule(final List<CarrierMovement> carrierMovements) {
+  public Schedule(final List<CarrierMovement> carrierMovements) {
     Validate.notNull(carrierMovements);
     Validate.noNullElements(carrierMovements);
     Validate.notEmpty(carrierMovements);
@@ -53,7 +53,7 @@ public class Schedule implements ValueObject<Schedule> {
   }
 
   Schedule() {
-    // Needed by Hibernate
+    // Needed by something
   }
 
 }

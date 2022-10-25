@@ -9,7 +9,7 @@ import se.citerus.dddsample.domain.shared.ValueObject;
  */
 public final class TrackingId implements ValueObject<TrackingId> {
 
-  private String id;
+  private final String id;
 
   /**
    * Constructor.
@@ -18,6 +18,7 @@ public final class TrackingId implements ValueObject<TrackingId> {
    */
   public TrackingId(final String id) {
     Validate.notNull(id);
+    Validate.notEmpty(id);
     this.id = id;
   }
 
@@ -51,9 +52,5 @@ public final class TrackingId implements ValueObject<TrackingId> {
   @Override
   public String toString() {
     return id;
-  }
-
-  TrackingId() {
-    // Needed by Hibernate
   }
 }

@@ -1,31 +1,21 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CUSTOMS;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.valueOf;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
-
-import java.util.Date;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
+
+import java.util.Date;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
 public class HandlingEventTest {
   private Cargo cargo;
@@ -65,7 +55,7 @@ public class HandlingEventTest {
 
   @Test
   public void testNewWithLocation() {
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, HELSINKI);
+    HandlingEvent e1 = new HandlingEvent(cargo.trackingId(), new Date(), new Date(), HandlingEvent.Type.CLAIM, HELSINKI);
     assertThat(e1.location()).isEqualTo(HELSINKI);
   }
 
@@ -76,23 +66,24 @@ public class HandlingEventTest {
     
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
-  
+
+  @Test
   public void testCurrentLocationUnloadEvent() {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HAMBURG, CM004);
+    HandlingEvent ev = new HandlingEvent(cargo.trackingId(), new Date(), new Date(), UNLOAD, HAMBURG, CM004.voyageNumber());
     
     assertThat(ev.location()).isEqualTo(HAMBURG);
   }
 
   @Test
   public void testCurrentLocationReceivedEvent() {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, CHICAGO);
+    HandlingEvent ev = new HandlingEvent(cargo.trackingId(), new Date(), new Date(), RECEIVE, CHICAGO);
 
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
 
   @Test
   public void testCurrentLocationClaimedEvent() {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, CHICAGO);
+    HandlingEvent ev = new HandlingEvent(cargo.trackingId(), new Date(), new Date(), CLAIM, CHICAGO);
 
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
@@ -120,8 +111,8 @@ public class HandlingEventTest {
     Date timeOccured = new Date();
     Date timeRegistered = new Date();
 
-    HandlingEvent ev1 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, SampleVoyages.CM005);
-    HandlingEvent ev2 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, SampleVoyages.CM005);
+    HandlingEvent ev1 = new HandlingEvent(cargo.trackingId(), timeOccured, timeRegistered, LOAD, CHICAGO, SampleVoyages.CM005.voyageNumber());
+    HandlingEvent ev2 = new HandlingEvent(cargo.trackingId(), timeOccured, timeRegistered, LOAD, CHICAGO, SampleVoyages.CM005.voyageNumber());
 
     // Two handling events are not equal() even if all non-uuid fields are identical
     assertThat(ev1.equals(ev2)).isTrue();

@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.jms.core.JmsOperations;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
@@ -34,9 +35,9 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
 
   @Override
   public void cargoWasHandled(final HandlingEvent event) {
-    final Cargo cargo = event.cargo();
+    final TrackingId cargo = event.cargo();
     logger.info("Cargo was handled " + cargo);
-    jmsOperations.send(cargoHandledQueue, session -> session.createTextMessage(cargo.trackingId().idString()));
+    jmsOperations.send(cargoHandledQueue, session -> session.createTextMessage(cargo.idString()));
   }
 
   @Override

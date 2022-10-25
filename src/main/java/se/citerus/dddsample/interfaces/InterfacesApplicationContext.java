@@ -4,14 +4,11 @@ import com.aggregator.HandlingReportService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.jaxws.EndpointImpl;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.orm.hibernate5.support.OpenSessionInViewInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -43,9 +40,6 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
 
     @Value("${parseFailureDirectory}")
     public String parseFailureDirectory;
-
-    @Autowired
-    public SessionFactory sessionFactory;
 
     @Bean
     public MessageSource messageSource() {
@@ -101,9 +95,9 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        OpenSessionInViewInterceptor openSessionInViewInterceptor = new OpenSessionInViewInterceptor();
-        openSessionInViewInterceptor.setSessionFactory(sessionFactory);
-        registry.addWebRequestInterceptor(openSessionInViewInterceptor);
+//        OpenSessionInViewInterceptor openSessionInViewInterceptor = new OpenSessionInViewInterceptor();
+//        openSessionInViewInterceptor.setSessionFactory(sessionFactory);
+//        registry.addWebRequestInterceptor(openSessionInViewInterceptor);
     }
 
     @Bean

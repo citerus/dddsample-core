@@ -1,37 +1,36 @@
 package se.citerus.dddsample.interfaces.tracking;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.junit.Test;
 import org.springframework.context.support.StaticApplicationContext;
-
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+
 public class CargoTrackingViewAdapterTest {
 
   @Test
   public void testCreate() {
     Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HANGZHOU, HELSINKI, new Date()));
+    TrackingId trackingId = new TrackingId("XYZ");
+    Cargo cargo = new Cargo(trackingId, new RouteSpecification(HANGZHOU, HELSINKI, new Date()));
 
     List<HandlingEvent> events = new ArrayList<HandlingEvent>();
     events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZHOU));
+    events.add(new HandlingEvent(trackingId, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZHOU));
 
     events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZHOU, CM001));
     events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001));
+    events.add(new HandlingEvent(trackingId, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZHOU, CM001.voyageNumber()));
+    events.add(new HandlingEvent(trackingId, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001.voyageNumber()));
 
     cargo.deriveDeliveryProgress(new HandlingHistory(events));
 

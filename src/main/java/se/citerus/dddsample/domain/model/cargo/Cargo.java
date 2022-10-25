@@ -1,7 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import org.apache.commons.lang.Validate;
-
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
@@ -45,8 +44,8 @@ import se.citerus.dddsample.domain.shared.Entity;
  */
 public class Cargo implements Entity<Cargo> {
 
-  private TrackingId trackingId;
-  private Location origin;
+  private final TrackingId trackingId;
+  private final Location origin;
   private RouteSpecification routeSpecification;
   private Itinerary itinerary;
   private Delivery delivery;
@@ -183,12 +182,5 @@ public class Cargo implements Entity<Cargo> {
   public String toString() {
     return trackingId.toString();
   }
-
-  Cargo() {
-    // Needed by Hibernate
-  }
-
-  // Auto-generated surrogate key
-  private Long id;
 
 }

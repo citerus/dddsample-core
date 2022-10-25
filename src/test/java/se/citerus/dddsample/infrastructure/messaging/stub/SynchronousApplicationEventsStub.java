@@ -17,7 +17,7 @@ public class SynchronousApplicationEventsStub implements ApplicationEvents {
   @Override
   public void cargoWasHandled(HandlingEvent event) {
     System.out.println("EVENT: cargo was handled: " + event);
-    cargoInspectionService.inspectCargo(event.cargo().trackingId());
+    cargoInspectionService.inspectCargo(event.cargo());
   }
 
   @Override

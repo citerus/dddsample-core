@@ -4,8 +4,10 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
+import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.shared.DomainEvent;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.ValueObject;
@@ -31,11 +33,11 @@ import java.util.Date;
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   private Type type;
-  private Voyage voyage;
+  private VoyageNumber voyage;
   private Location location;
   private Date completionTime;
   private Date registrationTime;
-  private Cargo cargo;
+  private TrackingId cargo;
 
   /**
    * Handling event type. Either requires or prohibits a carrier movement
@@ -87,13 +89,40 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param type             type of event
    * @param location         where the event took place
    * @param voyage           the voyage
+   * @deprecated Use HandlingEvent(TrackingId cargo, Date completionTime, Date registrationTime, Type type, Location location, VoyageNumber voyage) instead
    */
+  @Deprecated
   public HandlingEvent(final Cargo cargo,
                        final Date completionTime,
                        final Date registrationTime,
                        final Type type,
                        final Location location,
                        final Voyage voyage) {
+    Validate.notNull(cargo, "Cargo is required");
+    Validate.notNull(completionTime, "Completion time is required");
+    Validate.notNull(registrationTime, "Registration time is required");
+    Validate.notNull(type, "Handling event type is required");
+    Validate.notNull(location, "Location is required");
+    Validate.notNull(voyage, "Voyage is required");
+
+    if (type.prohibitsVoyage()) {
+      throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
+    }
+
+    this.voyage = voyage.voyageNumber();
+    this.completionTime = (Date) completionTime.clone();
+    this.registrationTime = (Date) registrationTime.clone();
+    this.type = type;
+    this.location = location;
+    this.cargo = cargo.trackingId();
+  }
+
+  public HandlingEvent(final TrackingId cargo,
+                       final Date completionTime,
+                       final Date registrationTime,
+                       final Type type,
+                       final Location location,
+                       final VoyageNumber voyage) {
     Validate.notNull(cargo, "Cargo is required");
     Validate.notNull(completionTime, "Completion time is required");
     Validate.notNull(registrationTime, "Registration time is required");
@@ -114,13 +143,13 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   /**
-   * @param cargo            cargo
+   * @param cargo            cargo tracking id
    * @param completionTime   completion time, the reported time that the event actually happened (e.g. the receive took place).
    * @param registrationTime registration time, the time the message is received
    * @param type             type of event
    * @param location         where the event took place
    */
-  public HandlingEvent(final Cargo cargo,
+  public HandlingEvent(final TrackingId cargo,
                        final Date completionTime,
                        final Date registrationTime,
                        final Type type,
@@ -147,8 +176,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return this.type;
   }
 
-  public Voyage voyage() {
-    return DomainObjectUtils.nullSafe(this.voyage, Voyage.NONE);
+  public VoyageNumber voyage() {
+    return DomainObjectUtils.nullSafe(this.voyage, Voyage.NONE.voyageNumber());
   }
 
   public Date completionTime() {
@@ -163,7 +192,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return this.location;
   }
 
-  public Cargo cargo() {
+  public TrackingId cargo() {
     return this.cargo;
   }
 
@@ -202,14 +231,14 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder("\n--- Handling event ---\n").
-      append("Cargo: ").append(cargo.trackingId()).append("\n").
+      append("Cargo: ").append(cargo).append("\n").
       append("Type: ").append(type).append("\n").
       append("Location: ").append(location.name()).append("\n").
       append("Completed on: ").append(completionTime).append("\n").
       append("Registered on: ").append(registrationTime).append("\n");
     
     if (voyage != null) {
-      builder.append("Voyage: ").append(voyage.voyageNumber()).append("\n");
+      builder.append("Voyage: ").append(voyage).append("\n");
     }
 
     return builder.toString();

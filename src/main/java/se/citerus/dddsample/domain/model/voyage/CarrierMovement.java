@@ -6,6 +6,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.Arrays;
 import java.util.Date;
 
 
@@ -14,10 +15,10 @@ import java.util.Date;
  */
 public final class CarrierMovement implements ValueObject<CarrierMovement> {
 
-  private Location departureLocation;
-  private Location arrivalLocation;
-  private Date departureTime;
-  private Date arrivalTime;
+  private final Location departureLocation;
+  private final Location arrivalLocation;
+  private final Date departureTime;
+  private final Date arrivalTime;
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
@@ -33,12 +34,11 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
    * @param departureTime time of departure
    * @param arrivalTime time of arrival
    */
-  // TODO make package local
   public CarrierMovement(Location departureLocation,
                          Location arrivalLocation,
                          Date departureTime,
                          Date arrivalTime) {
-    Validate.noNullElements(new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
+    Validate.noNullElements(Arrays.asList(departureLocation, arrivalLocation, departureTime, arrivalTime));
     this.departureTime = departureTime;
     this.arrivalTime = arrivalTime;
     this.departureLocation = departureLocation;
@@ -102,12 +102,4 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
       append(this.arrivalTime, other.arrivalTime).
       isEquals();
   }
-
-  CarrierMovement() {
-    // Needed by Hibernate
-  }
-
-  // Auto-generated surrogate key
-  private Long id;
-
 }

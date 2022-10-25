@@ -4,9 +4,10 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -14,14 +15,14 @@ import java.util.Date;
  */
 public class Leg implements ValueObject<Leg> {
 
-  private Voyage voyage;
-  private Location loadLocation;
-  private Location unloadLocation;
-  private Date loadTime;
-  private Date unloadTime;
+  private final VoyageNumber voyage;
+  private final Location loadLocation;
+  private final Location unloadLocation;
+  private final Date loadTime;
+  private final Date unloadTime;
 
-  public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
-    Validate.noNullElements(new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
+  public Leg(VoyageNumber voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
+    Validate.noNullElements(Arrays.asList(voyage, loadLocation, unloadLocation, loadTime, unloadTime));
     
     this.voyage = voyage;
     this.loadLocation = loadLocation;
@@ -30,7 +31,7 @@ public class Leg implements ValueObject<Leg> {
     this.unloadTime = unloadTime;
   }
 
-  public Voyage voyage() {
+  public VoyageNumber voyage() {
     return voyage;
   }
 
@@ -81,12 +82,4 @@ public class Leg implements ValueObject<Leg> {
       append(unloadTime).
       toHashCode();
   }
-
-  Leg() {
-    // Needed by Hibernate
-  }
-
-  // Auto-generated surrogate key
-  private Long id;
-
 }

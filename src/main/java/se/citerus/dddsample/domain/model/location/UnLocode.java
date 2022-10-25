@@ -63,9 +63,4 @@ public final class UnLocode implements ValueObject<UnLocode> {
   public String toString() {
     return idString();
   }
-
-  UnLocode() {
-    // Needed by Hibernate
-  }
-
 }

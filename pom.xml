@@ -73,7 +73,6 @@
     <properties>
         <java.version>1.8</java.version>
         <!--<assertj.version>3.8.0</assertj.version>-->
-        <!--<hibernate.version>4.3.5.Final</hibernate.version>-->
     </properties>
     <build>
         <plugins>
@@ -106,10 +105,10 @@
             <version>3.2.4</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>9.4.0</version>
         </dependency>
-
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
@@ -132,6 +131,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+            <version>2.5.2</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -169,6 +169,16 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>htmlunit-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-core</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0-jre</version>
         </dependency>
     </dependencies>
 

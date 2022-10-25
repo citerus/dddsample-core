@@ -1,13 +1,12 @@
 package se.citerus.dddsample.domain.model.voyage;
 
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-
 import se.citerus.dddsample.domain.model.location.Location;
-
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 /**
  * Sample carrier movements, for test purposes.
@@ -21,6 +20,7 @@ public class SampleVoyages {
     public static final Voyage CM005 = createVoyage("CM005", CHICAGO, HAMBURG);
     public static final Voyage CM006 = createVoyage("CM006", HAMBURG, HANGZHOU);
 
+    @Deprecated
     private static Voyage createVoyage(String id, Location from, Location to) {
         return new Voyage(new VoyageNumber(id), new Schedule(Collections.singletonList(
                 new CarrierMovement(from, to, new Date(), new Date())
@@ -53,7 +53,7 @@ public class SampleVoyages {
     /**
      * Voyage number 0100S (by ship)
      * <p>
-     * Hongkong - Hangzou - Tokyo - Melbourne - New York
+     * Hongkong - Hangzhou - Tokyo - Melbourne - New York
      */
     public static final Voyage HONGKONG_TO_NEW_YORK =
             new Voyage.Builder(new VoyageNumber("0100S"), HONGKONG).

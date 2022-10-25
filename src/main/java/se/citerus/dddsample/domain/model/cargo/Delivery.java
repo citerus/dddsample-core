@@ -3,17 +3,19 @@ package se.citerus.dddsample.domain.model.cargo;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.shared.DomainObjectUtils;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Date;
 import java.util.Iterator;
+
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 
 /**
  * The actual transportation of the cargo, as opposed to
@@ -24,7 +26,7 @@ public class Delivery implements ValueObject<Delivery> {
 
   private TransportStatus transportStatus;
   private Location lastKnownLocation;
-  private Voyage currentVoyage;
+  private VoyageNumber currentVoyage;
   private boolean misdirected;
   private Date eta;
   private HandlingActivity nextExpectedActivity;
@@ -107,8 +109,8 @@ public class Delivery implements ValueObject<Delivery> {
   /**
    * @return Current voyage.
    */
-  public Voyage currentVoyage() {
-    return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE);
+  public VoyageNumber currentVoyage() {
+    return DomainObjectUtils.nullSafe(currentVoyage, Voyage.NONE.voyageNumber());
   }
 
   /**
@@ -198,7 +200,7 @@ public class Delivery implements ValueObject<Delivery> {
     }
   }
 
-  private Voyage calculateCurrentVoyage() {
+  private VoyageNumber calculateCurrentVoyage() {
     if (transportStatus().equals(ONBOARD_CARRIER) && lastEvent != null) {
       return lastEvent.voyage();
     } else {

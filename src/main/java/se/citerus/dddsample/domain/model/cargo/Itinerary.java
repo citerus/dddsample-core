@@ -60,7 +60,7 @@ public class Itinerary implements ValueObject<Itinerary> {
       //Check that the there is one leg with same load location and voyage
       for (Leg leg : legs) {
         if (leg.loadLocation().sameIdentityAs(event.location()) &&
-            leg.voyage().sameIdentityAs(event.voyage()))
+            leg.voyage().equals(event.voyage()))
           return true;
       }
       return false;
@@ -157,9 +157,6 @@ public class Itinerary implements ValueObject<Itinerary> {
   }
 
   Itinerary() {
-    // Needed by Hibernate
+    // Needed by something
   }
-
-  // Auto-generated surrogate key
-  private Long id;
 }

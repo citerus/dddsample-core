@@ -6,7 +6,6 @@ import se.citerus.dddsample.domain.model.cargo.Delivery;
 import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,7 +22,7 @@ public final class CargoTrackingViewAdapter {
   private final String FORMAT = "yyyy-MM-dd hh:mm";
   private final TimeZone timeZone;
 
-    /**
+  /**
    * Constructor.
    *
    * @param cargo
@@ -83,7 +82,7 @@ public final class CargoTrackingViewAdapter {
         args = new Object[] {getDisplayText(delivery.lastKnownLocation())};
         break;
       case ONBOARD_CARRIER:
-        args = new Object[] {delivery.currentVoyage().voyageNumber().idString()};
+        args = new Object[] {delivery.currentVoyage().idString()};
         break;
       case CLAIMED:
       case NOT_RECEIVED:
@@ -119,30 +118,25 @@ public final class CargoTrackingViewAdapter {
 
   public String getEta() {
     Date eta = cargo.delivery().estimatedTimeOfArrival();
-
-    if (eta == null) return "?";
-    else return new SimpleDateFormat(FORMAT).format(eta);
+    return eta == null ? "?" : new SimpleDateFormat(FORMAT).format(eta);
   }
 
   public String getNextExpectedActivity() {
-      HandlingActivity activity = cargo.delivery().nextExpectedActivity();
-      if (activity == null) {
-        return "";
-      }
+    HandlingActivity activity = cargo.delivery().nextExpectedActivity();
+    if (activity == null) {
+      return "";
+    }
 
-    String text = "Next expected activity is to ";
+    String output;
     HandlingEvent.Type type = activity.type();
     if (type.sameValueAs(HandlingEvent.Type.LOAD)) {
-        return
-          text + type.name().toLowerCase() + " cargo onto voyage " + activity.voyage().voyageNumber() +
-          " in " + activity.location().name();
-      } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
-        return
-          text + type.name().toLowerCase() + " cargo off of " + activity.voyage().voyageNumber() +
-          " in " + activity.location().name();
-      } else {
-        return text + type.name().toLowerCase() + " cargo in " + activity.location().name();
-      }
+      output = String.format("Next expected activity is to %s cargo onto voyage %s in %s", type.name().toLowerCase(), activity.voyage(), activity.location().name());
+    } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
+      output = String.format("Next expected activity is to %s cargo off of %s in %s", type.name().toLowerCase(), activity.voyage(), activity.location().name());
+    } else {
+      output = String.format("Next expected activity is to %s cargo in %s", type.name().toLowerCase(), activity.location().name());
+    }
+    return output;
   }
 
   /**
@@ -195,8 +189,7 @@ public final class CargoTrackingViewAdapter {
      * @return Voyage number, or empty string if not applicable.
      */
     public String getVoyageNumber() {
-      final Voyage voyage = handlingEvent.voyage();
-      return voyage.voyageNumber().idString();
+      return handlingEvent.voyage().idString();
     }
 
     /**
@@ -213,7 +206,7 @@ public final class CargoTrackingViewAdapter {
         case LOAD:
         case UNLOAD:
           args = new Object[] {
-            handlingEvent.voyage().voyageNumber().idString(),
+            handlingEvent.voyage().idString(),
             handlingEvent.location().name(),
             handlingEvent.completionTime()
           };
@@ -233,9 +226,7 @@ public final class CargoTrackingViewAdapter {
 
       String key = "deliveryHistory.eventDescription." + handlingEvent.type().name();
 
-      return messageSource.getMessage(key,args,locale);
+      return messageSource.getMessage(key, args, locale);
     }
-
   }
-  
 }
