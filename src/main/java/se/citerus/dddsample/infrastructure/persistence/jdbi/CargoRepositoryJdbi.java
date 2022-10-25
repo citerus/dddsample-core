@@ -142,11 +142,31 @@ public class CargoRepositoryJdbi implements CargoRepository {
                 ))
                 .execute();
 
-        // TODO update cargo (hibernate migration)
+        Update statement = h.createUpdate("UPDATE Cargo SET " +
+                        "misdirected=:misdirected, " +
+                        (cargo.delivery().estimatedTimeOfArrival() != null ? "eta=:eta, " : "") +
+                        "calculatedAt=:calculatedAt, " +
+                        "isUnloadedAtDestination=:isUnloadedAtDestination, " +
+                        "routingStatus=:routingStatus, " +
+                        "transportStatus=:transportStatus, " +
+                        "currentVoyage=(SELECT id FROM Voyage WHERE voyageNumber = :currentVoyage), " +
+                        "lastKnownLocation=(SELECT id FROM Location WHERE unloCode = :lastKnownLocation) " +
+                        "WHERE id = :cargoId")
+                .bindMap(ImmutableMap.of(
+                        "cargoId", cargoId,
+                        "misdirected", cargo.delivery().isMisdirected(),
+                        "calculatedAt", cargo.delivery().calculatedAt(),
+                        "isUnloadedAtDestination", cargo.delivery().isUnloadedAtDestination(),
+                        "routingStatus", cargo.delivery().routingStatus().name(),
+                        "transportStatus", cargo.delivery().transportStatus().name(),
+                        "currentVoyage", cargo.delivery().currentVoyage().idString(),
+                        "lastKnownLocation", cargo.delivery().lastKnownLocation().unLocode().idString()));
+        if (cargo.delivery().estimatedTimeOfArrival() != null) {
+            statement.bind("eta", cargo.delivery().estimatedTimeOfArrival());
+        }
+        statement.execute();
 
         insertItinerary(h, cargoId, cargo.itinerary());
-
-        // TODO update lastEvent? (hibernate migration)
     }
 
     private static void create(Cargo cargo, Handle h) {
@@ -206,8 +226,6 @@ public class CargoRepositoryJdbi implements CargoRepository {
         int cargoId = h.createQuery("CALL IDENTITY()").mapTo(Integer.class).findOnly();
 
         insertItinerary(h, cargoId, cargo.itinerary());
-
-        // TODO check for lastEvent and find and insert id if found? (hibernate migration)
     }
 
     @Override

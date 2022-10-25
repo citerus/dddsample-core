@@ -48,7 +48,7 @@ CREATE TABLE Cargo(
     calculatedAt TIMESTAMP,
     isUnloadedAtDestination BIT,
     routingStatus VARCHAR(12),
-    transportStatus VARCHAR(12),
+    transportStatus VARCHAR(16),
     currentVoyage INT,
     lastKnownLocation INT,
     lastEvent INT,
