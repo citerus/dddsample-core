@@ -61,7 +61,7 @@ public class SampleDataGenerator {
 
     public void generate() {
         HandlingEventFactory handlingEventFactory = new HandlingEventFactory(
-                voyageRepository,
+                cargoRepository, voyageRepository,
                 locationRepository);
         loadSampleData(handlingEventFactory, handlingEventRepository);
     }
@@ -350,8 +350,8 @@ public class SampleDataGenerator {
         String carrierMovementSql =
                 "insert into CarrierMovement (voyage, departureLocation, arrivalLocation, departureTime, arrivalTime) " +
                         "values (:voyageId," +
-                        "(SELECT id FROM Voyage WHERE voyageNumber = :departureLocationId)," +
-                        "(SELECT id FROM Voyage WHERE voyageNumber = :arrivalLocationId)," +
+                        "(SELECT id FROM Location WHERE unLocode = :departureLocationId)," +
+                        "(SELECT id FROM Location WHERE unLocode = :arrivalLocationId)," +
                         ":departureTime," +
                         ":arrivalTime)";
 

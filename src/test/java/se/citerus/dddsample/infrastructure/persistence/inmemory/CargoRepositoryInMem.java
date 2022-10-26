@@ -8,9 +8,9 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-
 import java.util.*;
+
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test
@@ -45,6 +45,11 @@ public class CargoRepositoryInMem implements CargoRepository {
         return new TrackingId(
                 random.substring(0, random.indexOf("-"))
         );
+    }
+
+    @Override
+    public boolean exists(TrackingId trackingId) {
+        return cargoDb.containsKey(trackingId.idString());
     }
 
     public List<Cargo> findAll() {

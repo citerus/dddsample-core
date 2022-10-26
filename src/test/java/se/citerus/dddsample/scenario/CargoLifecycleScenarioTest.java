@@ -26,6 +26,7 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationReposito
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -161,7 +162,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(v100);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(v100.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(HONGKONG);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(ONBOARD_CARRIER);
     assertThat(cargo.delivery().isMisdirected()).isFalse();
@@ -192,7 +193,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - cargo is misdirected!
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(TOKYO);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(IN_PORT);
     assertThat(cargo.delivery().isMisdirected()).isTrue();
@@ -233,7 +234,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(v300);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(v300.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(TOKYO);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(ONBOARD_CARRIER);
     assertThat(cargo.delivery().isMisdirected()).isFalse();
@@ -245,7 +246,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(HAMBURG);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(IN_PORT);
     assertThat(cargo.delivery().isMisdirected()).isFalse();
@@ -258,7 +259,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(v400);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(v400.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(HAMBURG);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(ONBOARD_CARRIER);
     assertThat(cargo.delivery().isMisdirected()).isFalse();
@@ -271,7 +272,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(STOCKHOLM);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(IN_PORT);
     assertThat(cargo.delivery().isMisdirected()).isFalse();
@@ -283,7 +284,7 @@ public class CargoLifecycleScenarioTest {
     );
 
     // Check current state - should be ok
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE);
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(NONE.voyageNumber());
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(STOCKHOLM);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(CLAIMED);
     assertThat(cargo.delivery().isMisdirected()).isFalse();
@@ -305,20 +306,20 @@ public class CargoLifecycleScenarioTest {
       public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         if (routeSpecification.origin().equals(HONGKONG)) {
           // Hongkong - NYC - Chicago - Stockholm, initial routing
-          return Arrays.asList(
-            new Itinerary(Arrays.asList(
-              new Leg(v100.voyageNumber(), HONGKONG, NEWYORK, toDate("2009-03-03"), toDate("2009-03-09")),
-              new Leg(v200.voyageNumber(), NEWYORK, CHICAGO, toDate("2009-03-10"), toDate("2009-03-14")),
-              new Leg(v200.voyageNumber(), CHICAGO, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
-            ))
+          return Collections.singletonList(
+                  new Itinerary(Arrays.asList(
+                          new Leg(v100.voyageNumber(), HONGKONG, NEWYORK, toDate("2009-03-03"), toDate("2009-03-09")),
+                          new Leg(v200.voyageNumber(), NEWYORK, CHICAGO, toDate("2009-03-10"), toDate("2009-03-14")),
+                          new Leg(v200.voyageNumber(), CHICAGO, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
+                  ))
           );
         } else {
           // Tokyo - Hamburg - Stockholm, rerouting misdirected cargo from Tokyo 
-          return Arrays.asList(
-            new Itinerary(Arrays.asList(
-              new Leg(v300.voyageNumber(), TOKYO, HAMBURG, toDate("2009-03-08"), toDate("2009-03-12")),
-              new Leg(v400.voyageNumber(), HAMBURG, STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15"))
-            ))
+          return Collections.singletonList(
+                  new Itinerary(Arrays.asList(
+                          new Leg(v300.voyageNumber(), TOKYO, HAMBURG, toDate("2009-03-08"), toDate("2009-03-12")),
+                          new Leg(v400.voyageNumber(), HAMBURG, STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15"))
+                  ))
           );
         }
       }
@@ -334,7 +335,7 @@ public class CargoLifecycleScenarioTest {
     voyageRepository = new VoyageRepositoryInMem();
 
     // Actual factories and application services, wired with stubbed or in-memory infrastructure
-    handlingEventFactory = new HandlingEventFactory(voyageRepository, locationRepository);
+    handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
 
     cargoInspectionService = new CargoInspectionServiceImpl(applicationEvents, cargoRepository, handlingEventRepository);
     handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);

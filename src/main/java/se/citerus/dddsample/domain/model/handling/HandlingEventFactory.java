@@ -1,5 +1,6 @@
 package se.citerus.dddsample.domain.model.handling;
 
+import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -15,11 +16,13 @@ import java.util.Date;
  */
 public class HandlingEventFactory {
 
+  private final CargoRepository cargoRepository;
   private final VoyageRepository voyageRepository;
   private final LocationRepository locationRepository;
 
-  public HandlingEventFactory(final VoyageRepository voyageRepository,
+  public HandlingEventFactory(final CargoRepository cargoRepository, final VoyageRepository voyageRepository,
                               final LocationRepository locationRepository) {
+    this.cargoRepository = cargoRepository;
     this.voyageRepository = voyageRepository;
     this.locationRepository = locationRepository;
   }
@@ -40,6 +43,7 @@ public class HandlingEventFactory {
     throws CannotCreateHandlingEventException {
     final Voyage voyage = findVoyage(voyageNumber);
     final Location location = findLocation(unlocode);
+    validateTrackingId(trackingId);
 
     try {
       if (voyage == null) {
@@ -49,6 +53,12 @@ public class HandlingEventFactory {
       }
     } catch (Exception e) {
       throw new CannotCreateHandlingEventException(e);
+    }
+  }
+
+  private void validateTrackingId(TrackingId trackingId) throws UnknownCargoException {
+    if (!cargoRepository.exists(trackingId)) {
+      throw new UnknownCargoException(trackingId);
     }
   }
 

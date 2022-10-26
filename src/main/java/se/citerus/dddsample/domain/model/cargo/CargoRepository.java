@@ -31,4 +31,5 @@ public interface CargoRepository {
    */
   TrackingId nextTrackingId();
 
+  boolean exists(TrackingId trackingId);
 }

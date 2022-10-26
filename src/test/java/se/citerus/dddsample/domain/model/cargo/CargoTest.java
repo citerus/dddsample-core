@@ -48,7 +48,7 @@ public class CargoTest {
     assertThat(cargo.delivery().routingStatus()).isEqualTo(NOT_ROUTED);
     assertThat(cargo.delivery().transportStatus()).isEqualTo(NOT_RECEIVED);
     assertThat(cargo.delivery().lastKnownLocation()).isEqualTo(Location.UNKNOWN);
-    assertThat(cargo.delivery().currentVoyage()).isEqualTo(Voyage.NONE);    
+    assertThat(cargo.delivery().currentVoyage()).isEqualTo(Voyage.NONE.voyageNumber());
   }
 
   @Test

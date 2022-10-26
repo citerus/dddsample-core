@@ -39,7 +39,7 @@ public class HandlingEventServiceTest {
     locationRepository = mock(LocationRepository.class);
     applicationEvents = mock(ApplicationEvents.class);
 
-    HandlingEventFactory handlingEventFactory = new HandlingEventFactory(voyageRepository, locationRepository);
+    HandlingEventFactory handlingEventFactory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     service = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
   }
 
@@ -51,11 +51,10 @@ public class HandlingEventServiceTest {
 
   @Test
   public void testRegisterEvent() throws Exception {
-    when(cargoRepository.find(cargo.trackingId())).thenReturn(cargo);
+    when(cargoRepository.exists(cargo.trackingId())).thenReturn(true);
     when(voyageRepository.find(CM001.voyageNumber())).thenReturn(CM001);
     when(locationRepository.find(STOCKHOLM.unLocode())).thenReturn(STOCKHOLM);
 
     service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
   }
-
 }

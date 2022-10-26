@@ -17,7 +17,7 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepository
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
@@ -39,7 +39,7 @@ public class HandlingEventFactoryTest {
     cargoRepository = mock(CargoRepository.class);
     voyageRepository = new VoyageRepositoryInMem();
     locationRepository = new LocationRepositoryInMem();
-    factory = new HandlingEventFactory(voyageRepository, locationRepository);
+    factory = new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
 
     trackingId = new TrackingId("ABC");
     RouteSpecification routeSpecification = new RouteSpecification(TOKYO, HELSINKI, new Date());
@@ -48,7 +48,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventWithCarrierMovement() throws Exception {
-    when(cargoRepository.find(trackingId)).thenReturn(cargo);
+    when(cargoRepository.exists(trackingId)).thenReturn(true);
 
     VoyageNumber voyageNumber = CM001.voyageNumber();
     UnLocode unLocode = STOCKHOLM.unLocode();
@@ -66,7 +66,7 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventWithoutCarrierMovement() throws Exception {
-    when(cargoRepository.find(trackingId)).thenReturn(cargo);
+    when(cargoRepository.exists(trackingId)).thenReturn(true);
 
     UnLocode unLocode = STOCKHOLM.unLocode();
     HandlingEvent handlingEvent = factory.createHandlingEvent(
@@ -83,40 +83,31 @@ public class HandlingEventFactoryTest {
 
   @Test
   public void testCreateHandlingEventUnknownLocation() throws Exception {
-    when(cargoRepository.find(trackingId)).thenReturn(cargo);
+    when(cargoRepository.exists(trackingId)).thenReturn(true);
 
     UnLocode invalid = new UnLocode("NOEXT");
-    try {
-      factory.createHandlingEvent(
-        new Date(), new Date(100), trackingId, CM001.voyageNumber(), invalid, Type.LOAD
-      );
-      fail("Expected UnknownLocationException");
-    } catch (UnknownLocationException expected) {}
+    assertThatThrownBy(() -> factory.createHandlingEvent(
+            new Date(), new Date(100), trackingId, CM001.voyageNumber(), invalid, Type.LOAD
+    )).isInstanceOf(UnknownLocationException.class).hasMessage("No location with UN locode NOEXT exists in the system");
   }
 
   @Test
   public void testCreateHandlingEventUnknownCarrierMovement() throws Exception {
-    when(cargoRepository.find(trackingId)).thenReturn(cargo);
+    when(cargoRepository.exists(trackingId)).thenReturn(true);
 
-    try {
-      VoyageNumber invalid = new VoyageNumber("XXX");
-      factory.createHandlingEvent(
-        new Date(), new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), Type.LOAD
-      );
-      fail("Expected UnknownVoyageException");
-    } catch (UnknownVoyageException expected) {}
+    VoyageNumber invalid = new VoyageNumber("XXX");
+    assertThatThrownBy(() -> factory.createHandlingEvent(
+            new Date(), new Date(100), trackingId, invalid, STOCKHOLM.unLocode(), Type.LOAD
+    )).isInstanceOf(UnknownVoyageException.class).hasMessage("No voyage with number XXX exists in the system");
   }
 
   @Test
   public void testCreateHandlingEventUnknownTrackingId() throws Exception {
-    when(cargoRepository.find(trackingId)).thenReturn(null);
+    when(cargoRepository.exists(trackingId)).thenReturn(false);
 
-    try {
-      factory.createHandlingEvent(
-        new Date(), new Date(100), trackingId, CM001.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD
-      );
-      fail("Expected UnknownCargoException");
-    } catch (UnknownCargoException expected) {}
+    assertThatThrownBy(() -> factory.createHandlingEvent(
+            new Date(), new Date(100), trackingId, CM001.voyageNumber(), STOCKHOLM.unLocode(), Type.LOAD
+    )).isInstanceOf(UnknownCargoException.class).hasMessage("No cargo with tracking id ABC exists in the system");
   }
 
 }

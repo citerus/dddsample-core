@@ -72,7 +72,7 @@ public class DDDSampleApplicationContext {
 
     @Bean
     public HandlingEventFactory handlingEventFactory() {
-        return new HandlingEventFactory(voyageRepository, locationRepository);
+        return new HandlingEventFactory(cargoRepository, voyageRepository, locationRepository);
     }
 
     @Bean

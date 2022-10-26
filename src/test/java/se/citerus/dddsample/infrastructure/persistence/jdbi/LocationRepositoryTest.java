@@ -2,6 +2,7 @@ package se.citerus.dddsample.infrastructure.persistence.jdbi;
 
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,20 +19,28 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.TestInfrastructurePersistenceConfig.truncateAllTables;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes={TestInfrastructurePersistenceConfig.class, InfrastructurePersistenceConfig.class})
 @TestPropertySource(locations = {"/application.properties"})
 public class LocationRepositoryTest {
 
+    private static Jdbi jdbi;
+
     @Autowired
     private LocationRepository locationRepository;
 
     @BeforeClass
     public static void setupOnce() {
-        Jdbi jdbi = Jdbi.create("jdbc:hsqldb:mem:dddsample_test", "sa", "");
+        jdbi = Jdbi.create("jdbc:hsqldb:mem:dddsample_test", "sa", "");
         Flyway flyway = Flyway.configure().dataSource("jdbc:hsqldb:mem:dddsample_test", "sa", "").load();
         flyway.migrate();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        truncateAllTables(jdbi);
         SampleDataGenerator.loadLocationData(jdbi);
     }
 

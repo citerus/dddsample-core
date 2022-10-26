@@ -235,6 +235,14 @@ public class CargoRepositoryJdbi implements CargoRepository {
                 .findOnly());
     }
 
+    @Override
+    public boolean exists(TrackingId trackingId) {
+        return jdbi.withHandle(h -> h.createQuery("SELECT COUNT(id) FROM Cargo WHERE trackingId = :trackingId")
+                .bind("trackingId", trackingId.idString())
+                .mapTo(Integer.class)
+                .findOnly() == 1);
+    }
+
     private List<Leg> findLegsForCargo(TrackingId trackingId, Jdbi jdbi) {
         return jdbi.withHandle(h -> h.createQuery("SELECT v.voyageNumber, ll.unLocode as ll_unloCode, ll.name as ll_name, ul.unLocode as ul_unloCode, ul.name as ul_name, leg.loadTime, leg.unloadTime " +
                         "FROM Leg leg " +

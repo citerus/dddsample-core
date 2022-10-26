@@ -20,23 +20,23 @@ public class VoyageRepositoryJdbi implements VoyageRepository {
 
     public VoyageRepositoryJdbi(Jdbi jdbi) {
         this.jdbi = jdbi;
+        jdbi.registerRowMapper(new RowMapper<Voyage>() {
+            @Override
+            public Voyage map(ResultSet rs, StatementContext ctx) throws SQLException {
+                List<CarrierMovement> carrierMovements = new ArrayList<>();
+                carrierMovements.add(new CarrierMovement(
+                        new Location(new UnLocode(rs.getString("dl_unloCode")), rs.getString("dl_name")),
+                        new Location(new UnLocode(rs.getString("al_unloCode")), rs.getString("al_name")),
+                        new Date(rs.getTimestamp("departureTime").getTime()),
+                        new Date(rs.getTimestamp("arrivalTime").getTime())));
+                return new Voyage(new VoyageNumber(rs.getString("voyageNumber")), new Schedule(carrierMovements));
+            }
+        });
     }
 
     @Override
     public Voyage find(VoyageNumber voyageNumber) {
         return jdbi.withHandle(h -> {
-            h.registerRowMapper(new RowMapper<Voyage>() {
-                @Override
-                public Voyage map(ResultSet rs, StatementContext ctx) throws SQLException {
-                    List<CarrierMovement> carrierMovements = new ArrayList<>();
-                    carrierMovements.add(new CarrierMovement(
-                            new Location(new UnLocode(rs.getString("dl_unloCode")), rs.getString("dl_name")),
-                            new Location(new UnLocode(rs.getString("al_unloCode")), rs.getString("al_name")),
-                            new Date(rs.getTimestamp("departureTime").getTime()),
-                            new Date(rs.getTimestamp("arrivalTime").getTime())));
-                    return new Voyage(new VoyageNumber(rs.getString("voyageNumber")), new Schedule(carrierMovements));
-                }
-            });
             List<Voyage> voyages = h.createQuery("SELECT v.voyageNumber, cm.departureTime, cm.arrivalTime, al.unLocode AS al_unloCode, al.name AS al_name, dl.unLocode AS dl_unloCode, dl.name AS dl_name " +
                             "FROM Voyage v " +
                             "JOIN CarrierMovement cm ON cm.voyage = v.id " +

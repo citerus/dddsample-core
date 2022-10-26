@@ -19,16 +19,12 @@ public class CargoTrackingViewAdapterTest {
 
   @Test
   public void testCreate() {
-    Cargo cargo = new Cargo(new TrackingId("XYZ"), new RouteSpecification(HANGZHOU, HELSINKI, new Date()));
     TrackingId trackingId = new TrackingId("XYZ");
     Cargo cargo = new Cargo(trackingId, new RouteSpecification(HANGZHOU, HELSINKI, new Date()));
 
-    List<HandlingEvent> events = new ArrayList<HandlingEvent>();
-    events.add(new HandlingEvent(cargo, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZHOU));
+    List<HandlingEvent> events = new ArrayList<>();
     events.add(new HandlingEvent(trackingId, new Date(1), new Date(2), HandlingEvent.Type.RECEIVE, HANGZHOU));
 
-    events.add(new HandlingEvent(cargo, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZHOU, CM001));
-    events.add(new HandlingEvent(cargo, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001));
     events.add(new HandlingEvent(trackingId, new Date(3), new Date(4), HandlingEvent.Type.LOAD, HANGZHOU, CM001.voyageNumber()));
     events.add(new HandlingEvent(trackingId, new Date(5), new Date(6), HandlingEvent.Type.UNLOAD, HELSINKI, CM001.voyageNumber()));
 
