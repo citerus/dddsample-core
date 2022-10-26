@@ -12,6 +12,8 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.core.statement.Update;
 import org.springframework.stereotype.Repository;
 import se.citerus.dddsample.domain.model.cargo.*;
+import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
+import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
@@ -26,7 +28,7 @@ import java.util.List;
 public class CargoRepositoryJdbi implements CargoRepository {
     private final Jdbi jdbi;
 
-    public CargoRepositoryJdbi(Jdbi jdbi) {
+    public CargoRepositoryJdbi(Jdbi jdbi, HandlingEventRepository handlingEventRepository) {
         this.jdbi = jdbi;
         jdbi.registerRowMapper(ConstructorMapper.factory(TrackingId.class));
         jdbi.registerArgument(new AbstractArgumentFactory<TrackingId>(Types.VARCHAR) {
@@ -52,15 +54,20 @@ public class CargoRepositoryJdbi implements CargoRepository {
         jdbi.registerRowMapper(new RowMapper<Cargo>() {
             @Override
             public Cargo map(ResultSet rs, StatementContext ctx) throws SQLException {
+                int cargoId = rs.getInt("id");
                 TrackingId trackingId = new TrackingId(rs.getString("trackingId"));
                 Location origin = new Location(new UnLocode(rs.getString("originUnloCode")), rs.getString("originName"));
                 Location destination = new Location(new UnLocode(rs.getString("destinationUnloCode")), rs.getString("destinationName"));
                 Date arrivalDeadline = new Date(rs.getTimestamp("arrivalDeadline").getTime());
                 RouteSpecification routeSpecification = new RouteSpecification(origin, destination, arrivalDeadline);
                 Cargo cargo = new Cargo(trackingId, routeSpecification);
-                List<Leg> legs = findLegsForCargo(trackingId, jdbi);
+                List<Leg> legs = findLegsForCargo(cargoId, jdbi);
                 if (!legs.isEmpty()) {
                     cargo.assignToRoute(new Itinerary(legs));
+                }
+                HandlingHistory events = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId);
+                if (!events.isEmpty()) {
+                    cargo.deriveDeliveryProgress(events);
                 }
                 return cargo;
             }
@@ -69,7 +76,8 @@ public class CargoRepositoryJdbi implements CargoRepository {
 
     @Override
     public Cargo find(TrackingId trackingId) {
-        return jdbi.withHandle(h -> h.createQuery("SELECT c.trackingId, " +
+        return jdbi.withHandle(h -> h.createQuery("SELECT c.id, " +
+                                "c.trackingId, " +
                                 "ol.unLocode AS originUnloCode, " +
                                 "ol.name AS originName, " +
                                 "dl.unLocode AS destinationUnloCode, " +
@@ -88,7 +96,8 @@ public class CargoRepositoryJdbi implements CargoRepository {
 
     @Override
     public List<Cargo> findAll() {
-        return jdbi.withHandle(h -> h.createQuery("SELECT c.trackingId, " +
+        return jdbi.withHandle(h -> h.createQuery("SELECT c.id, " +
+                        "c.trackingId, " +
                         "ol.unLocode AS originUnloCode, " +
                         "ol.name AS originName, " +
                         "dl.unLocode AS destinationUnloCode, " +
@@ -243,14 +252,14 @@ public class CargoRepositoryJdbi implements CargoRepository {
                 .findOnly() == 1);
     }
 
-    private List<Leg> findLegsForCargo(TrackingId trackingId, Jdbi jdbi) {
+    private List<Leg> findLegsForCargo(int cargoId, Jdbi jdbi) {
         return jdbi.withHandle(h -> h.createQuery("SELECT v.voyageNumber, ll.unLocode as ll_unloCode, ll.name as ll_name, ul.unLocode as ul_unloCode, ul.name as ul_name, leg.loadTime, leg.unloadTime " +
                         "FROM Leg leg " +
                         "JOIN Voyage v ON leg.voyage = v.id " +
                         "JOIN Location ll ON leg.loadLocation = ll.id " +
                         "JOIN Location ul ON leg.unloadLocation = ul.id " +
-                        "WHERE leg.cargo = (SELECT id FROM Cargo WHERE trackingId = :trackingId)")
-                .bind("trackingId", trackingId.idString())
+                        "WHERE leg.cargo = :cargoId")
+                .bind("cargoId", cargoId)
                 .mapTo(Leg.class)
                 .list());
     }

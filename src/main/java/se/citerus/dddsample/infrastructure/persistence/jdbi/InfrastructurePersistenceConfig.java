@@ -25,8 +25,8 @@ public class InfrastructurePersistenceConfig {
     }
 
     @Bean
-    public CargoRepository cargoRepository(Jdbi jdbi) {
-        return new CargoRepositoryJdbi(jdbi);
+    public CargoRepository cargoRepository(Jdbi jdbi, HandlingEventRepository handlingEventRepository) {
+        return new CargoRepositoryJdbi(jdbi, handlingEventRepository);
     }
 
     @Bean

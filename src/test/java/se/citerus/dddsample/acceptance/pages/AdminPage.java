@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdminPage {
     private final WebDriver driver;
@@ -17,12 +17,12 @@ public class AdminPage {
         this.driver = driver;
         this.port = port;
         driver.get(String.format("http://localhost:%d/dddsample/admin/list", port));
-        assertEquals("Cargo Administration", driver.getTitle());
+        assertThat("Cargo Administration").isEqualTo(driver.getTitle());
     }
 
     public void listAllCargo() {
         driver.findElement(By.linkText("List all cargos")).click();
-        assertEquals("Cargo Administration", driver.getTitle());
+        assertThat("Cargo Administration").isEqualTo(driver.getTitle());
     }
 
     public CargoBookingPage bookNewCargo() {

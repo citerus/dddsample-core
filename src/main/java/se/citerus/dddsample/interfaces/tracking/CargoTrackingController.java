@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * Controller for tracking cargo. This interface sits immediately on top of the
- * domain layer, unlike the booking interface which has a a remote facade and supporting
+ * domain layer, unlike the booking interface which has a remote facade and supporting
  * DTOs in between.
  * <p>
  * An adapter class, designed for the tracking use case, is used to wrap the domain model
@@ -28,16 +28,16 @@ import java.util.Map;
  * helps us shield the domain model classes.
  * <p>
  *
- * @eee se.citerus.dddsample.application.web.CargoTrackingViewAdapter
+ * @see se.citerus.dddsample.interfaces.tracking.CargoTrackingViewAdapter
  * @see se.citerus.dddsample.interfaces.booking.web.CargoAdminController
  */
 @Controller
 @RequestMapping("/track")
 public final class CargoTrackingController {
 
-    private CargoRepository cargoRepository;
-    private HandlingEventRepository handlingEventRepository;
-    private MessageSource messageSource;
+    private final CargoRepository cargoRepository;
+    private final HandlingEventRepository handlingEventRepository;
+    private final MessageSource messageSource;
 
     public CargoTrackingController(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
         this.cargoRepository = cargoRepository;
@@ -47,7 +47,7 @@ public final class CargoTrackingController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String get(final Map<String, Object> model) {
-        model.put("trackCommand", new TrackCommand()); // TODO why is this method adding a TrackCommand without id?
+        model.put("trackCommand", new TrackCommand());
         return "track";
     }
 
@@ -63,7 +63,8 @@ public final class CargoTrackingController {
 
         if (cargo != null) {
             final Locale locale = RequestContextUtils.getLocale(request);
-            final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
+            final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId)
+                    .distinctEventsByCompletionTime();
             model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale, handlingEvents));
         } else {
             bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "Unknown tracking id");

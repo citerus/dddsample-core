@@ -64,6 +64,10 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
         return handlingEvents.hashCode();
     }
 
+    public boolean isEmpty() {
+        return handlingEvents.isEmpty();
+    }
+
     private static final Comparator<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR =
             (he1, he2) -> he1.completionTime().compareTo(he2.completionTime());
 
