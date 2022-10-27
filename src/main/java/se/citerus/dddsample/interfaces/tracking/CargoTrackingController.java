@@ -29,7 +29,7 @@ import java.util.Map;
  * helps us shield the domain model classes.
  * <p>
  *
- * @see CargoTrackingViewAdapter
+ * @see se.citerus.dddsample.interfaces.tracking.CargoTrackingViewAdapter
  * @see se.citerus.dddsample.interfaces.booking.web.CargoAdminController
  */
 @Controller
@@ -63,17 +63,17 @@ public final class CargoTrackingController {
                             final TrackCommand command,
                             final Map<String, Object> model,
                             final BindingResult bindingResult) {
+        final Locale locale = RequestContextUtils.getLocale(request);
         trackCommandValidator.validate(command, bindingResult);
 
         final TrackingId trackingId = new TrackingId(command.getTrackingId());
         final Cargo cargo = cargoRepository.find(trackingId);
 
         if (cargo != null) {
-            final Locale locale = RequestContextUtils.getLocale(request);
             final List<HandlingEvent> handlingEvents = handlingEventRepository.lookupHandlingHistoryOfCargo(trackingId).distinctEventsByCompletionTime();
             model.put("cargo", new CargoTrackingViewAdapter(cargo, messageSource, locale, handlingEvents));
         } else {
-            bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "Unknown tracking id");
+            bindingResult.rejectValue("trackingId", "cargo.unknown_id", new Object[]{command.getTrackingId()}, "");
         }
         return "track";
     }

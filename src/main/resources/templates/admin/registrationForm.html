@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Cargo Administration</title>
+    <title th:text="#{cargo.admin.header}">Cargo Administration</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}"/>
@@ -15,10 +15,10 @@
 <div id="container">
     <form th:action="@{/admin/register}" method="post">
         <table>
-            <caption>Book new cargo</caption>
+            <caption th:text="#{cargo.admin.register.caption}">Book new cargo</caption>
             <tbody>
             <tr>
-                <td>Origin</td>
+                <td th:text="#{cargo.admin.tableheader.origin}">Origin</td>
                 <td>
                     <select name="originUnlocode">
                         <th:block th:each="unlocode : ${unlocodes}">
@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Destination</td>
+                <td th:text="#{cargo.admin.tableheader.destination}">Destination</td>
                 <td>
                     <select name="destinationUnlocode">
                         <th:block th:each="unlocode : ${unlocodes}">
@@ -38,7 +38,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Arrival deadline:</td>
+                <td th:text="#{cargo.admin.tableheader.arrivaldeadline}">Arrival deadline:</td>
                 <td>
                     <input name="arrivalDeadline" type="text" size="10" id="arrivalDeadline" th:value="${#dates.format(#dates.createNow(),'dd/MM/yyyy')}"/>
                     <p class="glyphicon glyphicon-calendar"></p>
@@ -49,7 +49,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" value="Book"/>
+                    <input type="submit" th:value="#{cargo.admin.register.book}"/>
                 </td>
             </tr>
             </tfoot>
