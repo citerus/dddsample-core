@@ -12,9 +12,10 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.FixedLocaleResolver;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.BookingService;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -30,6 +31,7 @@ import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
 import java.io.File;
+import java.util.Arrays;
 import java.lang.invoke.MethodHandles;
 import java.util.Locale;
 
@@ -54,10 +56,13 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public FixedLocaleResolver localeResolver() {
-        FixedLocaleResolver fixedLocaleResolver = new FixedLocaleResolver();
-        fixedLocaleResolver.setDefaultLocale(Locale.ENGLISH);
-        return fixedLocaleResolver;
+    public LocaleResolver localeResolver() {
+        AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+        localeResolver.setDefaultLocale(Locale.ENGLISH);
+        localeResolver.setSupportedLocales(Arrays.asList(
+                new Locale("sv", "SE"), // add new locales below
+                Locale.ENGLISH));
+        return localeResolver;
     }
 
     @Bean
