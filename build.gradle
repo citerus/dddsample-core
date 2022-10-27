@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id "org.springframework.boot" version "2.0.1.RELEASE"
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+repositories {
+//    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter:2.0.1.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.0.1.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.0.1.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-activemq:2.0.1.RELEASE'
+    implementation 'org.springframework:spring-orm:5.0.5.RELEASE'
+    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.2.4'
+    implementation 'org.hibernate:hibernate-core:5.2.16.Final'
+    implementation 'commons-collections:commons-collections:3.2.2'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'commons-io:commons-io:2.7'
+    implementation 'com.zaxxer:HikariCP:2.7.8'
+    implementation 'org.hsqldb:hsqldb:2.4.0'
+    implementation 'org.apache.activemq:activemq-spring:5.15.3'
+    implementation 'org.apache.activemq:activemq-broker:5.15.3'
+    implementation 'org.apache.xbean:xbean-spring:4.8'
+    implementation 'org.seleniumhq.selenium:htmlunit-driver:2.29.3'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.0.1.RELEASE'
+    testImplementation 'org.assertj:assertj-core:3.9.1'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:3.9.1'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+}
+
+group = 'se.citerus'
+version = '2.0-SNAPSHOT'
+description = 'DDDSample'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
