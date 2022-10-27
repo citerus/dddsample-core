@@ -13,7 +13,7 @@
     <table>
         <caption th:text="#{cargo.admin.itinerary.caption}">Select route</caption>
         <tr>
-            <td th:text="${cargo.getSelectItinerarySummaryText(messageSource, locale)}">
+            <td th:text="${viewAdapter.getSelectItinerarySummaryText(cargo)}">
                 Cargo (trackingId) is going from (origin) to (final destination)
             </td>
         </tr>
@@ -26,7 +26,7 @@
     <form th:each="it,itStatus : ${routeCandidates}" th:action="@{/admin/assignItinerary}" method="post">
         <input type="hidden" name="trackingId" th:value="${cargo.trackingId}"/>
         <table>
-            <caption th:text="${cargo.getRouteCandidateCaption(itStatus.count, messageSource, locale)}">Route candidate <span th:text="${itStatus.count}"/></caption>
+            <caption th:text="${viewAdapter.getRouteCandidateCaption(itStatus.count)}">Route candidate <span th:text="${itStatus.count}"/></caption>
             <thead>
             <tr>
                 <td th:text="#{cargo.admin.itinerary.voyage}">Voyage</td>

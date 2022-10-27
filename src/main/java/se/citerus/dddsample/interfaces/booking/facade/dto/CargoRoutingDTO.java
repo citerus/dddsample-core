@@ -1,7 +1,5 @@
 package se.citerus.dddsample.interfaces.booking.facade.dto;
 
-import org.springframework.context.MessageSource;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneOffset;
