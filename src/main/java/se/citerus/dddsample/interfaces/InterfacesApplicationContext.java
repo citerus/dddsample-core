@@ -1,9 +1,5 @@
 package se.citerus.dddsample.interfaces;
 
-import com.aggregator.HandlingReportService;
-import org.apache.cxf.Bus;
-import org.apache.cxf.bus.spring.SpringBus;
-import org.apache.cxf.jaxws.EndpointImpl;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +21,12 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
 import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
-import se.citerus.dddsample.interfaces.handling.HandlingReportParser;
 import se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl;
 import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 
-import javax.xml.ws.Endpoint;
 import java.io.File;
 import java.util.Locale;
 
@@ -87,11 +82,6 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public HandlingReportParser handlingReportConsumptionSupport() {
-        return new HandlingReportParser();
-    }
-
-    @Bean
     public UploadDirectoryScanner uploadDirectoryScanner(ApplicationEvents applicationEvents) {
         // TODO should we create these dirs if not existing?
         File uploadDirectoryFile = new File(uploadDirectory);
@@ -116,17 +106,5 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
         threadPoolTaskScheduler.initialize();
         threadPoolTaskScheduler.scheduleAtFixedRate(scanner, 5000);
         return threadPoolTaskScheduler;
-    }
-
-    @Bean(name = Bus.DEFAULT_BUS_ID)
-    public SpringBus springBus() {
-        return new SpringBus();
-    }
-
-    @Bean
-    public Endpoint endpoint(HandlingReportService handlingReportService) {
-        Endpoint endpoint = new EndpointImpl(springBus(), handlingReportService);
-        endpoint.publish("/RegisterEvent");
-        return endpoint;
     }
 }
