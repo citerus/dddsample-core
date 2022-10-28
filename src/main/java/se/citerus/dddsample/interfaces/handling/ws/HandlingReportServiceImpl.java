@@ -1,11 +1,12 @@
 package se.citerus.dddsample.interfaces.handling.ws;
 
-import com.aggregator.HandlingReport;
-import com.aggregator.HandlingReportErrors;
-import com.aggregator.HandlingReportErrors_Exception;
-import com.aggregator.HandlingReportService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -13,22 +14,20 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import javax.jws.WebParam;
-import javax.jws.WebService;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 
 /**
  * This web service endpoint implementation performs basic validation and parsing
  * of incoming data, and in case of a valid registration attempt, sends an asynchronous message
  * with the information to the handling event registration system for proper registration.
- *  
  */
-@WebService(endpointInterface = "com.aggregator.HandlingReportService")
+@RestController
 public class HandlingReportServiceImpl implements HandlingReportService {
 
   private final ApplicationEvents applicationEvents;
@@ -38,11 +37,12 @@ public class HandlingReportServiceImpl implements HandlingReportService {
     this.applicationEvents = applicationEvents;
   }
 
+  @PostMapping(value = "/handlingReport", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
   @Override
-  public void submitReport(@WebParam(name = "arg0", targetNamespace = "") HandlingReport handlingReport) throws HandlingReportErrors_Exception {
-    final List<String> errors = new ArrayList<String>();
+  public ResponseEntity<?> submitReport(@RequestBody HandlingReport handlingReport) {
+    final List<String> errors = new ArrayList<>();
 
-    final Date completionTime = parseCompletionTime(handlingReport, errors);
+    final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime(), errors);
     final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
     final HandlingEvent.Type type = parseEventType(handlingReport.getType(), errors);
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), errors);
@@ -58,10 +58,10 @@ public class HandlingReportServiceImpl implements HandlingReportService {
 
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
       } else {
-        logger.error("Parse error in handling report: " + errors);
-        final HandlingReportErrors faultInfo = new HandlingReportErrors();
-        throw new HandlingReportErrors_Exception(errors.toString(), faultInfo);
+        logger.error("Parse error in handling report: {}", errors);
+        return ResponseEntity.badRequest().body("Invalid request: " + StringUtils.join(errors, ","));
       }
     }
+    return ResponseEntity.status(201).build();
   }
 }
