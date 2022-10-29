@@ -1,27 +1,20 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.GOTHENBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.ROTTERDAM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.SHANGHAI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
-import se.citerus.dddsample.domain.model.voyage.Voyage;
-import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class ItineraryTest {
   private final CarrierMovement abc = new CarrierMovement(SHANGHAI, ROTTERDAM, new Date(), new Date());
@@ -31,7 +24,7 @@ public class ItineraryTest {
 
   Voyage voyage, wrongVoyage;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     voyage = new Voyage.Builder(new VoyageNumber("0123"), SHANGHAI).
       addMovement(ROTTERDAM, new Date(), new Date()).

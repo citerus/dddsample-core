@@ -1,33 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.MISROUTED;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.NOT_ROUTED;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.ROUTED;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.GOTHENBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.ROTTERDAM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.SHANGHAI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.application.util.DateTestUtil;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
@@ -35,12 +9,22 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+
 public class CargoTest {
 
   private List<HandlingEvent> events;
   private Voyage voyage;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     events = new ArrayList<HandlingEvent>();
 

@@ -1,44 +1,20 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
-
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-
 import se.citerus.dddsample.application.util.SampleDataGenerator;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoRepository;
-import se.citerus.dddsample.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.domain.model.cargo.Leg;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -48,7 +24,20 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-@RunWith(SpringRunner.class)
+import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
 @TestPropertySource(locations = {"/application.properties", "/config/application.properties"})
 @Transactional
@@ -77,7 +66,7 @@ public class CargoRepositoryTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    @Before
+    @BeforeEach
     public void setup() {
         jdbcTemplate = new JdbcTemplate(dataSource);
         SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));

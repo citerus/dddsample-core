@@ -1,19 +1,13 @@
 package se.citerus.dddsample.interfaces.tracking;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-import java.util.Locale;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,12 +15,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
 import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 
+import java.util.Locale;
+import java.util.Map;
 
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = CargoTrackingControllerTest.TestConfiguration.class)
 public class CargoTrackingControllerTest {
@@ -36,7 +35,7 @@ public class CargoTrackingControllerTest {
 
     private MockMvc mockMvc;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         CargoRepositoryInMem cargoRepository = new CargoRepositoryInMem();
         cargoRepository.setHandlingEventRepository(new HandlingEventRepositoryInMem());

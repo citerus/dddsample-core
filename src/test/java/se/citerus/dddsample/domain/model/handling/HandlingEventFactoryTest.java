@@ -1,20 +1,7 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
@@ -27,6 +14,16 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
+import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+
 public class HandlingEventFactoryTest {
 
   private HandlingEventFactory factory;
@@ -36,7 +33,7 @@ public class HandlingEventFactoryTest {
   private TrackingId trackingId;
   private Cargo cargo;
 
-  @Before
+  @BeforeEach
   public void setUp() {
 
     cargoRepository = mock(CargoRepository.class);

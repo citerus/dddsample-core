@@ -1,20 +1,14 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.DALLAS;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HANGZHOU;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
+import org.junit.jupiter.api.Test;
+import se.citerus.dddsample.domain.model.voyage.Voyage;
+import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import se.citerus.dddsample.domain.model.voyage.Voyage;
-import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 
 public class RouteSpecificationTest {
 
