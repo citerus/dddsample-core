@@ -1,23 +1,7 @@
 package se.citerus.dddsample.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
-
-import java.util.Date;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoFactory;
@@ -27,6 +11,15 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
+import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+
 public class BookingServiceTest {
 
   BookingServiceImpl bookingService;
@@ -35,7 +28,7 @@ public class BookingServiceTest {
   RoutingService routingService;
   CargoFactory cargoFactory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     cargoRepository = mock(CargoRepository.class);
     locationRepository = mock(LocationRepository.class);
@@ -56,10 +49,6 @@ public class BookingServiceTest {
 
     TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
     assertThat(trackingId).isEqualTo(expectedTrackingId);
-  }
-
-  @After
-  public void tearDown() {
     verify(cargoRepository, times(1)).store(isA(Cargo.class));
     verify(locationRepository, times(2)).find(any(UnLocode.class));
   }

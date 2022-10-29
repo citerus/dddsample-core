@@ -1,13 +1,13 @@
 package se.citerus.dddsample.domain.model.voyage;
 
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.HAMBURG;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
-
-import java.util.Date;
-
-import org.junit.Test;
 
 public class CarrierMovementTest {
 

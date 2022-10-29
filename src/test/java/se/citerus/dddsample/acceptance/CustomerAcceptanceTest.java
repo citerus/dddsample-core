@@ -1,13 +1,13 @@
 package se.citerus.dddsample.acceptance;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.acceptance.pages.CustomerPage;
 
 public class CustomerAcceptanceTest extends AbstractAcceptanceTest {
     private CustomerPage customerPage;
 
-    @Before
+    @BeforeEach
     public void goToCustomerPage() {
         customerPage = new CustomerPage(driver, port);
     }

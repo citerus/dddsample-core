@@ -1,6 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
