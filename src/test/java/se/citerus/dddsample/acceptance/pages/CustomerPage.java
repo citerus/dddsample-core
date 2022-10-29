@@ -4,8 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomerPage {
     private final WebDriver driver;
@@ -13,7 +12,7 @@ public class CustomerPage {
     public CustomerPage(WebDriver driver, int port) {
         this.driver = driver;
         driver.get(String.format("http://localhost:%d/dddsample/track", port));
-        assertEquals("Tracking cargo", driver.getTitle());
+        assertThat("Tracking cargo").isEqualTo(driver.getTitle());
     }
 
     public void trackCargoWithIdOf(String trackingId) {
@@ -25,16 +24,16 @@ public class CustomerPage {
 
     public void expectCargoLocation(String expectedLocation) {
         WebElement cargoSummary = driver.findElement(By.cssSelector("#result h2"));
-        assertTrue(cargoSummary.getText().endsWith(expectedLocation));
+        assertThat(cargoSummary.getText()).endsWith(expectedLocation);
     }
 
     public void expectErrorFor(String expectedErrorMessage) {
         WebElement error = driver.findElement(By.cssSelector(".error"));
-        assertTrue(error.getText().endsWith(expectedErrorMessage));
+        assertThat(error.getText()).endsWith(expectedErrorMessage);
     }
 
     public void expectNotificationOf(String expectedNotificationMessage) {
         WebElement error = driver.findElement(By.cssSelector(".notify"));
-        assertTrue(error.getText().endsWith(expectedNotificationMessage));
+        assertThat(error.getText()).endsWith(expectedNotificationMessage);
     }
 }

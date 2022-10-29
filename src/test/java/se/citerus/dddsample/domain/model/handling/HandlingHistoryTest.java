@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
@@ -23,7 +23,7 @@ public class HandlingHistoryTest {
   HandlingEvent event2;
   HandlingHistory handlingHistory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(SHANGHAI, DALLAS, toDate("2009-04-01")));
     voyage = new Voyage.Builder(new VoyageNumber("X25"), HONGKONG).

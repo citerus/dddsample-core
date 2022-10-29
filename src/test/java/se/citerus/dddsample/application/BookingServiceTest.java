@@ -1,8 +1,7 @@
 package se.citerus.dddsample.application;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoFactory;
@@ -29,7 +28,7 @@ public class BookingServiceTest {
   RoutingService routingService;
   CargoFactory cargoFactory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     cargoRepository = mock(CargoRepository.class);
     locationRepository = mock(LocationRepository.class);
@@ -50,10 +49,6 @@ public class BookingServiceTest {
 
     TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
     assertThat(trackingId).isEqualTo(expectedTrackingId);
-  }
-
-  @After
-  public void tearDown() {
     verify(cargoRepository, times(1)).store(isA(Cargo.class));
     verify(locationRepository, times(2)).find(any(UnLocode.class));
   }

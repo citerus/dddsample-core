@@ -1,9 +1,9 @@
 package se.citerus.dddsample.domain.model.location;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-
-import org.junit.Test;
 
 public class LocationTest {
 

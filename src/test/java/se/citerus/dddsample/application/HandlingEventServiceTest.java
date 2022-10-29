@@ -1,21 +1,7 @@
 package se.citerus.dddsample.application;
 
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
-
-import java.util.Date;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
@@ -27,6 +13,13 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
+import java.util.Date;
+
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+
 public class HandlingEventServiceTest {
   private HandlingEventServiceImpl service;
   private ApplicationEvents applicationEvents;
@@ -37,7 +30,7 @@ public class HandlingEventServiceTest {
 
   private final Cargo cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, new Date()));
 
-  @Before
+  @BeforeEach
   public void setUp() {
     cargoRepository = mock(CargoRepository.class);
     voyageRepository = mock(VoyageRepository.class);
@@ -49,12 +42,6 @@ public class HandlingEventServiceTest {
     service = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
   }
 
-  @After
-  public void tearDown() {
-    verify(handlingEventRepository, times(1)).store(isA(HandlingEvent.class));
-    verify(applicationEvents, times(1)).cargoWasHandled(isA(HandlingEvent.class));
-  }
-
   @Test
   public void testRegisterEvent() throws Exception {
     when(cargoRepository.find(cargo.trackingId())).thenReturn(cargo);
@@ -62,6 +49,7 @@ public class HandlingEventServiceTest {
     when(locationRepository.find(STOCKHOLM.unLocode())).thenReturn(STOCKHOLM);
 
     service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
+    verify(handlingEventRepository, times(1)).store(isA(HandlingEvent.class));
+    verify(applicationEvents, times(1)).cargoWasHandled(isA(HandlingEvent.class));
   }
-
 }

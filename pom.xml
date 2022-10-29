@@ -72,6 +72,7 @@
     </scm>
     <properties>
         <java.version>11</java.version>
+        <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <!--<assertj.version>3.8.0</assertj.version>-->
         <!--<hibernate.version>4.3.5.Final</hibernate.version>-->
     </properties>
@@ -176,10 +177,20 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.mockito</groupId>
                     <artifactId>mockito-core</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency> <!-- Overridden version required for Java 11 -->
             <groupId>org.mockito</groupId>

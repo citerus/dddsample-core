@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.application.util.DateTestUtil;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
@@ -12,10 +12,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
@@ -27,7 +24,7 @@ public class CargoTest {
   private List<HandlingEvent> events;
   private Voyage voyage;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     events = new ArrayList<HandlingEvent>();
 

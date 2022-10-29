@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CargoBookingPage {
 
@@ -21,7 +21,7 @@ public class CargoBookingPage {
 
         WebElement newCargoTableCaption = driver.findElement(By.cssSelector("table caption"));
 
-        assertEquals("Book new cargo", newCargoTableCaption.getText());
+        assertThat("Book new cargo").isEqualTo(newCargoTableCaption.getText());
     }
 
     public void selectOrigin(String origin) {

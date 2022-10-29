@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CargoDestinationPage {
     private final WebDriver driver;
@@ -16,7 +16,7 @@ public class CargoDestinationPage {
         this.port = port;
         WebElement cargoDestinationHeader = driver.findElement(By.cssSelector("table caption"));
 
-        assertTrue(cargoDestinationHeader.getText().startsWith("Change destination for cargo "));
+        assertThat(cargoDestinationHeader.getText()).startsWith("Change destination for cargo ");
     }
 
     public CargoDetailsPage selectDestinationTo(String destination) {

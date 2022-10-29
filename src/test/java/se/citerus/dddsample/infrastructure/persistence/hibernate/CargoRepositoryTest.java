@@ -2,14 +2,15 @@ package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -26,6 +27,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECE
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
 import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -65,7 +67,7 @@ public class CargoRepositoryTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    @Before
+    @BeforeEach
     public void setup() {
         jdbcTemplate = new JdbcTemplate(dataSource);
         SampleDataGenerator.loadSampleData(jdbcTemplate, new TransactionTemplate(transactionManager));

@@ -3,8 +3,8 @@ package se.citerus.dddsample.infrastructure.routing;
 import com.pathfinder.api.GraphTraversalService;
 import com.pathfinder.internal.GraphDAOStub;
 import com.pathfinder.internal.GraphTraversalServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
@@ -27,7 +27,7 @@ public class ExternalRoutingServiceTest {
   private ExternalRoutingService externalRoutingService;
   private VoyageRepository voyageRepository;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     LocationRepository locationRepository = new LocationRepositoryInMem();
     voyageRepository = mock(VoyageRepository.class);

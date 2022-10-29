@@ -1,6 +1,6 @@
 package se.citerus.dddsample.acceptance;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.acceptance.pages.AdminPage;
 import se.citerus.dddsample.acceptance.pages.CargoBookingPage;
 import se.citerus.dddsample.acceptance.pages.CargoDestinationPage;
@@ -9,7 +9,7 @@ import se.citerus.dddsample.acceptance.pages.CargoDetailsPage;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class AdminAcceptanceTest extends AbstractAcceptanceTest {
 
@@ -18,8 +18,8 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
         AdminPage page = new AdminPage(driver, port);
         page.listAllCargo();
 
-        assertTrue("Cargo list doesn't contain ABC123", page.listedCargoContains("ABC123"));
-        assertTrue("Cargo list doesn't contain JKL567", page.listedCargoContains("JKL567"));
+        assertThat("Cargo list doesn't contain ABC123").isEqualTo(page.listedCargoContains("ABC123"));
+        assertThat("Cargo list doesn't contain JKL567").isEqualTo(page.listedCargoContains("JKL567"));
     }
 
     @Test
@@ -35,7 +35,8 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
 
         String newCargoTrackingId = cargoDetailsPage.getTrackingId();
         adminPage = cargoDetailsPage.listAllCargo();
-        assertTrue("Cargo list doesn't contain " + newCargoTrackingId, adminPage.listedCargoContains(newCargoTrackingId));
+        assertThat(adminPage.listedCargoContains(newCargoTrackingId)).isTrue()
+                .withFailMessage("Cargo list doesn't contain %s", newCargoTrackingId);
 
         cargoDetailsPage = adminPage.showDetailsFor(newCargoTrackingId);
         cargoDetailsPage.expectOriginOf("NLRTM");

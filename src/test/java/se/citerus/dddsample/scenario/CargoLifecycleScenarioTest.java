@@ -1,7 +1,7 @@
 package se.citerus.dddsample.scenario;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.BookingService;
 import se.citerus.dddsample.application.CargoInspectionService;
@@ -298,7 +298,7 @@ public class CargoLifecycleScenarioTest {
     return itineraries.get(0);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     routingService = new RoutingService() {
       public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
