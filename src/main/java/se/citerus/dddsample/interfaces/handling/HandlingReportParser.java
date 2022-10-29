@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Utility methods for parsing various forms of handling report formats.
@@ -21,62 +20,55 @@ import java.util.List;
 public class HandlingReportParser {
 
   public static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
+  public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(ISO_8601_FORMAT);
 
-  public static UnLocode parseUnLocode(final String unlocode, final List<String> errors) {
+  public static UnLocode parseUnLocode(final String unlocode) {
     try {
       return new UnLocode(unlocode);
     } catch (IllegalArgumentException e) {
-      errors.add(e.getMessage());
-      return null;
+      throw new IllegalArgumentException("Failed to parse UNLO code: " + unlocode, e);
     }
   }
 
-  public static TrackingId parseTrackingId(final String trackingId, final List<String> errors) {
+  public static TrackingId parseTrackingId(final String trackingId) {
     try {
       return new TrackingId(trackingId);
     } catch (IllegalArgumentException e) {
-      errors.add(e.getMessage());
-      return null;
+      throw new IllegalArgumentException("Failed to parse trackingId: " + trackingId, e);
     }
   }
 
-  public static VoyageNumber parseVoyageNumber(final String voyageNumber, final List<String> errors) {
+  public static VoyageNumber parseVoyageNumber(final String voyageNumber) {
     if (StringUtils.isNotEmpty(voyageNumber)) {
       try {
         return new VoyageNumber(voyageNumber);
       } catch (IllegalArgumentException e) {
-        errors.add(e.getMessage());
-        return null;
+        throw new IllegalArgumentException("Failed to parse voyage number: " + voyageNumber, e);
       }
     } else {
       return null;
     }
   }
 
-  public static Date parseDate(final String completionTime, final List<String> errors) {
-    Date date;
+  public static Date parseDate(final String completionTime) {
     try {
-      date = new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
-    } catch (ParseException e) {
-      errors.add("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
-      date = null;
+      return SIMPLE_DATE_FORMAT.parse(completionTime);
+    } catch (ParseException | NullPointerException e) {
+      throw new IllegalArgumentException("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
     }
-    return date;
   }
 
-  public static HandlingEvent.Type parseEventType(final String eventType, final List<String> errors) {
+  public static HandlingEvent.Type parseEventType(final String eventType) {
     try {
       return HandlingEvent.Type.valueOf(eventType);
     } catch (IllegalArgumentException e) {
-      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingEvent.Type.values()));
-      return null;
+      throw new IllegalArgumentException(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingEvent.Type.values()));
     }
   }
 
-  public static Date parseCompletionTime(LocalDateTime completionTime, List<String> errors) {
+  public static Date parseCompletionTime(LocalDateTime completionTime) {
     if (completionTime == null) {
-      errors.add("Completion time is required");
-      return null;
+      throw new IllegalArgumentException("Completion time is required");
     }
 
     return new Date(completionTime.toEpochSecond(ZoneOffset.UTC) * 1000);

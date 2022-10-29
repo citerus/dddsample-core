@@ -18,6 +18,7 @@ public final class TrackingId implements ValueObject<TrackingId> {
    */
   public TrackingId(final String id) {
     Validate.notNull(id);
+    Validate.notEmpty(id);
     this.id = id;
   }
 

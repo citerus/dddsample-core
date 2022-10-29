@@ -83,7 +83,6 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
 
     @Bean
     public UploadDirectoryScanner uploadDirectoryScanner(ApplicationEvents applicationEvents) {
-        // TODO should we create these dirs if not existing?
         File uploadDirectoryFile = new File(uploadDirectory);
         File parseFailureDirectoryFile = new File(parseFailureDirectory);
         return new UploadDirectoryScanner(uploadDirectoryFile, parseFailureDirectoryFile, applicationEvents);
