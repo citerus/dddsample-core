@@ -1,18 +1,18 @@
 package se.citerus.dddsample.interfaces.tracking;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TrackCommandValidatorTest {
 
   TrackCommandValidator validator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     validator = new TrackCommandValidator();
   }

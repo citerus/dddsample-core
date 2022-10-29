@@ -1,6 +1,6 @@
 package se.citerus.dddsample.interfaces.booking.facade.internal.assembler;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 

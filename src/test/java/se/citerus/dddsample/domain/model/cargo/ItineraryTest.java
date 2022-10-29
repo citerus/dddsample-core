@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.voyage.CarrierMovement;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
@@ -23,7 +23,7 @@ public class ItineraryTest {
 
   Voyage voyage, wrongVoyage;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     voyage = new Voyage.Builder(new VoyageNumber("0123"), SHANGHAI).
       addMovement(ROTTERDAM, new Date(), new Date()).
