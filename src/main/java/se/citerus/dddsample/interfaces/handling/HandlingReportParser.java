@@ -2,6 +2,7 @@ package se.citerus.dddsample.interfaces.handling;
 
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
@@ -26,89 +27,81 @@ import static java.util.stream.Collectors.toList;
 public class HandlingReportParser {
 
   public static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
+  public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(ISO_8601_FORMAT);
 
-  public static UnLocode parseUnLocode(final String unlocode, final List<String> errors) {
+  public static UnLocode parseUnLocode(final String unlocode) {
     try {
       return new UnLocode(unlocode);
     } catch (IllegalArgumentException e) {
-      errors.add(e.getMessage());
-      return null;
+      throw new IllegalArgumentException("Failed to parse UNLO code: " + unlocode, e);
     }
   }
 
-  public static List<HandlingEventRegistrationAttempt> parse(final HandlingReport handlingReport,final List<String> errors){
-    final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime(), errors);
-    final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
-    final Type type = parseEventType(handlingReport.getType(), errors);
-    final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), errors);
-    final List<TrackingId> trackingIds = parseTrackingIds(handlingReport.getTrackingIds(),errors);
-    if(errors.isEmpty()){
-      return trackingIds.stream().map(trackingId->new HandlingEventRegistrationAttempt(
-              new Date(), completionTime, trackingId, voyageNumber, type, unLocode
-      )).collect(toList());
-    }else {
-      return emptyList();
-    }
-  }
-
-  public static List<TrackingId> parseTrackingIds(final List<String> trackingIdStrs, final List<String> errors) {
-      return Optional.ofNullable(trackingIdStrs)
-              .orElse(emptyList())
-              .stream()
-              .map(trackingIdStr->parseTrackingId(trackingIdStr,errors))
-              .filter(Objects::nonNull)
-              .collect(toList());
-
-  }
-
-  public static TrackingId parseTrackingId(final String trackingId, final List<String> errors) {
+  public static TrackingId parseTrackingId(final String trackingId) {
     try {
       return new TrackingId(trackingId);
     } catch (IllegalArgumentException e) {
-      errors.add(e.getMessage());
-      return null;
+      throw new IllegalArgumentException("Failed to parse trackingId: " + trackingId, e);
     }
   }
 
-  public static VoyageNumber parseVoyageNumber(final String voyageNumber, final List<String> errors) {
+  public static VoyageNumber parseVoyageNumber(final String voyageNumber) {
     if (voyageNumber != null && !voyageNumber.isBlank()) {
       try {
         return new VoyageNumber(voyageNumber);
       } catch (IllegalArgumentException e) {
-        errors.add(e.getMessage());
-        return null;
+        throw new IllegalArgumentException("Failed to parse voyage number: " + voyageNumber, e);
       }
     } else {
       return null;
     }
   }
 
-  public static Date parseDate(final String completionTime, final List<String> errors) {
-    Date date;
+  public static Date parseDate(final String completionTime) {
     try {
-      date = new SimpleDateFormat(ISO_8601_FORMAT).parse(completionTime);
-    } catch (ParseException e) {
-      errors.add("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
-      date = null;
+      return SIMPLE_DATE_FORMAT.parse(completionTime);
+    } catch (ParseException | NullPointerException e) {
+      throw new IllegalArgumentException("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
     }
-    return date;
   }
 
-  public static Type parseEventType(final String eventType, final List<String> errors) {
+  public static HandlingEvent.Type parseEventType(final String eventType) {
     try {
-      return Type.valueOf(eventType);
+      return HandlingEvent.Type.valueOf(eventType);
     } catch (IllegalArgumentException e) {
-      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(Type.values()));
-      return null;
+      throw new IllegalArgumentException(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingEvent.Type.values()));
     }
   }
 
-  public static Date parseCompletionTime(LocalDateTime completionTime, List<String> errors) {
+  public static Date parseCompletionTime(LocalDateTime completionTime) {
     if (completionTime == null) {
-      errors.add("Completion time is required");
-      return null;
+      throw new IllegalArgumentException("Completion time is required");
     }
 
     return new Date(completionTime.toEpochSecond(ZoneOffset.UTC) * 1000);
+  }
+
+  public static List<HandlingEventRegistrationAttempt> parse(final HandlingReport handlingReport,final List<String> errors){
+    final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime());
+    final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber());
+    final Type type = parseEventType(handlingReport.getType());
+    final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode());
+    final List<TrackingId> trackingIds = parseTrackingIds(handlingReport.getTrackingIds());
+    if (errors.isEmpty()) {
+      return trackingIds.stream().map(trackingId->new HandlingEventRegistrationAttempt(
+              new Date(), completionTime, trackingId, voyageNumber, type, unLocode
+      )).collect(toList());
+    } else {
+      return emptyList();
+    }
+  }
+
+  public static List<TrackingId> parseTrackingIds(final List<String> trackingIdStrs) {
+    return Optional.ofNullable(trackingIdStrs)
+            .orElse(emptyList())
+            .stream()
+            .map(trackingIdStr->parseTrackingId(trackingIdStr))
+            .filter(Objects::nonNull)
+            .collect(toList());
   }
 }
