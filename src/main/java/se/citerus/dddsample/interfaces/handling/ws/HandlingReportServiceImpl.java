@@ -14,6 +14,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 import se.citerus.dddsample.interfaces.handling.HandlingReportParser;
 
+import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.List;
@@ -29,9 +30,9 @@ import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
  */
 @RestController
 public class HandlingReportServiceImpl implements HandlingReportService {
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final ApplicationEvents applicationEvents;
-  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public HandlingReportServiceImpl(ApplicationEvents applicationEvents) {
     this.applicationEvents = applicationEvents;
@@ -39,7 +40,7 @@ public class HandlingReportServiceImpl implements HandlingReportService {
 
   @PostMapping(value = "/handlingReport", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
   @Override
-  public ResponseEntity<?> submitReport(@RequestBody HandlingReport handlingReport) {
+  public ResponseEntity<?> submitReport(@Valid @RequestBody HandlingReport handlingReport) {
     try {
       Date completionTime = parseCompletionTime(handlingReport.getCompletionTime());
       VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber());
@@ -56,9 +57,6 @@ public class HandlingReportServiceImpl implements HandlingReportService {
 
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
       }
-    } catch (IllegalArgumentException e) {
-      logger.error("Parse error in handling report", e);
-      return ResponseEntity.badRequest().body("Invalid request: " + e.getMessage());
     } catch (Exception e) {
       logger.error("Unexpected error in submitReport", e);
       return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
