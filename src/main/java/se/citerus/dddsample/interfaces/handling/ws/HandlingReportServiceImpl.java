@@ -1,6 +1,5 @@
 package se.citerus.dddsample.interfaces.handling.ws;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +58,7 @@ public class HandlingReportServiceImpl implements HandlingReportService {
         applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
       } else {
         logger.error("Parse error in handling report: {}", errors);
-        return ResponseEntity.badRequest().body("Invalid request: " + StringUtils.join(errors, ","));
+        return ResponseEntity.badRequest().body("Invalid request: " + String.join(",", errors));
       }
     }
     return ResponseEntity.status(201).build();

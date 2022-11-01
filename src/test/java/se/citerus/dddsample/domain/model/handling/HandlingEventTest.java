@@ -1,31 +1,21 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CUSTOMS;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.valueOf;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
-
-import java.util.Date;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.voyage.SampleVoyages;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM003;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
 public class HandlingEventTest {
   private Cargo cargo;
@@ -47,7 +37,7 @@ public class HandlingEventTest {
     assertThat(e2.location()).isEqualTo(NEWYORK);
 
       // These event types prohibit a carrier movement association
-    for (HandlingEvent.Type type : asList(CLAIM, RECEIVE, CUSTOMS)) {
+    for (HandlingEvent.Type type : List.of(CLAIM, RECEIVE, CUSTOMS)) {
       try {
         new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, CM003);
         fail("Handling event type " + type + " prohibits carrier movement");
@@ -55,7 +45,7 @@ public class HandlingEventTest {
     }
 
       // These event types requires a carrier movement association
-    for (HandlingEvent.Type type : asList(LOAD, UNLOAD)) {
+    for (HandlingEvent.Type type : List.of(LOAD, UNLOAD)) {
         try {
           new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null);
             fail("Handling event type " + type + " requires carrier movement");

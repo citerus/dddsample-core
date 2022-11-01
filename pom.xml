@@ -71,7 +71,7 @@
         <url>https://github.com/citerus/dddsample-core</url>
     </scm>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <!--<assertj.version>3.8.0</assertj.version>-->
         <!--<hibernate.version>4.3.5.Final</hibernate.version>-->
     </properties>
@@ -108,7 +108,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
@@ -154,9 +153,38 @@
             <artifactId>xbean-spring</artifactId>
             <version>4.8</version>
         </dependency>
+        <dependency> <!-- Required by Hibernate in Java 11+ -->
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+        <dependency> <!-- Required by Hibernate in Java 11+ -->
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency> <!-- Required by Hibernate in Java 11+ -->
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.25.0-GA</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency> <!-- Overridden version required for Java 11 -->
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.23.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>

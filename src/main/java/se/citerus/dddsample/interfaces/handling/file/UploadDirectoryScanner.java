@@ -1,6 +1,5 @@
 package se.citerus.dddsample.interfaces.handling.file;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -14,6 +13,8 @@ import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +58,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
   }
 
   private void parse(final File file) throws IOException {
-    final List<String> lines = FileUtils.readLines(file);
+    final List<String> lines = Files.readAllLines(file.toPath());
     final List<String> rejectedLines = new ArrayList<String>();
     for (String line : lines) {
       try {
@@ -77,9 +78,10 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
   }
 
   private void writeRejectedLinesToFile(final String filename, final List<String> rejectedLines) throws IOException {
-    FileUtils.writeLines(
-      new File(parseFailureDirectory, filename), rejectedLines
-    );
+    Files.write(
+            new File(parseFailureDirectory, filename).toPath(),
+            rejectedLines,
+            StandardOpenOption.APPEND);
   }
 
   private void parseLine(final String line) throws Exception {

@@ -25,7 +25,6 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRep
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -305,8 +304,8 @@ public class CargoLifecycleScenarioTest {
       public List<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification) {
         if (routeSpecification.origin().equals(HONGKONG)) {
           // Hongkong - NYC - Chicago - Stockholm, initial routing
-          return Arrays.asList(
-            new Itinerary(Arrays.asList(
+          return List.of(
+            new Itinerary(List.of(
               new Leg(v100, HONGKONG, NEWYORK, toDate("2009-03-03"), toDate("2009-03-09")),
               new Leg(v200, NEWYORK, CHICAGO, toDate("2009-03-10"), toDate("2009-03-14")),
               new Leg(v200, CHICAGO, STOCKHOLM, toDate("2009-03-07"), toDate("2009-03-11"))
@@ -314,8 +313,8 @@ public class CargoLifecycleScenarioTest {
           );
         } else {
           // Tokyo - Hamburg - Stockholm, rerouting misdirected cargo from Tokyo 
-          return Arrays.asList(
-            new Itinerary(Arrays.asList(
+          return List.of(
+            new Itinerary(List.of(
               new Leg(v300, TOKYO, HAMBURG, toDate("2009-03-08"), toDate("2009-03-12")),
               new Leg(v400, HAMBURG, STOCKHOLM, toDate("2009-03-14"), toDate("2009-03-15"))
             ))

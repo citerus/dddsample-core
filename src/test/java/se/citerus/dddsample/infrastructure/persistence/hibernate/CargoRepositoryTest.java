@@ -1,23 +1,5 @@
 package se.citerus.dddsample.infrastructure.persistence.hibernate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HELSINKI;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.MELBOURNE;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
-
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
@@ -31,14 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-
 import se.citerus.dddsample.application.util.SampleDataGenerator;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoRepository;
-import se.citerus.dddsample.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.domain.model.cargo.Leg;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -47,6 +23,18 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM004;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
@@ -157,7 +145,7 @@ public class CargoRepositoryTest {
         Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
         cargoRepository.store(cargo);
 
-        cargo.assignToRoute(new Itinerary(Collections.singletonList(
+        cargo.assignToRoute(new Itinerary(List.of(
                 new Leg(
                         voyageRepository.find(new VoyageNumber("0101")),
                         locationRepository.find(STOCKHOLM.unLocode()),
@@ -192,7 +180,7 @@ public class CargoRepositoryTest {
 
         Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
         Location legTo = locationRepository.find(new UnLocode("DEHAM"));
-        Itinerary newItinerary = new Itinerary(Collections.singletonList(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
+        Itinerary newItinerary = new Itinerary(List.of(new Leg(CM004, legFrom, legTo, new Date(), new Date())));
 
         cargo.assignToRoute(newItinerary);
 

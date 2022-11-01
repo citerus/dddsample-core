@@ -13,7 +13,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class ExternalRoutingServiceTest {
     voyageRepository = mock(VoyageRepository.class);
     GraphTraversalService graphTraversalService = new GraphTraversalServiceImpl(new GraphDAOStub() {
       public List<String> listLocations() {
-        return Arrays.asList(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
+        return List.of(TOKYO.unLocode().idString(), STOCKHOLM.unLocode().idString(), GOTHENBURG.unLocode().idString());
       }
 
       public void storeCarrierMovementId(String cmId, String from, String to) {
