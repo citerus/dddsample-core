@@ -29,7 +29,7 @@ public final class Location implements Entity<Location> {
    * @param name     location name
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
-  Location(final UnLocode unLocode, final String name) {
+  public Location(final UnLocode unLocode, final String name) {
     Validate.notNull(unLocode);
     Validate.notNull(name);
     

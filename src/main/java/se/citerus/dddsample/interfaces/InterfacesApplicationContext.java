@@ -26,6 +26,7 @@ import se.citerus.dddsample.interfaces.handling.ws.HandlingReportService;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReportServiceImpl;
 import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
+import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
 import java.io.File;
 import java.util.Locale;
@@ -64,6 +65,11 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     @Bean
     public HandlingReportService handlingReportService(ApplicationEvents applicationEvents) {
         return new HandlingReportServiceImpl(applicationEvents);
+    }
+
+    @Bean
+    public CargoTrackingRestService cargoTrackingRestService(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
+        return new CargoTrackingRestService(cargoRepository, handlingEventRepository, messageSource);
     }
 
     @Bean
