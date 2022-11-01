@@ -28,6 +28,7 @@ import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
 import se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner;
 import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
+import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
 import javax.persistence.EntityManager;
 import java.io.File;
@@ -64,6 +65,11 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     @Bean
     public CargoTrackingController cargoTrackingController(MessageSource messageSource, CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository) {
         return new CargoTrackingController(cargoRepository, handlingEventRepository, messageSource);
+    }
+
+    @Bean
+    public CargoTrackingRestService cargoTrackingRestService(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
+        return new CargoTrackingRestService(cargoRepository, handlingEventRepository, messageSource);
     }
 
     @Bean
