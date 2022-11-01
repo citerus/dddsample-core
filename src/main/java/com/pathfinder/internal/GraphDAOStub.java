@@ -1,7 +1,6 @@
 package com.pathfinder.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -10,7 +9,7 @@ public class GraphDAOStub implements GraphDAO{
   private static final Random random = new Random();
 
   public List<String> listAllNodes() {
-    return new ArrayList<String>(Arrays.asList(
+    return new ArrayList<String>(List.of(
       "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JNTKO", "DEHAM", "CNSHA", "NLRTM", "SEGOT", "CNHGH", "USNYC", "USDAL"
     ));
   }

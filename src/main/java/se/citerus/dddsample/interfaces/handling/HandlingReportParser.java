@@ -1,6 +1,5 @@
 package se.citerus.dddsample.interfaces.handling;
 
-import org.apache.commons.lang.StringUtils;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
@@ -41,7 +40,7 @@ public class HandlingReportParser {
   }
 
   public static VoyageNumber parseVoyageNumber(final String voyageNumber, final List<String> errors) {
-    if (StringUtils.isNotEmpty(voyageNumber)) {
+    if (voyageNumber != null && !voyageNumber.isBlank()) {
       try {
         return new VoyageNumber(voyageNumber);
       } catch (IllegalArgumentException e) {

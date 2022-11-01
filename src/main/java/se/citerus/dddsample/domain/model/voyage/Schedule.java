@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Schedule implements ValueObject<Schedule> {
 
-  private List<CarrierMovement> carrierMovements = Collections.EMPTY_LIST;
+  private List<CarrierMovement> carrierMovements = Collections.emptyList();
 
   public static final Schedule EMPTY = new Schedule();
 

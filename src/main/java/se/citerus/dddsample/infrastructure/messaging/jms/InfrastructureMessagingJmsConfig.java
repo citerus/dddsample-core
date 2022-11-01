@@ -16,7 +16,7 @@ import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.application.HandlingEventService;
 
 import javax.jms.*;
-import java.util.Arrays;
+import java.util.List;
 
 @EnableJms
 @Configuration
@@ -101,7 +101,7 @@ public class InfrastructureMessagingJmsConfig {
     @Bean
     public ConnectionFactory jmsConnectionFactory() {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
-        factory.setTrustedPackages(Arrays.asList("se.citerus.dddsample.interfaces.handling", "se.citerus.dddsample.domain", "java.util"));
+        factory.setTrustedPackages(List.of("se.citerus.dddsample.interfaces.handling", "se.citerus.dddsample.domain", "java.util"));
         return factory;
     }
 

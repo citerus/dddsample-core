@@ -29,7 +29,7 @@ public class CargoRepositoryHibernate extends HibernateRepository implements Car
   public void store(Cargo cargo) {
     getSession().saveOrUpdate(cargo);
     // Delete-orphan does not seem to work correctly when the parent is a component
-    getSession().createSQLQuery("delete from Leg where cargo_id = null").executeUpdate();
+    getSession().createNativeQuery("delete from Leg where cargo_id = null").executeUpdate();
   }
 
   public TrackingId nextTrackingId() {

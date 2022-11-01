@@ -18,8 +18,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
 import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
@@ -231,7 +231,7 @@ public class SampleDataGenerator {
                 TrackingId trackingId = new TrackingId("ABC123");
                 Cargo abc123 = new Cargo(trackingId, routeSpecification);
 
-                Itinerary itinerary = new Itinerary(asList(
+                Itinerary itinerary = new Itinerary(List.of(
                         new Leg(HONGKONG_TO_NEW_YORK, HONGKONG, NEWYORK, toDate("2009-03-02"), toDate("2009-03-05")),
                         new Leg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
                         new Leg(DALLAS_TO_HELSINKI, DALLAS, HELSINKI, toDate("2009-03-09"), toDate("2009-03-12"))
@@ -270,7 +270,7 @@ public class SampleDataGenerator {
                 TrackingId trackingId1 = new TrackingId("JKL567");
                 Cargo jkl567 = new Cargo(trackingId1, routeSpecification1);
 
-                Itinerary itinerary1 = new Itinerary(asList(
+                Itinerary itinerary1 = new Itinerary(List.of(
                         new Leg(HONGKONG_TO_NEW_YORK, HANGZHOU, NEWYORK, toDate("2009-03-03"), toDate("2009-03-05")),
                         new Leg(NEW_YORK_TO_DALLAS, NEWYORK, DALLAS, toDate("2009-03-06"), toDate("2009-03-08")),
                         new Leg(DALLAS_TO_HELSINKI, DALLAS, STOCKHOLM, toDate("2009-03-09"), toDate("2009-03-11"))
