@@ -20,6 +20,10 @@
             <id>sf</id>
             <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>
         </site>
+        <repository>
+            <id>github</id>
+            <url>https://github.com/citerus/dddsample-core</url>
+        </repository>
     </distributionManagement>
     <ciManagement/>
     <developers>
