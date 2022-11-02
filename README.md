@@ -22,30 +22,16 @@ Trello board: https://trello.com/b/PTDFRyxd
 
 The diagram was created with diagrams.net (formerly draw.io).
 
-## Using the HandlingReportService ("regapp") web service
+## Using the HandlingReport REST API
 
-Using your favorite SOAP client, send an HTTP POST message to http://localhost:8080/dddsample/ws/RegisterEvent with the following body:
+The HandlingReport API has one endpoint that takes a JSON request body:
 
-```xml
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.handling.interfaces.dddsample.citerus.se/">
-    <soapenv:Header/>
-    <soapenv:Body>
-        <ws:submitReport>
-            <!--Optional:-->
-            <arg0>
-                <completionTime>2022-01-01T00:00:00</completionTime>
-                <!--1 or more repetitions:-->
-                <trackingIds>2</trackingIds>
-                <type>LOAD</type>
-                <unLocode>AA234</unLocode>
-                <!--Optional:-->
-                <voyageNumber>5</voyageNumber>
-            </arg0>
-        </ws:submitReport>
-    </soapenv:Body>
-</soapenv:Envelope>
-```
+    POST /dddsample/handlingReport
 
-You can also use cURL to send the request using an xml file for the body:
+You can use cURL to send the request using an JSON file for the body:
 
-    curl --data-binary "@/path/to/project/src/test/resources/sampleSoapBody.xml" -H 'Content-Type: text/xml;charset=UTF-8' http://localhost:8080/dddsample/ws/RegisterEvent
+    curl --data-binary "@/path/to/project/src/test/resources/sampleHandlingReport.json" \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    http://localhost:8080/dddsample/handlingReport
+
+See the [api-docs.yaml](/api-docs.yaml) file for a complete API definition.

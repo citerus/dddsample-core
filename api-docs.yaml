@@ -1,0 +1,49 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080/dddsample
+    description: Generated server url
+paths:
+  /handlingReport:
+    post:
+      tags:
+        - handling-report-service-impl
+      operationId: submitReport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HandlingReport'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    HandlingReport:
+      required:
+        - completionTime
+        - trackingIds
+        - type
+        - unLocode
+      type: object
+      properties:
+        completionTime:
+          type: string
+          format: date-time
+        trackingIds:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+        unLocode:
+          type: string
+        voyageNumber:
+          type: string
