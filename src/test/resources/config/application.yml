@@ -1,0 +1,3 @@
+spring:
+    dataSource:
+        url: jdbc:hsqldb:mem:dddsample_test

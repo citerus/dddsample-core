@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes={InfrastructurePersistenceHibernateConfig.class})
-@TestPropertySource(locations = {"/application.properties", "/config/application.properties"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 public class LocationRepositoryTest {
     @Autowired
