@@ -15,19 +15,19 @@ import javax.sql.DataSource;
 @Configuration
 public class InfrastructurePersistenceHibernateConfig {
 
-    @Value("${dataSource.db_name}")
+    @Value("${spring.dataSource.db_name}")
     public String databaseName;
 
-    @Value("${dataSource.url}")
+    @Value("${spring.dataSource.url}")
     public String databaseUrl;
 
-    @Value("${dataSource.username}")
+    @Value("${spring.dataSource.username}")
     public String databaseUsername;
 
-    @Value("${dataSource.password}")
+    @Value("${spring.dataSource.password}")
     public String databasePassword;
 
-    @Value("${dataSource.driver_class}")
+    @Value("${spring.dataSource.driver_class}")
     public String databaseDriver;
 
     @Bean

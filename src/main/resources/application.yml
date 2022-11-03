@@ -1,0 +1,24 @@
+server:
+    servlet:
+        context-path: /dddsample
+
+cxf:
+    path: /ws
+
+logging:
+    level:
+        org.hibernate.SQL: info
+        net.sf.ehcache.config.ConfigurationFactory: error
+
+uploadDirectory: /tmp/upload
+parseFailureDirectory: /tmp/failed
+
+brokerUrl: "vm://localhost?broker.persistent=false&broker.useJmx=false"
+
+spring:
+    dataSource:
+        db_name: dddsample
+        driver_class: org.hsqldb.jdbcDriver
+        url: jdbc:hsqldb:mem:dddsample
+        username: sa
+        password: ""
