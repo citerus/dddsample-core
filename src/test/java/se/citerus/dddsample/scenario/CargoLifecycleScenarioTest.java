@@ -1,38 +1,7 @@
 package se.citerus.dddsample.scenario;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.MISROUTED;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.NOT_ROUTED;
-import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.ROUTED;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.CLAIMED;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.IN_PORT;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.NOT_RECEIVED;
-import static se.citerus.dddsample.domain.model.cargo.TransportStatus.ONBOARD_CARRIER;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.CLAIM;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.LOAD;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.RECEIVE;
-import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.UNLOAD;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HAMBURG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.HONGKONG;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.NEWYORK;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.TOKYO;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v100;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v200;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v300;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.v400;
-import static se.citerus.dddsample.domain.model.voyage.Voyage.NONE;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.BookingService;
 import se.citerus.dddsample.application.CargoInspectionService;
@@ -40,13 +9,7 @@ import se.citerus.dddsample.application.HandlingEventService;
 import se.citerus.dddsample.application.impl.BookingServiceImpl;
 import se.citerus.dddsample.application.impl.CargoInspectionServiceImpl;
 import se.citerus.dddsample.application.impl.HandlingEventServiceImpl;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.CargoRepository;
-import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
-import se.citerus.dddsample.domain.model.cargo.Itinerary;
-import se.citerus.dddsample.domain.model.cargo.Leg;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.CannotCreateHandlingEventException;
 import se.citerus.dddsample.domain.model.handling.HandlingEventFactory;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
@@ -61,6 +24,20 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.CargoRepositoryI
 import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
+import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
+import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
+import static se.citerus.dddsample.domain.model.voyage.Voyage.NONE;
 
 public class CargoLifecycleScenarioTest {
 
@@ -361,7 +338,8 @@ public class CargoLifecycleScenarioTest {
 
     cargoInspectionService = new CargoInspectionServiceImpl(applicationEvents, cargoRepository, handlingEventRepository);
     handlingEventService = new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
-    bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService);
+    CargoFactory cargoFactory = new CargoFactory(locationRepository, cargoRepository);
+    bookingService = new BookingServiceImpl(cargoRepository, locationRepository, routingService, cargoFactory);
 
     // Circular dependency when doing synchrounous calls
     ((SynchronousApplicationEventsStub) applicationEvents).setCargoInspectionService(cargoInspectionService);

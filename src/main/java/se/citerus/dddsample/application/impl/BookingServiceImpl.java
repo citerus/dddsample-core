@@ -20,14 +20,17 @@ public class BookingServiceImpl implements BookingService {
   private final CargoRepository cargoRepository;
   private final LocationRepository locationRepository;
   private final RoutingService routingService;
+  private final CargoFactory cargoFactory;
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public BookingServiceImpl(final CargoRepository cargoRepository,
                             final LocationRepository locationRepository,
-                            final RoutingService routingService) {
+                            final RoutingService routingService,
+                            final CargoFactory cargoFactory) {
     this.cargoRepository = cargoRepository;
     this.locationRepository = locationRepository;
     this.routingService = routingService;
+    this.cargoFactory = cargoFactory;
   }
 
   @Override
@@ -35,7 +38,6 @@ public class BookingServiceImpl implements BookingService {
   public TrackingId bookNewCargo(final UnLocode originUnLocode,
                                  final UnLocode destinationUnLocode,
                                  final Date arrivalDeadline) {
-    CargoFactory cargoFactory = new CargoFactory(locationRepository, cargoRepository);
     Cargo cargo = cargoFactory.createCargo(originUnLocode, destinationUnLocode, arrivalDeadline);
 
     cargoRepository.store(cargo);
