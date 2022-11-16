@@ -13,7 +13,8 @@ import org.springframework.web.context.WebApplicationContext;
 import se.citerus.dddsample.Application;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"spring.datasource.url=jdbc:hsqldb:mem:dddsample_acceptance_test"})
 public abstract class AbstractAcceptanceTest {
 
     @Autowired

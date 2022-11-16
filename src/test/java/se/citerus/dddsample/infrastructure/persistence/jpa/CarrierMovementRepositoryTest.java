@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @ContextConfiguration(classes = TestRepositoryConfig.class)
 @Transactional
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class CarrierMovementRepositoryTest {
 
     @Autowired

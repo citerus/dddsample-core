@@ -1,6 +1,7 @@
 package se.citerus.dddsample.acceptance;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import se.citerus.dddsample.acceptance.pages.AdminPage;
 import se.citerus.dddsample.acceptance.pages.CargoBookingPage;
 import se.citerus.dddsample.acceptance.pages.CargoDestinationPage;
@@ -13,15 +14,19 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class AdminAcceptanceTest extends AbstractAcceptanceTest {
 
+    @DirtiesContext
     @Test
     public void adminSiteCargoListContainsCannedCargo() {
         AdminPage page = new AdminPage(driver, port);
         page.listAllCargo();
 
-        assertThat("Cargo list doesn't contain ABC123").isEqualTo(page.listedCargoContains("ABC123"));
-        assertThat("Cargo list doesn't contain JKL567").isEqualTo(page.listedCargoContains("JKL567"));
+        assertThat(page.listedCargoContains("ABC123")).isTrue()
+                .withFailMessage("Cargo list doesn't contain ABC123");
+        assertThat(page.listedCargoContains("JKL567")).isTrue()
+                .withFailMessage("Cargo list doesn't contain JKL567");
     }
 
+    @DirtiesContext
     @Test
     public void adminSiteCanBookNewCargo() {
         AdminPage adminPage = new AdminPage(driver, port);
