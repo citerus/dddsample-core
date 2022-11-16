@@ -3,7 +3,6 @@ package se.citerus.dddsample.domain.model.handling;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang3.ObjectUtils;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
@@ -12,6 +11,7 @@ import se.citerus.dddsample.domain.shared.ValueObject;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A HandlingEvent is used to register the event when, for instance,
@@ -97,7 +97,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
     @Override
     public boolean sameValueAs(Type other) {
-      return other != null && this.equals(other);
+      return this.equals(other);
     }
 
   }
@@ -170,7 +170,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   }
 
   public Voyage voyage() {
-    return ObjectUtils.defaultIfNull(this.voyage, Voyage.NONE);
+    return Objects.requireNonNullElse(this.voyage, Voyage.NONE);
   }
 
   public Date completionTime() {

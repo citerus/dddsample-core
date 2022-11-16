@@ -13,6 +13,10 @@ import se.citerus.dddsample.domain.shared.ValueObject;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Objects;
+
+import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
+import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
@@ -128,14 +132,14 @@ public class Delivery implements ValueObject<Delivery> {
    * @return Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
    */
   public Location lastKnownLocation() {
-      return ObjectUtils.defaultIfNull(lastKnownLocation, Location.UNKNOWN);
+      return Objects.requireNonNullElse(lastKnownLocation, Location.UNKNOWN);
   }
 
   /**
    * @return Current voyage.
    */
   public Voyage currentVoyage() {
-      return ObjectUtils.defaultIfNull(currentVoyage, Voyage.NONE);
+      return Objects.requireNonNullElse(currentVoyage, Voyage.NONE);
   }
 
   /**
