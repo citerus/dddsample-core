@@ -7,19 +7,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.citerus.dddsample.application.ApplicationEvents;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
-import se.citerus.dddsample.domain.model.location.UnLocode;
-import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
+import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.parse;
 
 /**
  * This web service endpoint implementation performs basic validation and parsing
@@ -40,27 +36,17 @@ public class HandlingReportServiceImpl implements HandlingReportService {
   @Override
   public ResponseEntity<?> submitReport(@RequestBody HandlingReport handlingReport) {
     final List<String> errors = new ArrayList<>();
-
-    final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime(), errors);
-    final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
-    final HandlingEvent.Type type = parseEventType(handlingReport.getType(), errors);
-    final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), errors);
-
-    for (String trackingIdStr : handlingReport.getTrackingIds()) {
-      final TrackingId trackingId = parseTrackingId(trackingIdStr, errors);
-
+    final List<HandlingEventRegistrationAttempt> attempts = parse(handlingReport,errors);
       if (errors.isEmpty()) {
-        final Date registrationTime = new Date();
-        final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(
-          registrationTime, completionTime, trackingId, voyageNumber, type, unLocode
-        );
-
-        applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
+        return doSubmitReport(attempts);
       } else {
         logger.error("Parse error in handling report: {}", errors);
         return ResponseEntity.badRequest().body("Invalid request: " + String.join(",", errors));
       }
-    }
-    return ResponseEntity.status(201).build();
+  }
+
+  private ResponseEntity<Object> doSubmitReport(List<HandlingEventRegistrationAttempt> attempts) {
+    attempts.forEach(applicationEvents::receivedHandlingEventRegistrationAttempt);
+    return ResponseEntity.status(CREATED).build();
   }
 }
