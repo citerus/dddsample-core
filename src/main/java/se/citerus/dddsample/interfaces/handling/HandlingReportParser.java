@@ -1,9 +1,10 @@
 package se.citerus.dddsample.interfaces.handling;
 
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
+import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +13,11 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Utility methods for parsing various forms of handling report formats.
@@ -28,6 +34,31 @@ public class HandlingReportParser {
       errors.add(e.getMessage());
       return null;
     }
+  }
+
+  public static List<HandlingEventRegistrationAttempt> parse(final HandlingReport handlingReport,final List<String> errors){
+    final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime(), errors);
+    final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber(), errors);
+    final Type type = parseEventType(handlingReport.getType(), errors);
+    final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode(), errors);
+    final List<TrackingId> trackingIds = parseTrackingIds(handlingReport.getTrackingIds(),errors);
+    if(errors.isEmpty()){
+      return trackingIds.stream().map(trackingId->new HandlingEventRegistrationAttempt(
+              new Date(), completionTime, trackingId, voyageNumber, type, unLocode
+      )).collect(toList());
+    }else {
+      return emptyList();
+    }
+  }
+
+  public static List<TrackingId> parseTrackingIds(final List<String> trackingIdStrs, final List<String> errors) {
+      return Optional.ofNullable(trackingIdStrs)
+              .orElse(emptyList())
+              .stream()
+              .map(trackingIdStr->parseTrackingId(trackingIdStr,errors))
+              .filter(Objects::nonNull)
+              .collect(toList());
+
   }
 
   public static TrackingId parseTrackingId(final String trackingId, final List<String> errors) {
@@ -63,11 +94,11 @@ public class HandlingReportParser {
     return date;
   }
 
-  public static HandlingEvent.Type parseEventType(final String eventType, final List<String> errors) {
+  public static Type parseEventType(final String eventType, final List<String> errors) {
     try {
-      return HandlingEvent.Type.valueOf(eventType);
+      return Type.valueOf(eventType);
     } catch (IllegalArgumentException e) {
-      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(HandlingEvent.Type.values()));
+      errors.add(eventType + " is not a valid handling event type. Valid types are: " + Arrays.toString(Type.values()));
       return null;
     }
   }
