@@ -1,8 +1,8 @@
 package se.citerus.dddsample.interfaces.handling;
 
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
-import se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.handling.HandlingEvent.Type;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
@@ -11,11 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -81,26 +77,22 @@ public class HandlingReportParser {
     return new Date(completionTime.toEpochSecond(ZoneOffset.UTC) * 1000);
   }
 
-  public static List<HandlingEventRegistrationAttempt> parse(final HandlingReport handlingReport,final List<String> errors){
+  public static List<HandlingEventRegistrationAttempt> parse(final HandlingReport handlingReport){
     final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime());
     final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber());
     final Type type = parseEventType(handlingReport.getType());
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode());
     final List<TrackingId> trackingIds = parseTrackingIds(handlingReport.getTrackingIds());
-    if (errors.isEmpty()) {
-      return trackingIds.stream().map(trackingId->new HandlingEventRegistrationAttempt(
-              new Date(), completionTime, trackingId, voyageNumber, type, unLocode
-      )).collect(toList());
-    } else {
-      return emptyList();
-    }
+    return trackingIds.stream().map(trackingId -> new HandlingEventRegistrationAttempt(
+            new Date(), completionTime, trackingId, voyageNumber, type, unLocode
+    )).collect(toList());
   }
 
   public static List<TrackingId> parseTrackingIds(final List<String> trackingIdStrs) {
     return Optional.ofNullable(trackingIdStrs)
             .orElse(emptyList())
             .stream()
-            .map(trackingIdStr->parseTrackingId(trackingIdStr))
+            .map(HandlingReportParser::parseTrackingId)
             .filter(Objects::nonNull)
             .collect(toList());
   }

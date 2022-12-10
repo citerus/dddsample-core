@@ -91,8 +91,7 @@ public class HandlingReportIntegrationTest {
             restTemplate.exchange(request, String.class);
             fail("Did not throw HttpClientErrorException");
         } catch (HttpClientErrorException e) {
-            String responseBody = e.getResponseBodyAsString();
-            Map<String, String> map = mapper.readValue(responseBody, Map.class);
+            Map<String, String> map = mapper.readValue(e.getResponseBodyAsString(), Map.class);
             assertThat(map.get("message")).contains("JSON parse error: Cannot deserialize value of type `java.time.LocalDateTime` from String \"invalid date\": Text 'invalid date' could not be parsed at index 0");
         }
     }
