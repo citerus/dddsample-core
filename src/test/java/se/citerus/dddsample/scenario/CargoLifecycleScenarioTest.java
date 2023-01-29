@@ -30,13 +30,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
 import static se.citerus.dddsample.domain.model.cargo.RoutingStatus.*;
 import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 import static se.citerus.dddsample.domain.model.handling.HandlingEvent.Type.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.*;
 import static se.citerus.dddsample.domain.model.voyage.Voyage.NONE;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.*;
 
 public class CargoLifecycleScenarioTest {
 
