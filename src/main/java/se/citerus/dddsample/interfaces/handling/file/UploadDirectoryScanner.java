@@ -36,8 +36,8 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
   private final ApplicationEvents applicationEvents;
 
   public UploadDirectoryScanner(@NonNull File uploadDirectory, @NonNull File parseFailureDirectory, ApplicationEvents applicationEvents) {
-    this.uploadDirectory = Objects.requireNonNull(uploadDirectory);
-    this.parseFailureDirectory = Objects.requireNonNull(parseFailureDirectory);
+    this.uploadDirectory = uploadDirectory;
+    this.parseFailureDirectory = parseFailureDirectory;
     this.applicationEvents = applicationEvents;
   }
 

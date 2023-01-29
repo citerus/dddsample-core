@@ -1,14 +1,13 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
 import org.assertj.core.groups.Tuple;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -22,7 +21,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import javax.persistence.EntityManager;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -34,10 +32,11 @@ import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.HELSINKI_TO_HONGKONG;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.NEW_YORK_TO_DALLAS;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ContextConfiguration(classes = TestRepositoryConfig.class)
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class CargoRepositoryTest {
     @Autowired
     CargoRepository cargoRepository;

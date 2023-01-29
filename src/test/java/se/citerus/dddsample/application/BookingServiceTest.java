@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.CHICAGO;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.STOCKHOLM;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.CHICAGO;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.STOCKHOLM;
 
 public class BookingServiceTest {
 

@@ -17,8 +17,8 @@ import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
-import static se.citerus.dddsample.domain.model.voyage.SampleVoyages.CM001;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.CM001;
 
 public class HandlingEventServiceTest {
   private HandlingEventServiceImpl service;

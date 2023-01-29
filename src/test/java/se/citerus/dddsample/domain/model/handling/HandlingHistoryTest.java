@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.citerus.dddsample.application.util.DateTestUtil.toDate;
-import static se.citerus.dddsample.domain.model.location.SampleLocations.*;
+import static se.citerus.dddsample.application.util.DateUtils.toDate;
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 public class HandlingHistoryTest {
   Cargo cargo;
