@@ -31,8 +31,8 @@ import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
 import java.io.File;
-import java.util.Arrays;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.Locale;
 
 @Configuration
@@ -52,6 +52,7 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 
@@ -59,8 +60,9 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(Locale.ENGLISH);
-        localeResolver.setSupportedLocales(Arrays.asList(
-                new Locale("sv", "SE"), // add new locales below
+        localeResolver.setSupportedLocales(Arrays.asList( // add new locales below
+                new Locale("sv", "SE"),
+                Locale.SIMPLIFIED_CHINESE,
                 Locale.ENGLISH));
         return localeResolver;
     }
