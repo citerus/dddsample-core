@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.context.i18n.SimpleLocaleContext;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
@@ -17,7 +15,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.AbstractLocaleContextResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.BookingService;
@@ -25,6 +22,7 @@ import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
+import se.citerus.dddsample.infrastructure.i18n.QueryParamLocaleResolver;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
 import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
@@ -35,6 +33,7 @@ import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Locale;
 
 @Configuration
@@ -60,27 +59,10 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
-        AbstractLocaleContextResolver localeResolver = new AbstractLocaleContextResolver() {
-            @Override
-            public LocaleContext resolveLocaleContext(HttpServletRequest request) {
-                String[] locales = request.getParameterMap().getOrDefault("lang", new String[]{"en"});
-                String localeName = locales != null && locales.length > 0 ? locales[0] : "";
-                switch (localeName) {
-                    case "sv_SE": return new SimpleLocaleContext(new Locale("sv", "SE"));
-                    case "zh_CN": return new SimpleLocaleContext(Locale.SIMPLIFIED_CHINESE);
-                    case "en": return new SimpleLocaleContext(Locale.ENGLISH);
-                    default: {
-                        log.warn("Got unsupported locale '{}', falling back to default locale '{}'", localeName, this.getDefaultLocale());
-                        return new SimpleLocaleContext(this.getDefaultLocale());
-                    }
-                }
-            }
-
-            @Override
-            public void setLocaleContext(HttpServletRequest request, HttpServletResponse response, LocaleContext localeContext) {
-                // intentionally left blank
-            }
-        };
+        QueryParamLocaleResolver localeResolver = new QueryParamLocaleResolver();
+        localeResolver.setSupportedLocales(List.of(Locale.ENGLISH,
+                Locale.SIMPLIFIED_CHINESE,
+                new Locale("sv", "SE"))); // add new locales here when available
         localeResolver.setDefaultLocale(Locale.ENGLISH);
         return localeResolver;
     }
