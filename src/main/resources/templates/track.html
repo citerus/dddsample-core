@@ -1,9 +1,11 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title th:text="#{cargo.tracking.header}">Tracking cargo</title>
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
 </head>
@@ -73,8 +75,9 @@
         </div>
     </div>
     <div id="footer">
-        This application is written by <a href="http://www.citerus.se" target="_blank">Citerus</a>
-        and <a href="http://www.domainlanguage.com" target="_blank">Domain Language</a>
+        <span th:text="#{cargo.tracking.footer}">This application is written by</span>
+        <a href="http://www.citerus.se" target="_blank">Citerus</a>
+        & <a href="http://www.domainlanguage.com" target="_blank">Domain Language Inc</a>
     </div>
 </div>
 <script type="text/javascript" charset="UTF-8">
