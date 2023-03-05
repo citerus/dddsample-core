@@ -1,11 +1,10 @@
 package se.citerus.dddsample.domain.model.cargo;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.Entity;
 
-import java.util.Objects;
 import javax.persistence.*;
 import java.util.List;
 

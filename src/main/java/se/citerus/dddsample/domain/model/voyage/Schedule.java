@@ -1,7 +1,7 @@
 package se.citerus.dddsample.domain.model.voyage;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Collections;

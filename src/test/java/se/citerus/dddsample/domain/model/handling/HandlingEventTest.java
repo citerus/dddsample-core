@@ -47,7 +47,7 @@ public class HandlingEventTest {
         try {
           new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null);
             fail("Handling event type " + type + " requires carrier movement");
-        } catch (IllegalArgumentException expected) {}
+        } catch (NullPointerException expected) {}
     }
   }
 
