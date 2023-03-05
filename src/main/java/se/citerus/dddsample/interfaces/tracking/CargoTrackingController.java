@@ -65,6 +65,10 @@ public final class CargoTrackingController {
                             final BindingResult bindingResult) {
         final Locale locale = RequestContextUtils.getLocale(request);
         trackCommandValidator.validate(command, bindingResult);
+        if (bindingResult.hasErrors()) {
+            bindingResult.rejectValue("trackingId", "error.required");
+            return "track";
+        }
 
         final TrackingId trackingId = new TrackingId(command.getTrackingId());
         final Cargo cargo = cargoRepository.find(trackingId);
