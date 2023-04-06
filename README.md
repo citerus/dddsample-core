@@ -1,5 +1,5 @@
 # DDDSample
-[![Build Status](https://travis-ci.org/citerus/dddsample-core.svg?branch=master)](https://travis-ci.org/citerus/dddsample-core)
+[![Java CI with Maven](https://github.com/citerus/dddsample-core/actions/workflows/pipeline.yml/badge.svg)](https://github.com/citerus/dddsample-core/actions/workflows/pipeline.yml)
 
 This is the new home of the original DDD Sample app hosted at SourceForge. 
 
