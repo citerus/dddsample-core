@@ -7,6 +7,7 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.*;
 
 import static se.citerus.dddsample.application.util.DateUtils.toDate;
@@ -26,7 +27,7 @@ public class SampleVoyages {
 
     private static Voyage createVoyage(String id, Location from, Location to) {
         return new Voyage(new VoyageNumber(id), new Schedule(List.of(
-                new CarrierMovement(from, to, new Date(), new Date())
+                new CarrierMovement(from, to, Instant.now(), Instant.now())
         )));
     }
 

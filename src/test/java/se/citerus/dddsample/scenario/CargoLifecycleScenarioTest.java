@@ -25,7 +25,7 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.HandlingEventRep
 import se.citerus.dddsample.infrastructure.persistence.inmemory.LocationRepositoryInMem;
 import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepositoryInMem;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,7 +91,7 @@ public class CargoLifecycleScenarioTest {
        and it should arrive in no more than two weeks. */
     Location origin = HONGKONG;
     Location destination = STOCKHOLM;
-    Date arrivalDeadline = toDate("2009-03-18");
+    Instant arrivalDeadline = toDate("2009-03-18");
 
     /* Use case 1: booking
 

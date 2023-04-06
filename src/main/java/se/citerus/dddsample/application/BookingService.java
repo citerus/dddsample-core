@@ -4,7 +4,7 @@ import se.citerus.dddsample.domain.model.cargo.Itinerary;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -20,7 +20,7 @@ public interface BookingService {
    * @param arrivalDeadline arrival deadline
    * @return Cargo tracking id
    */
-  TrackingId bookNewCargo(UnLocode origin, UnLocode destination, Date arrivalDeadline);
+  TrackingId bookNewCargo(UnLocode origin, UnLocode destination, Instant arrivalDeadline);
 
   /**
    * Requests a list of itineraries describing possible routes for this cargo.

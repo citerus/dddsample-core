@@ -3,8 +3,8 @@ package se.citerus.dddsample.interfaces.booking.web;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class RouteAssignmentCommand {
@@ -34,8 +34,8 @@ public class RouteAssignmentCommand {
     private String voyageNumber;
     private String fromUnLocode;
     private String toUnLocode;
-    private Date fromDate;
-    private Date toDate;
+    private Instant fromDate;
+    private Instant toDate;
 
     public String getVoyageNumber() {
       return voyageNumber;
@@ -61,19 +61,19 @@ public class RouteAssignmentCommand {
       this.toUnLocode = toUnLocode;
     }
 
-    public Date getFromDate() {
+    public Instant getFromDate() {
       return fromDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(Instant fromDate) {
       this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public Instant getToDate() {
       return toDate;
     }
 
-    public void setToDate(Date toDate) {
+    public void setToDate(Instant toDate) {
       this.toDate = toDate;
     }
 

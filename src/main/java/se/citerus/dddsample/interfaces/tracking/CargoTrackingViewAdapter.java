@@ -9,6 +9,9 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -118,10 +121,10 @@ public final class CargoTrackingViewAdapter {
   }
 
   public String getEta() {
-    Date eta = cargo.delivery().estimatedTimeOfArrival();
+    Instant eta = cargo.delivery().estimatedTimeOfArrival();
 
     if (eta == null) return "?";
-    else return new SimpleDateFormat(FORMAT).format(eta);
+    else return DateTimeFormatter.ofPattern(FORMAT).withZone(timeZone.toZoneId()).format(eta);
   }
 
   public String getNextExpectedActivity() {
@@ -179,9 +182,7 @@ public final class CargoTrackingViewAdapter {
      * @return Time when the event was completed.
      */
     public String getTime() {
-      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-      sdf.setTimeZone(timeZone);
-      return sdf.format(handlingEvent.completionTime());
+      return DateTimeFormatter.ofPattern(FORMAT).withZone(timeZone.toZoneId()).format(handlingEvent.completionTime());
     }
 
     /**

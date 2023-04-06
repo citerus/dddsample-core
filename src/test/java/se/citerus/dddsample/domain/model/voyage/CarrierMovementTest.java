@@ -2,7 +2,7 @@ package se.citerus.dddsample.domain.model.voyage;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -14,17 +14,17 @@ public class CarrierMovementTest {
   @Test
   public void testConstructor() {
     try {
-      new CarrierMovement(null, null, new Date(), new Date());
+      new CarrierMovement(null, null, Instant.now(), Instant.now());
       fail("Should not accept null constructor arguments");
     } catch (IllegalArgumentException expected) {}
 
     try {
-      new CarrierMovement(STOCKHOLM, null, new Date(), new Date());
+      new CarrierMovement(STOCKHOLM, null, Instant.now(), Instant.now());
       fail("Should not accept null constructor arguments");
     } catch (IllegalArgumentException expected) {}
 
     // Legal
-    new CarrierMovement(STOCKHOLM, HAMBURG, new Date(), new Date());
+    new CarrierMovement(STOCKHOLM, HAMBURG, Instant.now(), Instant.now());
   }
 
   @Test
@@ -35,10 +35,10 @@ public class CarrierMovementTest {
     // However, in practice, carrier movements will be initialized by different processes
     // so we might have different Date that reference the same time, and we want to be
     // certain that sameValueAs does the right thing in that case.
-    CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(referenceTime), new Date(referenceTime));
-    CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, new Date(referenceTime), new Date(referenceTime));
-    CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(referenceTime), new Date(referenceTime));
-    CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, new Date(referenceTime), new Date(referenceTime));
+    CarrierMovement cm1 = new CarrierMovement(STOCKHOLM, HAMBURG, Instant.ofEpochMilli(referenceTime), Instant.ofEpochMilli(referenceTime));
+    CarrierMovement cm2 = new CarrierMovement(STOCKHOLM, HAMBURG, Instant.ofEpochMilli(referenceTime), Instant.ofEpochMilli(referenceTime));
+    CarrierMovement cm3 = new CarrierMovement(HAMBURG, STOCKHOLM, Instant.ofEpochMilli(referenceTime), Instant.ofEpochMilli(referenceTime));
+    CarrierMovement cm4 = new CarrierMovement(HAMBURG, STOCKHOLM, Instant.ofEpochMilli(referenceTime), Instant.ofEpochMilli(referenceTime));
 
     assertThat(cm1.sameValueAs(cm2)).isTrue();
     assertThat(cm2.sameValueAs(cm3)).isFalse();

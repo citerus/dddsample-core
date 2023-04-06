@@ -6,7 +6,8 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,23 +22,23 @@ public class HandlingEventTest {
   @BeforeEach
   public void setUp() {
     TrackingId trackingId = new TrackingId("XYZ");
-    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, NEWYORK, new Date());
+    RouteSpecification routeSpecification = new RouteSpecification(HONGKONG, NEWYORK, Instant.now());
     cargo = new Cargo(trackingId, routeSpecification);
   }
 
   @Test
   public void testNewWithCarrierMovement() {
 
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), LOAD, HONGKONG, CM003);
+    HandlingEvent e1 = new HandlingEvent(cargo, Instant.now(), Instant.now(), LOAD, HONGKONG, CM003);
     assertThat(e1.location()).isEqualTo(HONGKONG);
 
-    HandlingEvent e2 = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, NEWYORK, CM003);
+    HandlingEvent e2 = new HandlingEvent(cargo, Instant.now(), Instant.now(), UNLOAD, NEWYORK, CM003);
     assertThat(e2.location()).isEqualTo(NEWYORK);
 
       // These event types prohibit a carrier movement association
     for (HandlingEvent.Type type : List.of(CLAIM, RECEIVE, CUSTOMS)) {
       try {
-        new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, CM003);
+        new HandlingEvent(cargo, Instant.now(), Instant.now(), type, HONGKONG, CM003);
         fail("Handling event type " + type + " prohibits carrier movement");
       } catch (IllegalArgumentException expected) {}
     }
@@ -45,7 +46,7 @@ public class HandlingEventTest {
       // These event types requires a carrier movement association
     for (HandlingEvent.Type type : List.of(LOAD, UNLOAD)) {
         try {
-          new HandlingEvent(cargo, new Date(), new Date(), type, HONGKONG, null);
+          new HandlingEvent(cargo, Instant.now(), Instant.now(), type, HONGKONG, null);
             fail("Handling event type " + type + " requires carrier movement");
         } catch (IllegalArgumentException expected) {}
     }
@@ -53,35 +54,35 @@ public class HandlingEventTest {
 
   @Test
   public void testNewWithLocation() {
-    HandlingEvent e1 = new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.CLAIM, HELSINKI);
+    HandlingEvent e1 = new HandlingEvent(cargo, Instant.now(), Instant.now(), HandlingEvent.Type.CLAIM, HELSINKI);
     assertThat(e1.location()).isEqualTo(HELSINKI);
   }
 
   @Test
   public void testCurrentLocationLoadEvent() {
 
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), LOAD, CHICAGO, CM004);
+    HandlingEvent ev = new HandlingEvent(cargo, Instant.now(), Instant.now(), LOAD, CHICAGO, CM004);
     
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
 
   @Test
   public void testCurrentLocationUnloadEvent() {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), UNLOAD, HAMBURG, CM004);
+    HandlingEvent ev = new HandlingEvent(cargo, Instant.now(), Instant.now(), UNLOAD, HAMBURG, CM004);
     
     assertThat(ev.location()).isEqualTo(HAMBURG);
   }
 
   @Test
   public void testCurrentLocationReceivedEvent() {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), RECEIVE, CHICAGO);
+    HandlingEvent ev = new HandlingEvent(cargo, Instant.now(), Instant.now(), RECEIVE, CHICAGO);
 
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
 
   @Test
   public void testCurrentLocationClaimedEvent() {
-    HandlingEvent ev = new HandlingEvent(cargo, new Date(), new Date(), CLAIM, CHICAGO);
+    HandlingEvent ev = new HandlingEvent(cargo, Instant.now(), Instant.now(), CLAIM, CHICAGO);
 
     assertThat(ev.location()).isEqualTo(CHICAGO);
   }
@@ -106,8 +107,8 @@ public class HandlingEventTest {
 
   @Test
   public void testEqualsAndSameAs() {
-    Date timeOccured = new Date();
-    Date timeRegistered = new Date();
+    Instant timeOccured = Instant.now();
+    Instant timeRegistered = Instant.now();
 
     HandlingEvent ev1 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, CM005);
     HandlingEvent ev2 = new HandlingEvent(cargo, timeOccured, timeRegistered, LOAD, CHICAGO, CM005);
@@ -121,5 +122,4 @@ public class HandlingEventTest {
     assertThat(ev2.equals(null)).isFalse();
     assertThat(ev2.equals(new Object())).isFalse();
   }
-
 }

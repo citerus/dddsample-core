@@ -1,9 +1,9 @@
 package se.citerus.dddsample.interfaces.booking.facade.dto;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ public final class CargoRoutingDTO implements Serializable {
   private final String trackingId;
   private final String origin;
   private final String finalDestination;
-  private final Date arrivalDeadline;
+  private final Instant arrivalDeadline;
   private final boolean misrouted;
   private final List<LegDTO> legs;
 
@@ -27,7 +27,7 @@ public final class CargoRoutingDTO implements Serializable {
    * @param arrivalDeadline
    * @param misrouted
    */
-  public CargoRoutingDTO(String trackingId, String origin, String finalDestination, Date arrivalDeadline, boolean misrouted) {
+  public CargoRoutingDTO(String trackingId, String origin, String finalDestination, Instant arrivalDeadline, boolean misrouted) {
     this.trackingId = trackingId;
     this.origin = origin;
     this.finalDestination = finalDestination;
@@ -48,7 +48,7 @@ public final class CargoRoutingDTO implements Serializable {
     return finalDestination;
   }
 
-  public void addLeg(String voyageNumber, String from, String to, Date loadTime, Date unloadTime) {
+  public void addLeg(String voyageNumber, String from, String to, Instant loadTime, Instant unloadTime) {
     legs.add(new LegDTO(voyageNumber, from, to, loadTime, unloadTime));
   }
 
@@ -67,7 +67,7 @@ public final class CargoRoutingDTO implements Serializable {
     return !legs.isEmpty();
   }
 
-  public Date getArrivalDeadline() {
+  public Instant getArrivalDeadline() {
     return arrivalDeadline;
   }
 

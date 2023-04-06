@@ -21,7 +21,11 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import javax.persistence.EntityManager;
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,11 +72,11 @@ public class CargoRepositoryTest {
         assertThat(events).hasSize(3);
 
         HandlingEvent firstEvent = events.get(0);
-        assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, toDate("2009-03-01"), new Date(), Voyage.NONE.voyageNumber());
+        assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, toDate("2009-03-01"), Instant.now(), Voyage.NONE.voyageNumber());
 
         HandlingEvent secondEvent = events.get(1);
 
-        assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, toDate("2009-03-02"), new Date(), new VoyageNumber("0100S"));
+        assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, toDate("2009-03-02"), Instant.now(), new VoyageNumber("0100S"));
 
         List<Leg> legs = cargo.itinerary().legs();
         assertThat(legs).hasSize(3)
@@ -84,13 +88,15 @@ public class CargoRepositoryTest {
     }
 
     private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType,
-                                     Location expectedLocation, Date expectedCompletionTime, Date expectedRegistrationTime, VoyageNumber voyage) {
+                                     Location expectedLocation, Instant expectedCompletionTime, Instant expectedRegistrationTime, VoyageNumber voyage) {
         assertThat(event.type()).isEqualTo(expectedEventType);
         assertThat(event.location()).isEqualTo(expectedLocation);
-
         assertThat(event.completionTime()).isEqualTo(expectedCompletionTime);
 
-        assertThat(event.registrationTime()).isEqualToIgnoringSeconds(expectedRegistrationTime);
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd hh:mm")
+                .withZone(ZoneOffset.UTC);
+        assertThat(formatter.format(event.registrationTime())).isEqualTo(formatter.format(expectedRegistrationTime));
 
         assertThat(event.voyage().voyageNumber()).isEqualTo(voyage);
         assertThat(event.cargo()).isEqualTo(cargo);
@@ -107,7 +113,7 @@ public class CargoRepositoryTest {
         Location origin = locationRepository.find(STOCKHOLM.unLocode());
         Location destination = locationRepository.find(MELBOURNE.unLocode());
 
-        Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, new Date()));
+        Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, Instant.now()));
         cargoRepository.store(cargo);
 
         Voyage voyage = voyageRepository.find(NEW_YORK_TO_DALLAS.voyageNumber());
@@ -117,7 +123,7 @@ public class CargoRepositoryTest {
                         voyage,
                         locationRepository.find(STOCKHOLM.unLocode()),
                         locationRepository.find(MELBOURNE.unLocode()),
-                        new Date(), new Date())
+                        Instant.now(), Instant.now())
         )));
 
         flush();
@@ -144,7 +150,7 @@ public class CargoRepositoryTest {
         Location legFrom = locationRepository.find(new UnLocode("FIHEL"));
         Location legTo = locationRepository.find(new UnLocode("CNHKG"));
         Voyage voyage = voyageRepository.find(HELSINKI_TO_HONGKONG.voyageNumber());
-        Itinerary newItinerary = new Itinerary(List.of(new Leg(voyage, legFrom, legTo, new Date(), new Date())));
+        Itinerary newItinerary = new Itinerary(List.of(new Leg(voyage, legFrom, legTo, Instant.now(), Instant.now())));
 
         cargo.assignToRoute(newItinerary);
 
