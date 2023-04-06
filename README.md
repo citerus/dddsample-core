@@ -16,6 +16,26 @@ Development blog: https://citerus.github.io/dddsample-core/
 
 Trello board: https://trello.com/b/PTDFRyxd
 
+## How to build
+
+Using Maven (we recommend using the included Maven wrapper), run this command to compile and run all the tests:
+
+    ./mvnw compile
+    
+If you want to compile without running the tests, run the following command:
+
+    ./mvnw verify
+    
+For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
+    
+## How to run
+
+To start the app using the included application server and in-process HSQL database, run this command:
+
+    ./mvnw boot:run
+    
+For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
+
 ## Entity relationships
 
 ![](./dddsample.drawio.png)
