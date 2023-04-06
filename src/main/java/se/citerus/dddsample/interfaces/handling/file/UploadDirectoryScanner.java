@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 import java.util.*;
 
 import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
@@ -103,13 +104,13 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
 
   private void queueAttempt(String completionTimeStr, String trackingIdStr, String voyageNumberStr, String unLocodeStr, String eventTypeStr) throws Exception {
     try {
-      final Date date = parseDate(completionTimeStr);
+      final Instant date = parseDate(completionTimeStr);
       final TrackingId trackingId = parseTrackingId(trackingIdStr);
       final VoyageNumber voyageNumber = parseVoyageNumber(voyageNumberStr);
       final HandlingEvent.Type eventType = parseEventType(eventTypeStr);
       final UnLocode unLocode = parseUnLocode(unLocodeStr);
       final HandlingEventRegistrationAttempt attempt = new HandlingEventRegistrationAttempt(
-              new Date(), date, trackingId, voyageNumber, eventType, unLocode);
+              Instant.now(), date, trackingId, voyageNumber, eventType, unLocode);
       applicationEvents.receivedHandlingEventRegistrationAttempt(attempt);
     } catch (IllegalArgumentException e) {
       throw new Exception("Error parsing HandlingReport", e);

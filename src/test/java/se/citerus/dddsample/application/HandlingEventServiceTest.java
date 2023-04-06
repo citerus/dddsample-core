@@ -13,7 +13,8 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-import java.util.Date;
+
+import java.time.Instant;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -28,7 +29,7 @@ public class HandlingEventServiceTest {
   private HandlingEventRepository handlingEventRepository;
   private LocationRepository locationRepository;
 
-  private final Cargo cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, new Date()));
+  private final Cargo cargo = new Cargo(new TrackingId("ABC"), new RouteSpecification(HAMBURG, TOKYO, Instant.now()));
 
   @BeforeEach
   public void setUp() {
@@ -48,7 +49,7 @@ public class HandlingEventServiceTest {
     when(voyageRepository.find(CM001.voyageNumber())).thenReturn(CM001);
     when(locationRepository.find(STOCKHOLM.unLocode())).thenReturn(STOCKHOLM);
 
-    service.registerHandlingEvent(new Date(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
+    service.registerHandlingEvent(Instant.now(), cargo.trackingId(), CM001.voyageNumber(), STOCKHOLM.unLocode(), HandlingEvent.Type.LOAD);
     verify(handlingEventRepository, times(1)).store(isA(HandlingEvent.class));
     verify(applicationEvents, times(1)).cargoWasHandled(isA(HandlingEvent.class));
   }
