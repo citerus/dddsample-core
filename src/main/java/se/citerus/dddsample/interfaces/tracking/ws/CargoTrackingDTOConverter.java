@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class CargoTrackingDTOConverter {
     private static final DateTimeFormatter formatter = DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.MEDIUM)
-            .withZone(ZoneOffset.systemDefault());
+            .withZone(ZoneOffset.UTC);
 
     public static CargoTrackingDTO convert(Cargo cargo, List<HandlingEvent> handlingEvents, MessageSource messageSource, Locale locale) {
         List<HandlingEventDTO> handlingEventDTOs = convertHandlingEvents(handlingEvents, cargo, messageSource, locale);
