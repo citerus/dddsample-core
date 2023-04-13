@@ -72,11 +72,11 @@ public class CargoRepositoryTest {
         assertThat(events).hasSize(3);
 
         HandlingEvent firstEvent = events.get(0);
-        assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, toDate("2009-03-01"), Instant.now(), Voyage.NONE.voyageNumber());
+        assertHandlingEvent(cargo, firstEvent, RECEIVE, HONGKONG, toDate("2024-03-01"), Instant.now(), Voyage.NONE.voyageNumber());
 
         HandlingEvent secondEvent = events.get(1);
 
-        assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, toDate("2009-03-02"), Instant.now(), new VoyageNumber("0100S"));
+        assertHandlingEvent(cargo, secondEvent, LOAD, HONGKONG, toDate("2024-03-02"), Instant.now(), new VoyageNumber("0100S"));
 
         List<Leg> legs = cargo.itinerary().legs();
         assertThat(legs).hasSize(3)

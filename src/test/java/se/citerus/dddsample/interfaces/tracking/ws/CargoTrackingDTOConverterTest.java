@@ -12,10 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
-import se.citerus.dddsample.domain.model.cargo.Cargo;
-import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
-import se.citerus.dddsample.domain.model.cargo.RouteSpecification;
-import se.citerus.dddsample.domain.model.cargo.TrackingId;
+import se.citerus.dddsample.domain.model.cargo.*;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
@@ -64,8 +61,10 @@ class CargoTrackingDTOConverterTest {
 
         CargoTrackingDTO result = CargoTrackingDTOConverter.convert(cargo, emptyList(), mockMsgSrc, Locale.ENGLISH);
 
-        assertThat(result).extracting("trackingId", "statusText", "destination", "nextExpectedActivity", "isMisdirected")
-                .contains("TEST123", "TEST-STATUS", "Helsinki", "Next expected activity is to receive cargo in Stockholm", false);
+        assertThat(result).extracting("trackingId", "statusText", "nextExpectedActivity", "isMisdirected")
+                .contains("TEST123", "TEST-STATUS", "Next expected activity is to receive cargo in Stockholm", false);
+
+        assertThat(result.destination.getName()).isEqualTo("Helsinki");
         // assertThat(result.getEta()).isEqualTo("1970-01-01 00:00"); // TODO test this once we have added handling of timezones
     }
 
@@ -89,8 +88,9 @@ class CargoTrackingDTOConverterTest {
                 new HandlingEvent(cargo, Instant.now(), Instant.now(), HandlingEvent.Type.LOAD, origin, voyage));
         CargoTrackingDTO result = CargoTrackingDTOConverter.convert(cargo, events, mockMsgSrc, Locale.ENGLISH);
 
-        assertThat(result).extracting("trackingId", "statusText", "destination", "nextExpectedActivity", "isMisdirected")
-                .contains("TEST123", "TEST-STATUS", "Helsinki", "Next expected activity is to receive cargo in Stockholm", false);
+        assertThat(result).extracting("trackingId", "statusText", "nextExpectedActivity", "isMisdirected")
+                .contains("TEST123", "TEST-STATUS", "Next expected activity is to receive cargo in Stockholm", false);
+        assertThat(result.destination.getName()).isEqualTo("Helsinki");
         // assertThat(result.getEta()).isEqualTo("1970-01-01 00:00"); // TODO test this once timezone handling has been added
         assertThat(result.handlingEvents)
                 .hasSize(2)

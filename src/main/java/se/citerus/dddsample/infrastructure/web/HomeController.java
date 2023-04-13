@@ -8,7 +8,7 @@ public class HomeController {
 
     @RequestMapping(value = {"/", "/cargo/**", "/admin/**"})
     public String index() {
-        return "/";
+        return "/static/index";
     }
 
 }

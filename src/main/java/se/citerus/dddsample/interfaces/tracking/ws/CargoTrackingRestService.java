@@ -55,7 +55,6 @@ public class CargoTrackingRestService {
             Locale locale = RequestContextUtils.getLocale(request);
             TrackingId trkId = new TrackingId(trackingId);
             Cargo cargo = cargoRepository.find(trkId);
-            System.out.println("voyage " + cargo.itinerary().legs().get(0).voyage().toString());
             if (cargo == null) {
                 throw new NotFoundException("No cargo found for trackingId");
             }
@@ -63,7 +62,7 @@ public class CargoTrackingRestService {
                     .distinctEventsByCompletionTime();
             return ResponseEntity.ok(CargoTrackingDTOConverter.convert(cargo, handlingEvents, messageSource, locale));
         } catch (NotFoundException e) {
-            URI uri = new UriTemplate(request.getContextPath() + "/api/track/{trackingId}").expand(trackingId);
+            URI uri = new UriTemplate(request.getContextPath() + "/api/cargo/{trackingId}").expand(trackingId);
             return ResponseEntity.notFound().location(uri).build();
         } catch (Exception e) {
             log.error("Unexpected error in trackCargo endpoint", e);
