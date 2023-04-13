@@ -1,0 +1,20 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  background-color: white;
+  padding: 2rem;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.main hr {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.pageContent {
+  margin-inline: 1rem;
+  flex-grow: 1;
+}

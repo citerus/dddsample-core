@@ -1,0 +1,16 @@
+.navbar {
+  display: flex;
+  gap: 1rem;
+  align-self: stretch;
+}
+
+.navbar a {
+  padding: 4px;
+  border-radius: 8px;
+  color: black;
+}
+
+a.active {
+  background-color: royalblue;
+  color: white;
+}

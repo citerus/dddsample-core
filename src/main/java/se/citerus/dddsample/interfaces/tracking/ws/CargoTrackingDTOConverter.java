@@ -4,7 +4,13 @@ import org.springframework.context.MessageSource;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.cargo.Delivery;
 import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
+import se.citerus.dddsample.domain.model.cargo.Leg;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
+import se.citerus.dddsample.domain.model.location.Location;
+import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
+import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
+import se.citerus.dddsample.interfaces.booking.facade.internal.assembler.CargoRoutingDTOAssembler;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -25,14 +31,32 @@ public class CargoTrackingDTOConverter {
         return new CargoTrackingDTO(
                 convertTrackingId(cargo),
                 convertStatusText(cargo, messageSource, locale),
+                convertOrigin(cargo),
                 convertDestination(cargo),
                 convertEta(cargo),
                 convertNextExpectedActivity(cargo),
                 convertIsMisdirected(cargo),
+                convertLegs(cargo),
                 handlingEventDTOs);
     }
 
+    private static List<CargoLegDTO> convertLegs(Cargo cargo) {
+        return cargo.itinerary.stream()
+                .map(CargoTrackingDTOConverter::convertLeg)
+                .collect(Collectors.toList());
+    }
+
+    private static CargoLegDTO convertLeg(Leg leg) {
+        return new CargoLegDTO(
+                leg.voyage().voyageNumber().idString(),
+                leg.loadLocation().unLocode().idString(),
+                leg.unloadLocation().unLocode().idString(),
+                leg.loadTime().toString(),
+                leg.unloadTime().toString());
+    }
+
     private static List<HandlingEventDTO> convertHandlingEvents(List<HandlingEvent> handlingEvents, Cargo cargo, MessageSource messageSource, Locale locale) {
+
         return handlingEvents.stream().map(he -> new HandlingEventDTO(
                 convertLocation(he),
                 convertTime(he),
@@ -121,13 +145,19 @@ public class CargoTrackingDTOConverter {
         return messageSource.getMessage(code, args, "[Unknown status]", locale);
     }
 
-    private static String convertDestination(Cargo cargo) {
-        return cargo.routeSpecification().destination().name();
+    private static LocationDTO convertOrigin(Cargo cargo) {
+        Location loc = cargo.routeSpecification().origin();
+        return new LocationDTO(loc.unlocode, loc.name);
+    }
+
+    private static LocationDTO convertDestination(Cargo cargo) {
+        Location loc = cargo.routeSpecification().destination();
+        return new LocationDTO(loc.unlocode, loc.name);
     }
 
     private static String convertEta(Cargo cargo) {
         Instant date = cargo.delivery().estimatedTimeOfArrival();
-        return date == null ? "Unknown" : formatter.format(date);
+        return date == null ? "Unknown" : date.toString();
     }
 
     protected static String convertNextExpectedActivity(Cargo cargo) {
