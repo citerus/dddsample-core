@@ -3,10 +3,8 @@ package com.pathfinder.internal;
 import com.pathfinder.api.GraphTraversalService;
 import com.pathfinder.api.TransitEdge;
 import com.pathfinder.api.TransitPath;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 
 public class GraphTraversalServiceImpl implements GraphTraversalService {
@@ -21,57 +19,38 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
     this.random = new Random();
   }
 
-  public List<TransitPath> findShortestPath(final String originNode,
-                                            final String destinationNode,
-                                            final Properties limitations) {
-    Instant date = nextDate(Instant.now());
-
+  public List<TransitPath> findShortestPath(
+      final String originNode, final String destinationNode, final Properties limitations) {
     List<String> allVertices = dao.listAllNodes();
     allVertices.remove(originNode);
     allVertices.remove(destinationNode);
 
-    final int candidateCount = getRandomNumberOfCandidates();
-    final List<TransitPath> candidates = new ArrayList<TransitPath>(candidateCount);
+    int candidateCount = getRandomNumberOfCandidates();
+    List<TransitPath> candidates = new ArrayList<>(candidateCount);
 
     for (int i = 0; i < candidateCount; i++) {
       allVertices = getRandomChunkOfNodes(allVertices);
-      final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>(allVertices.size() - 1);
-      final String firstLegTo = allVertices.get(0);
+      List<TransitEdge> transitEdges = new ArrayList<>(allVertices.size() - 1);
+      String fromNode = originNode;
+      Instant date = Instant.now();
 
-      Instant fromDate = nextDate(date);
-      Instant toDate = nextDate(fromDate);
-      date = nextDate(toDate);
-
-      transitEdges.add(new TransitEdge(
-        dao.getTransitEdge(originNode, firstLegTo),
-        originNode, firstLegTo, fromDate, toDate));
-
-      for (int j = 0; j < allVertices.size() - 1; j++) {
-        final String curr = allVertices.get(j);
-        final String next = allVertices.get(j + 1);
-        fromDate = nextDate(date);
-        toDate = nextDate(fromDate);
+      for (int j = 0; j <= allVertices.size(); ++j) {
+        Instant fromDate = nextDate(date);
+        Instant toDate = nextDate(fromDate);
+        String toNode = (j >= allVertices.size() ? destinationNode : allVertices.get(j));
+        transitEdges.add(
+            new TransitEdge(
+                dao.getTransitEdge(fromNode, toNode), fromNode, toNode, fromDate, toDate));
+        fromNode = toNode;
         date = nextDate(toDate);
-        transitEdges.add(new TransitEdge(dao.getTransitEdge(curr, next), curr, next, fromDate, toDate));
       }
-
-      final String lastLegFrom = allVertices.get(allVertices.size() - 1);
-      fromDate = nextDate(date);
-      toDate = nextDate(fromDate);
-      transitEdges.add(new TransitEdge(
-        dao.getTransitEdge(lastLegFrom, destinationNode),
-        lastLegFrom, destinationNode, fromDate, toDate));
-
       candidates.add(new TransitPath(transitEdges));
     }
-
     return candidates;
   }
 
   private Instant nextDate(Instant date) {
-    return date
-            .plus(1, ChronoUnit.DAYS)
-            .plus((random.nextInt(1000) - 500), ChronoUnit.MINUTES);
+    return date.plus(1, ChronoUnit.DAYS).plus((random.nextInt(1000) - 500), ChronoUnit.MINUTES);
   }
 
   private int getRandomNumberOfCandidates() {
@@ -81,8 +60,7 @@ public class GraphTraversalServiceImpl implements GraphTraversalService {
   private List<String> getRandomChunkOfNodes(List<String> allNodes) {
     Collections.shuffle(allNodes);
     final int total = allNodes.size();
-    final int chunk = total > 4 ? 1 + new Random().nextInt(5) : total;
+    final int chunk = total > 4 ? 1 + random.nextInt(5) : total;
     return allNodes.subList(0, chunk);
   }
-
 }
