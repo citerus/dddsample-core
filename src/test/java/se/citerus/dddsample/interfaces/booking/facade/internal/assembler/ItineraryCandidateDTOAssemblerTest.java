@@ -11,8 +11,8 @@ import se.citerus.dddsample.infrastructure.persistence.inmemory.VoyageRepository
 import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,8 +32,8 @@ public class ItineraryCandidateDTOAssemblerTest {
 
     final Itinerary itinerary = new Itinerary(
       List.of(
-        new Leg(CM001, origin, SHANGHAI, new Date(), new Date()),
-        new Leg(CM001, ROTTERDAM, destination, new Date(), new Date())
+        new Leg(CM001, origin, SHANGHAI, Instant.now(), Instant.now()),
+        new Leg(CM001, ROTTERDAM, destination, Instant.now(), Instant.now())
       )
     );
 
@@ -56,8 +56,8 @@ public class ItineraryCandidateDTOAssemblerTest {
     final ItineraryCandidateDTOAssembler assembler = new ItineraryCandidateDTOAssembler();
 
     final List<LegDTO> legs = new ArrayList<LegDTO>();
-    legs.add(new LegDTO("CM001", "AAAAA", "BBBBB", new Date(), new Date()));
-    legs.add(new LegDTO("CM001", "BBBBB", "CCCCC", new Date(), new Date()));
+    legs.add(new LegDTO("CM001", "AAAAA", "BBBBB", Instant.now(), Instant.now()));
+    legs.add(new LegDTO("CM001", "BBBBB", "CCCCC", Instant.now(), Instant.now()));
 
     final LocationRepository locationRepository = mock(LocationRepository.class);
     when(locationRepository.find(new UnLocode("AAAAA"))).thenReturn(HONGKONG);

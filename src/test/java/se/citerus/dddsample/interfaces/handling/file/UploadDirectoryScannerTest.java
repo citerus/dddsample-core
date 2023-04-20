@@ -15,9 +15,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
+import java.time.ZoneOffset;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings("resource")
 public class UploadDirectoryScannerTest {
 
-    private static final Date exampleDate = new Date(LocalDateTime.of(2022, 10, 29, 13, 37).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000);
+    private static final Instant exampleDate = LocalDateTime.parse("2022-10-29T13:37").atZone(ZoneOffset.UTC).toInstant();
     private File uploadDir;
     private File parseFailureDir;
 

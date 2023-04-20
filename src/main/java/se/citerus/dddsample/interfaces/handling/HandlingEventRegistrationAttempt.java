@@ -8,7 +8,7 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * This is a simple transfer object for passing incoming handling event
@@ -19,15 +19,15 @@ import java.util.Date;
  */
 public final class HandlingEventRegistrationAttempt implements Serializable {
 
-  private final Date registrationTime;
-  private final Date completionTime;
+  private final Instant registrationTime;
+  private final Instant completionTime;
   private final TrackingId trackingId;
   private final VoyageNumber voyageNumber;
   private final HandlingEvent.Type type;
   private final UnLocode unLocode;
 
-  public HandlingEventRegistrationAttempt(final Date registrationDate,
-                                          final Date completionDate,
+  public HandlingEventRegistrationAttempt(final Instant registrationDate,
+                                          final Instant completionDate,
                                           final TrackingId trackingId,
                                           final VoyageNumber voyageNumber,
                                           final HandlingEvent.Type type,
@@ -40,8 +40,8 @@ public final class HandlingEventRegistrationAttempt implements Serializable {
     this.unLocode = unLocode;
   }
 
-  public Date getCompletionTime() {
-    return new Date(completionTime.getTime());
+  public Instant getCompletionTime() {
+    return completionTime;
   }
 
   public TrackingId getTrackingId() {
@@ -60,7 +60,7 @@ public final class HandlingEventRegistrationAttempt implements Serializable {
     return unLocode;
   }
 
-  public Date getRegistrationTime() {
+  public Instant getRegistrationTime() {
     return registrationTime;
   }
 

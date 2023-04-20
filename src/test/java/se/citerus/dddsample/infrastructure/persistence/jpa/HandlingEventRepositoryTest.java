@@ -18,7 +18,7 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
 import javax.persistence.EntityManager;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,8 +47,8 @@ public class HandlingEventRepositoryTest {
         Location location = locationRepository.find(new UnLocode("SESTO"));
 
         Cargo cargo = cargoRepository.find(new TrackingId("ABC123"));
-        Date completionTime = new Date(10);
-        Date registrationTime = new Date(20);
+        Instant completionTime = Instant.ofEpochMilli(10);
+        Instant registrationTime = Instant.ofEpochMilli(20);
         HandlingEvent event = new HandlingEvent(cargo, completionTime, registrationTime, HandlingEvent.Type.CLAIM, location);
 
         handlingEventRepository.store(event);
@@ -58,10 +58,10 @@ public class HandlingEventRepositoryTest {
         HandlingEvent result = entityManager.createQuery(String.format("select he from HandlingEvent he where he.id = %d", event.id), HandlingEvent.class).getSingleResult();
 
         assertThat(result.cargo.id).isEqualTo(cargo.id);
-        Date completionDate = result.completionTime;
-        assertThat(completionDate).isEqualTo(new Date(10));
-        Date registrationDate = result.registrationTime;
-        assertThat(registrationDate).isEqualTo(new Date(20));
+        Instant completionDate = result.completionTime;
+        assertThat(completionDate).isEqualTo(Instant.ofEpochMilli(10));
+        Instant registrationDate = result.registrationTime;
+        assertThat(registrationDate).isEqualTo(Instant.ofEpochMilli(20));
         assertThat(result.type).isEqualTo(HandlingEvent.Type.CLAIM);
         // TODO: the rest of the columns
     }

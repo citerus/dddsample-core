@@ -1,7 +1,7 @@
 package com.pathfinder.api;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Represents an edge in a path through a graph,
@@ -13,8 +13,8 @@ public final class TransitEdge implements Serializable {
   private final String edge;
   private final String fromNode;
   private final String toNode;
-  private final Date fromDate;
-  private final Date toDate;
+  private final Instant fromDate;
+  private final Instant toDate;
 
   /**
    * Constructor.
@@ -28,8 +28,8 @@ public final class TransitEdge implements Serializable {
   public TransitEdge(final String edge,
                      final String fromNode,
                      final String toNode,
-                     final Date fromDate,
-                     final Date toDate) {
+                     final Instant fromDate,
+                     final Instant toDate) {
     this.edge = edge;
     this.fromNode = fromNode;
     this.toNode = toNode;
@@ -49,11 +49,11 @@ public final class TransitEdge implements Serializable {
     return toNode;
   }
 
-  public Date getFromDate() {
+  public Instant getFromDate() {
     return fromDate;
   }
 
-  public Date getToDate() {
+  public Instant getToDate() {
     return toDate;
   }
 }

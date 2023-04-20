@@ -9,8 +9,8 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -159,7 +159,7 @@ public class HandlingReportParserTest {
             "2022-10-29 13:37"
     })
     public void shouldReturnDateOnParsingValidDate(String input) {
-        Date result = HandlingReportParser.parseDate(input);
+        Instant result = HandlingReportParser.parseDate(input);
         assertThat(result).isNotNull();
     }
 
@@ -176,7 +176,7 @@ public class HandlingReportParserTest {
             "2022-01-02T03:04:05"
     })
     public void shouldReturnDateOnParsingValidCompletionTime(String input) {
-        Date result = HandlingReportParser.parseCompletionTime(LocalDateTime.parse(input));
+        Instant result = HandlingReportParser.parseCompletionTime(LocalDateTime.parse(input));
         assertThat(result).isNotNull();
     }
 }

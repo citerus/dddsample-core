@@ -26,8 +26,10 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -54,11 +56,11 @@ class CargoTrackingDTOConverterTest {
         when(mockMsgSrc.getMessage(anyString(), any(), eq("[Unknown status]"), eq(Locale.ENGLISH))).thenReturn("TEST-STATUS");
         Location origin = new Location(new UnLocode("SESTO"), "Stockholm");
         Location dest = new Location(new UnLocode("FIHEL"), "Helsinki");
-        Date deadline = new Date();
+        Instant deadline = Instant.now();
         Cargo cargo = new Cargo(new TrackingId("TEST123"), new RouteSpecification(origin, dest, deadline));
         HandlingActivity handlingActivity = new HandlingActivity(HandlingEvent.Type.RECEIVE, origin);
         ReflectionTestUtils.setField(cargo.delivery(), "nextExpectedActivity", handlingActivity);
-        ReflectionTestUtils.setField(cargo.delivery(), "eta", new Date(0));
+        ReflectionTestUtils.setField(cargo.delivery(), "eta", Instant.ofEpochMilli(0));
 
         CargoTrackingDTO result = CargoTrackingDTOConverter.convert(cargo, emptyList(), mockMsgSrc, Locale.ENGLISH);
 
@@ -74,17 +76,17 @@ class CargoTrackingDTOConverterTest {
         when(mockMsgSrc.getMessage(anyString(), any(), eq(Locale.ENGLISH))).thenReturn("TEST-DESCR");
         Location origin = new Location(new UnLocode("SESTO"), "Stockholm");
         Location dest = new Location(new UnLocode("FIHEL"), "Helsinki");
-        Date deadline = new Date();
+        Instant deadline = Instant.now();
         Cargo cargo = new Cargo(new TrackingId("TEST123"), new RouteSpecification(origin, dest, deadline));
         HandlingActivity handlingActivity = new HandlingActivity(HandlingEvent.Type.RECEIVE, origin);
         ReflectionTestUtils.setField(cargo.delivery(), "nextExpectedActivity", handlingActivity);
-        ReflectionTestUtils.setField(cargo.delivery(), "eta", new Date(0));
+        ReflectionTestUtils.setField(cargo.delivery(), "eta", Instant.ofEpochMilli(0));
 
         Voyage voyage = new Voyage(new VoyageNumber("0101"), new Schedule(Collections.singletonList(
-                new CarrierMovement(origin, dest, new Date(), new Date()))));
+                new CarrierMovement(origin, dest, Instant.now(), Instant.now()))));
         List<HandlingEvent> events = Arrays.asList(
-                new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.RECEIVE, origin),
-                new HandlingEvent(cargo, new Date(), new Date(), HandlingEvent.Type.LOAD, origin, voyage));
+                new HandlingEvent(cargo, Instant.now(), Instant.now(), HandlingEvent.Type.RECEIVE, origin),
+                new HandlingEvent(cargo, Instant.now(), Instant.now(), HandlingEvent.Type.LOAD, origin, voyage));
         CargoTrackingDTO result = CargoTrackingDTOConverter.convert(cargo, events, mockMsgSrc, Locale.ENGLISH);
 
         assertThat(result).extracting("trackingId", "statusText", "destination", "nextExpectedActivity", "isMisdirected")
@@ -102,7 +104,7 @@ class CargoTrackingDTOConverterTest {
     @ParameterizedTest
     void shouldConvertDescriptionCorrectlyForGivenParamsWithVoyage(String eventType, String expectedOutput) throws IOException {
         Voyage voyage = exampleVoyage();
-        Date date = new Date(LocalDateTime.of(2022, 11, 1, 13, 37).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli());
+        Instant date = Instant.parse("2022-11-01T13:37").atZone(ZoneOffset.UTC).toInstant();
         HandlingEvent event = new HandlingEvent(exampleCargo(), date, date,
                 HandlingEvent.Type.valueOf(eventType), exampleLocation, voyage);
 
@@ -115,7 +117,7 @@ class CargoTrackingDTOConverterTest {
     @CsvSource(value = {"RECEIVE;Received in Stockholm, at 11/1/22 9:37 PM.", "CLAIM;Claimed in Stockholm, at 11/1/22 9:37 PM.", "CUSTOMS;Cleared customs in Stockholm, at 11/1/22 9:37 PM."}, delimiter = ';')
     @ParameterizedTest
     void shouldConvertDescriptionCorrectlyForGivenParamsWithoutVoyage(String eventType, String expectedOutput) throws IOException {
-        Date date = new Date(LocalDateTime.of(2022, 11, 1, 13, 37).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli());
+        Instant date = Instant.parse("2022-11-01T13:37").atZone(ZoneOffset.UTC).toInstant();
         HandlingEvent event = new HandlingEvent(exampleCargo(), date, date,
                 HandlingEvent.Type.valueOf(eventType), exampleLocation);
 
@@ -158,7 +160,7 @@ class CargoTrackingDTOConverterTest {
         private Cargo createHandlingEvent(HandlingEvent.Type eventType) {
             Cargo cargo = exampleCargo();
             Location origin = new Location(new UnLocode("SESTO"), "Stockholm");
-            HandlingEvent handlingEvent = new HandlingEvent(cargo, new Date(), new Date(), eventType, origin);
+            HandlingEvent handlingEvent = new HandlingEvent(cargo, Instant.now(), Instant.now(), eventType, origin);
             cargo.deriveDeliveryProgress(new HandlingHistory(singletonList(handlingEvent)));
             return cargo;
         }
@@ -166,7 +168,7 @@ class CargoTrackingDTOConverterTest {
         private Cargo createHandlingEvent(HandlingEvent.Type eventType, Voyage voyage) {
             Cargo cargo = exampleCargo();
             Location origin = new Location(new UnLocode("SESTO"), "Stockholm");
-            HandlingEvent handlingEvent = new HandlingEvent(cargo, new Date(), new Date(), eventType, origin, voyage);
+            HandlingEvent handlingEvent = new HandlingEvent(cargo, Instant.now(), Instant.now(), eventType, origin, voyage);
             cargo.deriveDeliveryProgress(new HandlingHistory(singletonList(handlingEvent)));
             return cargo;
         }
@@ -190,7 +192,7 @@ class CargoTrackingDTOConverterTest {
         Location origin = new Location(new UnLocode("SESTO"), "Stockholm");
         Location dest = new Location(new UnLocode("FIHEL"), "Helsinki");
         return new Voyage(new VoyageNumber("0101"), new Schedule(Collections.singletonList(
-                new CarrierMovement(origin, dest, new Date(), new Date()))));
+                new CarrierMovement(origin, dest, Instant.now(), Instant.now()))));
     }
 
     private Properties getLocalizationStrings() throws IOException {
@@ -202,7 +204,7 @@ class CargoTrackingDTOConverterTest {
     private static Cargo exampleCargo() {
         Location origin = new Location(new UnLocode("SESTO"), "Stockholm");
         Location dest = new Location(new UnLocode("FIHEL"), "Helsinki");
-        Date deadline = new Date();
+        Instant deadline = Instant.now();
         return new Cargo(new TrackingId("TEST123"), new RouteSpecification(origin, dest, deadline));
     }
 }

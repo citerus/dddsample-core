@@ -7,13 +7,18 @@ import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class CargoTrackingDTOConverter {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    private static final DateTimeFormatter formatter = DateTimeFormatter
+            .ofLocalizedDateTime(FormatStyle.MEDIUM)
+            .withZone(ZoneOffset.UTC);
 
     public static CargoTrackingDTO convert(Cargo cargo, List<HandlingEvent> handlingEvents, MessageSource messageSource, Locale locale) {
         List<HandlingEventDTO> handlingEventDTOs = convertHandlingEvents(handlingEvents, cargo, messageSource, locale);
@@ -44,23 +49,23 @@ public class CargoTrackingDTOConverter {
         switch (handlingEvent.type()) {
             case LOAD:
             case UNLOAD:
-                args = new Object[] {
+                args = new Object[]{
                         handlingEvent.voyage().voyageNumber().idString(),
                         handlingEvent.location().name(),
-                        handlingEvent.completionTime()
+                        formatter.format(handlingEvent.completionTime())
                 };
                 break;
             case RECEIVE:
             case CUSTOMS:
             case CLAIM:
-                args = new Object[] {
+                args = new Object[]{
                         handlingEvent.location().name(),
-                        handlingEvent.completionTime()
+                        formatter.format(handlingEvent.completionTime())
                 };
                 break;
 
             default:
-                args = new Object[] {};
+                args = new Object[]{};
         }
 
         String key = "deliveryHistory.eventDescription." + handlingEvent.type().name();
@@ -81,7 +86,8 @@ public class CargoTrackingDTOConverter {
     }
 
     private static String convertTime(HandlingEvent handlingEvent) {
-        return dateFormat.format(handlingEvent.completionTime());
+        return formatter
+                .format(handlingEvent.completionTime());
     }
 
     private static String convertLocation(HandlingEvent handlingEvent) {
@@ -99,10 +105,10 @@ public class CargoTrackingDTOConverter {
         final Object[] args;
         switch (delivery.transportStatus()) {
             case IN_PORT:
-                args = new Object[] {delivery.lastKnownLocation().name()};
+                args = new Object[]{delivery.lastKnownLocation().name()};
                 break;
             case ONBOARD_CARRIER:
-                args = new Object[] {delivery.currentVoyage().voyageNumber().idString()};
+                args = new Object[]{delivery.currentVoyage().voyageNumber().idString()};
                 break;
             case CLAIMED:
             case NOT_RECEIVED:
@@ -120,8 +126,8 @@ public class CargoTrackingDTOConverter {
     }
 
     private static String convertEta(Cargo cargo) {
-        Date date = cargo.delivery().estimatedTimeOfArrival();
-        return date == null ? "Unknown" : dateFormat.format(date);
+        Instant date = cargo.delivery().estimatedTimeOfArrival();
+        return date == null ? "Unknown" : formatter.format(date);
     }
 
     protected static String convertNextExpectedActivity(Cargo cargo) {

@@ -8,7 +8,7 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * An itinerary consists of one or more legs.
@@ -30,16 +30,16 @@ public class Leg implements ValueObject<Leg> {
   public Location loadLocation;
 
   @Column(name = "load_time")
-  public Date loadTime;
+  public Instant loadTime;
 
   @ManyToOne
   @JoinColumn(name = "unload_location_id")
   public Location unloadLocation;
 
   @Column(name = "unload_time")
-  public Date unloadTime;
+  public Instant unloadTime;
 
-  public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Date loadTime, Date unloadTime) {
+  public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Instant loadTime, Instant unloadTime) {
     Validate.noNullElements(new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
     
     this.voyage = voyage;
@@ -61,12 +61,12 @@ public class Leg implements ValueObject<Leg> {
     return unloadLocation;
   }
 
-  public Date loadTime() {
-    return new Date(loadTime.getTime());
+  public Instant loadTime() {
+    return loadTime;
   }
 
-  public Date unloadTime() {
-    return new Date(unloadTime.getTime());
+  public Instant unloadTime() {
+    return unloadTime;
   }
 
   @Override

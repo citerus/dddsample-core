@@ -14,7 +14,10 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -88,17 +91,17 @@ public class SampleDataGenerator {
 
                 try {
                     HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
+                            Instant.now(), toDate("2009-03-01"), trackingId, null, HONGKONG.unLocode(), HandlingEvent.Type.RECEIVE
                     );
                     handlingEventRepository.store(event1);
 
                     HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
+                            Instant.now(), toDate("2009-03-02"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), HONGKONG.unLocode(), HandlingEvent.Type.LOAD
                     );
                     handlingEventRepository.store(event2);
 
                     HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+                            Instant.now(), toDate("2009-03-05"), trackingId, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
                     );
                     handlingEventRepository.store(event3);
                 } catch (CannotCreateHandlingEventException e) {
@@ -127,22 +130,22 @@ public class SampleDataGenerator {
 
                 try {
                     HandlingEvent event1 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-01"), trackingId1, null, HANGZHOU.unLocode(), HandlingEvent.Type.RECEIVE
+                            Instant.now(), toDate("2009-03-01"), trackingId1, null, HANGZHOU.unLocode(), HandlingEvent.Type.RECEIVE
                     );
                     handlingEventRepository.store(event1);
 
                     HandlingEvent event2 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU.unLocode(), HandlingEvent.Type.LOAD
+                            Instant.now(), toDate("2009-03-03"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), HANGZHOU.unLocode(), HandlingEvent.Type.LOAD
                     );
                     handlingEventRepository.store(event2);
 
                     HandlingEvent event3 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
+                            Instant.now(), toDate("2009-03-05"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.UNLOAD
                     );
                     handlingEventRepository.store(event3);
 
                     HandlingEvent event4 = handlingEventFactory.createHandlingEvent(
-                            new Date(), toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
+                            Instant.now(), toDate("2009-03-06"), trackingId1, HONGKONG_TO_NEW_YORK.voyageNumber(), NEWYORK.unLocode(), HandlingEvent.Type.LOAD
                     );
                     handlingEventRepository.store(event4);
 
@@ -162,15 +165,15 @@ public class SampleDataGenerator {
         return new Timestamp(base.getTime() + 1000L * 60 * 60 * hours);
     }
 
-    public static Date offset(int hours) {
-        return new Date(ts(hours).getTime());
+    public static Instant offset(int hours) {
+        return Instant.ofEpochMilli(ts(hours).getTime());
     }
 
     private static Timestamp getBaseTimeStamp() {
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2008-01-01");
-            return new Timestamp(date.getTime() - 1000L * 60 * 60 * 24 * 100);
-        } catch (ParseException e) {
+            LocalDate date = LocalDate.parse("2008-01-01");
+            return new Timestamp(date.atStartOfDay().toEpochSecond(ZoneOffset.UTC) * 1000 - 1000L * 60 * 60 * 24 * 100);
+        } catch (DateTimeParseException e) {
             throw new RuntimeException(e);
         }
     }
