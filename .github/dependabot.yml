@@ -8,4 +8,4 @@ updates:
       time: "08:00"
       timezone: "Europe/Stockholm"
     labels: ["dependencies"]
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 1
