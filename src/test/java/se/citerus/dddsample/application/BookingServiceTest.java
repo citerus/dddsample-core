@@ -11,7 +11,8 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
-import java.util.Date;
+
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +48,7 @@ public class BookingServiceTest {
     when(locationRepository.find(fromUnlocode)).thenReturn(CHICAGO);
     when(locationRepository.find(toUnlocode)).thenReturn(STOCKHOLM);
 
-    TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, new Date());
+    TrackingId trackingId = bookingService.bookNewCargo(fromUnlocode, toUnlocode, Instant.now());
     assertThat(trackingId).isEqualTo(expectedTrackingId);
     verify(cargoRepository, times(1)).store(isA(Cargo.class));
     verify(locationRepository, times(2)).find(any(UnLocode.class));

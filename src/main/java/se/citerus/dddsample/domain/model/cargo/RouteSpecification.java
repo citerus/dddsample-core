@@ -11,7 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Route specification. Describes where a cargo origin and destination is,
@@ -30,14 +30,14 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   public Location destination;
 
   @Column(name = "spec_arrival_deadline", nullable = false)
-  public Date arrivalDeadline;
+  public Instant arrivalDeadline;
 
   /**
    * @param origin origin location - can't be the same as the destination
    * @param destination destination location - can't be the same as the origin
    * @param arrivalDeadline arrival deadline
    */
-  public RouteSpecification(final Location origin, final Location destination, final Date arrivalDeadline) {
+  public RouteSpecification(final Location origin, final Location destination, final Instant arrivalDeadline) {
     Validate.notNull(origin, "Origin is required");
     Validate.notNull(destination, "Destination is required");
     Validate.notNull(arrivalDeadline, "Arrival deadline is required");
@@ -45,7 +45,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
 
     this.origin = origin;
     this.destination = destination;
-    this.arrivalDeadline = (Date) arrivalDeadline.clone();
+    this.arrivalDeadline = arrivalDeadline;
   }
 
   /**
@@ -65,8 +65,8 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
   /**
    * @return Arrival deadline.
    */
-  public Date arrivalDeadline() {
-    return new Date(arrivalDeadline.getTime());
+  public Instant arrivalDeadline() {
+    return arrivalDeadline;
   }
 
   @Override
@@ -74,7 +74,7 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
     return itinerary != null &&
            origin().sameIdentityAs(itinerary.initialDepartureLocation()) &&
            destination().sameIdentityAs(itinerary.finalArrivalLocation()) &&
-           arrivalDeadline().after(itinerary.finalArrivalDate());
+           arrivalDeadline().isAfter(itinerary.finalArrivalDate());
   }
 
   @Override

@@ -7,7 +7,7 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 
 
 /**
@@ -30,15 +30,15 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
   public Location departureLocation;
 
   @Column(name = "arrival_time", nullable = false)
-  public Date arrivalTime;
+  public Instant arrivalTime;
 
   @Column(name = "departure_time", nullable = false)
-  public Date departureTime;
+  public Instant departureTime;
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
     Location.UNKNOWN, Location.UNKNOWN,
-    new Date(0), new Date(0)
+    Instant.ofEpochMilli(0), Instant.ofEpochMilli(0)
   );
 
   /**
@@ -52,8 +52,8 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
   // TODO make package local
   public CarrierMovement(Location departureLocation,
                          Location arrivalLocation,
-                         Date departureTime,
-                         Date arrivalTime) {
+                         Instant departureTime,
+                         Instant arrivalTime) {
     //noinspection ObviousNullCheck
     Validate.noNullElements(new Object[]{departureLocation, arrivalLocation, departureTime, arrivalTime});
     this.departureTime = departureTime;
@@ -79,15 +79,15 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
   /**
    * @return Time of departure.
    */
-  public Date departureTime() {
-    return new Date(departureTime.getTime());
+  public Instant departureTime() {
+    return departureTime;
   }
 
   /**
    * @return Time of arrival.
    */
-  public Date arrivalTime() {
-    return new Date(arrivalTime.getTime());
+  public Instant arrivalTime() {
+    return arrivalTime;
   }
 
   @Override

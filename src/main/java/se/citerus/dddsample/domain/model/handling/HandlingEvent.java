@@ -10,7 +10,7 @@ import se.citerus.dddsample.domain.shared.DomainEvent;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -50,10 +50,10 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
   public Cargo cargo;
 
   @Column
-  public Date completionTime;
+  public Instant completionTime;
 
   @Column
-  public Date registrationTime;
+  public Instant registrationTime;
 
   @Column
   @Enumerated(value = EnumType.STRING)
@@ -111,8 +111,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param voyage           the voyage
    */
   public HandlingEvent(final Cargo cargo,
-                       final Date completionTime,
-                       final Date registrationTime,
+                       final Instant completionTime,
+                       final Instant registrationTime,
                        final Type type,
                        final Location location,
                        final Voyage voyage) {
@@ -128,8 +128,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     }
 
     this.voyage = voyage;
-    this.completionTime = (Date) completionTime.clone();
-    this.registrationTime = (Date) registrationTime.clone();
+    this.completionTime = completionTime;
+    this.registrationTime = registrationTime;
     this.type = type;
     this.location = location;
     this.cargo = cargo;
@@ -143,8 +143,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
    * @param location         where the event took place
    */
   public HandlingEvent(final Cargo cargo,
-                       final Date completionTime,
-                       final Date registrationTime,
+                       final Instant completionTime,
+                       final Instant registrationTime,
                        final Type type,
                        final Location location) {
     Validate.notNull(cargo, "Cargo is required");
@@ -157,8 +157,8 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
     }
 
-    this.completionTime = (Date) completionTime.clone();
-    this.registrationTime = (Date) registrationTime.clone();
+    this.completionTime =  completionTime;
+    this.registrationTime =  registrationTime;
     this.type = type;
     this.location = location;
     this.cargo = cargo;
@@ -173,12 +173,12 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return Objects.requireNonNullElse(this.voyage, Voyage.NONE);
   }
 
-  public Date completionTime() {
-    return new Date(this.completionTime.getTime());
+  public Instant completionTime() {
+    return this.completionTime;
   }
 
-  public Date registrationTime() {
-    return new Date(this.registrationTime.getTime());
+  public Instant registrationTime() {
+    return this.registrationTime;
   }
 
   public Location location() {

@@ -9,8 +9,8 @@ import se.citerus.dddsample.interfaces.handling.ws.HandlingReport;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
@@ -53,10 +53,11 @@ public class HandlingReportParser {
     }
   }
 
-  public static Date parseDate(final String completionTime) {
+  public static Instant parseDate(final String completionTime) {
     try {
-      return SIMPLE_DATE_FORMAT.parse(completionTime);
-    } catch (ParseException | NullPointerException e) {
+      String[] parts = completionTime.split(" ");
+      return LocalDate.parse(parts[0]).atTime(LocalTime.parse(parts[1])).toInstant(ZoneOffset.UTC);
+    } catch (DateTimeParseException | NullPointerException e) {
       throw new IllegalArgumentException("Invalid date format: " + completionTime + ", must be on ISO 8601 format: " + ISO_8601_FORMAT);
     }
   }
@@ -69,22 +70,22 @@ public class HandlingReportParser {
     }
   }
 
-  public static Date parseCompletionTime(LocalDateTime completionTime) {
+  public static Instant parseCompletionTime(LocalDateTime completionTime) {
     if (completionTime == null) {
       throw new IllegalArgumentException("Completion time is required");
     }
 
-    return new Date(completionTime.toEpochSecond(ZoneOffset.UTC) * 1000);
+    return Instant.ofEpochSecond(completionTime.toEpochSecond(ZoneOffset.UTC));
   }
 
   public static List<HandlingEventRegistrationAttempt> parse(final HandlingReport handlingReport){
-    final Date completionTime = parseCompletionTime(handlingReport.getCompletionTime());
+    final Instant completionTime = parseCompletionTime(handlingReport.getCompletionTime());
     final VoyageNumber voyageNumber = parseVoyageNumber(handlingReport.getVoyageNumber());
     final Type type = parseEventType(handlingReport.getType());
     final UnLocode unLocode = parseUnLocode(handlingReport.getUnLocode());
     final List<TrackingId> trackingIds = parseTrackingIds(handlingReport.getTrackingIds());
     return trackingIds.stream().map(trackingId -> new HandlingEventRegistrationAttempt(
-            new Date(), completionTime, trackingId, voyageNumber, type, unLocode
+            Instant.now(), completionTime, trackingId, voyageNumber, type, unLocode
     )).collect(toList());
   }
 

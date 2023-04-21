@@ -10,6 +10,7 @@ import se.citerus.dddsample.domain.model.location.Location;
 
 import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -82,7 +83,7 @@ public class CargoRepositoryInMem implements CargoRepository {
                                                        Location destination,
                                                        HandlingHistory handlingHistory) {
 
-        final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, new Date());
+        final RouteSpecification routeSpecification = new RouteSpecification(origin, destination, Instant.now());
         final Cargo cargo = new Cargo(trackingId, routeSpecification);
         cargo.deriveDeliveryProgress(handlingHistory);
 

@@ -1,7 +1,7 @@
 package se.citerus.dddsample.interfaces.booking.facade;
 
 import java.rmi.RemoteException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
@@ -14,7 +14,7 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
  */
 public interface BookingServiceFacade {
 
-  String bookNewCargo(String origin, String destination, Date arrivalDeadline) throws RemoteException;
+  String bookNewCargo(String origin, String destination, Instant arrivalDeadline) throws RemoteException;
 
   CargoRoutingDTO loadCargoForRouting(String trackingId) throws RemoteException;
 

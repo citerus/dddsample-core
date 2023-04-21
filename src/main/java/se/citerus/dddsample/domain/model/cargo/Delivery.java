@@ -10,7 +10,7 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -29,10 +29,10 @@ public class Delivery implements ValueObject<Delivery> {
   public boolean misdirected;
 
   @Column
-  public Date eta;
+  public Instant eta;
 
   @Column(name = "calculated_at")
-  public Date calculatedAt;
+  public Instant calculatedAt;
 
   @Column(name = "unloaded_at_dest")
   public boolean isUnloadedAtDestination;
@@ -60,7 +60,7 @@ public class Delivery implements ValueObject<Delivery> {
   @JoinColumn(name = "last_event_id")
   public HandlingEvent lastEvent;
 
-  private static final Date ETA_UNKNOWN = null;
+  private static final Instant ETA_UNKNOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;
 
   /**
@@ -104,7 +104,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @param routeSpecification route specification
    */
   public Delivery(HandlingEvent lastEvent, Itinerary itinerary, RouteSpecification routeSpecification) {
-    this.calculatedAt = new Date();
+    this.calculatedAt = Instant.now();
     this.lastEvent = lastEvent;
 
     this.misdirected = calculateMisdirectionStatus(itinerary);
@@ -156,9 +156,9 @@ public class Delivery implements ValueObject<Delivery> {
   /**
    * @return Estimated time of arrival
    */
-  public Date estimatedTimeOfArrival() {
+  public Instant estimatedTimeOfArrival() {
     if (eta != ETA_UNKNOWN) {
-      return new Date(eta.getTime());
+      return eta;
     } else {
       return ETA_UNKNOWN;
     }
@@ -188,8 +188,8 @@ public class Delivery implements ValueObject<Delivery> {
   /**
    * @return When this delivery was calculated.
    */
-  public Date calculatedAt() {
-    return new Date(calculatedAt.getTime());
+  public Instant calculatedAt() {
+    return calculatedAt;
   }
 
   // TODO add currentCarrierMovement (?)
@@ -241,7 +241,7 @@ public class Delivery implements ValueObject<Delivery> {
     }
   }
 
-  private Date calculateEta(Itinerary itinerary) {
+  private Instant calculateEta(Itinerary itinerary) {
     if (onTrack()) {
       return itinerary.finalArrivalDate();
     } else {

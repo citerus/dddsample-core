@@ -11,8 +11,8 @@ import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
 import java.lang.invoke.MethodHandles;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class BookingServiceImpl implements BookingService {
@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
   @Transactional
   public TrackingId bookNewCargo(final UnLocode originUnLocode,
                                  final UnLocode destinationUnLocode,
-                                 final Date arrivalDeadline) {
+                                 final Instant arrivalDeadline) {
     Cargo cargo = cargoFactory.createCargo(originUnLocode, destinationUnLocode, arrivalDeadline);
 
     cargoRepository.store(cargo);
