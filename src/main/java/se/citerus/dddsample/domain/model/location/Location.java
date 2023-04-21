@@ -1,6 +1,6 @@
 package se.citerus.dddsample.domain.model.location;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.shared.Entity;
 
 import javax.persistence.*;

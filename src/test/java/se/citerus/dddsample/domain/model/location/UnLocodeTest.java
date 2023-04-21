@@ -1,26 +1,28 @@
 package se.citerus.dddsample.domain.model.location;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class UnLocodeTest {
 
+  @ValueSource(strings = {"AA234","AAA9B","AAAAA"})
+  @ParameterizedTest
+  public void shouldAllowCreationOfValidUnLoCodes(String input) {
+    assertThat(new UnLocode(input)).isNotNull();
+  }
 
-  @Test
-  public void testNew() {
-    assertValid("AA234");
-    assertValid("AAA9B");
-    assertValid("AAAAA");
-    
-    assertInvalid("AAAA");
-    assertInvalid("AAAAAA");
-    assertInvalid("AAAA");
-    assertInvalid("AAAAAA");
-    assertInvalid("22AAA");
-    assertInvalid("AA111");
-    assertInvalid(null);
+  @ValueSource(strings = {"AAAA", "AAAAAA", "AAAA", "AAAAAA", "22AAA", "AA111"})
+  @NullSource
+  @EmptySource
+  @ParameterizedTest
+  public void shouldPreventCreationOfInvalidUnLoCodes(String input) {
+    assertThatThrownBy(() -> new UnLocode(input)).isInstanceOfAny(NullPointerException.class, IllegalArgumentException.class);
   }
 
   @Test
@@ -47,17 +49,6 @@ public class UnLocodeTest {
     UnLocode mixedCase = new UnLocode("aBcDe");
 
     assertThat(mixedCase.hashCode()).isEqualTo(allCaps.hashCode());  
-  }
-  
-  private void assertValid(String unlocode) {
-    new UnLocode(unlocode);
-  }
-
-  private void assertInvalid(String unlocode) {
-    try {
-      new UnLocode(unlocode);
-      fail("The combination [" + unlocode + "] is not a valid UnLocode");
-    } catch (IllegalArgumentException expected) {}
   }
 
 }
