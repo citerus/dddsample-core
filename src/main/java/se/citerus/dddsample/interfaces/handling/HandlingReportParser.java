@@ -28,7 +28,7 @@ public class HandlingReportParser {
   public static UnLocode parseUnLocode(final String unlocode) {
     try {
       return new UnLocode(unlocode);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException|NullPointerException e) {
       throw new IllegalArgumentException("Failed to parse UNLO code: " + unlocode, e);
     }
   }
@@ -36,7 +36,7 @@ public class HandlingReportParser {
   public static TrackingId parseTrackingId(final String trackingId) {
     try {
       return new TrackingId(trackingId);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException|NullPointerException e) {
       throw new IllegalArgumentException("Failed to parse trackingId: " + trackingId, e);
     }
   }

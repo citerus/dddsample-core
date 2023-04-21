@@ -95,7 +95,8 @@ public class HandlingReportIntegrationTest {
             fail("Did not throw HttpClientErrorException");
         } catch (HttpClientErrorException e) {
             Map<String, String> map = mapper.readValue(e.getResponseBodyAsString(), Map.class);
-            assertThat(map.get("message")).contains("JSON parse error: Cannot deserialize value of type `java.time.LocalDateTime` from String \"invalid date\": Text 'invalid date' could not be parsed at index 0");
+            assertThat(map.get("message")).contains("JSON parse error: Cannot deserialize value of type `java.time.LocalDateTime` from String \"invalid date\"");
+            assertThat(map.get("message")).contains("Text 'invalid date' could not be parsed at index 0");
         }
     }
 }
