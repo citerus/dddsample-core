@@ -1,7 +1,8 @@
 package se.citerus.dddsample.interfaces.tracking;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import static org.apache.commons.lang.builder.ToStringStyle.MULTI_LINE_STYLE;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 public final class TrackCommand {
 

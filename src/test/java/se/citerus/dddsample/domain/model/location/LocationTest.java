@@ -30,7 +30,7 @@ public class LocationTest {
     try {
       new Location((UnLocode) null, null);
       fail("Should not allow any null constructor arguments");
-    } catch (IllegalArgumentException expected) {}
+    } catch (NullPointerException expected) {}
   }
 
 }

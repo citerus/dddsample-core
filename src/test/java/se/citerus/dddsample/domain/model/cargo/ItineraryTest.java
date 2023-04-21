@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 public class ItineraryTest {
@@ -94,21 +94,13 @@ public class ItineraryTest {
 
   }
   @Test
-  public void testCreateItinerary() {
-    try {
-      new Itinerary(new ArrayList<>());
-      fail("An empty itinerary is not OK");
-    } catch (IllegalArgumentException iae) {
-      //Expected
-    }
+  public void shouldNotAllowItineraryWithEmptyListOfLegs() {
+    assertThatThrownBy(() -> new Itinerary(List.of())).isInstanceOf(IllegalArgumentException.class);
+  }
 
-    try {
-      List<Leg> legs = null;
-      new Itinerary(legs);
-      fail("Null itinerary is not OK");
-    } catch (IllegalArgumentException iae) {
-      //Expected
-    }
+  @Test
+  public void shouldNotAllowItineraryWithNullListOfLegs() {
+    assertThatThrownBy(() -> new Itinerary(null)).isInstanceOf(NullPointerException.class);
   }
 
 }
