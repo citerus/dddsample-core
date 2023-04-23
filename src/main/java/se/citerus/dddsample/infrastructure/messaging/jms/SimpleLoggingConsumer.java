@@ -1,7 +1,7 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import se.citerus.dddsample.logging.Logger;
+import se.citerus.dddsample.logging.LoggerFactory;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -13,7 +13,7 @@ public class SimpleLoggingConsumer implements MessageListener {
 
   @Override
   public void onMessage(Message message) {
-    logger.debug("Received JMS message: {}", message);
+    logger.debug("Received JMS message: {}", fb -> fb.apply(message));
   }
 
 }

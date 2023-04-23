@@ -1,7 +1,7 @@
 package se.citerus.dddsample.interfaces;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import se.citerus.dddsample.logging.Logger;
+import se.citerus.dddsample.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;

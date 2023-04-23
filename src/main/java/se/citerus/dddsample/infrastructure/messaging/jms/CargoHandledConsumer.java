@@ -1,7 +1,7 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import se.citerus.dddsample.logging.Logger;
+import se.citerus.dddsample.logging.LoggerFactory;
 import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 

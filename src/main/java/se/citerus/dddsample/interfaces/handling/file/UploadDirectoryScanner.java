@@ -1,7 +1,7 @@
 package se.citerus.dddsample.interfaces.handling.file;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import se.citerus.dddsample.logging.Logger;
+import se.citerus.dddsample.logging.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.NonNull;
 import se.citerus.dddsample.application.ApplicationEvents;
@@ -49,7 +49,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
       try {
         parse(file);
         delete(file);
-        logger.info("Import of {} complete", file.getName());
+        logger.info("Import of {} complete", fb -> fb.string("file", file.getName()));
       } catch (Exception e) {
         logger.error("Error parsing uploaded file", e);
         move(file);
@@ -71,7 +71,9 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
         String[] columns = parseLine(line);
         queueAttempt(columns[0], columns[1], columns[2], columns[3], columns[4]);
       } catch (Exception e) {
-        logger.error("Rejected line: {}", line, e);
+        logger.error("Rejected line: {}", fb -> fb.list(
+            fb.string("line", line), fb.exception(e)
+        ));
         rejectedLines.add(line);
       }
     }
@@ -119,7 +121,7 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
 
   private void delete(final File file) {
     if (!file.delete()) {
-      logger.error("Could not delete file: {}", file.getName());
+      logger.error("Could not delete file: {}", fb -> fb.string("file", file.getName()));
     }
   }
 
@@ -127,7 +129,10 @@ public class UploadDirectoryScanner extends TimerTask implements InitializingBea
     final File destination = new File(parseFailureDirectory, file.getName());
     final boolean result = file.renameTo(destination);
     if (!result) {
-      logger.error("Could not move {} to {}", file.getName(), destination.getAbsolutePath());
+      logger.error("Could not move {} to {}", fb -> fb.list(
+        fb.string("source", file.getName()),
+        fb.string("destination", destination.getAbsolutePath())
+      ));
     }
   }
 

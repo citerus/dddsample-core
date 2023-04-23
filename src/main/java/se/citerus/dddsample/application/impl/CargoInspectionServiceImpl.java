@@ -1,8 +1,6 @@
 package se.citerus.dddsample.application.impl;
 
 import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.CargoInspectionService;
@@ -11,6 +9,8 @@ import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
+import se.citerus.dddsample.logging.Logger;
+import se.citerus.dddsample.logging.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
@@ -36,7 +36,7 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
 
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {
-      logger.warn("Can't inspect non-existing cargo {}", trackingId);
+      logger.warn("Can't inspect non-existing cargo {}", fb -> fb.apply(trackingId));
       return;
     }
 

@@ -1,7 +1,7 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import se.citerus.dddsample.logging.Logger;
+import se.citerus.dddsample.logging.LoggerFactory;
 import org.springframework.jms.core.JmsOperations;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.domain.model.cargo.Cargo;
@@ -36,25 +36,25 @@ public final class JmsApplicationEventsImpl implements ApplicationEvents {
   @Override
   public void cargoWasHandled(final HandlingEvent event) {
     final Cargo cargo = event.cargo();
-    logger.info("Cargo was handled {}", cargo);
+    logger.info("Cargo was handled {}", fb -> fb.apply(event.cargo()));
     jmsOperations.send(cargoHandledQueue, session -> session.createTextMessage(cargo.trackingId().idString()));
   }
 
   @Override
   public void cargoWasMisdirected(final Cargo cargo) {
-    logger.info("Cargo was misdirected {}", cargo);
+    logger.info("Cargo was misdirected {}", fb -> fb.apply(cargo));
     jmsOperations.send(misdirectedCargoQueue, session -> session.createTextMessage(cargo.trackingId().idString()));
   }
 
   @Override
   public void cargoHasArrived(final Cargo cargo) {
-    logger.info("Cargo has arrived {}", cargo);
+    logger.info("Cargo has arrived {}", fb -> fb.apply(cargo));
     jmsOperations.send(deliveredCargoQueue, session -> session.createTextMessage(cargo.trackingId().idString()));
   }
 
   @Override
   public void receivedHandlingEventRegistrationAttempt(final HandlingEventRegistrationAttempt attempt) {
-    logger.info("Received handling event registration attempt {}", attempt);
+    logger.info("Received handling event registration attempt {}", fb -> fb.apply(attempt));
     jmsOperations.send(handlingEventQueue, session -> session.createObjectMessage(attempt));
   }
 }
