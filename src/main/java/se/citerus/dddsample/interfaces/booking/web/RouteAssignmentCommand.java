@@ -1,6 +1,8 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,16 +62,16 @@ public class RouteAssignmentCommand {
       return fromDate;
     }
 
-    public void setFromDate(Instant fromDate) {
-      this.fromDate = fromDate;
+    public void setFromDate(String fromDate) {
+      this.fromDate = ZonedDateTime.parse(fromDate).toInstant();
     }
 
     public Instant getToDate() {
       return toDate;
     }
 
-    public void setToDate(Instant toDate) {
-      this.toDate = toDate;
+    public void setToDate(String toDate) {
+      this.toDate = ZonedDateTime.parse(toDate).toInstant();
     }
   }
 }

@@ -44,9 +44,9 @@
                 <input type="hidden" th:name="|legs[${legStatus.index}].toUnLocode|" th:value="${leg.to}"/>
 
                 <input type="hidden" th:name="|legs[${legStatus.index}].fromDate|"
-                       th:value="${#dates.format(leg.loadTime,'yyyy-MM-dd hh:mm')}"/>
+                       th:value="${#dates.formatISO(leg.loadTime)}"/>
                 <input type="hidden" th:name="|legs[${legStatus.index}].toDate|"
-                       th:value="${#dates.format(leg.unloadTime,'yyyy-MM-dd hh:mm')}"/>
+                       th:value="${#dates.formatISO(leg.unloadTime)}"/>
                 <tr>
                     <td th:text="${leg.voyageNumber}"></td>
                     <td th:text="${leg.from}"></td>
