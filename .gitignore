@@ -4,3 +4,4 @@ dddsample.iml
 target
 /build/
 *~
+/.gradle/
