@@ -20,11 +20,11 @@ Trello board: https://trello.com/b/PTDFRyxd
 
 Using Maven (we recommend using the included Maven wrapper), run this command to compile and run all the tests:
 
-    ./mvnw compile
+    ./mvnw verify
     
 If you want to compile without running the tests, run the following command:
 
-    ./mvnw verify
+    ./mvnw compile
     
 For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
     
@@ -32,7 +32,7 @@ For Windows users, use the included `mvnw.cmd` file instead, without the `./` bu
 
 To start the app using the included application server and in-process HSQL database, run this command:
 
-    ./mvnw boot:run
+    ./mvnw spring-boot:run
     
 For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
 
