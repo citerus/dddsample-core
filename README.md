@@ -1,5 +1,5 @@
 # DDDSample
-[![Build Status](https://travis-ci.org/citerus/dddsample-core.svg?branch=master)](https://travis-ci.org/citerus/dddsample-core)
+[![Java CI with Maven](https://github.com/citerus/dddsample-core/actions/workflows/pipeline.yml/badge.svg)](https://github.com/citerus/dddsample-core/actions/workflows/pipeline.yml)
 
 This is the new home of the original DDD Sample app hosted at SourceForge. 
 
@@ -15,6 +15,26 @@ Discussion group: https://groups.google.com/forum/#!forum/dddsample
 Development blog: https://citerus.github.io/dddsample-core/
 
 Trello board: https://trello.com/b/PTDFRyxd
+
+## How to build
+
+Using Maven (we recommend using the included Maven wrapper), run this command to compile and run all the tests:
+
+    ./mvnw compile
+    
+If you want to compile without running the tests, run the following command:
+
+    ./mvnw verify
+    
+For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
+    
+## How to run
+
+To start the app using the included application server and in-process HSQL database, run this command:
+
+    ./mvnw boot:run
+    
+For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
 
 ## Entity relationships
 
