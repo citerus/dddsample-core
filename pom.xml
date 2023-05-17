@@ -194,7 +194,7 @@
         <dependency> <!-- Overridden version required for Java 11 -->
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.23.4</version>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
