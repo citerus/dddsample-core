@@ -36,12 +36,15 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test:2.0.9.RELEASE') {
 	    exclude group: 'junit', module: 'junit'
         exclude group: 'org.mockito', module: 'mockito-core'
+        exclude group: 'net.bytebuddy', module: 'byte-buddy'
     }
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
-    testImplementation 'org.mockito:mockito-core:2.23.4'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.1.0'
+    testImplementation 'net.bytebuddy:byte-buddy:1.12.10'
     testImplementation 'org.assertj:assertj-core:3.9.1'
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 }
