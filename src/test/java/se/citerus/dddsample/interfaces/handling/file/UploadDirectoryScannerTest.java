@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,7 +72,7 @@ public class UploadDirectoryScannerTest {
 
         scanner.run();
 
-        verifyZeroInteractions(appEventsMock);
+        verifyNoInteractions(appEventsMock);
         Stream<Path> files = Files.list(parseFailureDir.toPath());
         assertThat(files.count()).isEqualTo(1);
         Path path = Files.list(parseFailureDir.toPath()).collect(Collectors.toList()).get(0);
