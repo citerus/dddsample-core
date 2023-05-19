@@ -40,7 +40,7 @@ public class UploadDirectoryScannerTest {
     @Test
     public void shouldParseLinesAndPublishEventsForValidFile() throws Exception {
         ArgumentCaptor<HandlingEventRegistrationAttempt> captor = ArgumentCaptor.forClass(HandlingEventRegistrationAttempt.class);
-        ApplicationEvents appEventsMock = spy(mock(ApplicationEvents.class));
+        ApplicationEvents appEventsMock = mock(ApplicationEvents.class);
         UploadDirectoryScanner scanner = new UploadDirectoryScanner(uploadDir, parseFailureDir, appEventsMock);
         URL resource = this.getClass().getResource("/sampleHandlingReportFile.csv");
         assertThat(resource).isNotNull();
@@ -64,7 +64,7 @@ public class UploadDirectoryScannerTest {
 
     @Test
     void shouldCreateFileContainingInvalidLinesIfParsingFails() throws Exception {
-        ApplicationEvents appEventsMock = spy(mock(ApplicationEvents.class));
+        ApplicationEvents appEventsMock = mock(ApplicationEvents.class);
         UploadDirectoryScanner scanner = new UploadDirectoryScanner(uploadDir, parseFailureDir, appEventsMock);
         URL resource = this.getClass().getResource("/sampleInvalidHandlingReportFile.csv");
         assertThat(resource).isNotNull();
