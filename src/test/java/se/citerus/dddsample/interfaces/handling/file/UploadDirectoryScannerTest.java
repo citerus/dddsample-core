@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,7 +40,7 @@ public class UploadDirectoryScannerTest {
     @Test
     public void shouldParseLinesAndPublishEventsForValidFile() throws Exception {
         ArgumentCaptor<HandlingEventRegistrationAttempt> captor = ArgumentCaptor.forClass(HandlingEventRegistrationAttempt.class);
-        ApplicationEvents appEventsMock = spy(mock(ApplicationEvents.class));
+        ApplicationEvents appEventsMock = mock(ApplicationEvents.class);
         UploadDirectoryScanner scanner = new UploadDirectoryScanner(uploadDir, parseFailureDir, appEventsMock);
         URL resource = this.getClass().getResource("/sampleHandlingReportFile.csv");
         assertThat(resource).isNotNull();
@@ -65,7 +64,7 @@ public class UploadDirectoryScannerTest {
 
     @Test
     void shouldCreateFileContainingInvalidLinesIfParsingFails() throws Exception {
-        ApplicationEvents appEventsMock = spy(mock(ApplicationEvents.class));
+        ApplicationEvents appEventsMock = mock(ApplicationEvents.class);
         UploadDirectoryScanner scanner = new UploadDirectoryScanner(uploadDir, parseFailureDir, appEventsMock);
         URL resource = this.getClass().getResource("/sampleInvalidHandlingReportFile.csv");
         assertThat(resource).isNotNull();
@@ -73,7 +72,7 @@ public class UploadDirectoryScannerTest {
 
         scanner.run();
 
-        verifyZeroInteractions(appEventsMock);
+        verifyNoInteractions(appEventsMock);
         Stream<Path> files = Files.list(parseFailureDir.toPath());
         assertThat(files.count()).isEqualTo(1);
         Path path = Files.list(parseFailureDir.toPath()).collect(Collectors.toList()).get(0);
