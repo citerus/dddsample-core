@@ -1,0 +1,96 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Tracking cargo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+</head>
+
+<body>
+<div id="outer">
+    <div id="apptitle">
+        <img th:src="@{/images/dddsample_logotype.png}" alt="Domain Driven Delivery"/>
+    </div>
+    <div id="body">
+        <div id="container">
+            <div id="search">
+                <form method="post" th:object="${trackCommand}">
+                    <table>
+                        <tr>
+                            <td>
+                                Enter your tracking id:
+                            </td>
+                            <td>
+                                <input th:field="*{trackingId}" id="idInput"/>
+                            </td>
+                            <td>
+                                <input type="submit" value="Track!"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <p th:if="${#fields.hasErrors('trackingId')}" th:errors="*{trackingId}" class="error"></p>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+
+            <p th:if="${cargo == null}"><em>Hint: try tracking "ABC123" or "JKL567".</em></p>
+
+            <div id="result" th:if="${cargo != null}">
+                <h2>Cargo
+                    <th:block th:text="${cargo.getTrackingId()}">tracking id</th:block>
+                    is now:
+                    <th:block th:text="${cargo.getStatusText()}">status text</th:block>
+                </h2>
+
+                <p>
+                    Estimated time of arrival in
+                    <th:block th:text="${cargo.destination}">destination</th:block>
+                    :
+                    <th:block th:text="${cargo.eta}">eta</th:block>
+                </p>
+
+                <p th:text="${cargo.nextExpectedActivity}">${cargo.nextExpectedActivity}</p>
+
+                <p th:if="${cargo.isMisdirected()}" class="notify"><img th:src="@{/images/error.png}" alt=""/>Cargo is misdirected</p>
+
+                <th:block th:if="${!cargo.events.isEmpty()}">
+                    <h3>Handling History</h3>
+                    <ul style="list-style-type: none;">
+                        <li th:each="leg : ${cargo.events}">
+                            <p>
+                                <th:block th:if="${leg.isExpected()}">
+                                    <img style="vertical-align: top;" th:src="@{/images/tick.png}" alt=""/>
+                                </th:block>
+                                <th:block th:if="${!leg.isExpected()}">
+                                    <img style="vertical-align: top;" th:src="@{/images/cross.png}" alt=""/>
+                                </th:block>
+                                &nbsp;
+                                <th:block th:text="${leg.getDescription()}"/>
+                            </p>
+                        </li>
+                    </ul>
+                </th:block>
+            </div>
+
+        </div>
+    </div>
+    <div id="footer">
+        This application is written by <a href="http://www.citerus.se" target="_blank">Citerus</a>
+        and <a href="http://www.domainlanguage.com" target="_blank">Domain Language</a>
+    </div>
+</div>
+<script type="text/javascript" charset="UTF-8">
+    try {
+        document.getElementById('idInput').focus()
+    } catch (e) {
+    }
+</script>
+</body>
+</html>

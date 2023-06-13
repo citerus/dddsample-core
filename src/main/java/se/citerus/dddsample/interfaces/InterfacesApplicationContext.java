@@ -22,7 +22,9 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
+import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
 import se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner;
+import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
@@ -59,6 +61,11 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
+    public CargoTrackingController cargoTrackingController(MessageSource messageSource, CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository) {
+        return new CargoTrackingController(cargoRepository, handlingEventRepository, messageSource);
+    }
+
+    @Bean
     public CargoTrackingRestService cargoTrackingRestService(CargoRepository cargoRepository, BookingServiceFacade bookingServiceFacade, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
         return new CargoTrackingRestService(cargoRepository, bookingServiceFacade, handlingEventRepository, messageSource);
     }
@@ -66,6 +73,11 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     @Bean
     public TrackCommandValidator trackCommandValidator() {
         return new TrackCommandValidator();
+    }
+
+    @Bean
+    public CargoAdminController cargoAdminController(BookingServiceFacade bookingServiceFacade) {
+        return new CargoAdminController(bookingServiceFacade);
     }
 
     @Bean

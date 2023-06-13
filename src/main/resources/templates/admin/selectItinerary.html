@@ -1,0 +1,73 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cargo Administration</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
+</head>
+<body>
+<div th:replace="adminDecorator :: adminbody"/>
+<div id="container">
+    <table>
+        <caption>Select route</caption>
+        <tr>
+            <td>
+                Cargo <span th:text="${cargo.trackingId}"/> is going from <span th:text="${cargo.origin}"/> to <span
+                    th:text="${cargo.finalDestination}"/>
+            </td>
+        </tr>
+    </table>
+
+    <p th:if="${#lists.isEmpty(routeCandidates)}">No routes found that satisfy the route specification.
+        Try setting an arrival deadline futher into the future (a few weeks at least).
+    </p>
+
+    <form th:each="it,itStatus : ${routeCandidates}" th:action="@{/admin/assignItinerary}" method="post">
+        <input type="hidden" name="trackingId" th:value="${cargo.trackingId}"/>
+        <table>
+            <caption>Route candidate <span th:text="${itStatus.count}"/></caption>
+            <thead>
+            <tr>
+                <td>Voyage</td>
+                <td>From</td>
+                <td></td>
+                <td>To</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="leg,legStatus : ${it.legs}">
+                <input type="hidden" th:name="|legs[${legStatus.index}].voyageNumber|" th:value="${leg.voyageNumber}"/>
+                <input type="hidden" th:name="|legs[${legStatus.index}].fromUnLocode|" th:value="${leg.from}"/>
+                <input type="hidden" th:name="|legs[${legStatus.index}].toUnLocode|" th:value="${leg.to}"/>
+
+                <input type="hidden" th:name="|legs[${legStatus.index}].fromDate|"
+                       th:value="${#dates.format(leg.loadTime,'yyyy-MM-dd hh:mm')}"/>
+                <input type="hidden" th:name="|legs[${legStatus.index}].toDate|"
+                       th:value="${#dates.format(leg.unloadTime,'yyyy-MM-dd hh:mm')}"/>
+                <tr>
+                    <td th:text="${leg.voyageNumber}"></td>
+                    <td th:text="${leg.from}"></td>
+                    <td th:text="${#dates.format(leg.loadTime,'yyyy-MM-dd hh:mm')}"/>
+                    <td th:text="${leg.to}"></td>
+                    <td th:text="${#dates.format(leg.unloadTime,'yyyy-MM-dd hh:mm')}"/>
+                </tr>
+            </th:block>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3">
+                    <p>
+                        <input type="submit" value="Assign cargo to this route"/>
+                    </p>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+</body>
+</html>

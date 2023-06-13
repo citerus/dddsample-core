@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cargo Administration</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
+
+    <style type="text/css">
+        td {
+            align: left;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="adminDecorator :: adminbody"/>
+<div id="container">
+  <form th:action="@{/admin/changeDestination}" method="post">
+  <input type="hidden" name="trackingId" th:value="${cargo.trackingId}"/>
+  <table>
+    <caption>Change destination for cargo <span th:text="${cargo.trackingId}"/></caption>
+    <tbody>
+      <tr>
+        <td>Current destination</td>
+        <td th:text="${cargo.finalDestination}"/>
+      </tr>
+      <tr>
+        <td>New destination</td>
+        <td>
+          <select name="unlocode">
+            <option th:each="location : ${locations}" th:value="${location.unLocode}" th:text="${location.unLocode}"/>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td> </td>
+        <td>
+          <input type="submit" value="Change destination"/>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  </form>
+</div>
+</body>
+</html>

@@ -22,5 +22,5 @@ public class LocationDTO implements Serializable {
   public String getName() {
     return name;
   }
-
+  
 }

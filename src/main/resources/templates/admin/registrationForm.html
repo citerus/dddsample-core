@@ -1,0 +1,69 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cargo Administration</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap-datepicker.css}"/>
+</head>
+<body>
+<div th:replace="adminDecorator :: adminbody"/>
+<div id="container">
+    <form th:action="@{/admin/register}" method="post">
+        <table>
+            <caption>Book new cargo</caption>
+            <tbody>
+            <tr>
+                <td>Origin</td>
+                <td>
+                    <select name="originUnlocode">
+                        <th:block th:each="unlocode : ${unlocodes}">
+                            <option th:value="${unlocode}" th:text="${unlocode}">unlocode</option>
+                        </th:block>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Destination</td>
+                <td>
+                    <select name="destinationUnlocode">
+                        <th:block th:each="unlocode : ${unlocodes}">
+                            <option th:value="${unlocode}" th:text="${unlocode}">unlocode</option>
+                        </th:block>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Arrival deadline:</td>
+                <td>
+                    <input name="arrivalDeadline" type="text" size="10" id="arrivalDeadline" th:value="${#dates.format(#dates.createNow(),'dd/MM/yyyy')}"/>
+                    <p class="glyphicon glyphicon-calendar"></p>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Book"/>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<script th:src="@{/js/jquery-2.1.4.js}"></script>
+<script th:src="@{/js/bootstrap-datepicker.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#arrivalDeadline').datepicker({
+            format: "dd/mm/yyyy"
+        });
+    });
+</script>
+</body>
+</html>
