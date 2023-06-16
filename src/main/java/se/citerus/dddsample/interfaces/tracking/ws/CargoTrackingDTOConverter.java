@@ -41,7 +41,7 @@ public class CargoTrackingDTOConverter {
     }
 
     private static List<CargoLegDTO> convertLegs(Cargo cargo) {
-        return cargo.itinerary.stream()
+        return cargo.itinerary().legs().stream()
                 .map(CargoTrackingDTOConverter::convertLeg)
                 .collect(Collectors.toList());
     }

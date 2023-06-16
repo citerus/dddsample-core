@@ -55,7 +55,6 @@ public class CargoTrackingRestService {
             Locale locale = RequestContextUtils.getLocale(request);
             TrackingId trkId = new TrackingId(trackingId);
             Cargo cargo = cargoRepository.find(trkId);
-            System.out.println("voyage " + cargo.itinerary().legs().get(0).voyage().toString());
             if (cargo == null) {
                 throw new NotFoundException("No cargo found for trackingId");
             }
