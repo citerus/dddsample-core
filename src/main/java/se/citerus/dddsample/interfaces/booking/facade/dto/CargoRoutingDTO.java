@@ -70,5 +70,4 @@ public final class CargoRoutingDTO implements Serializable {
   public Instant getArrivalDeadline() {
     return arrivalDeadline;
   }
-
 }

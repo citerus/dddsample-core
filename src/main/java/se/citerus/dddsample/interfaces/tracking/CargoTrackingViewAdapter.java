@@ -25,8 +25,9 @@ public final class CargoTrackingViewAdapter {
   private final List<HandlingEventViewAdapter> events;
   private final String FORMAT = "yyyy-MM-dd hh:mm";
   private final TimeZone timeZone;
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT);
 
-    /**
+  /**
    * Constructor.
    *
    * @param cargo
@@ -99,6 +100,14 @@ public final class CargoTrackingViewAdapter {
     return messageSource.getMessage(code, args, "[Unknown status]", locale);
   }
 
+  public String getEtaText() {
+    return messageSource.getMessage("cargo.routing.eta", new Object[]{getDestination(), getEta()}, locale);
+  }
+
+  public String getStatusDescriptionText() {
+    return messageSource.getMessage("cargo.routing.result", new Object[]{getTrackingId(), getStatusText()}, locale);
+  }
+
   /**
    * @return Cargo destination location.
    */
@@ -133,19 +142,20 @@ public final class CargoTrackingViewAdapter {
         return "";
       }
 
-    String text = "Next expected activity is to ";
     HandlingEvent.Type type = activity.type();
     if (type.sameValueAs(HandlingEvent.Type.LOAD)) {
-        return
-          text + type.name().toLowerCase() + " cargo onto voyage " + activity.voyage().voyageNumber() +
-          " in " + activity.location().name();
-      } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
-        return
-          text + type.name().toLowerCase() + " cargo off of " + activity.voyage().voyageNumber() +
-          " in " + activity.location().name();
-      } else {
-        return text + type.name().toLowerCase() + " cargo in " + activity.location().name();
-      }
+      return messageSource.getMessage("cargo.routing.nextexpact." + type.name(), new Object[]{activity.voyage().voyageNumber(), activity.location().name()}, "Missing translation string", locale);
+    } else if (type.sameValueAs(HandlingEvent.Type.UNLOAD)) {
+      return messageSource.getMessage("cargo.routing.nextexpact." + type.name(), new Object[]{activity.voyage().voyageNumber(), activity.location().name()}, "Missing translation string", locale);
+    } else if (type.sameValueAs(HandlingEvent.Type.RECEIVE))  {
+      return messageSource.getMessage("cargo.routing.nextexpact." + type.name(), new Object[]{activity.location().name()}, "Missing translation string", locale);
+    } else if (type.sameValueAs(HandlingEvent.Type.CLAIM))  {
+      return messageSource.getMessage("cargo.routing.nextexpact." + type.name(), new Object[]{activity.location().name()}, "Missing translation string", locale);
+    } else if (type.sameValueAs(HandlingEvent.Type.CUSTOMS))  {
+      return messageSource.getMessage("cargo.routing.nextexpact." + type.name(), new Object[]{activity.location().name()}, "Missing translation string", locale);
+    } else {
+      return messageSource.getMessage("cargo.routing.nextexpact.unknown", null, "Missing translation string", locale);
+    }
   }
 
   /**

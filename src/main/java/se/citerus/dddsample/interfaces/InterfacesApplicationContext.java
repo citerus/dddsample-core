@@ -11,15 +11,17 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.FixedLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.BookingService;
 import se.citerus.dddsample.domain.model.cargo.CargoRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
+import se.citerus.dddsample.infrastructure.i18n.QueryParamLocaleResolver;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
 import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
@@ -31,6 +33,7 @@ import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 import javax.persistence.EntityManager;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Locale;
 
 @Configuration
@@ -50,14 +53,25 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 
     @Bean
-    public FixedLocaleResolver localeResolver() {
-        FixedLocaleResolver fixedLocaleResolver = new FixedLocaleResolver();
-        fixedLocaleResolver.setDefaultLocale(Locale.ENGLISH);
-        return fixedLocaleResolver;
+    public LocaleResolver localeResolver() {
+        QueryParamLocaleResolver localeResolver = new QueryParamLocaleResolver();
+        localeResolver.setSupportedLocales(List.of(Locale.ENGLISH,
+                Locale.SIMPLIFIED_CHINESE,
+                new Locale("sv", "SE"))); // add new locales here when available
+        localeResolver.setDefaultLocale(Locale.ENGLISH);
+        return localeResolver;
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+        lci.setParamName("lang");
+        return lci;
     }
 
     @Bean
@@ -76,8 +90,8 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public CargoAdminController cargoAdminController(BookingServiceFacade bookingServiceFacade) {
-        return new CargoAdminController(bookingServiceFacade);
+    public CargoAdminController cargoAdminController(BookingServiceFacade bookingServiceFacade, MessageSource messageSource) {
+        return new CargoAdminController(bookingServiceFacade, messageSource);
     }
 
     @Bean
@@ -97,6 +111,7 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
         OpenEntityManagerInViewInterceptor openSessionInViewInterceptor = new OpenEntityManagerInViewInterceptor();
         openSessionInViewInterceptor.setEntityManagerFactory(entityManager.getEntityManagerFactory());
         registry.addWebRequestInterceptor(openSessionInViewInterceptor);
+        registry.addInterceptor(localeChangeInterceptor());
     }
 
     @Bean
