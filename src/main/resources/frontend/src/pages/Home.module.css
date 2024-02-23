@@ -1,0 +1,9 @@
+.buttonLink {
+  margin-left: 4px;
+}
+
+.trackingIdInput {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

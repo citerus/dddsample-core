@@ -1,0 +1,26 @@
+.registrationForm {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-auto-rows: auto;
+  gap: 8px;
+}
+
+.registrationForm > div {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: span 2;
+}
+
+.registrationForm label {
+  text-align: start;
+  grid-column: 1;
+}
+
+.registrationForm :is(input, select) {
+  margin-left: 8px;
+  grid-column: 2;
+}
+
+.registrationForm button {
+  grid-column: span 2;
+}

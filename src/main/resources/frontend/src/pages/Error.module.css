@@ -1,0 +1,10 @@
+.errorPage {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  background-color: white;
+  padding: 2rem;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}

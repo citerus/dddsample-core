@@ -1,0 +1,39 @@
+.cargoDetails {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+}
+
+.cargoDetails div {
+  text-align: start;
+}
+
+.label {
+  margin-right: 4px;
+}
+
+.itineraryTable {
+  display: grid;
+}
+
+.tableHeader {
+  font-weight: bold;
+  grid-row: 1;
+}
+
+.twoColumns {
+  grid-column: span 2;
+}
+
+.itineraryTable > div {
+  border: inset 2px black;
+  padding: 4px;
+}
+
+.itineraryTable > div:nth-child(1) {
+  border-top-left-radius: 4px;
+}
+
+.itineraryTable > div:nth-child(3) {
+  border-top-right-radius: 4px;
+}
