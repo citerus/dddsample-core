@@ -6,6 +6,7 @@ import se.citerus.dddsample.acceptance.pages.AdminPage;
 import se.citerus.dddsample.acceptance.pages.CargoBookingPage;
 import se.citerus.dddsample.acceptance.pages.CargoDestinationPage;
 import se.citerus.dddsample.acceptance.pages.CargoDetailsPage;
+import se.citerus.dddsample.acceptance.pages.CargoRoutingPage;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -51,5 +52,12 @@ public class AdminAcceptanceTest extends AbstractAcceptanceTest {
         cargoDetailsPage = cargoDestinationPage.selectDestinationTo("AUMEL");
         cargoDetailsPage.expectDestinationOf("AUMEL");
         cargoDetailsPage.expectArrivalDeadlineOf(arrivalDeadline);
+
+        // Route cargo
+        cargoDetailsPage.expectRoutedOf("Not routed");
+        CargoRoutingPage cargoRoutingPage = cargoDetailsPage.routeCargo();
+        cargoRoutingPage.expectAtLeastOneRoute();
+        CargoDetailsPage routedCargoDetailsPage = cargoRoutingPage.assignCargoToFirstRoute();
+        routedCargoDetailsPage.expectItinerary();
     }
 }
