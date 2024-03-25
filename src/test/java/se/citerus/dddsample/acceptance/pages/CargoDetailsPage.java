@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CargoDetailsPage {
     public static final String TRACKING_ID_HEADER = "Details for cargo ";
@@ -58,5 +59,22 @@ public class CargoDetailsPage {
         String actualArrivalDeadline = driver.findElement(By.xpath("//div[@id='container']/table/tbody/tr[4]/td[2]")).getText();
 
         assertThat(expectedArrivalDeadline.format(FORMATTER)).isEqualTo(actualArrivalDeadline);
+    }
+
+    public void expectRoutedOf(String routingStatus) {
+        String actualRoutingStatus = driver.findElement(By.xpath("//div[@id='container']/p[2]/strong")).getText();
+
+        assertEquals(routingStatus, actualRoutingStatus);
+    }
+
+    public CargoRoutingPage routeCargo() {
+        driver.findElement(By.linkText("Route this cargo")).click();
+
+        return new CargoRoutingPage(driver, port);
+    }
+
+    public void expectItinerary() {
+        String itineraryText = driver.findElement(By.xpath("//div[@id='container']/table[2]/caption")).getText();
+        assertEquals("Itinerary", itineraryText);
     }
 }
