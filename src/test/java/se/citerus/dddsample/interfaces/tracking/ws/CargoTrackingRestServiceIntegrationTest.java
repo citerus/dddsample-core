@@ -1,5 +1,6 @@
 package se.citerus.dddsample.interfaces.tracking.ws;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import se.citerus.dddsample.Application;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -28,6 +30,13 @@ public class CargoTrackingRestServiceIntegrationTest {
     private int port;
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @BeforeAll
+    static void beforeClass() {
+        // The expected date time values in the resonse are formatted in US locale.
+        // Set the locale in the tests so that they won't fail in non-US locales such as Europe.
+        Locale.setDefault(Locale.US);
+    }
 
     @Transactional
     @Test
