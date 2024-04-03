@@ -249,7 +249,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.3</version>
             </plugin>
             <!-- Source code cross reference -->
             <plugin>
