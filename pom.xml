@@ -96,7 +96,7 @@
                     <argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED
                     </argLine>
                 </configuration>
-                <version>3.0.0</version>
+                <version>3.2.5</version>
             </plugin>
 
             <plugin>
@@ -222,7 +222,7 @@
         <dependency> <!-- Required by Hibernate in Java 11+ -->
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.29.2-GA</version>
+            <version>3.30.2-GA</version>
         </dependency>
 
         <dependency>
@@ -247,7 +247,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.1</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
         <dependency> <!-- Overridden version required for Java 11 -->
@@ -304,7 +304,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.3</version>
             </plugin>
             <!-- Source code cross reference -->
             <plugin>
@@ -327,7 +327,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.3.1</version>
                 <configuration>
                     <configLocation>src/main/config/checkstyle.xml</configLocation>
                     <!-- Java source code generated from WSDL -->

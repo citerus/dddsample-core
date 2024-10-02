@@ -60,16 +60,16 @@ public class RouteAssignmentCommand {
       return fromDate;
     }
 
-    public void setFromDate(Instant fromDate) {
-      this.fromDate = fromDate;
+    public void setFromDate(String fromDate) {
+      this.fromDate = Instant.parse(fromDate);
     }
 
     public Instant getToDate() {
       return toDate;
     }
 
-    public void setToDate(Instant toDate) {
-      this.toDate = toDate;
+    public void setToDate(String toDate) {
+      this.toDate = Instant.parse(toDate);
     }
   }
 }
