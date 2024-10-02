@@ -1,0 +1,57 @@
+.routeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 8px 1rem;
+  justify-content: start;
+  align-items: start;
+}
+
+.routeGridHeader {
+  font-weight: bold;
+}
+
+.voyageHeader,
+.fromHeader,
+.toHeader {
+  font-weight: bold;
+}
+
+.voyageHeader {
+  grid-column: 1;
+}
+.fromHeader {
+  grid-column: 2;
+}
+.toHeader {
+  grid-column: 4;
+}
+
+.voyageNumber {
+  grid-column: 1;
+}
+
+.from {
+  grid-column: 2;
+}
+
+.loadTime {
+  align-self: start;
+  grid-column: 3;
+}
+
+.to {
+  grid-column: 4;
+}
+
+.unloadTime {
+  align-self: start;
+  grid-column: 5;
+}
+
+.routeCandidateItem {
+  margin: 2rem;
+}
+
+.routeCandidateItem button {
+  margin: 1rem 0;
+}

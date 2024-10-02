@@ -66,8 +66,8 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public CargoTrackingRestService cargoTrackingRestService(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
-        return new CargoTrackingRestService(cargoRepository, handlingEventRepository, messageSource);
+    public CargoTrackingRestService cargoTrackingRestService(CargoRepository cargoRepository, BookingServiceFacade bookingServiceFacade, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
+        return new CargoTrackingRestService(cargoRepository, bookingServiceFacade, handlingEventRepository, messageSource);
     }
 
     @Bean

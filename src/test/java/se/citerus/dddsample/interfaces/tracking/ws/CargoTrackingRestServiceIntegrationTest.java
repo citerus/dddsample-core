@@ -41,7 +41,7 @@ public class CargoTrackingRestServiceIntegrationTest {
     @Transactional
     @Test
     void shouldReturn200ResponseAndJsonWhenRequestingCargoWithIdABC123() throws Exception {
-        URI uri = new UriTemplate("http://localhost:{port}/dddsample/api/track/ABC123").expand(port);
+        URI uri = new UriTemplate("http://localhost:{port}/dddsample/api/cargo/ABC123").expand(port);
         RequestEntity<Void> request = RequestEntity.get(uri).build();
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
@@ -54,7 +54,7 @@ public class CargoTrackingRestServiceIntegrationTest {
 
     @Test
     void shouldReturnValidationErrorResponseWhenInvalidHandlingReportIsSubmitted() throws Exception {
-        URI uri = new UriTemplate("http://localhost:{port}/dddsample/api/track/MISSING").expand(port);
+        URI uri = new UriTemplate("http://localhost:{port}/dddsample/api/cargo/MISSING").expand(port);
         RequestEntity<Void> request = RequestEntity.get(uri).build();
 
         try {

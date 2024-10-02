@@ -1,0 +1,18 @@
+.cargoTable {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 4px;
+  margin: 8px;
+  margin-bottom: 1rem;
+}
+
+.cargoTable hr {
+  grid-column: span 4;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: black;
+}
+
+.registerLink {
+}
