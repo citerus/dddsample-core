@@ -1,10 +1,10 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import java.lang.invoke.MethodHandles;
 
 public class SimpleLoggingConsumer implements MessageListener {

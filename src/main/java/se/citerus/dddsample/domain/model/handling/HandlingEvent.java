@@ -1,5 +1,8 @@
 package se.citerus.dddsample.domain.model.handling;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,7 +12,6 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.DomainEvent;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -31,6 +33,7 @@ import java.util.Objects;
  */
 @Entity(name = "HandlingEvent")
 @Table(name = "HandlingEvent")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   @Id
@@ -241,7 +244,5 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return builder.toString();
   }
 
-  HandlingEvent() {
-    // Needed by Hibernate
-  }
+
 }

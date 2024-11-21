@@ -1,5 +1,6 @@
 package se.citerus.dddsample.interfaces;
 
+import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,6 @@ import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 
-import javax.persistence.EntityManager;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.Locale;
@@ -61,8 +61,14 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public CargoTrackingController cargoTrackingController(MessageSource messageSource, CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository) {
-        return new CargoTrackingController(cargoRepository, handlingEventRepository, messageSource);
+    public CargoTrackingController cargoTrackingController(MessageSource messageSource,
+                                                           CargoRepository cargoRepository,
+                                                           HandlingEventRepository handlingEventRepository,
+                                                           TrackCommandValidator TrackCommandValidator) {
+        return new CargoTrackingController(cargoRepository,
+            handlingEventRepository,
+            messageSource,
+            TrackCommandValidator);
     }
 
     @Bean
@@ -106,10 +112,10 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
             return null;
         }
         ThreadPoolTaskScheduler threadPoolTaskScheduler
-                = new ThreadPoolTaskScheduler();
+            = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(10);
         threadPoolTaskScheduler.setThreadNamePrefix(
-                "ThreadPoolTaskScheduler");
+            "ThreadPoolTaskScheduler");
         threadPoolTaskScheduler.initialize();
         threadPoolTaskScheduler.scheduleAtFixedRate(scanner, 5000);
         return threadPoolTaskScheduler;
