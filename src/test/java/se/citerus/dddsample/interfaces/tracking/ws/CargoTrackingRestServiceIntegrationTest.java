@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -46,9 +46,9 @@ public class CargoTrackingRestServiceIntegrationTest {
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
 
-        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
         String expected = StreamUtils.copyToString(getClass().getResourceAsStream("/sampleCargoTrackingResponse.json"), StandardCharsets.UTF_8);
-        assertThat(response.getHeaders().get("Content-Type")).containsExactly("application/json;charset=UTF-8");
+        assertThat(response.getHeaders().get("Content-Type")).containsExactly("application/json");
         assertThat(response.getBody()).isEqualTo(expected);
     }
 

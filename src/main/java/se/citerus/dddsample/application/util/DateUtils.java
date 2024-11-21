@@ -1,7 +1,5 @@
 package se.citerus.dddsample.application.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 

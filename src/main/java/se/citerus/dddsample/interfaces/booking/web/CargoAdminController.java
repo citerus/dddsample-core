@@ -1,5 +1,8 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -12,8 +15,6 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,7 +40,8 @@ import java.util.Map;
 @RequestMapping("/admin")
 public final class CargoAdminController {
 
-    private final BookingServiceFacade bookingServiceFacade;
+    @Autowired
+    private  BookingServiceFacade bookingServiceFacade;
 
     public CargoAdminController(BookingServiceFacade bookingServiceFacade) {
         this.bookingServiceFacade = bookingServiceFacade;

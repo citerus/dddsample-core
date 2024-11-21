@@ -1,5 +1,8 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,7 +12,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Objects;
@@ -23,6 +25,7 @@ import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
  *
  */
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Delivery implements ValueObject<Delivery> {
 
   @Column
@@ -354,7 +357,4 @@ public class Delivery implements ValueObject<Delivery> {
       toHashCode();
   }
 
-  Delivery() {
-    // Needed by Hibernate
-  }
 }
