@@ -5,6 +5,7 @@ server:
 logging:
     level:
         jdbc: debug
+        'se.citerus.dddsample': debug
 
 uploadDirectory: /tmp/upload
 parseFailureDirectory: /tmp/failed
