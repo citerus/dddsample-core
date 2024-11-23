@@ -61,17 +61,6 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     }
 
     @Bean
-    public CargoTrackingController cargoTrackingController(MessageSource messageSource,
-                                                           CargoRepository cargoRepository,
-                                                           HandlingEventRepository handlingEventRepository,
-                                                           TrackCommandValidator TrackCommandValidator) {
-        return new CargoTrackingController(cargoRepository,
-            handlingEventRepository,
-            messageSource,
-            TrackCommandValidator);
-    }
-
-    @Bean
     public CargoTrackingRestService cargoTrackingRestService(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
         return new CargoTrackingRestService(cargoRepository, handlingEventRepository, messageSource);
     }
@@ -79,11 +68,6 @@ public class InterfacesApplicationContext implements WebMvcConfigurer {
     @Bean
     public TrackCommandValidator trackCommandValidator() {
         return new TrackCommandValidator();
-    }
-
-    @Bean
-    public CargoAdminController cargoAdminController(BookingServiceFacade bookingServiceFacade) {
-        return new CargoAdminController(bookingServiceFacade);
     }
 
     @Bean
