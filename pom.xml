@@ -79,8 +79,10 @@
 
     <properties>
         <java.version>17</java.version>
-        <junit-jupiter.version>5.9.1</junit-jupiter.version>
-        <!--<assertj.version>3.8.0</assertj.version>-->
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <build>
