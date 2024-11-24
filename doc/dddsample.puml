@@ -1,0 +1,130 @@
+@startuml
+
+top to bottom direction
+'skinparam linetype ortho
+left to right direction
+'!pragma layout smetana
+
+package cargo{
+
+    entity Cargo <<AggregateRoot>> #aliceblue {
+      + id: long
+      + origin: Location
+      + trackingId: String
+      + routeSpecification: RouteSpecification
+      + delivery: Delivery
+      + itineraryLegs: List<Leg>
+    }
+
+    class RouteSpecification  <<ValueObject>>  {
+      + origin: Location
+      + destination: Location
+      + arrivalDeadline: Instant
+    }
+
+
+    class Itinerary <<ValueObject>>  {
+      - id: Long
+      - legs: List<Leg>
+    }
+
+   class Leg   <<ValueObject>> {
+      + id: long
+      + voyage: Voyage
+      + unloadTime: Instant
+      + unloadLocation: Location
+      + loadLocation: Location
+      + loadTime: Instant
+    }
+
+    class Delivery    <<ValueObject>> {
+      + misdirected: boolean
+      + calculatedAt: Instant
+      + lastKnownLocation: Location
+      + eta: Instant
+      + nextExpectedActivity: HandlingActivity
+      + transportStatus: TransportStatus
+      + routingStatus: RoutingStatus
+      + isUnloadedAtDestination: boolean
+      + lastEvent: HandlingEvent
+      + currentVoyage: Voyage
+    }
+
+
+
+  class HandlingActivity    <<ValueObject>> {
+      + location: Location
+      + voyage: Voyage
+      + type: Type
+    }
+
+}
+
+package handling{
+
+    entity HandlingEvent <<AggregateRoot>> #aliceblue {
+      + id: long
+      + type: Type
+      + voyage: Voyage
+      + location: Location
+      + cargo: Cargo
+      + completionTime: Instant
+      + registrationTime: Instant
+    }
+
+}
+
+
+package voyage{
+    entity Voyage  <<AggregateRoot>> #aliceblue {
+      + id: long
+      + carrierMovements: List<CarrierMovement>
+      + voyageNumber: String
+    }
+
+    class CarrierMovement   <<ValueObject>>  {
+      + id: long
+      + departureLocation: Location
+      + arrivalLocation: Location
+      + arrivalTime: Instant
+      + departureTime: Instant
+    }
+
+    class Schedule   <<ValueObject>>  {
+      - carrierMovements: List<CarrierMovement>
+    }
+
+}
+
+package location{
+    entity Location  <<AggregateRoot>> #aliceblue {
+      + id: long
+      + name: String
+      + unlocode: String
+    }
+}
+
+
+
+Cargo              "1" *--> "routeSpecification\n1" RouteSpecification
+Cargo              "1" *--> "delivery\n1" Delivery
+Cargo              "1" *--> "itineraryLegs\n*" Leg
+Cargo              "1" *-->  Location
+Delivery           "1" *--> "nextExpectedActivity\n1" HandlingActivity
+Delivery           "1" *-->  Location
+Delivery           "1" *--> "currentVoyage\n1" Voyage
+Delivery           "1" *--> "lastEvent\n1" HandlingEvent
+HandlingActivity   "1" *-->  Location
+HandlingActivity   "1" *--> "voyage\n1" Voyage
+Itinerary          "1" *--> "legs\n*" Leg
+HandlingEvent      "1" *-->  Location
+Leg                "1" *-->  Location
+RouteSpecification "1" *-->  Location
+Schedule           "1" *--> "carrierMovements\n*" CarrierMovement
+Voyage             "1" *--> "carrierMovements\n*" CarrierMovement
+CarrierMovement    "1" *-->  Location
+
+'Cargo               -[#blue]>  Itinerary          : "«create»"
+'Delivery            --[#blue]>  HandlingActivity   : "«create»"
+'Voyage              --[#blue]>  Schedule           : "«create»"
+@enduml

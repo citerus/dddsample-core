@@ -16,6 +16,10 @@ Development blog: https://citerus.github.io/dddsample-core/
 
 Trello board: https://trello.com/b/PTDFRyxd
 
+## Domain architecture
+![](./doc/dddsample.png)
+
+
 ## How to build
 
 Using Maven (we recommend using the included Maven wrapper), run this command to compile and run all the tests:
