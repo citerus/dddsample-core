@@ -22,8 +22,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import javax.persistence.EntityManager;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -131,8 +129,8 @@ public class CargoRepositoryTest {
         Cargo result = entityManager.createQuery(
                 String.format("from Cargo c where c.trackingId = '%s'", trackingId.idString()), Cargo.class).getSingleResult();
         assertThat(result.trackingId().idString()).isEqualTo("AAA");
-        assertThat(result.routeSpecification.origin.id).isEqualTo(origin.id);
-        assertThat(result.routeSpecification.destination.id).isEqualTo(destination.id);
+        assertThat(result.routeSpecification().origin().id()).isEqualTo(origin.id());
+        assertThat(result.routeSpecification().destination().id()).isEqualTo(destination.id());
 
         entityManager.clear();
 
@@ -144,7 +142,7 @@ public class CargoRepositoryTest {
     public void testReplaceItinerary() {
         Cargo cargo = cargoRepository.find(new TrackingId("JKL567"));
         assertThat(cargo).isNotNull();
-        long cargoId = cargo.id;
+        long cargoId = cargo.id();
         assertThat(countLegsForCargo(cargoId)).isEqualTo(3);
 
         Location legFrom = locationRepository.find(new UnLocode("FIHEL"));

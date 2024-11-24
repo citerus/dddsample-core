@@ -19,21 +19,21 @@ public final class CarrierMovement implements ValueObject<CarrierMovement> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  public long id;
+  private long id;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "arrival_location_id", nullable = false)
-  public Location arrivalLocation;
+  private Location arrivalLocation;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "departure_location_id", nullable = false)
-  public Location departureLocation;
+  private Location departureLocation;
 
   @Column(name = "arrival_time", nullable = false)
-  public Instant arrivalTime;
+  private Instant arrivalTime;
 
   @Column(name = "departure_time", nullable = false)
-  public Instant departureTime;
+  private Instant departureTime;
 
   // Null object pattern 
   public static final CarrierMovement NONE = new CarrierMovement(
