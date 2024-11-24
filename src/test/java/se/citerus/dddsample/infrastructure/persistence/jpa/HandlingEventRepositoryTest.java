@@ -55,14 +55,14 @@ public class HandlingEventRepositoryTest {
 
         flush();
 
-        HandlingEvent result = entityManager.createQuery(String.format("select he from HandlingEvent he where he.id = %d", event.id), HandlingEvent.class).getSingleResult();
+        HandlingEvent result = entityManager.createQuery(String.format("select he from HandlingEvent he where he.id = %d", event.id()), HandlingEvent.class).getSingleResult();
 
-        assertThat(result.cargo.id).isEqualTo(cargo.id);
-        Instant completionDate = result.completionTime;
+        assertThat(result.cargo().id()).isEqualTo(cargo.id());
+        Instant completionDate = result.completionTime();
         assertThat(completionDate).isEqualTo(Instant.ofEpochMilli(10));
-        Instant registrationDate = result.registrationTime;
+        Instant registrationDate = result.registrationTime();
         assertThat(registrationDate).isEqualTo(Instant.ofEpochMilli(20));
-        assertThat(result.type).isEqualTo(HandlingEvent.Type.CLAIM);
+        assertThat(result.type()).isEqualTo(HandlingEvent.Type.CLAIM);
         // TODO: the rest of the columns
     }
 

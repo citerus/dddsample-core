@@ -17,13 +17,13 @@ public final class Location implements Entity<Location> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  public long id;
+  private long id;
 
   @Column(nullable = false, unique = true, updatable = false)
-  public String unlocode;
+  private String unlocode;
 
   @Column(nullable = false)
-  public String name;
+  private String name;
 
   /**
    * Special Location object that marks an unknown location.
@@ -67,6 +67,14 @@ public final class Location implements Entity<Location> {
     return name;
   }
 
+  public String code() {
+    return unlocode;
+  }
+
+  public long id() {
+    return id;
+  }
+
   /**
    * @param object to compare
    * @return Since this is an entiy this will be true iff UN locodes are equal.
@@ -108,7 +116,4 @@ public final class Location implements Entity<Location> {
     // Needed by Hibernate
   }
 
-  public void setId(long id) {
-    this.id = id;
-  }
 }

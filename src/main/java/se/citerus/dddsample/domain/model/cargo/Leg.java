@@ -19,25 +19,25 @@ public class Leg implements ValueObject<Leg> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  public long id;
+  private long id;
 
   @ManyToOne
   @JoinColumn(name="voyage_id")
-  public Voyage voyage;
+  private Voyage voyage;
 
   @ManyToOne
   @JoinColumn(name = "load_location_id")
-  public Location loadLocation;
+  private Location loadLocation;
 
   @Column(name = "load_time")
-  public Instant loadTime;
+  private Instant loadTime;
 
   @ManyToOne
   @JoinColumn(name = "unload_location_id")
-  public Location unloadLocation;
+  private Location unloadLocation;
 
   @Column(name = "unload_time")
-  public Instant unloadTime;
+  private Instant unloadTime;
 
   public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, Instant loadTime, Instant unloadTime) {
     Validate.noNullElements(new Object[] {voyage, loadLocation, unloadLocation, loadTime, unloadTime});
