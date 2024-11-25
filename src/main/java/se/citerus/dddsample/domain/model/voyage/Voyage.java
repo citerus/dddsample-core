@@ -18,14 +18,14 @@ public class Voyage implements Entity<Voyage> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  public long id;
+  private long id;
 
   @Column(name = "voyage_number", unique = true)
-  public String voyageNumber;
+  private String voyageNumber;
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "voyage_id")
-  public List<CarrierMovement> carrierMovements;
+  private List<CarrierMovement> carrierMovements;
 
   // Null object pattern
   public static final Voyage NONE = new Voyage(

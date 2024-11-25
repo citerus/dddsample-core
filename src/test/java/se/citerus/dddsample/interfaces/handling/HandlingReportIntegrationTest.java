@@ -53,7 +53,7 @@ public class HandlingReportIntegrationTest {
                 "completionTime", "2022-10-30T13:37:00",
                 "trackingIds", Collections.singletonList("ABC123"),
                 "type", HandlingEvent.Type.CUSTOMS.name(),
-                "unLocode", SampleLocations.DALLAS.unlocode
+                "unLocode", SampleLocations.DALLAS.unLocode()
         ));
         URI uri = new UriTemplate("http://localhost:{port}/dddsample/handlingReport").expand(port);
         RequestEntity<String> request = RequestEntity
@@ -81,7 +81,7 @@ public class HandlingReportIntegrationTest {
                 "completionTime", "invalid date",
                 "trackingIds", Collections.singletonList("ABC123"),
                 "type", HandlingEvent.Type.CUSTOMS.name(),
-                "unLocode", SampleLocations.STOCKHOLM.unlocode,
+                "unLocode", SampleLocations.STOCKHOLM.code(),
                 "voyageNumber", "0101"
         ));
 

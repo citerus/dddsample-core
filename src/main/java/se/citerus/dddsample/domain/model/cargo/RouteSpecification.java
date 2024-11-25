@@ -23,14 +23,14 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
 
   @ManyToOne()
   @JoinColumn(name = "spec_origin_id")
-  public Location origin;
+  private Location origin;
 
   @ManyToOne()
   @JoinColumn(name = "spec_destination_id")
-  public Location destination;
+  private Location destination;
 
   @Column(name = "spec_arrival_deadline", nullable = false)
-  public Instant arrivalDeadline;
+  private Instant arrivalDeadline;
 
   /**
    * @param origin origin location - can't be the same as the destination

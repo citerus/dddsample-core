@@ -26,39 +26,39 @@ import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
 public class Delivery implements ValueObject<Delivery> {
 
   @Column
-  public boolean misdirected;
+  private boolean misdirected;
 
   @Column
-  public Instant eta;
+  private Instant eta;
 
   @Column(name = "calculated_at")
-  public Instant calculatedAt;
+  private Instant calculatedAt;
 
   @Column(name = "unloaded_at_dest")
-  public boolean isUnloadedAtDestination;
+  private boolean isUnloadedAtDestination;
 
   @Enumerated(value = EnumType.STRING)
   @Column(name = "routing_status")
-  public RoutingStatus routingStatus;
+  private RoutingStatus routingStatus;
 
   @Embedded
-  public HandlingActivity nextExpectedActivity;
+  private HandlingActivity nextExpectedActivity;
 
   @Enumerated(value = EnumType.STRING)
   @Column(name = "transport_status")
-  public TransportStatus transportStatus;
+  private TransportStatus transportStatus;
 
   @ManyToOne
   @JoinColumn(name = "current_voyage_id")
-  public Voyage currentVoyage;
+  private Voyage currentVoyage;
 
   @ManyToOne()
   @JoinColumn(name = "last_known_location_id")
-  public Location lastKnownLocation;
+  private Location lastKnownLocation;
 
   @ManyToOne
   @JoinColumn(name = "last_event_id")
-  public HandlingEvent lastEvent;
+  private HandlingEvent lastEvent;
 
   private static final Instant ETA_UNKNOWN = null;
   private static final HandlingActivity NO_ACTIVITY = null;

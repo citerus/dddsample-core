@@ -50,24 +50,24 @@ public class Cargo implements Entity<Cargo> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  public long id;
+  private long id;
 
   @Column(name = "tracking_id", unique = true)
-  public String trackingId;
+  private String trackingId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "origin_id")
-  public Location origin;
+  private Location origin;
 
   @Embedded
-  public RouteSpecification routeSpecification;
+  private RouteSpecification routeSpecification;
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "cargo_id")
-  public List<Leg> itinerary; // TODO figure out if we can map an Itinerary object instead
+  private List<Leg> itinerary; // TODO figure out if we can map an Itinerary object instead
 
   @Embedded
-  public Delivery delivery;
+  private Delivery delivery;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
     Validate.notNull(trackingId, "Tracking ID is required");
@@ -118,6 +118,14 @@ public class Cargo implements Entity<Cargo> {
    */
   public Delivery delivery() {
     return delivery;
+  }
+
+  /**
+   *
+   * @return the id of the cargo, note that the id is not the tracking id.
+   */
+  public long id(){
+    return id;
   }
 
   /**

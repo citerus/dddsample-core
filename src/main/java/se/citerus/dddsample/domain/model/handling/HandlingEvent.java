@@ -35,29 +35,29 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  public long id;
+  private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "voyage_id")
-  public Voyage voyage;
+  private Voyage voyage;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "location_id")
-  public Location location;
+  private Location location;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "cargo_id")
-  public Cargo cargo;
+  private Cargo cargo;
 
   @Column
-  public Instant completionTime;
+  private Instant completionTime;
 
   @Column
-  public Instant registrationTime;
+  private Instant registrationTime;
 
   @Column
   @Enumerated(value = EnumType.STRING)
-  public HandlingEvent.Type type;
+  private HandlingEvent.Type type;
 
   /**
    * Handling event type. Either requires or prohibits a carrier movement
@@ -187,6 +187,10 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   public Cargo cargo() {
     return this.cargo;
+  }
+
+  public long id(){
+    return this.id;
   }
 
   @Override
