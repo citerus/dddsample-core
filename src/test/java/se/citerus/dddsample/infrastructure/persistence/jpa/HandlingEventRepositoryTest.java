@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 
-import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
 

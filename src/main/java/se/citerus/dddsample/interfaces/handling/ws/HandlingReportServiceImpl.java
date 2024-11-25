@@ -1,5 +1,6 @@
 package se.citerus.dddsample.interfaces.handling.ws;
 
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import javax.validation.Valid;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 

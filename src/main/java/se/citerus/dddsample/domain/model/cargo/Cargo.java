@@ -1,11 +1,14 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.shared.Entity;
+import se.citerus.dddsample.domain.shared.DomainEntity;
 
-import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -44,9 +47,11 @@ import java.util.List;
  * in port etc), are captured in this aggregate.
  *
  */
-@javax.persistence.Entity(name = "Cargo")
+@Entity(name = "Cargo")
 @Table(name = "Cargo")
-public class Cargo implements Entity<Cargo> {
+@Setter(AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Cargo implements DomainEntity<Cargo> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -225,8 +230,6 @@ public class Cargo implements Entity<Cargo> {
     return trackingId;
   }
 
-  Cargo() {
-    // Needed by Hibernate
-  }
+
 
 }

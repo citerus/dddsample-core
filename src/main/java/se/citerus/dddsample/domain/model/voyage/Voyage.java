@@ -1,10 +1,13 @@
 package se.citerus.dddsample.domain.model.voyage;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.shared.Entity;
+import se.citerus.dddsample.domain.shared.DomainEntity;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +15,11 @@ import java.util.List;
 /**
  * A Voyage.
  */
-@javax.persistence.Entity(name = "Voyage")
+@Entity(name = "Voyage")
 @Table(name = "Voyage")
-public class Voyage implements Entity<Voyage> {
+@Setter(AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Voyage implements DomainEntity<Voyage> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,11 +33,10 @@ public class Voyage implements Entity<Voyage> {
   private List<CarrierMovement> carrierMovements;
 
   // Null object pattern
-  public static final Voyage NONE = new Voyage(
-    new VoyageNumber(""), Schedule.EMPTY
-  );
+  @Transient
+  public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
 
-  public Voyage(final VoyageNumber voyageNumber, final Schedule schedule) {
+    public Voyage(final VoyageNumber voyageNumber, final Schedule schedule) {
     Validate.notNull(voyageNumber, "Voyage number is required");
     Validate.notNull(schedule, "Schedule is required");
 
@@ -80,13 +84,10 @@ public class Voyage implements Entity<Voyage> {
     return "Voyage " + voyageNumber;
   }
 
-  Voyage() {
-    // Needed by Hibernate
-  }
 
   /**
    * Builder pattern is used for incremental construction
-   * of a Voyage aggregate. This serves as an aggregate factory. 
+   * of a Voyage aggregate. This serves as an aggregate factory.
    */
   public static final class Builder {
 

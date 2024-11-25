@@ -1,9 +1,11 @@
 package se.citerus.dddsample.domain.model.location;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.Validate;
-import se.citerus.dddsample.domain.shared.Entity;
-
-import javax.persistence.*;
+import se.citerus.dddsample.domain.shared.DomainEntity;
 
 /**
  * A location is our model is stops on a journey, such as cargo
@@ -11,9 +13,11 @@ import javax.persistence.*;
  * It is uniquely identified by a UN Locode.
  *
  */
-@javax.persistence.Entity(name = "Location")
+@Entity(name = "Location")
 @Table(name = "Location")
-public final class Location implements Entity<Location> {
+@Setter(AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public final class Location implements DomainEntity<Location> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -87,11 +91,10 @@ public final class Location implements Entity<Location> {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof Location)) {
+    if (!(object instanceof Location other)) {
       return false;
     }
-    Location other = (Location) object;
-    return sameIdentityAs(other);
+      return sameIdentityAs(other);
   }
 
   @Override
@@ -110,10 +113,6 @@ public final class Location implements Entity<Location> {
   @Override
   public String toString() {
     return name + " [" + unlocode + "]";
-  }
-
-  Location() {
-    // Needed by Hibernate
   }
 
 }

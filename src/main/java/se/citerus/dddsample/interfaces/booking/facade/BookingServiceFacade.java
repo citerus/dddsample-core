@@ -1,12 +1,12 @@
 package se.citerus.dddsample.interfaces.booking.facade;
 
-import java.rmi.RemoteException;
-import java.time.Instant;
-import java.util.List;
-
 import se.citerus.dddsample.interfaces.booking.facade.dto.CargoRoutingDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
+
+import java.rmi.RemoteException;
+import java.time.Instant;
+import java.util.List;
 
 /**
  * This facade shields the domain layer - model, services, repositories -

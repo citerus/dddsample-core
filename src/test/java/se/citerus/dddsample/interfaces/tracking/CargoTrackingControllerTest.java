@@ -42,8 +42,9 @@ public class CargoTrackingControllerTest {
         cargoRepository.init();
 
         CargoTrackingController controller = new CargoTrackingController(cargoRepository,
-                new HandlingEventRepositoryInMem(),
-                new FakeMessageSource());
+            new HandlingEventRepositoryInMem(),
+            new FakeMessageSource(),
+            new TrackCommandValidator());
 
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/jsp/");

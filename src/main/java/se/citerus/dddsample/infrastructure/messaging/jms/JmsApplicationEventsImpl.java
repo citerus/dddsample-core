@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
+import jakarta.jms.Destination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsOperations;
@@ -8,7 +9,6 @@ import se.citerus.dddsample.domain.model.cargo.Cargo;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.interfaces.handling.HandlingEventRegistrationAttempt;
 
-import javax.jms.Destination;
 import java.lang.invoke.MethodHandles;
 
 /**
