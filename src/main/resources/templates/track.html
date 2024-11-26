@@ -1,10 +1,12 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Tracking cargo</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title th:text="#{cargo.tracking.header}">Tracking cargo</title>
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
 </head>
 
@@ -19,14 +21,14 @@
                 <form method="post" th:object="${trackCommand}">
                     <table>
                         <tr>
-                            <td>
+                            <td th:text="#{cargo.tracking.idinput}">
                                 Enter your tracking id:
                             </td>
                             <td>
                                 <input th:field="*{trackingId}" id="idInput"/>
                             </td>
                             <td>
-                                <input type="submit" value="Track!"/>
+                                <input type="submit" value="Track!" th:value="#{cargo.tracking.submitbutton}"/>
                             </td>
                         </tr>
                         <tr>
@@ -40,28 +42,19 @@
                 </form>
             </div>
 
-            <p th:if="${cargo == null}"><em>Hint: try tracking "ABC123" or "JKL567".</em></p>
+            <p th:if="${cargo == null}"><em th:text="#{cargo.tracking.hint}">Hint: try tracking "ABC123" or "JKL567".</em></p>
 
             <div id="result" th:if="${cargo != null}">
-                <h2>Cargo
-                    <th:block th:text="${cargo.getTrackingId()}">tracking id</th:block>
-                    is now:
-                    <th:block th:text="${cargo.getStatusText()}">status text</th:block>
-                </h2>
+                <h2 th:text="${cargo.getStatusDescriptionText()}"></h2>
 
-                <p>
-                    Estimated time of arrival in
-                    <th:block th:text="${cargo.destination}">destination</th:block>
-                    :
-                    <th:block th:text="${cargo.eta}">eta</th:block>
-                </p>
+                <p th:text="${cargo.getEtaText()}"></p>
 
                 <p th:text="${cargo.nextExpectedActivity}">${cargo.nextExpectedActivity}</p>
 
-                <p th:if="${cargo.isMisdirected()}" class="notify"><img th:src="@{/images/error.png}" alt=""/>Cargo is misdirected</p>
+                <p th:if="${cargo.isMisdirected()}" class="notify" th:text="#{cargo.tracking.misdirected}"><img th:src="@{/images/error.png}" alt=""/>Cargo is misdirected</p>
 
                 <th:block th:if="${!cargo.events.isEmpty()}">
-                    <h3>Handling History</h3>
+                    <h3 th:text="#{cargo.tracking.handlinghistory}">Handling History</h3>
                     <ul style="list-style-type: none;">
                         <li th:each="leg : ${cargo.events}">
                             <p>
@@ -82,8 +75,9 @@
         </div>
     </div>
     <div id="footer">
-        This application is written by <a href="http://www.citerus.se" target="_blank">Citerus</a>
-        and <a href="http://www.domainlanguage.com" target="_blank">Domain Language</a>
+        <span th:text="#{cargo.tracking.footer}">This application is written by</span>
+        <a href="http://www.citerus.se" target="_blank">Citerus</a>
+        & <a href="http://www.domainlanguage.com" target="_blank">Domain Language Inc</a>
     </div>
 </div>
 <script type="text/javascript" charset="UTF-8">

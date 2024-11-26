@@ -1,35 +1,36 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Cargo Administration</title>
-
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title th:text="#{cargo.admin.header}">Cargo Administration</title>
     <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
 </head>
 <body>
 <div th:replace="adminDecorator :: adminbody"/>
 <div id="container">
     <table>
-        <caption th:text="'Details for cargo ' + ${cargo.trackingId}"></caption>
+        <caption th:text="#{cargo.admin.details.caption} + ' ' + ${cargo.trackingId}"></caption>
         <tbody>
         <tr>
-            <td>Origin</td>
+            <td th:text="#{cargo.admin.tableheader.origin}">Origin</td>
             <td th:text="${cargo.origin}"></td>
         </tr>
         <tr>
-            <td>Destination</td>
+            <td th:text="#{cargo.admin.tableheader.destination}">Destination</td>
             <td th:text="${cargo.finalDestination}"></td>
         </tr>
         <tr>
             <td></td>
             <td>
-                <a th:href="@{/admin/pickNewDestination(trackingId=${cargo.trackingId})}">Change destination</a>
+                <a th:href="@{/admin/pickNewDestination(trackingId=${cargo.trackingId})}" th:text="#{cargo.admin.details.picknewdest}">Change destination</a>
             </td>
         </tr>
         <tr>
-            <td>Arrival deadline</td>
+            <td th:text="#{cargo.admin.details.arrivaldeadline}">Arrival deadline</td>
             <td th:text="${#dates.format(cargo.arrivalDeadline,'dd/MM/yyyy')}"/>
         </tr>
         </tbody>
@@ -37,16 +38,16 @@
     <p></p>
     <th:block th:if="${cargo.routed}">
         <th:block th:if="${cargo.misrouted}">
-            <p><em>Cargo is misrouted - <a th:href="@{/admin/selectItinerary(trackingId=${cargo.trackingId})}">reroute
-                this cargo</a></em></p>
+            <p><em th:text="#{cargo.admin.details.misrouted}">Cargo is misrouted</em> - <a th:href="@{/admin/selectItinerary(trackingId=${cargo.trackingId})}" th:text="#{cargo.admin.details.reroute}" style="font-weight: italic;">reroute
+                this cargo</a></p>
         </th:block>
         <table border="1">
-            <caption>Itinerary</caption>
+            <caption th:text="#{cargo.admin.details.itinerary}">Itinerary</caption>
             <thead>
             <tr>
-                <td>Voyage number</td>
-                <td colspan="2">Load</td>
-                <td colspan="2">Unload</td>
+                <td th:text="#{cargo.admin.details.voyageno}">Voyage number</td>
+                <td colspan="2" th:text="#{cargo.admin.details.load}">Load</td>
+                <td colspan="2" th:text="#{cargo.admin.details.unload}">Unload</td>
             </tr>
             </thead>
             <tbody>
@@ -62,7 +63,7 @@
     </th:block>
     <th:block th:if="${!cargo.routed}">
         <p>
-            <strong>Not routed</strong> - <a th:href="@{/admin/selectItinerary(trackingId=${cargo.trackingId})}">Route this cargo</a>
+            <strong th:text="#{cargo.notrouted}">Not routed</strong> - <a th:href="@{/admin/selectItinerary(trackingId=${cargo.trackingId})}" th:text="#{cargo.admin.details.selectitinerary}">Route this cargo</a>
         </p>
     </th:block>
 </div>

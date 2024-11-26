@@ -14,8 +14,7 @@ public final class TrackCommandValidator implements Validator {
   }
 
   public void validate(final Object object, final Errors errors) {
-    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "trackingId", "error.required", "Required");
+    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "trackingId", "error.required", "The tracking id must not be empty");
   }
-
 }
 

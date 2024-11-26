@@ -1,4 +1,4 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -6,15 +6,15 @@
 <body>
 <th:block th:fragment="adminbody">
     <img id="logotype" th:src="@{/images/dddsample_logotype_small.png}" alt=""/>
-    <h1>Cargo Booking and Routing</h1>
+    <h1><td th:text="#{booking.header}">Cargo Booking and Routing</td></h1>
     <ul id="menu">
         <li>
-            <a th:href="@{/admin/list}">
+            <a th:href="@{/admin/list}" th:text="#{booking.listall}">
                 List all cargos
             </a>
         </li>
         <li>
-            <a th:href="@{/admin/registration}">
+            <a th:href="@{/admin/registration}" th:text="#{booking.booknew}">
                 Book new cargo
             </a>
         </li>
