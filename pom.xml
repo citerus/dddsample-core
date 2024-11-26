@@ -156,7 +156,7 @@
         <dependency> <!-- Required by Hibernate in Java 11+ -->
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>2.3.3</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency> <!-- Required by Hibernate in Java 11+ -->
             <groupId>com.sun.xml.bind</groupId>
