@@ -30,7 +30,7 @@
         </tr>
         <tr>
             <td>Arrival deadline</td>
-            <td th:text="${#dates.format(cargo.arrivalDeadline,'dd/MM/yyyy')}"/>
+            <td th:text="${#temporals.format(cargo.arrivalDeadline,'dd/MM/yyyy')}"/>
         </tr>
         </tbody>
     </table>

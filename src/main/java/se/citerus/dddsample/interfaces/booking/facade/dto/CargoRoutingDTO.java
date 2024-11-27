@@ -2,6 +2,9 @@ package se.citerus.dddsample.interfaces.booking.facade.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,8 +70,7 @@ public final class CargoRoutingDTO implements Serializable {
     return !legs.isEmpty();
   }
 
-  public Instant getArrivalDeadline() {
-    return arrivalDeadline;
+  public ZonedDateTime getArrivalDeadline() {
+    return arrivalDeadline.atZone(ZoneOffset.UTC);
   }
-
 }
