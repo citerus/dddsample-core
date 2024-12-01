@@ -58,7 +58,7 @@ public class CargoDetailsPage {
     public void expectArrivalDeadlineOf(LocalDate expectedArrivalDeadline) {
         String actualArrivalDeadline = driver.findElement(By.xpath("//div[@id='container']/table/tbody/tr[4]/td[2]")).getText();
 
-        assertThat(expectedArrivalDeadline.format(FORMATTER)).isEqualTo(actualArrivalDeadline);
+        assertThat(actualArrivalDeadline).isEqualTo(expectedArrivalDeadline.format(FORMATTER));
     }
 
     public void expectRoutedOf(String routingStatus) {
