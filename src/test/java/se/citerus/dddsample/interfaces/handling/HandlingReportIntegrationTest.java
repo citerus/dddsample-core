@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +62,7 @@ public class HandlingReportIntegrationTest {
                 .body(body);
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
-        assertThat(response.getStatusCodeValue()).isEqualTo(201);
+        assertThat(response.getStatusCode().value()).isEqualTo(201);
 
         Thread.sleep(1000); // TODO replace with Awaitility
 

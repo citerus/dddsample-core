@@ -45,7 +45,7 @@ public class HandlingReportParserTest {
     @ValueSource(strings = {"SESTO"})
     public void shouldReturnUnloCodeOnParsingValidUnloCode(String input) {
         UnLocode result = HandlingReportParser.parseUnLocode(input);
-        assertThat(result).isNotNull().extracting("unlocode").contains(input);
+        assertThat(result).isNotNull().extracting("unlocode").asString().contains(input);
     }
 
     @ParameterizedTest
@@ -68,7 +68,7 @@ public class HandlingReportParserTest {
     @ValueSource(strings = {"ABC123"})
     public void shouldReturnTrackingIdOnParsingValidTrackingId(String input) {
         TrackingId result = HandlingReportParser.parseTrackingId(input);
-        assertThat(result).isNotNull().extracting("id").contains(input);
+        assertThat(result).isNotNull().extracting("id").asString().contains(input);
     }
 
     @ParameterizedTest
@@ -89,7 +89,7 @@ public class HandlingReportParserTest {
     @ValueSource(strings = {"0101"})
     public void shouldReturnVoyageNumberOnParsingValidVoyageNumber(String input) {
         VoyageNumber result = HandlingReportParser.parseVoyageNumber(input);
-        assertThat(result).isNotNull().extracting("number").contains(input);
+        assertThat(result).isNotNull().extracting("number").asString().contains(input);
     }
 
     @ParameterizedTest

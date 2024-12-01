@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.persistence.jpa;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +20,6 @@ import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-import javax.persistence.EntityManager;
-import java.math.BigInteger;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -78,11 +77,11 @@ public class CargoRepositoryTest {
 
         List<Leg> legs = cargo.itinerary().legs();
         assertThat(legs).hasSize(3)
-                .extracting("voyage.voyageNumber", "loadLocation", "unloadLocation")
-                .containsExactly(
-                    Tuple.tuple(null, HONGKONG, NEWYORK),
-                    Tuple.tuple("0200T", NEWYORK, DALLAS),
-                    Tuple.tuple("0300A", DALLAS, HELSINKI));
+            .extracting("voyage.voyageNumber", "loadLocation", "unloadLocation")
+            .containsExactly(
+                Tuple.tuple(null, HONGKONG, NEWYORK),
+                Tuple.tuple("0200T", NEWYORK, DALLAS),
+                Tuple.tuple("0300A", DALLAS, HELSINKI));
     }
 
     private void assertHandlingEvent(Cargo cargo, HandlingEvent event, HandlingEvent.Type expectedEventType,
@@ -92,8 +91,8 @@ public class CargoRepositoryTest {
         assertThat(event.completionTime()).isEqualTo(expectedCompletionTime);
 
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd hh:mm")
-                .withZone(ZoneOffset.UTC);
+            .ofPattern("yyyy-MM-dd hh:mm")
+            .withZone(ZoneOffset.UTC);
         assertThat(formatter.format(event.registrationTime())).isEqualTo(formatter.format(expectedRegistrationTime));
 
         assertThat(event.voyage().voyageNumber()).isEqualTo(voyage);
@@ -117,17 +116,17 @@ public class CargoRepositoryTest {
         Voyage voyage = voyageRepository.find(NEW_YORK_TO_DALLAS.voyageNumber());
         assertThat(voyage).isNotNull();
         cargo.assignToRoute(new Itinerary(List.of(
-                new Leg(
-                        voyage,
-                        locationRepository.find(STOCKHOLM.unLocode()),
-                        locationRepository.find(MELBOURNE.unLocode()),
-                        Instant.now(), Instant.now())
+            new Leg(
+                voyage,
+                locationRepository.find(STOCKHOLM.unLocode()),
+                locationRepository.find(MELBOURNE.unLocode()),
+                Instant.now(), Instant.now())
         )));
 
         flush();
 
         Cargo result = entityManager.createQuery(
-                String.format("from Cargo c where c.trackingId = '%s'", trackingId.idString()), Cargo.class).getSingleResult();
+            String.format("from Cargo c where c.trackingId = '%s'", trackingId.idString()), Cargo.class).getSingleResult();
         assertThat(result.trackingId().idString()).isEqualTo("AAA");
         assertThat(result.routeSpecification().origin().id()).isEqualTo(origin.id());
         assertThat(result.routeSpecification().destination().id()).isEqualTo(destination.id());
@@ -179,7 +178,7 @@ public class CargoRepositoryTest {
         entityManager.flush();
     }
 
-    private int countLegsForCargo(long cargoId) {
-        return ((BigInteger) entityManager.createNativeQuery(String.format("select count(*) from Leg l where l.cargo_id = %d", cargoId)).getSingleResult()).intValue();
+    private long countLegsForCargo(long cargoId) {
+        return (long) entityManager.createNativeQuery(String.format("select count(*) from Leg l where l.cargo_id = %d", cargoId)).getSingleResult();
     }
 }

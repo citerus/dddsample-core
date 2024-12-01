@@ -1,5 +1,11 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -7,10 +13,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.AbstractSpecification;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.Instant;
 
 /**
@@ -19,6 +21,7 @@ import java.time.Instant;
  * 
  */
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
 
   @ManyToOne()
@@ -105,8 +108,4 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
       toHashCode();
   }
 
-  RouteSpecification() {
-    // Needed by Hibernate
-  }
-  
 }

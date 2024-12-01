@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
+import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQDestination;
@@ -15,7 +16,6 @@ import se.citerus.dddsample.application.ApplicationEvents;
 import se.citerus.dddsample.application.CargoInspectionService;
 import se.citerus.dddsample.application.HandlingEventService;
 
-import javax.jms.*;
 import java.util.List;
 
 @EnableJms
@@ -58,11 +58,6 @@ public class InfrastructureMessagingJmsConfig {
         MessageConsumer consumer = session.createConsumer(destination);
         consumer.setMessageListener(new SimpleLoggingConsumer());
         return consumer;
-    }
-
-    @Bean
-    public HandlingEventRegistrationAttemptConsumer handlingEventRegistrationAttemptConsumer(HandlingEventService handlingEventService) {
-        return new HandlingEventRegistrationAttemptConsumer(handlingEventService);
     }
 
     @Bean("cargoHandledQueue")
@@ -119,7 +114,7 @@ public class InfrastructureMessagingJmsConfig {
 
     @Bean
     public Session session(Connection connection) throws JMSException {
-        return ((ActiveMQConnection) connection).createSession(false, Session.AUTO_ACKNOWLEDGE);
+        return connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
     }
 
     @Bean
