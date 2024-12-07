@@ -1,8 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,6 +9,8 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.Objects;
+
 /**
  * A handling activity represents how and where a cargo can be handled,
  * and can be used to express predictions about what is expected to
@@ -18,7 +18,6 @@ import se.citerus.dddsample.domain.shared.ValueObject;
  *
  */
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HandlingActivity implements ValueObject<HandlingActivity> {
 
   // TODO make HandlingActivity a part of HandlingEvent too? There is some overlap. 
@@ -36,17 +35,17 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
   public Voyage voyage;
 
   public HandlingActivity(final HandlingEvent.Type type, final Location location) {
-    Validate.notNull(type, "Handling event type is required");
-    Validate.notNull(location, "Location is required");
+    Objects.requireNonNull(type, "Handling event type is required");
+    Objects.requireNonNull(location, "Location is required");
 
     this.type = type;
     this.location = location;
   }
 
   public HandlingActivity(final HandlingEvent.Type type, final Location location, final Voyage voyage) {
-    Validate.notNull(type, "Handling event type is required");
-    Validate.notNull(location, "Location is required");
-    Validate.notNull(location, "Voyage is required");
+    Objects.requireNonNull(type, "Handling event type is required");
+    Objects.requireNonNull(location, "Location is required");
+    Objects.requireNonNull(location, "Voyage is required");
 
     this.type = type;
     this.location = location;
@@ -92,6 +91,10 @@ public class HandlingActivity implements ValueObject<HandlingActivity> {
     HandlingActivity other = (HandlingActivity) obj;
 
     return sameValueAs(other);
+  }
+
+  protected HandlingActivity() {
+    // Needed by Hibernate
   }
 
 }

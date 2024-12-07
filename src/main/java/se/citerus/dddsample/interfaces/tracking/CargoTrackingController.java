@@ -1,9 +1,8 @@
 package se.citerus.dddsample.interfaces.tracking;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,13 +34,22 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/track")
-@RequiredArgsConstructor
 public final class CargoTrackingController {
 
     private final CargoRepository cargoRepository;
     private final HandlingEventRepository handlingEventRepository;
     private final MessageSource messageSource;
     private final TrackCommandValidator trackCommandValidator;
+
+    public CargoTrackingController(@NonNull CargoRepository cargoRepository,
+                                   @NonNull HandlingEventRepository handlingEventRepository,
+                                   @NonNull MessageSource messageSource,
+                                   @NonNull TrackCommandValidator trackCommandValidator) {
+        this.cargoRepository = cargoRepository;
+        this.handlingEventRepository = handlingEventRepository;
+        this.messageSource = messageSource;
+        this.trackCommandValidator = trackCommandValidator;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String index(final Map<String, Object> model) {

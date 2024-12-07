@@ -1,8 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -25,7 +23,6 @@ import static se.citerus.dddsample.domain.model.cargo.TransportStatus.*;
  *
  */
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Delivery implements ValueObject<Delivery> {
 
   @Column
@@ -76,7 +73,7 @@ public class Delivery implements ValueObject<Delivery> {
    * @return An up to date delivery
    */
   Delivery updateOnRouting(RouteSpecification routeSpecification, Itinerary itinerary) {
-    Validate.notNull(routeSpecification, "Route specification is required");
+    Objects.requireNonNull(routeSpecification, "Route specification is required");
 
     return new Delivery(this.lastEvent, itinerary, routeSpecification);
   }
@@ -91,8 +88,8 @@ public class Delivery implements ValueObject<Delivery> {
    * @return An up to date delivery.
    */
   static Delivery derivedFrom(RouteSpecification routeSpecification, Itinerary itinerary, HandlingHistory handlingHistory) {
-    Validate.notNull(routeSpecification, "Route specification is required");
-    Validate.notNull(handlingHistory, "Delivery history is required");
+    Objects.requireNonNull(routeSpecification, "Route specification is required");
+    Objects.requireNonNull(handlingHistory, "Delivery history is required");
 
     final HandlingEvent lastEvent = handlingHistory.mostRecentlyCompletedEvent();
 
@@ -357,4 +354,7 @@ public class Delivery implements ValueObject<Delivery> {
       toHashCode();
   }
 
+  protected Delivery() {
+    // Needed by Hibernate
+  }
 }

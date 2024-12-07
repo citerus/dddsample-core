@@ -2,7 +2,6 @@ package se.citerus.dddsample.interfaces.booking.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -38,10 +37,13 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin")
-@RequiredArgsConstructor
 public final class CargoAdminController {
 
     private final BookingServiceFacade bookingServiceFacade;
+
+    public CargoAdminController(BookingServiceFacade bookingServiceFacade) {
+        this.bookingServiceFacade = bookingServiceFacade;
+    }
 
     @InitBinder
     private void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {

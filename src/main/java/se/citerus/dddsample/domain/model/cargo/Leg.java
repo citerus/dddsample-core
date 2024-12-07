@@ -1,8 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -17,7 +15,6 @@ import java.time.Instant;
  */
 @Entity(name = "Leg")
 @Table(name = "Leg")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Leg implements ValueObject<Leg> {
 
   @Id
@@ -104,4 +101,7 @@ public class Leg implements ValueObject<Leg> {
       toHashCode();
   }
 
+  protected Leg() {
+    // Needed by Hibernate
+  }
 }
