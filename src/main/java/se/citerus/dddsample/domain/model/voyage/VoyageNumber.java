@@ -3,6 +3,8 @@ package se.citerus.dddsample.domain.model.voyage;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.Objects;
+
 /**
  * Identifies a voyage.
  * 
@@ -12,7 +14,7 @@ public class VoyageNumber implements ValueObject<VoyageNumber> {
   private String number;
 
   public VoyageNumber(String number) {
-    Validate.notNull(number);
+    Objects.requireNonNull(number);
     
     this.number = number;
   }

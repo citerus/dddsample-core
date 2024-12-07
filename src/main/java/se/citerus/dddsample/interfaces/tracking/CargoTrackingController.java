@@ -1,6 +1,8 @@
 package se.citerus.dddsample.interfaces.tracking;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +14,6 @@ import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,35 +29,41 @@ import java.util.Map;
  * helps us shield the domain model classes.
  * <p>
  *
- * @eee se.citerus.dddsample.application.web.CargoTrackingViewAdapter
+ * @see CargoTrackingViewAdapter
  * @see se.citerus.dddsample.interfaces.booking.web.CargoAdminController
  */
 @Controller
 @RequestMapping("/track")
 public final class CargoTrackingController {
 
-    private CargoRepository cargoRepository;
-    private HandlingEventRepository handlingEventRepository;
-    private MessageSource messageSource;
+    private final CargoRepository cargoRepository;
+    private final HandlingEventRepository handlingEventRepository;
+    private final MessageSource messageSource;
+    private final TrackCommandValidator trackCommandValidator;
 
-    public CargoTrackingController(CargoRepository cargoRepository, HandlingEventRepository handlingEventRepository, MessageSource messageSource) {
+    public CargoTrackingController(@NonNull CargoRepository cargoRepository,
+                                   @NonNull HandlingEventRepository handlingEventRepository,
+                                   @NonNull MessageSource messageSource,
+                                   @NonNull TrackCommandValidator trackCommandValidator) {
         this.cargoRepository = cargoRepository;
         this.handlingEventRepository = handlingEventRepository;
         this.messageSource = messageSource;
+        this.trackCommandValidator = trackCommandValidator;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String get(final Map<String, Object> model) {
-        model.put("trackCommand", new TrackCommand()); // TODO why is this method adding a TrackCommand without id?
+    public String index(final Map<String, Object> model) {
+        // using the empty command to support the thymeleaf form `<form method="post" th:object="${trackCommand}">`
+        model.put("trackCommand", new TrackCommand());
         return "track";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String onSubmit(final HttpServletRequest request,
-                                                             final TrackCommand command,
-                                                             final Map<String, Object> model,
-                                                             final BindingResult bindingResult) {
-        new TrackCommandValidator().validate(command, bindingResult);
+    private String onSubmit(final HttpServletRequest request,
+                            final TrackCommand command,
+                            final Map<String, Object> model,
+                            final BindingResult bindingResult) {
+        trackCommandValidator.validate(command, bindingResult);
 
         final TrackingId trackingId = new TrackingId(command.getTrackingId());
         final Cargo cargo = cargoRepository.find(trackingId);

@@ -6,6 +6,7 @@ import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A voyage schedule.
@@ -18,7 +19,7 @@ public class Schedule implements ValueObject<Schedule> {
   public static final Schedule EMPTY = new Schedule();
 
   public Schedule(final List<CarrierMovement> carrierMovements) {
-    Validate.notNull(carrierMovements);
+    Objects.requireNonNull(carrierMovements);
     Validate.noNullElements(carrierMovements);
     Validate.notEmpty(carrierMovements);
 
