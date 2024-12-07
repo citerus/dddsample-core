@@ -1,5 +1,6 @@
 package se.citerus.dddsample.interfaces.handling.ws;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.pars
  * of incoming data, and in case of a valid registration attempt, sends an asynchronous message
  * with the information to the handling event registration system for proper registration.
  */
+@Tag(name = "report")
 @RestController
 public class HandlingReportServiceImpl implements HandlingReportService {
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
