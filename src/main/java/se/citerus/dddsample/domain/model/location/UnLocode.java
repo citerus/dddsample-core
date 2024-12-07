@@ -3,6 +3,7 @@ package se.citerus.dddsample.domain.model.location;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -25,7 +26,7 @@ public final class UnLocode implements ValueObject<UnLocode> {
    * @param countryAndLocation Location string.
    */
   public UnLocode(final String countryAndLocation) {
-    Validate.notNull(countryAndLocation, "Country and location may not be null");
+    Objects.requireNonNull(countryAndLocation, "Country and location may not be null");
     Validate.isTrue(VALID_PATTERN.matcher(countryAndLocation).matches(),
       countryAndLocation + " is not a valid UN/LOCODE (does not match pattern)");
 

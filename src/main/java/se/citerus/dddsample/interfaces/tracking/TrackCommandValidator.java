@@ -1,5 +1,6 @@
 package se.citerus.dddsample.interfaces.tracking;
 
+import org.springframework.lang.NonNull;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -9,11 +10,11 @@ import org.springframework.validation.Validator;
  */
 public final class TrackCommandValidator implements Validator {
 
-  public boolean supports(final Class clazz) {
+  public boolean supports(@NonNull final Class<?> clazz) {
     return TrackCommand.class.isAssignableFrom(clazz);
   }
 
-  public void validate(final Object object, final Errors errors) {
+  public void validate(@NonNull final Object object,@NonNull final Errors errors) {
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "trackingId", "error.required", "Required");
   }
 

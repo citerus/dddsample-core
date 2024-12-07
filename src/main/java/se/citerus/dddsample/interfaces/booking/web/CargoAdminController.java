@@ -1,5 +1,7 @@
 package se.citerus.dddsample.interfaces.booking.web;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -12,8 +14,6 @@ import se.citerus.dddsample.interfaces.booking.facade.dto.LegDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.LocationDTO;
 import se.citerus.dddsample.interfaces.booking.facade.dto.RouteCandidateDTO;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -46,7 +46,7 @@ public final class CargoAdminController {
     }
 
     @InitBinder
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+    private void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Instant.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), false));
     }
 
@@ -71,7 +71,7 @@ public final class CargoAdminController {
 
         LocalDate arrivalDeadline = LocalDate.parse(command.getArrivalDeadline(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String trackingId = bookingServiceFacade.bookNewCargo(
-                command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline.atStartOfDay().toInstant(ZoneOffset.UTC)
+            command.getOriginUnlocode(), command.getDestinationUnlocode(), arrivalDeadline.atStartOfDay().toInstant(ZoneOffset.UTC)
         );
         response.sendRedirect("show?trackingId=" + trackingId);
     }
@@ -110,11 +110,11 @@ public final class CargoAdminController {
         List<LegDTO> legDTOs = new ArrayList<LegDTO>(command.getLegs().size());
         for (RouteAssignmentCommand.LegCommand leg : command.getLegs()) {
             legDTOs.add(new LegDTO(
-                            leg.getVoyageNumber(),
-                            leg.getFromUnLocode(),
-                            leg.getToUnLocode(),
-                            leg.getFromDate(),
-                            leg.getToDate())
+                leg.getVoyageNumber(),
+                leg.getFromUnLocode(),
+                leg.getToUnLocode(),
+                leg.getFromDate(),
+                leg.getToDate())
             );
         }
 
