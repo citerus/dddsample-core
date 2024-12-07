@@ -4,8 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -14,6 +12,7 @@ import se.citerus.dddsample.domain.shared.AbstractSpecification;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Route specification. Describes where a cargo origin and destination is,
@@ -21,7 +20,6 @@ import java.time.Instant;
  * 
  */
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RouteSpecification extends AbstractSpecification<Itinerary> implements ValueObject<RouteSpecification> {
 
   @ManyToOne()
@@ -41,9 +39,9 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
    * @param arrivalDeadline arrival deadline
    */
   public RouteSpecification(final Location origin, final Location destination, final Instant arrivalDeadline) {
-    Validate.notNull(origin, "Origin is required");
-    Validate.notNull(destination, "Destination is required");
-    Validate.notNull(arrivalDeadline, "Arrival deadline is required");
+    Objects.requireNonNull(origin, "Origin is required");
+    Objects.requireNonNull(destination, "Destination is required");
+    Objects.requireNonNull(arrivalDeadline, "Arrival deadline is required");
     Validate.isTrue(!origin.sameIdentityAs(destination), "Origin and destination can't be the same: " + origin);
 
     this.origin = origin;
@@ -106,6 +104,10 @@ public class RouteSpecification extends AbstractSpecification<Itinerary> impleme
       append(this.destination).
       append(this.arrivalDeadline).
       toHashCode();
+  }
+
+  protected RouteSpecification() {
+    // Needed by Hibernate
   }
 
 }

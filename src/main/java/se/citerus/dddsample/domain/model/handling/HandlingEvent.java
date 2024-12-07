@@ -1,8 +1,6 @@
 package se.citerus.dddsample.domain.model.handling;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -33,7 +31,6 @@ import java.util.Objects;
  */
 @Entity(name = "HandlingEvent")
 @Table(name = "HandlingEvent")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class HandlingEvent implements DomainEvent<HandlingEvent> {
 
   @Id
@@ -119,12 +116,12 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
                        final Type type,
                        final Location location,
                        final Voyage voyage) {
-    Validate.notNull(cargo, "Cargo is required");
-    Validate.notNull(completionTime, "Completion time is required");
-    Validate.notNull(registrationTime, "Registration time is required");
-    Validate.notNull(type, "Handling event type is required");
-    Validate.notNull(location, "Location is required");
-    Validate.notNull(voyage, "Voyage is required");
+    Objects.requireNonNull(cargo, "Cargo is required");
+    Objects.requireNonNull(completionTime, "Completion time is required");
+    Objects.requireNonNull(registrationTime, "Registration time is required");
+    Objects.requireNonNull(type, "Handling event type is required");
+    Objects.requireNonNull(location, "Location is required");
+    Objects.requireNonNull(voyage, "Voyage is required");
 
     if (type.prohibitsVoyage()) {
       throw new IllegalArgumentException("Voyage is not allowed with event type " + type);
@@ -150,11 +147,11 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
                        final Instant registrationTime,
                        final Type type,
                        final Location location) {
-    Validate.notNull(cargo, "Cargo is required");
-    Validate.notNull(completionTime, "Completion time is required");
-    Validate.notNull(registrationTime, "Registration time is required");
-    Validate.notNull(type, "Handling event type is required");
-    Validate.notNull(location, "Location is required");
+    Objects.requireNonNull(cargo, "Cargo is required");
+    Objects.requireNonNull(completionTime, "Completion time is required");
+    Objects.requireNonNull(registrationTime, "Registration time is required");
+    Objects.requireNonNull(type, "Handling event type is required");
+    Objects.requireNonNull(location, "Location is required");
 
     if (type.requiresVoyage()) {
       throw new IllegalArgumentException("Voyage is required for event type " + type);
@@ -244,5 +241,7 @@ public final class HandlingEvent implements DomainEvent<HandlingEvent> {
     return builder.toString();
   }
 
-
+  protected HandlingEvent() {
+    // Needed by Hibernate
+  }
 }

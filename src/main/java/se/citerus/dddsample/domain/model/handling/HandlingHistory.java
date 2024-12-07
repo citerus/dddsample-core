@@ -19,7 +19,7 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
     public static final HandlingHistory EMPTY = new HandlingHistory(Collections.<HandlingEvent>emptyList());
 
     public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
-        Validate.notNull(handlingEvents, "Handling events are required");
+        Objects.requireNonNull(handlingEvents, "Handling events are required");
 
         this.handlingEvents = new ArrayList<>(handlingEvents);
     }

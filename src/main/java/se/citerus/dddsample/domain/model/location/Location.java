@@ -1,11 +1,10 @@
 package se.citerus.dddsample.domain.model.location;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.shared.DomainEntity;
+
+import java.util.Objects;
 
 /**
  * A location is our model is stops on a journey, such as cargo
@@ -15,8 +14,6 @@ import se.citerus.dddsample.domain.shared.DomainEntity;
  */
 @Entity(name = "Location")
 @Table(name = "Location")
-@Setter(AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class Location implements DomainEntity<Location> {
 
   @Id
@@ -44,8 +41,8 @@ public final class Location implements DomainEntity<Location> {
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
   public Location(final UnLocode unLocode, final String name) {
-    Validate.notNull(unLocode);
-    Validate.notNull(name);
+    Objects.requireNonNull(unLocode);
+    Objects.requireNonNull(name);
     
     this.unlocode = unLocode.idString();
     this.name = name;
@@ -113,6 +110,10 @@ public final class Location implements DomainEntity<Location> {
   @Override
   public String toString() {
     return name + " [" + unlocode + "]";
+  }
+
+  Location() {
+    // Needed by Hibernate
   }
 
 }

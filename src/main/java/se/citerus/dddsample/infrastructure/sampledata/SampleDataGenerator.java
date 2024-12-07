@@ -1,8 +1,7 @@
 package se.citerus.dddsample.infrastructure.sampledata;
 
 import jakarta.annotation.PostConstruct;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -27,8 +26,8 @@ import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.*;
 /**
  * Provides sample data.
  */
-@Slf4j
 public class SampleDataGenerator  {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SampleDataGenerator.class);
 
     private static final Timestamp base = getBaseTimeStamp();
 
