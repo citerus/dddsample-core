@@ -13,6 +13,7 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Objects;
 
 public class CargoInspectionServiceImpl implements CargoInspectionService {
 
@@ -32,7 +33,7 @@ public class CargoInspectionServiceImpl implements CargoInspectionService {
   @Override
   @Transactional
   public void inspectCargo(final TrackingId trackingId) {
-    Validate.notNull(trackingId, "Tracking ID is required");
+    Objects.requireNonNull(trackingId, "Tracking ID is required");
 
     final Cargo cargo = cargoRepository.find(trackingId);
     if (cargo == null) {

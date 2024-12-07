@@ -1,5 +1,6 @@
 package se.citerus.dddsample.infrastructure.sampledata;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -12,15 +13,12 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static se.citerus.dddsample.application.util.DateUtils.toDate;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.*;
@@ -28,7 +26,8 @@ import static se.citerus.dddsample.infrastructure.sampledata.SampleVoyages.*;
 /**
  * Provides sample data.
  */
-public class SampleDataGenerator {
+public class SampleDataGenerator  {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SampleDataGenerator.class);
 
     private static final Timestamp base = getBaseTimeStamp();
 
@@ -43,15 +42,16 @@ public class SampleDataGenerator {
                                @NonNull LocationRepository locationRepository,
                                @NonNull HandlingEventRepository handlingEventRepository,
                                @NonNull PlatformTransactionManager transactionManager) {
-        // TODO can the requireNonNull calls be replaced by annotations?
-        this.cargoRepository = requireNonNull(cargoRepository);
-        this.voyageRepository = requireNonNull(voyageRepository);
-        this.locationRepository = requireNonNull(locationRepository);
-        this.handlingEventRepository = requireNonNull(handlingEventRepository);
-        this.transactionManager = requireNonNull(transactionManager);
+        this.cargoRepository =cargoRepository;
+        this.voyageRepository = voyageRepository;
+        this.locationRepository = locationRepository;
+        this.handlingEventRepository = handlingEventRepository;
+        this.transactionManager = transactionManager;
     }
 
-    public void generate() {
+
+    @PostConstruct
+    protected void generate() {
         TransactionTemplate tt = new TransactionTemplate(transactionManager);
 
         HandlingEventFactory handlingEventFactory = new HandlingEventFactory(
@@ -62,7 +62,7 @@ public class SampleDataGenerator {
     }
 
     public void loadHibernateData(TransactionTemplate tt, final HandlingEventFactory handlingEventFactory) {
-        System.out.println("*** Loading Hibernate data ***");
+        log.info("*** Loading Hibernate data ***");
         tt.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {

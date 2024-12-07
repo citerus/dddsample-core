@@ -6,7 +6,6 @@ import se.citerus.dddsample.domain.model.cargo.Delivery;
 import se.citerus.dddsample.domain.model.cargo.HandlingActivity;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;

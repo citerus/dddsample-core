@@ -1,3 +1,8 @@
 spring:
     dataSource:
         url: jdbc:hsqldb:mem:dddsample_test
+    main:
+        allow-bean-definition-overriding: true
+server:
+    error:
+        include-message: always
