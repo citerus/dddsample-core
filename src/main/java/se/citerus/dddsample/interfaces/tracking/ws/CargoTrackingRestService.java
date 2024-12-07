@@ -1,5 +1,6 @@
 package se.citerus.dddsample.interfaces.tracking.ws;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import java.util.Locale;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Tag(name = "track")
 @RestController
 public class CargoTrackingRestService {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
