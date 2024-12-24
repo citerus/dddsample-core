@@ -97,7 +97,7 @@
                 <configuration>
                     <argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                 </configuration>
-                <version>3.2.5</version>
+                <version>3.5.2</version>
             </plugin>
         </plugins>
     </build>
