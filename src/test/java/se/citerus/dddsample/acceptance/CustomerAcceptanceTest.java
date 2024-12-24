@@ -34,4 +34,9 @@ public class CustomerAcceptanceTest extends AbstractAcceptanceTest {
         customerPage.expectNotificationOf("Cargo is misdirected");
     }
 
+    @Test
+    public void customerSiteErrorsOnEmptyTrackingId() {
+        customerPage.trackCargoWithIdOf("");
+        customerPage.expectErrorFor("The tracking id must not be empty");
+    }
 }
