@@ -2,7 +2,6 @@ package se.citerus.dddsample.interfaces.booking.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;

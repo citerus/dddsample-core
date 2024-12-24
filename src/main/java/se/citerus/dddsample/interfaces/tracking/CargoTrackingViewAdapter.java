@@ -23,7 +23,6 @@ public final class CargoTrackingViewAdapter {
   private final List<HandlingEventViewAdapter> events;
   private final String FORMAT = "yyyy-MM-dd hh:mm";
   private final TimeZone timeZone;
-  private final SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT);
 
   /**
    * Constructor.
