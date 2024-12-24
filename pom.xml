@@ -200,7 +200,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.6.0</version>
                 <configuration>
                     <configLocation>src/main/config/checkstyle.xml</configLocation>
                     <!-- Java source code generated from WSDL -->
