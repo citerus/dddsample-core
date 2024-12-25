@@ -54,4 +54,4 @@ You can use cURL to send the request using an JSON file for the body:
     -H 'Content-Type: application/json;charset=UTF-8' \
     http://localhost:8080/dddsample/handlingReport
 
-See the [api-docs.yaml](/api-docs.yaml) file for a complete API definition.
+open http://127.0.0.1:8080/dddsample/swagger-ui/index.html for a complete API definition.
