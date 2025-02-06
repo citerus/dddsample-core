@@ -1,7 +1,6 @@
 package se.citerus.dddsample.interfaces.handling;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +48,7 @@ public class HandlingReportIntegrationTest {
     @Transactional
     @Test
     void shouldReturn201ResponseWhenHandlingReportIsSubmitted() throws Exception {
-        String body = mapper.writeValueAsString(ImmutableMap.of(
+        String body = mapper.writeValueAsString(Map.of(
                 "completionTime", "2022-10-30T13:37:00",
                 "trackingIds", Collections.singletonList("ABC123"),
                 "type", HandlingEvent.Type.CUSTOMS.name(),
@@ -77,7 +76,7 @@ public class HandlingReportIntegrationTest {
     @SuppressWarnings("unchecked")
     @Test
     void shouldReturnValidationErrorResponseWhenInvalidHandlingReportIsSubmitted() throws Exception {
-        String body = mapper.writeValueAsString(ImmutableMap.of(
+        String body = mapper.writeValueAsString(Map.of(
                 "completionTime", "invalid date",
                 "trackingIds", Collections.singletonList("ABC123"),
                 "type", HandlingEvent.Type.CUSTOMS.name(),
