@@ -1,9 +1,10 @@
 package se.citerus.dddsample.domain.model.location;
 
+import jakarta.persistence.*;
 import org.apache.commons.lang3.Validate;
-import se.citerus.dddsample.domain.shared.Entity;
+import se.citerus.dddsample.domain.shared.DomainEntity;
 
-import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * A location is our model is stops on a journey, such as cargo
@@ -11,9 +12,9 @@ import javax.persistence.*;
  * It is uniquely identified by a UN Locode.
  *
  */
-@javax.persistence.Entity(name = "Location")
+@Entity(name = "Location")
 @Table(name = "Location")
-public final class Location implements Entity<Location> {
+public final class Location implements DomainEntity<Location> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,8 +41,8 @@ public final class Location implements Entity<Location> {
    * @throws IllegalArgumentException if the UN Locode or name is null
    */
   public Location(final UnLocode unLocode, final String name) {
-    Validate.notNull(unLocode);
-    Validate.notNull(name);
+    Objects.requireNonNull(unLocode);
+    Objects.requireNonNull(name);
     
     this.unlocode = unLocode.idString();
     this.name = name;
@@ -87,11 +88,10 @@ public final class Location implements Entity<Location> {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof Location)) {
+    if (!(object instanceof Location other)) {
       return false;
     }
-    Location other = (Location) object;
-    return sameIdentityAs(other);
+      return sameIdentityAs(other);
   }
 
   @Override

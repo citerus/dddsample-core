@@ -19,7 +19,7 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
     public static final HandlingHistory EMPTY = new HandlingHistory(Collections.<HandlingEvent>emptyList());
 
     public HandlingHistory(Collection<HandlingEvent> handlingEvents) {
-        Validate.notNull(handlingEvents, "Handling events are required");
+        Objects.requireNonNull(handlingEvents, "Handling events are required");
 
         this.handlingEvents = new ArrayList<>(handlingEvents);
     }
@@ -31,7 +31,7 @@ public class HandlingHistory implements ValueObject<HandlingHistory> {
         final List<HandlingEvent> ordered = new ArrayList<>(
                 new HashSet<>(handlingEvents)
         );
-        sort(ordered, BY_COMPLETION_TIME_COMPARATOR);
+        ordered.sort(BY_COMPLETION_TIME_COMPARATOR);
         return Collections.unmodifiableList(ordered);
     }
 

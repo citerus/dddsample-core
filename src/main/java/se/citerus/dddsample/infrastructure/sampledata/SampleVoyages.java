@@ -8,7 +8,10 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static se.citerus.dddsample.application.util.DateUtils.toDate;
 import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;

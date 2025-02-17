@@ -1,5 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import jakarta.persistence.*;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -7,7 +8,6 @@ import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.model.voyage.Voyage;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
-import javax.persistence.*;
 import java.time.Instant;
 
 /**
@@ -101,7 +101,7 @@ public class Leg implements ValueObject<Leg> {
       toHashCode();
   }
 
-  Leg() {
+  protected Leg() {
     // Needed by Hibernate
   }
 }

@@ -25,35 +25,28 @@ import se.citerus.dddsample.infrastructure.routing.ExternalRoutingService;
 import se.citerus.dddsample.infrastructure.sampledata.SampleDataGenerator;
 import se.citerus.dddsample.interfaces.InterfacesApplicationContext;
 
-import javax.persistence.EntityManager;
 
 @Configuration
 @Import({InterfacesApplicationContext.class, InfrastructureMessagingJmsConfig.class})
 public class DDDSampleApplicationContext {
 
     @Autowired
-    CargoRepository cargoRepository;
+    private CargoRepository cargoRepository;
 
     @Autowired
-    LocationRepository locationRepository;
+    private VoyageRepository voyageRepository;
 
     @Autowired
-    VoyageRepository voyageRepository;
+    private LocationRepository locationRepository;
 
     @Autowired
-    GraphTraversalService graphTraversalService;
+    private HandlingEventRepository handlingEventRepository;
 
     @Autowired
-    RoutingService routingService;
+    private GraphTraversalService graphTraversalService;
 
     @Autowired
-    HandlingEventFactory handlingEventFactory;
-
-    @Autowired
-    HandlingEventRepository handlingEventRepository;
-
-    @Autowired
-    ApplicationEvents applicationEvents;
+    private ApplicationEvents applicationEvents;
 
     @Bean
     public CargoFactory cargoFactory() {
@@ -61,7 +54,7 @@ public class DDDSampleApplicationContext {
     }
 
     @Bean
-    public BookingService bookingService(CargoFactory cargoFactory) {
+    public BookingService bookingService(CargoFactory cargoFactory,RoutingService routingService) {
         return new BookingServiceImpl(cargoRepository, locationRepository, routingService, cargoFactory);
     }
 
@@ -71,7 +64,7 @@ public class DDDSampleApplicationContext {
     }
 
     @Bean
-    public HandlingEventService handlingEventService() {
+    public HandlingEventService handlingEventService(HandlingEventFactory handlingEventFactory) {
         return new HandlingEventServiceImpl(handlingEventRepository, applicationEvents, handlingEventFactory);
     }
 
@@ -86,16 +79,15 @@ public class DDDSampleApplicationContext {
     }
 
     @Bean
-    public SampleDataGenerator sampleDataGenerator(CargoRepository cargoRepository, VoyageRepository voyageRepository,
-                                                   LocationRepository locationRepository, HandlingEventRepository handlingEventRepository,
-                                                   PlatformTransactionManager platformTransactionManager, EntityManager entityManager) {
-        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(cargoRepository, voyageRepository, locationRepository, handlingEventRepository, platformTransactionManager);
-        try {
-            sampleDataGenerator.generate(); // TODO investigate if this can be called with initMethod in the annotation
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-        return sampleDataGenerator;
+    public SampleDataGenerator sampleDataGenerator(CargoRepository cargoRepository,
+                                                   VoyageRepository voyageRepository,
+                                                   LocationRepository locationRepository,
+                                                   HandlingEventRepository handlingEventRepository,
+                                                   PlatformTransactionManager platformTransactionManager) {
+        return new SampleDataGenerator(cargoRepository,
+            voyageRepository,
+            locationRepository,
+            handlingEventRepository,
+            platformTransactionManager);
     }
 }

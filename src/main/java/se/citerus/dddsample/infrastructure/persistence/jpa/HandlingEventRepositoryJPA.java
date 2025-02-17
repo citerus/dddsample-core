@@ -23,7 +23,7 @@ public interface HandlingEventRepositoryJPA extends CrudRepository<HandlingEvent
     return new HandlingHistory(getHandlingHistoryOfCargo(trackingId.idString()));
   }
 
-  @Query("select he from HandlingEvent he where he.cargo.trackingId = :trackingId and he.location != NULL")
+  @Query("select he from HandlingEvent he where he.cargo.trackingId = :trackingId and he.location is not NULL")
   List<HandlingEvent> getHandlingHistoryOfCargo(String trackingId);
 
 }

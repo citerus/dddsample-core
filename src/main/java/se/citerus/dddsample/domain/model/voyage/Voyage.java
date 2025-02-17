@@ -1,20 +1,21 @@
 package se.citerus.dddsample.domain.model.voyage;
 
+import jakarta.persistence.*;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.shared.Entity;
+import se.citerus.dddsample.domain.shared.DomainEntity;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A Voyage.
  */
-@javax.persistence.Entity(name = "Voyage")
+@Entity(name = "Voyage")
 @Table(name = "Voyage")
-public class Voyage implements Entity<Voyage> {
+public class Voyage implements DomainEntity<Voyage> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,14 +28,17 @@ public class Voyage implements Entity<Voyage> {
   @JoinColumn(name = "voyage_id")
   private List<CarrierMovement> carrierMovements;
 
-  // Null object pattern
-  public static final Voyage NONE = new Voyage(
-    new VoyageNumber(""), Schedule.EMPTY
-  );
+  protected Voyage() {
+    // Needed by Hibernate
+  }
 
-  public Voyage(final VoyageNumber voyageNumber, final Schedule schedule) {
-    Validate.notNull(voyageNumber, "Voyage number is required");
-    Validate.notNull(schedule, "Schedule is required");
+  // Null object pattern
+  @Transient
+  public static final Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
+
+    public Voyage(final VoyageNumber voyageNumber, final Schedule schedule) {
+    Objects.requireNonNull(voyageNumber, "Voyage number is required");
+    Objects.requireNonNull(schedule, "Schedule is required");
 
     this.voyageNumber = voyageNumber.idString();
     this.carrierMovements = schedule.carrierMovements();
@@ -80,13 +84,11 @@ public class Voyage implements Entity<Voyage> {
     return "Voyage " + voyageNumber;
   }
 
-  Voyage() {
-    // Needed by Hibernate
-  }
+
 
   /**
    * Builder pattern is used for incremental construction
-   * of a Voyage aggregate. This serves as an aggregate factory. 
+   * of a Voyage aggregate. This serves as an aggregate factory.
    */
   public static final class Builder {
 
@@ -95,8 +97,8 @@ public class Voyage implements Entity<Voyage> {
     private Location departureLocation;
 
     public Builder(final VoyageNumber voyageNumber, final Location departureLocation) {
-      Validate.notNull(voyageNumber, "Voyage number is required");
-      Validate.notNull(departureLocation, "Departure location is required");
+      Objects.requireNonNull(voyageNumber, "Voyage number is required");
+      Objects.requireNonNull(departureLocation, "Departure location is required");
 
       this.voyageNumber = voyageNumber;
       this.departureLocation = departureLocation;

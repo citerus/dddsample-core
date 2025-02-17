@@ -1,12 +1,13 @@
 package se.citerus.dddsample.domain.model.cargo;
 
+import jakarta.persistence.*;
 import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
-import se.citerus.dddsample.domain.shared.Entity;
+import se.citerus.dddsample.domain.shared.DomainEntity;
 
-import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A Cargo. This is the central class in the domain model,
@@ -44,9 +45,9 @@ import java.util.List;
  * in port etc), are captured in this aggregate.
  *
  */
-@javax.persistence.Entity(name = "Cargo")
+@Entity(name = "Cargo")
 @Table(name = "Cargo")
-public class Cargo implements Entity<Cargo> {
+public class Cargo implements DomainEntity<Cargo> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,8 +71,8 @@ public class Cargo implements Entity<Cargo> {
   private Delivery delivery;
 
   public Cargo(final TrackingId trackingId, final RouteSpecification routeSpecification) {
-    Validate.notNull(trackingId, "Tracking ID is required");
-    Validate.notNull(routeSpecification, "Route specification is required");
+    Objects.requireNonNull(trackingId, "Tracking ID is required");
+    Objects.requireNonNull(routeSpecification, "Route specification is required");
 
     this.trackingId = trackingId.idString();
     // Cargo origin never changes, even if the route specification changes.
@@ -85,8 +86,8 @@ public class Cargo implements Entity<Cargo> {
   }
 
   public Cargo(TrackingId trackingId, RouteSpecification routeSpecification, Itinerary itinerary) {
-    Validate.notNull(trackingId, "Tracking ID is required");
-    Validate.notNull(routeSpecification, "Route specification is required");
+    Objects.requireNonNull(trackingId, "Tracking ID is required");
+    Objects.requireNonNull(routeSpecification, "Route specification is required");
     this.trackingId = trackingId.idString();
     this.origin = routeSpecification.origin();
     this.routeSpecification = routeSpecification;
@@ -151,7 +152,7 @@ public class Cargo implements Entity<Cargo> {
    * @param routeSpecification route specification.
    */
   public void specifyNewRoute(final RouteSpecification routeSpecification) {
-    Validate.notNull(routeSpecification, "Route specification is required");
+    Objects.requireNonNull(routeSpecification, "Route specification is required");
 
     this.routeSpecification = routeSpecification;
     Itinerary itineraryForRouting = this.itinerary != null && !this.itinerary.isEmpty() ? new Itinerary(this.itinerary) : null;
@@ -165,7 +166,7 @@ public class Cargo implements Entity<Cargo> {
    * @param itinerary an itinerary. May not be null.
    */
   public void assignToRoute(final Itinerary itinerary) {
-    Validate.notNull(itinerary, "Itinerary is required for assignment");
+    Objects.requireNonNull(itinerary, "Itinerary is required for assignment");
 
     this.itinerary = itinerary.legs();
     // Handling consistency within the Cargo aggregate synchronously
@@ -225,7 +226,7 @@ public class Cargo implements Entity<Cargo> {
     return trackingId;
   }
 
-  Cargo() {
+  protected Cargo() {
     // Needed by Hibernate
   }
 
