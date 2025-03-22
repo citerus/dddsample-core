@@ -15,14 +15,14 @@
     <description>This application shows a few key concepts of
         Domain Driven Design implemented in Enterprise Java.
     </description>
-    <url>http://dddsample.sourceforge.net</url>
+    <url>https://github.com/aowss/dddsample-core</url>
 
-    <distributionManagement>
-        <site>
-            <id>sf</id>
-            <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>
-        </site>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <site>-->
+<!--            <id>sf</id>-->
+<!--            <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>-->
+<!--        </site>-->
+<!--    </distributionManagement>-->
 
     <ciManagement/>
 
@@ -73,12 +73,12 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/citerus/dddsample-core</developerConnection>
-        <url>https://github.com/citerus/dddsample-core</url>
+        <developerConnection>scm:git:https://github.com/aowss/dddsample-core</developerConnection>
+        <url>https://github.com/aowss/dddsample-core</url>
     </scm>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>23</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -96,6 +96,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
             </plugin>
         </plugins>
     </build>
