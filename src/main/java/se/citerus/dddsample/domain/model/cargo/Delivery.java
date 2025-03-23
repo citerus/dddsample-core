@@ -140,7 +140,7 @@ public class Delivery implements ValueObject<Delivery> {
 
   /**
    * Check if cargo is misdirected.
-   * <p/>
+   * 
    * <ul>
    * <li>A cargo is misdirected if it is in a location that's not in the itinerary.
    * <li>A cargo with no itinerary can not be misdirected.
