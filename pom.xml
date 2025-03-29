@@ -15,16 +15,7 @@
     <description>This application shows a few key concepts of
         Domain Driven Design implemented in Enterprise Java.
     </description>
-    <url>https://github.com/aowss/dddsample-core</url>
-
-<!--    <distributionManagement>-->
-<!--        <site>-->
-<!--            <id>sf</id>-->
-<!--            <url>scp://shell.sf.net/home/groups/d/dd/dddsample/htdocs/preview</url>-->
-<!--        </site>-->
-<!--    </distributionManagement>-->
-
-    <ciManagement/>
+    <url>http://dddsample.sourceforge.net</url>
 
     <developers>
         <developer>
@@ -73,12 +64,12 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/aowss/dddsample-core</developerConnection>
-        <url>https://github.com/aowss/dddsample-core</url>
+        <developerConnection>scm:git:https://github.com/citerus/dddsample-core</developerConnection>
+        <url>https://github.com/citerus/dddsample-core</url>
     </scm>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
