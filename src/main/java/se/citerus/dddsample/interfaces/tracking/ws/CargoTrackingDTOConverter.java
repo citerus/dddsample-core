@@ -51,7 +51,7 @@ public class CargoTrackingDTOConverter {
                 args = new Object[]{
                         handlingEvent.voyage().voyageNumber().idString(),
                         handlingEvent.location().name(),
-                        formatter.format(handlingEvent.completionTime())
+                        convertTime(handlingEvent)
                 };
                 break;
             case RECEIVE:
@@ -59,7 +59,7 @@ public class CargoTrackingDTOConverter {
             case CLAIM:
                 args = new Object[]{
                         handlingEvent.location().name(),
-                        formatter.format(handlingEvent.completionTime())
+                        convertTime(handlingEvent)
                 };
                 break;
 
