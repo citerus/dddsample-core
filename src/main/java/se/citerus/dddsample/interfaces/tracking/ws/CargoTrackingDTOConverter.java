@@ -34,7 +34,7 @@ public class CargoTrackingDTOConverter {
     private static List<HandlingEventDTO> convertHandlingEvents(List<HandlingEvent> handlingEvents, Cargo cargo, MessageSource messageSource, Locale locale) {
         return handlingEvents.stream().map(he -> new HandlingEventDTO(
                 convertLocation(he),
-                convertTime(he),
+                he.completionTime().toString(),
                 convertType(he),
                 convertVoyageNumber(he),
                 convertIsExpected(he, cargo),
@@ -126,7 +126,7 @@ public class CargoTrackingDTOConverter {
 
     private static String convertEta(Cargo cargo) {
         Instant date = cargo.delivery().estimatedTimeOfArrival();
-        return date == null ? "Unknown" : formatter.format(date);
+        return date == null ? "Unknown" : date.toString();
     }
 
     protected static String convertNextExpectedActivity(Cargo cargo) {
