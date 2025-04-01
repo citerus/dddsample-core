@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 /**
  * United nations location code.
- * <p/>
+ * 
  * http://www.unece.org/cefact/locode/
  * http://www.unece.org/cefact/locode/DocColumnDescription.htm#LOCODE
  */

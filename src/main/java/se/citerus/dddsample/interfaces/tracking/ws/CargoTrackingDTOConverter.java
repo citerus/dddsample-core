@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class CargoTrackingDTOConverter {
     private static final DateTimeFormatter formatter = DateTimeFormatter
-            .ofLocalizedDateTime(FormatStyle.MEDIUM)
+            .ofPattern("MMM d, uuuu, h:mm:ss a", Locale.ENGLISH) // See https://github.com/spring-projects/spring-framework/wiki/Date-and-Time-Formatting-with-JDK-20-and-higher#recommendations
             .withZone(ZoneOffset.UTC);
 
     public static CargoTrackingDTO convert(Cargo cargo, List<HandlingEvent> handlingEvents, MessageSource messageSource, Locale locale) {
@@ -34,7 +34,7 @@ public class CargoTrackingDTOConverter {
     private static List<HandlingEventDTO> convertHandlingEvents(List<HandlingEvent> handlingEvents, Cargo cargo, MessageSource messageSource, Locale locale) {
         return handlingEvents.stream().map(he -> new HandlingEventDTO(
                 convertLocation(he),
-                convertTime(he),
+                he.completionTime().toString(),
                 convertType(he),
                 convertVoyageNumber(he),
                 convertIsExpected(he, cargo),
@@ -51,7 +51,7 @@ public class CargoTrackingDTOConverter {
                 args = new Object[]{
                         handlingEvent.voyage().voyageNumber().idString(),
                         handlingEvent.location().name(),
-                        formatter.format(handlingEvent.completionTime())
+                        convertTime(handlingEvent)
                 };
                 break;
             case RECEIVE:
@@ -59,7 +59,7 @@ public class CargoTrackingDTOConverter {
             case CLAIM:
                 args = new Object[]{
                         handlingEvent.location().name(),
-                        formatter.format(handlingEvent.completionTime())
+                        convertTime(handlingEvent)
                 };
                 break;
 
@@ -126,7 +126,7 @@ public class CargoTrackingDTOConverter {
 
     private static String convertEta(Cargo cargo) {
         Instant date = cargo.delivery().estimatedTimeOfArrival();
-        return date == null ? "Unknown" : formatter.format(date);
+        return date == null ? "Unknown" : date.toString();
     }
 
     protected static String convertNextExpectedActivity(Cargo cargo) {

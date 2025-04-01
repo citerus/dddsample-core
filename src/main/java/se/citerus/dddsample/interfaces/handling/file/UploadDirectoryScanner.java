@@ -27,7 +27,7 @@ import static se.citerus.dddsample.interfaces.handling.HandlingReportParser.*;
 /**
  * Periodically scans a certain directory for files and attempts
  * to parse handling event registrations from the contents.
- * <p/>
+ * 
  * Files that fail to parse are moved into a separate directory,
  * successful files are deleted.
  */
