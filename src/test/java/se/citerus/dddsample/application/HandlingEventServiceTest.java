@@ -13,7 +13,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 
-
 import java.time.Instant;
 
 import static org.mockito.ArgumentMatchers.isA;

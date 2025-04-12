@@ -2,11 +2,7 @@ package se.citerus.dddsample.acceptance;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
-import se.citerus.dddsample.acceptance.pages.AdminPage;
-import se.citerus.dddsample.acceptance.pages.CargoBookingPage;
-import se.citerus.dddsample.acceptance.pages.CargoDestinationPage;
-import se.citerus.dddsample.acceptance.pages.CargoDetailsPage;
-import se.citerus.dddsample.acceptance.pages.CargoRoutingPage;
+import se.citerus.dddsample.acceptance.pages.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

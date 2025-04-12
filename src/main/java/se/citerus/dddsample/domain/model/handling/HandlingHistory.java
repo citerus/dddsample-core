@@ -1,13 +1,10 @@
 package se.citerus.dddsample.domain.model.handling;
 
-import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.cargo.TrackingId;
 import se.citerus.dddsample.domain.shared.ValueObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.sort;
 
 /**
  * The handling history of a cargo.

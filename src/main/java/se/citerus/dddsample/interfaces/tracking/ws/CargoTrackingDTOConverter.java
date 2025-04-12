@@ -9,7 +9,6 @@ import se.citerus.dddsample.domain.model.handling.HandlingEvent;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;

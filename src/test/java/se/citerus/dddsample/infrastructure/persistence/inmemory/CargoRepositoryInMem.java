@@ -8,10 +8,10 @@ import se.citerus.dddsample.domain.model.handling.HandlingEventRepository;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 
-import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
-
 import java.time.Instant;
 import java.util.*;
+
+import static se.citerus.dddsample.infrastructure.sampledata.SampleLocations.*;
 
 /**
  * CargoRepositoryInMem implement the CargoRepository interface but is a test

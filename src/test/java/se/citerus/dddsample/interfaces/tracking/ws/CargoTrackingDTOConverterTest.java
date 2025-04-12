@@ -27,8 +27,6 @@ import se.citerus.dddsample.domain.model.voyage.VoyageNumber;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Stream;

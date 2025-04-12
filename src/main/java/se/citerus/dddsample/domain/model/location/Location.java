@@ -1,7 +1,6 @@
 package se.citerus.dddsample.domain.model.location;
 
 import jakarta.persistence.*;
-import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.shared.DomainEntity;
 
 import java.util.Objects;

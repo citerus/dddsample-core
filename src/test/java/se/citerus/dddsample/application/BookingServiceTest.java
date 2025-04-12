@@ -11,7 +11,6 @@ import se.citerus.dddsample.domain.model.location.LocationRepository;
 import se.citerus.dddsample.domain.model.location.UnLocode;
 import se.citerus.dddsample.domain.service.RoutingService;
 
-
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;

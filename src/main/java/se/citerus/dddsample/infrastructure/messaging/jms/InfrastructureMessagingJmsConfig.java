@@ -1,7 +1,6 @@
 package se.citerus.dddsample.infrastructure.messaging.jms;
 
 import jakarta.jms.*;
-import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.springframework.beans.factory.annotation.Qualifier;

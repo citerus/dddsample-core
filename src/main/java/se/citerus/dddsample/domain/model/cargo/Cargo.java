@@ -1,7 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import jakarta.persistence.*;
-import org.apache.commons.lang3.Validate;
 import se.citerus.dddsample.domain.model.handling.HandlingHistory;
 import se.citerus.dddsample.domain.model.location.Location;
 import se.citerus.dddsample.domain.shared.DomainEntity;
@@ -100,7 +99,7 @@ public class Cargo implements DomainEntity<Cargo> {
 
   /**
    * The tracking id is the identity of this entity, and is unique.
-   * 
+   *
    * @return Tracking id.
    */
   public TrackingId trackingId() {
@@ -145,7 +144,7 @@ public class Cargo implements DomainEntity<Cargo> {
   public RouteSpecification routeSpecification() {
     return routeSpecification;
   }
-  
+
   /**
    * Specifies a new route for this cargo.
    *
@@ -176,11 +175,11 @@ public class Cargo implements DomainEntity<Cargo> {
   /**
    * Updates all aspects of the cargo aggregate status
    * based on the current route specification, itinerary and handling of the cargo.
-   * 
+   *
    * When either of those three changes, i.e. when a new route is specified for the cargo,
    * the cargo is assigned to a route or when the cargo is handled, the status must be
    * re-calculated.
-   * 
+   *
    * {@link RouteSpecification} and {@link Itinerary} are both inside the Cargo
    * aggregate, so changes to them cause the status to be updated <b>synchronously</b>,
    * but changes to the delivery history (when a cargo is handled) cause the status update
