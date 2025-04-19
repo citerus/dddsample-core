@@ -56,3 +56,37 @@ Architecture
 	While it can be tricky to give a solid definition of what kind of code belongs to the infrastructure layer for any given situation,
 	it should be possible to completely stub out the infrastructure in pure Java unit/scenario tests and still be able to
 	use the domain layer and possibly the application layer to work out the core business problems.
+
+{Interactions}
+
+    The interactions between the layers is shown here.
+
+    - The Application which drives the workflow is in light green.
+
+    - The Domain which encapsulate the business logic is in light pink.
+
+    - The Infrastructure which supports the other layers is in light blue.
+
+    We chose not to show the Interfaces which handle the communication with other systems.
+    
+    We chose to only show the persistence part of the Infrastructure.
+
+* Book new Cargo
+
+[diagrams/BookingServiceImpl_bookNewCargo.png]
+
+** Assign Cargo to Route
+
+[diagrams/BookingServiceImpl_assignCargoToRoute.png]
+
+** Change Destination
+
+[diagrams/BookingServiceImpl_changeDestination.png]
+
+** Request Possible Routes for Cargo
+
+[diagrams/BookingServiceImpl_requestPossibleRoutesForCargo.png]
+
+** Inspect Cargo
+
+[diagrams/CargoInspectionServiceImpl_inspectCargo.png]

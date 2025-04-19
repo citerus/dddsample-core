@@ -1,0 +1,94 @@
+@startuml
+skinparam monochrome false
+skinparam defaultFontName Courier
+skinparam sequenceMessageAlign center
+
+participant "BookingServiceImpl" as bs #lightgreen
+participant "CargoRepositoryJPA" as cr #lightblue
+participant "Cargo" as c #lightpink
+participant "ExternalRoutingService" as rs #lightblue
+participant "GraphTraversalService" as gts #lightblue
+participant "VoyageRepositoryJPA" as vr #lightblue
+participant "LocationRepositoryJPA" as lr #lightblue
+participant "RouteSpecification" as rspec #lightpink
+participant "Itinerary" as itin #lightpink
+participant "Leg" as leg #lightpink
+
+[-> bs: requestPossibleRoutesForCargo(trackingId)
+activate bs #lightgreen
+
+bs -> cr: find(trackingId)
+activate cr #lightblue
+cr --> bs: cargo
+deactivate cr
+
+bs -> c: routeSpecification()
+activate c #lightpink
+c --> bs: specification
+deactivate c
+
+bs -> rs: fetchRoutesForSpecification(specification)
+activate rs #lightblue
+
+rs -> rspec: origin()
+activate rspec #lightpink
+rspec --> rs: origin
+deactivate rspec
+
+rs -> rspec: destination()
+activate rspec #lightpink
+rspec --> rs: destination
+deactivate rspec
+
+rs -> rspec: arrivalDeadline()
+activate rspec #lightpink
+rspec --> rs: deadline
+deactivate rspec
+
+rs -> gts: findShortestPath(origin.unLocode(),\ndestination.unLocode(), limitations)
+activate gts #lightblue
+gts --> rs: transitPaths
+deactivate gts
+
+loop for each transitPath
+    rs -> rs: toItinerary(transitPath)
+    
+    loop for each transitEdge
+        rs -> vr: find(voyageNumber)
+        activate vr #lightblue
+        vr --> rs: voyage
+        deactivate vr
+
+        rs -> lr: find(fromUnLocode)
+        activate lr #lightblue
+        lr --> rs: fromLocation
+
+        rs -> lr: find(toUnLocode)
+        lr --> rs: toLocation
+        deactivate lr
+
+        create leg
+        rs -> leg: new(voyage, fromLocation,\ntoLocation, fromDate, toDate)
+        activate leg #lightpink
+        leg --> rs
+        deactivate leg
+    end
+
+    create itin
+    rs -> itin: new(legs)
+    activate itin #lightpink
+    itin --> rs
+    deactivate itin
+    
+    rs -> rspec: isSatisfiedBy(itinerary)
+    rspec --> rs: satisfied
+end
+
+rs --> bs: itineraries
+deactivate rspec
+deactivate rs
+
+[<-- bs: itineraries
+deactivate bs
+
+@enduml 

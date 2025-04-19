@@ -1,0 +1,60 @@
+@startuml
+skinparam monochrome false
+skinparam defaultFontName Courier
+skinparam sequenceMessageAlign center
+
+participant "BookingServiceImpl" as bs #lightgreen
+participant "CargoFactory" as cf #lightpink
+participant "LocationRepository" as lr #lightblue
+participant "RouteSpecification" as rs #lightpink
+participant "Cargo" as c #lightpink
+participant "Delivery" as d #lightpink
+participant "CargoRepository" as cr #lightblue
+
+[-> bs: bookNewCargo(originUnLocode,\ndestinationUnLocode,\narrivalDeadline)
+activate bs #lightgreen
+
+bs -> cf: createCargo(originUnLocode,\ndestinationUnLocode,\narrivalDeadline)
+activate cf #lightpink
+
+cf -> lr: find(originUnLocode)
+activate lr #lightblue
+lr --> cf: origin
+
+cf -> lr: find(destinationUnLocode)
+lr --> cf: destination
+deactivate lr
+
+cf -> cr: nextTrackingId()
+activate cr #lightblue
+cr --> cf: trackingId
+
+create rs
+cf -> rs: new(origin, destination, arrivalDeadline)
+activate rs #lightpink
+rs --> cf
+deactivate rs
+
+create c
+cf -> c: new(trackingId, routeSpecification)
+activate c #lightpink
+
+c -> d: derivedFrom(routeSpecification,\nnull, HandlingHistory.EMPTY)
+activate d #lightpink
+d --> c: delivery
+deactivate d
+
+c --> cf
+deactivate c
+
+cf --> bs: cargo
+deactivate cf
+
+bs -> cr: store(cargo)
+cr --> bs
+deactivate cr
+
+[<-- bs: trackingId
+deactivate bs
+
+@enduml 
