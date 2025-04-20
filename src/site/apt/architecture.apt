@@ -75,18 +75,18 @@ Architecture
 
 [diagrams/BookingServiceImpl_bookNewCargo.png]
 
-** Assign Cargo to Route
+* Assign Cargo to Route
 
 [diagrams/BookingServiceImpl_assignCargoToRoute.png]
 
-** Change Destination
+* Change Destination
 
 [diagrams/BookingServiceImpl_changeDestination.png]
 
-** Request Possible Routes for Cargo
+* Request Possible Routes for Cargo
 
 [diagrams/BookingServiceImpl_requestPossibleRoutesForCargo.png]
 
-** Inspect Cargo
+* Inspect Cargo
 
 [diagrams/CargoInspectionServiceImpl_inspectCargo.png]
