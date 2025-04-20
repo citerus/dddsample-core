@@ -1,0 +1,91 @@
+@startuml
+skinparam monochrome false
+skinparam defaultFontName Courier
+skinparam sequenceMessageAlign center
+
+participant "CargoInspectionServiceImpl" as cis #lightgreen
+participant "CargoRepositoryJPA" as cr #lightblue
+participant "HandlingEventRepositoryJPA" as her #lightblue
+participant "Cargo" as c #lightpink
+participant "HandlingHistory" as hh #lightpink
+participant "RouteSpecification" as rs #lightpink
+participant "Itinerary" as i #lightpink
+participant "Delivery" as d #lightpink
+participant "ApplicationEvents" as ae #lightgreen
+
+[-> cis: inspectCargo(trackingId)
+activate cis #lightgreen
+
+cis -> cr: find(trackingId)
+activate cr #lightblue
+
+cis -> her: lookupHandlingHistoryOfCargo(trackingId)
+activate her #lightblue
+her --> cis: handlingHistory
+deactivate her
+
+cis -> c: deriveDeliveryProgress(handlingHistory)
+activate c #lightpink
+
+c -> c: routeSpecification()
+c -> rs: isSatisfiedBy(itinerary)
+activate rs #lightpink
+rs --> c: satisfied
+deactivate rs
+
+c -> c: itinerary()
+c -> i: legs()
+activate i #lightpink
+i --> c: legs
+deactivate i
+
+c -> hh: filterOnCargo(trackingId)
+activate hh #lightpink
+hh --> c: filteredHistory
+deactivate hh
+
+c -> d: derivedFrom(routeSpecification,\nitinerary, filteredHistory)
+activate d #lightpink
+d --> c: delivery
+deactivate d
+
+c --> cis
+deactivate c
+
+cis -> c: delivery()
+activate c #lightpink
+c --> cis: delivery
+deactivate c
+
+cis -> d: isMisdirected()
+activate d #lightpink
+d --> cis: misdirected
+deactivate d
+
+alt misdirected
+    cis -> ae: cargoWasMisdirected(cargo)
+    activate ae #lightgreen
+    ae --> cis
+    deactivate ae
+end
+
+cis -> d: isUnloadedAtDestination()
+activate d #lightpink
+d --> cis: atDestination
+deactivate d
+
+alt atDestination
+    cis -> ae: cargoHasArrived(cargo)
+    activate ae #lightgreen
+    ae --> cis
+    deactivate ae
+end
+
+cis -> cr: store(cargo)
+cr --> cis
+deactivate cr
+
+[<-- cis
+deactivate cis
+
+@enduml 

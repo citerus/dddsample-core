@@ -1,0 +1,63 @@
+@startuml
+skinparam monochrome false
+skinparam defaultFontName Courier
+skinparam sequenceMessageAlign center
+
+participant "HandlingEventServiceImpl" as hes #lightgreen
+participant "HandlingEventFactory" as hef #lightpink
+participant "CargoRepository" as cr #lightblue
+participant "VoyageRepository" as vr #lightblue
+participant "LocationRepository" as lr #lightblue
+participant "HandlingEvent" as he #lightpink
+participant "HandlingEventRepositoryJPA" as her #lightblue
+participant "ApplicationEvents" as ae #lightgreen
+
+[-> hes: registerHandlingEvent(completionTime,\ntrackingId, voyageNumber,\nunLocode, type)
+activate hes #lightgreen
+
+hes -> hef: createHandlingEvent(registrationTime,\ncompletionTime, trackingId,\nvoyageNumber, unLocode, type)
+activate hef #lightpink
+
+hef -> cr: find(trackingId)
+activate cr #lightblue
+cr --> hef: cargo
+deactivate cr
+
+hef -> vr: find(voyageNumber)
+activate vr #lightblue
+vr --> hef: voyage
+deactivate vr
+
+hef -> lr: find(unLocode)
+activate lr #lightblue
+lr --> hef: location
+deactivate lr
+
+create he
+hef -> he: new(cargo, completionTime,\nregistrationTime, type,\nlocation, voyage)
+activate he #lightpink
+
+he -> he: validateLocation()
+he -> he: validateVoyage()
+he -> he: validateTimeConstraints()
+
+he --> hef
+deactivate he
+
+hef --> hes: event
+deactivate hef
+
+hes -> her: store(event)
+activate her #lightblue
+her --> hes
+deactivate her
+
+hes -> ae: cargoWasHandled(event)
+activate ae #lightgreen
+ae --> hes
+deactivate ae
+
+[<-- hes
+deactivate hes
+
+@enduml 
