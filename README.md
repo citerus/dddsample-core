@@ -27,7 +27,13 @@ If you want to compile without running the tests, run the following command:
     ./mvnw compile
     
 For Windows users, use the included `mvnw.cmd` file instead, without the `./` but using the same arguments.
-    
+
+Use this command to generate the site's documentation
+
+    ./mvnw site:run
+
+The site can then be accessed at [`http://localhost:8080`](http://localhost:8080).
+
 ## How to run
 
 To start the app using the included application server and in-process HSQL database, run this command:

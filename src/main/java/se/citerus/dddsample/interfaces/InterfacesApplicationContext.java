@@ -25,9 +25,7 @@ import se.citerus.dddsample.domain.model.voyage.VoyageRepository;
 import se.citerus.dddsample.infrastructure.i18n.QueryParamLocaleResolver;
 import se.citerus.dddsample.interfaces.booking.facade.BookingServiceFacade;
 import se.citerus.dddsample.interfaces.booking.facade.internal.BookingServiceFacadeImpl;
-import se.citerus.dddsample.interfaces.booking.web.CargoAdminController;
 import se.citerus.dddsample.interfaces.handling.file.UploadDirectoryScanner;
-import se.citerus.dddsample.interfaces.tracking.CargoTrackingController;
 import se.citerus.dddsample.interfaces.tracking.TrackCommandValidator;
 import se.citerus.dddsample.interfaces.tracking.ws.CargoTrackingRestService;
 

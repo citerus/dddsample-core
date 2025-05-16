@@ -1,7 +1,6 @@
 package se.citerus.dddsample.domain.model.cargo;
 
 import jakarta.persistence.*;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se.citerus.dddsample.domain.model.handling.HandlingEvent;
@@ -140,7 +139,7 @@ public class Delivery implements ValueObject<Delivery> {
 
   /**
    * Check if cargo is misdirected.
-   * <p/>
+   * 
    * <ul>
    * <li>A cargo is misdirected if it is in a location that's not in the itinerary.
    * <li>A cargo with no itinerary can not be misdirected.
