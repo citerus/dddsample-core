@@ -13,21 +13,18 @@ public class CustomerAcceptanceTest extends AbstractAcceptanceTest {
         customerPage = new CustomerPage(driver, port);
     }
 
-    @DirtiesContext
     @Test
     public void customerSiteCanTrackValidCargo() {
         customerPage.trackCargoWithIdOf("ABC123");
         customerPage.expectCargoLocation("New York");
     }
 
-    @DirtiesContext
     @Test
     public void customerSiteErrorsOnInvalidCargo() {
         customerPage.trackCargoWithIdOf("XXX999");
         customerPage.expectErrorFor("Unknown tracking id");
     }
 
-    @DirtiesContext
     @Test
     public void customerSiteNotifiesOnMisdirectedCargo() {
         customerPage.trackCargoWithIdOf("JKL567");
