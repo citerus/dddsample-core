@@ -1,10 +1,12 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Cargo Administration</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title th:text="#{cargo.admin.header}">Cargo Administration</title>
     <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
 
     <style type="text/css">
@@ -20,14 +22,14 @@
   <form th:action="@{/admin/changeDestination}" method="post">
   <input type="hidden" name="trackingId" th:value="${cargo.trackingId}"/>
   <table>
-    <caption>Change destination for cargo <span th:text="${cargo.trackingId}"/></caption>
+    <caption><span th:text="#{cargo.admin.newdest.change}">Change destination for cargo</span> <span th:text="${cargo.trackingId}"/></caption>
     <tbody>
       <tr>
-        <td>Current destination</td>
+        <td th:text="#{cargo.admin.newdest.currentdest}">Current destination</td>
         <td th:text="${cargo.finalDestination}"/>
       </tr>
       <tr>
-        <td>New destination</td>
+        <td th:text="#{cargo.admin.newdest.newdest}">New destination</td>
         <td>
           <select name="unlocode">
             <option th:each="location : ${locations}" th:value="${location.unLocode}" th:text="${location.unLocode}"/>
@@ -39,7 +41,7 @@
       <tr>
         <td> </td>
         <td>
-          <input type="submit" value="Change destination"/>
+          <input type="submit" th:value="#{cargo.admin.newdest.submit}"/>
         </td>
       </tr>
     </tfoot>

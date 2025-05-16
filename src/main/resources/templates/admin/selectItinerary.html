@@ -1,39 +1,40 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Cargo Administration</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title th:text="#{cargo.admin.header}">Cargo Administration</title>
     <link rel="stylesheet" type="text/css" th:href="@{/admin.css}"/>
 </head>
 <body>
 <div th:replace="adminDecorator :: adminbody"/>
 <div id="container">
     <table>
-        <caption>Select route</caption>
+        <caption th:text="#{cargo.admin.itinerary.caption}">Select route</caption>
         <tr>
-            <td>
-                Cargo <span th:text="${cargo.trackingId}"/> is going from <span th:text="${cargo.origin}"/> to <span
-                    th:text="${cargo.finalDestination}"/>
+            <td th:text="${viewAdapter.getSelectItinerarySummaryText(cargo)}">
+                Cargo (trackingId) is going from (origin) to (final destination)
             </td>
         </tr>
     </table>
 
-    <p th:if="${#lists.isEmpty(routeCandidates)}">No routes found that satisfy the route specification.
-        Try setting an arrival deadline futher into the future (a few weeks at least).
+    <p th:if="${#lists.isEmpty(routeCandidates)}" th:text="#{cargo.admin.itinerary.noroutecandidates}">No routes found that satisfy the route specification.
+        Try setting an arrival deadline further into the future (a few weeks at least).
     </p>
 
     <form th:each="it,itStatus : ${routeCandidates}" th:action="@{/admin/assignItinerary}" method="post">
         <input type="hidden" name="trackingId" th:value="${cargo.trackingId}"/>
         <table>
-            <caption>Route candidate <span th:text="${itStatus.count}"/></caption>
+            <caption th:text="${viewAdapter.getRouteCandidateCaption(itStatus.count)}">Route candidate <span th:text="${itStatus.count}"/></caption>
             <thead>
             <tr>
-                <td>Voyage</td>
-                <td>From</td>
+                <td th:text="#{cargo.admin.itinerary.voyage}">Voyage</td>
+                <td th:text="#{misc.from}">From</td>
                 <td></td>
-                <td>To</td>
+                <td th:text="#{misc.to}">To</td>
                 <td></td>
             </tr>
             </thead>
@@ -60,7 +61,7 @@
             <tr>
                 <td colspan="3">
                     <p>
-                        <input type="submit" value="Assign cargo to this route"/>
+                        <input type="submit" th:value="#{cargo.admin.itinerary.submit}"/>
                     </p>
                 </td>
             </tr>
